@@ -69,7 +69,7 @@ def make_d2_logic(player: int):
                     ooa_can_kill_spiked_beetle(state, player)
                 ])
             ])
-        ])],
+        ],
         # The key door doesn't need you to kill the beetles to go past it
         # So come in with keys, and do the 2-wide pit jump from the other side
         # To get to these items without being able to kill the spiked beetles.
