@@ -416,6 +416,7 @@ ASM_FILES = [
     "asm/text.yaml",
     "asm/remove_item_on_use.yaml",
     "asm/dungeon_shuffle.yaml",
+    "asm/file_select_custom_string.yaml",
 ]
 
 RUPEE_VALUES = {
