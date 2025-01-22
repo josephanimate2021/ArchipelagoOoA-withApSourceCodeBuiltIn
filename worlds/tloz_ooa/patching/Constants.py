@@ -316,6 +316,7 @@ DEFINES = {
     "wRoomLayout":"$cf00",
     "wLinkObjectIndex":"$cc2c",
     "wMenuLoadState":"$cbcc",
+    "wLinkDeathTrigger": "$cdd5",
 
     # rom 00
     "getRandomNumber":"$043e",
