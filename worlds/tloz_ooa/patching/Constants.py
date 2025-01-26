@@ -409,7 +409,6 @@ ASM_FILES = [
     "asm/timeportals.yaml",
     "asm/boss_items.yaml",
     "asm/keysanity.yaml",
-    "asm/warp_to_start.yaml",
     "asm/shops_handling.yaml",
     "asm/gfx.yaml",
     "asm/get_item_behavior.yaml",
