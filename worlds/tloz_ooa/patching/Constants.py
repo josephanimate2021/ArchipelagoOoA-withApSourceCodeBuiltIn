@@ -83,6 +83,7 @@ DEFINES = {
     "SND_ERROR":"$5a",
     "SND_SOLVEPUZZLE_2":"$5b",
     "SND_TELEPORT":"$8d",
+    "SND_GETSEED": "$5e",
     "TREASURE_SHIELD":"$01",
     "TREASURE_PUNCH":"$02",
     "TREASURE_BOMBS":"$03",
@@ -176,6 +177,7 @@ DEFINES = {
     "ormemory":"$92",
     "rungenericnpc":"$97",
     "showtext":"$98",
+    "showloadedtext":"$9d",
     "checkabutton":"$9e",
     "checkcfc0_bit0":"$a0",
     "jumpifroomflagset":"$b0",
@@ -235,6 +237,9 @@ DEFINES = {
     "wIsLinkedGame":"$cc01",
     "wMenuDisabled":"$cc02",
     "wCutsceneState":"$cc03",
+    "wMaxBombs": "$c6b1",
+    "wLinkMaxHealth": "$c6ab",
+    "wNumEmberSeeds": "$c6b9",
     "wCutsceneTrigger":"$cc04",
     "wScreenTransitionDirection":"$cd02",
     "wScreenOffsetY":"$cd08",
@@ -418,6 +423,7 @@ ASM_FILES = [
     "asm/remove_item_on_use.yaml",
     "asm/dungeon_shuffle.yaml",
     "asm/file_select_custom_string.yaml",
+    "asm/impa_refill.yaml",
 ]
 
 RUPEE_VALUES = {
