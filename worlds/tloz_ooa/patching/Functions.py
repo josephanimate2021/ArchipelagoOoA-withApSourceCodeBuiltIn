@@ -1,5 +1,8 @@
 from typing import List
 
+import os
+import random
+import Utils
 from settings import get_settings
 from . import RomData
 from .Util import *
@@ -369,7 +372,6 @@ def set_file_select_text(assembler: Z80Assembler, slot_name: str):
 
     
 def set_heart_beep_interval_from_settings(rom: RomData):
-    print(get_settings()["tloz_ooa_options"]["heart_beep_interval"])
     heart_beep_interval = get_settings()["tloz_ooa_options"]["heart_beep_interval"]
     if heart_beep_interval == "half":
         rom.write_byte(0x914B, 0x3f * 2)
@@ -377,3 +379,42 @@ def set_heart_beep_interval_from_settings(rom: RomData):
         rom.write_byte(0x914B, 0x3f * 4)
     elif heart_beep_interval == "disabled":
         rom.write_bytes(0x914B, [0x00, 0xc9])  # Put a return to avoid beeping entirely
+
+def set_character_sprite_from_settings(rom: RomData):
+    sprite = get_settings()["tloz_ooa_options"]["character_sprite"]
+    sprite_dir = Path(Utils.local_path(os.path.join('data', 'sprites', 'oos_ooa')))
+    if sprite == "random":
+        sprite_filenames = [f for f in os.listdir(sprite_dir) if sprite_dir.joinpath(f).is_file() and f.endswith(".bin")]
+        sprite = sprite_filenames[random.randint(0, len(sprite_filenames) - 1)]
+    elif not sprite.endswith(".bin"):
+        sprite += ".bin"
+    if sprite != "link.bin":
+        sprite_path = sprite_dir.joinpath(sprite)
+        if not (sprite_path.exists() and sprite_path.is_file()):
+            raise ValueError(f"Path '{sprite_path}' doesn't exist")
+        sprite_bytes = list(Path(sprite_path).read_bytes())
+        rom.write_bytes(0x68000, sprite_bytes)
+
+    palette = get_settings()["tloz_ooa_options"]["character_palette"]
+    if palette == "random":
+        palette = random.choice(get_available_random_colors_from_sprite_name(sprite))
+
+    if palette == "green":
+        return  # Nothing to change
+    if palette not in PALETTE_BYTES:
+        raise ValueError(f"Palette color '{palette}' doesn't exist (must be 'green', 'blue', 'red' or 'orange')")
+    palette_byte = PALETTE_BYTES[palette]
+
+    # Link in-game
+    for addr in range(0x1420e, 0x14221, 2):
+        rom.write_byte(addr, 0x08 | palette_byte)
+    # Link palette restored after Medusa Head / Ganon stun attacks
+    rom.write_byte(0x15271, 0x08 | palette_byte)
+    # Link standing still in file select (fileSelectDrawLink:@sprites0)
+    rom.write_byte(0x8d86, palette_byte)
+    rom.write_byte(0x8d8a, palette_byte)
+    # Link animated in file select (@sprites1 & @sprites2)
+    rom.write_byte(0x8d8f, palette_byte)
+    rom.write_byte(0x8d93, palette_byte)
+    rom.write_byte(0x8d98, 0x20 | palette_byte)
+    rom.write_byte(0x8d9c, 0x20 | palette_byte)

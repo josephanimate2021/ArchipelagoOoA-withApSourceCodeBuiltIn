@@ -71,7 +71,7 @@ class OoAPatchExtensions(APPatchExtension):
         #apply_miscellaneous_options(rom_data, patch_data)
 
         set_heart_beep_interval_from_settings(rom_data)
-        #set_character_sprite_from_settings(rom_data)
+        set_character_sprite_from_settings(rom_data)
         inject_slot_name(rom_data, caller.player_name)
 
         rom_data.update_checksum(0x14e)

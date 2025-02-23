@@ -568,6 +568,13 @@ DUNGEON_EXITS = {
     "d6 past": 0x13c54,
 }
 
+PALETTE_BYTES = {
+    "green": 0x00,
+    "blue": 0x01,
+    "red": 0x02,
+    "orange": 0x03,
+}
+
 SEED_TREE_DATA = {
     "Lynna Present" : {
         "location" : "Lynna City: Seed Tree",

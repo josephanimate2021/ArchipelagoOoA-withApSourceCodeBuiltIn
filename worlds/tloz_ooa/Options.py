@@ -230,37 +230,6 @@ class OracleOfAgesQuickFlute(DefaultOnToggle):
     """
     display_name = "Quick Flute & Harp"
 
-class OracleOfAgesCharacterSprite(Choice):
-    """
-    <NOT IMPLEMENTED RIGHT NOW>
-    The sprite to use as a character during this seed.
-    (Sprites extracted from ardnaxelarak's rando)
-    """
-    display_name = "Character Sprite"
-
-    option_link = 0
-    option_subrosian = 1
-    option_goron = 2
-    option_piratian = 3
-
-    default = 0
-
-
-class OracleOfAgesCharacterPalette(Choice):
-    """
-    <NOT IMPLEMENTED RIGHT NOW>
-    The color tint to apply to the character sprite during this seed
-    """
-    display_name = "Character Tint"
-
-    option_green = 0
-    option_blue = 1
-    option_red = 2
-    option_orange = 3
-
-    default = 0
-
-
 @dataclass
 class OracleOfAgesOptions(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
@@ -284,6 +253,4 @@ class OracleOfAgesOptions(PerGameCommonOptions):
     warp_to_start: OracleOfAgesWarpToStart
     combat_difficulty: OracleOfAgesCombatDifficulty
     quick_flute: OracleOfAgesQuickFlute
-    character_sprite: OracleOfAgesCharacterSprite
-    character_palette: OracleOfAgesCharacterPalette
     death_link: DeathLink

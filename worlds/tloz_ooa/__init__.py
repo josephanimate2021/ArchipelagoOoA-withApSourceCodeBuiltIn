@@ -25,7 +25,18 @@ class OOASettings(settings.Group):
         description = "Oracle of Ages (USA) ROM File"
         copy_to = "Legend of Zelda, The - Oracle of Ages (USA).gbc"
         md5s = [ROM_HASH]
-    
+
+    class OoACharacterSprite(str):
+        """
+        The name of the sprite file to use (from "data/sprites/oos_ooa/").
+        Putting "link" as a value uses the default game sprite.
+        Putting "random" as a value randomly picks a sprite from your sprites directory for each generated ROM.
+        """
+    class OoACharacterPalette(str):
+        """
+        The color palette used for character sprite throughout the game.
+        Valid values are: "green", "red", "blue", "orange", and "random"
+        """
     class OoAHeartBeepInterval(str):
         """
         A factor applied to the infamous heart beep sound interval.
@@ -34,6 +45,8 @@ class OOASettings(settings.Group):
 
     rom_file: OOARomFile = OOARomFile(OOARomFile.copy_to)
     heart_beep_interval: Union[OoAHeartBeepInterval, str] = "vanilla"
+    character_sprite: Union[OoACharacterSprite, str] = "link"
+    character_palette: Union[OoACharacterPalette, str] = "green"
 
 class OracleOfAgesWeb(WebWorld):
     theme = "grass"
