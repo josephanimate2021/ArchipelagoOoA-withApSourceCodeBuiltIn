@@ -352,6 +352,18 @@ class OracleOfAgesWorld(World):
         self.pre_fill_seeds()
         self.pre_fill_dungeon_items()
 
+        #self.debug_pre_fill("Dimitri's Flute", "Impa Gift")
+
+    def debug_pre_fill(self, i, l):
+        collection_state = self.multiworld.get_all_state(False)
+        
+        locations = [loc for loc in self.multiworld.get_locations(self.player)
+                                 if l in loc.name]
+        item = [self.create_item(i)]
+        print(item)
+        print(locations)
+        fill_restrictive(self.multiworld, collection_state, locations, item, single_player_placement=True, lock=True, allow_excluded=True)
+
     def pre_fill_dungeon_items(self):
         # If keysanity is off, dungeon items can only be put inside local dungeon locations, and there are not so many
         # of those which makes them pretty crowded.
