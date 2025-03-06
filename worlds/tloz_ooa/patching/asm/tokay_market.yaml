@@ -36,3 +36,8 @@
 0a/62e9/: |
   nop
   nop
+
+#remove text when both item are bought
+0c/7689/ : |
+  db $be
+  db $00

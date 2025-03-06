@@ -13,7 +13,7 @@ class OracleOfAgesGoal(Choice):
     display_name = "Goal"
 
     option_beat_veran = 0
-    option_beat_ganon = 1
+    #option_beat_ganon = 1
 
     default = 0
 

@@ -137,9 +137,23 @@ def define_text_constants(assembler: Z80Assembler, patch_data):
             if location_name in patch_data["locations"]:
                 item_name_bytes = process_item_name_for_shop_text(patch_data["locations"][location_name])
                 text_bytes = [0x09, 0x01] + item_name_bytes + [0x09, 0x00, 0x0c, 0x18, 0x01]  # Item name
-                text_bytes.extend([0x20, 0x0c, 0x08, 0x20, 0x03, 0x7b, 0x01])  # Price
-                text_bytes.extend([0x02, 0x00, 0x00])  # OK / No thanks
+                if shop_name != "Tokay Market":
+                    text_bytes.extend([0x20, 0x0c, 0x08, 0x20, 0x03, 0x7b, 0x01])  # Price
+                    text_bytes.extend([0x02, 0x00, 0x00])  # OK / No thanks
             assembler.add_floating_chunk(f"text.{symbolic_name}", text_bytes)
+
+    #Tokay Market
+    shop_name = "Tokay Market"
+    for i in range(1, 3):
+        location_name = f"{shop_name} #{i}"
+        symbolic_name = LOCATIONS_DATA[location_name]["symbolic_name"]
+        text_bytes = []
+        if location_name in patch_data["locations"]:
+            item_name_bytes = process_item_name_for_shop_text(patch_data["locations"][location_name])
+            text_bytes = [0x09, 0x01] + item_name_bytes + [0x09, 0x00, 0x0c, 0x18, 0x00]  # Item name
+            assembler.add_floating_chunk(f"text.{symbolic_name}", text_bytes)
+    text_bytes = [0x31, 0x30, 0x20, 0x02, 0x12, 0x01, 0x02, 0x00, 0x00]
+    assembler.add_floating_chunk(f"text.tokayMarket1Validation", text_bytes)
 
 
 def write_chest_contents(rom: RomData, patch_data):
