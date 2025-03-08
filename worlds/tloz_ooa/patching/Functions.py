@@ -98,6 +98,10 @@ def define_option_constants(assembler: Z80Assembler, patch_data):
 
     assembler.define_byte("option.requiredEssences", options["required_essences"])
     assembler.define_byte("option.required_slates", options["required_slates"])
+    
+    assembler.define_byte("option.keysanity_small_keys", patch_data["options"]["keysanity_small_keys"])
+    keysanity = patch_data["options"]["keysanity_small_keys"] or patch_data["options"]["keysanity_boss_keys"]
+    assembler.define_byte("option.customCompassChimes", 1 if keysanity else 0)
 
 def process_item_name_for_shop_text(item_name: str) -> List[int]:
     words = item_name.split(" ")

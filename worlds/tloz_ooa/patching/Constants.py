@@ -84,6 +84,7 @@ DEFINES = {
     "SND_SOLVEPUZZLE_2":"$5b",
     "SND_TELEPORT":"$8d",
     "SND_GETSEED": "$5e",
+    "SND_COMPASS": "$a2",
     "TREASURE_SHIELD":"$01",
     "TREASURE_PUNCH":"$02",
     "TREASURE_BOMBS":"$03",
@@ -256,6 +257,7 @@ DEFINES = {
     "wWarpTransition2":"$cc4b",
     "wBoughtItems1":"$c642",
     "wBoughtItems2":"$c643",
+    "wDungeonCompasses":"$c684",
 
     # rom 00
     "interBankCall":"$008a",
@@ -324,6 +326,7 @@ DEFINES = {
     "wLinkDeathTrigger": "$cdd5",
 
     # rom 00
+    "checkFlag": "$0205",
     "getRandomNumber":"$043e",
     "clearMemory":"$046f",
     "copyMemory":"$0486",
@@ -427,7 +430,8 @@ ASM_FILES = [
     "asm/file_select_custom_string.yaml",
     "asm/impa_refill.yaml",
     "asm/combat_difficulty.yaml",
-    "asm/tokay_market.yaml"
+    "asm/tokay_market.yaml",
+    "asm/compass_chimes.yaml",
 ]
 
 RUPEE_VALUES = {
