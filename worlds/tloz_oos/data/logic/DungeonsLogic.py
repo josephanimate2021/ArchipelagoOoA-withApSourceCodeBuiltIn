@@ -595,7 +595,7 @@ def make_d6_logic(player: int):
                     # Go through beamos room
                     oos_has_bombs(state, player),
 
-                    state.has("_killed_vire", player)
+                    state.has("_can_kill_vire", player)
                 ]),
                 all([
                     oos_has_small_keys(state, player, 6, 2),
@@ -603,7 +603,7 @@ def make_d6_logic(player: int):
                         # Go through beamos room
                         oos_has_bombs(state, player),
 
-                        state.has("_killed_vire", player)
+                        state.has("_can_kill_vire", player)
                     ])
                 ]),
                 oos_has_small_keys(state, player, 6, 3),
