@@ -9,7 +9,7 @@ from .z80asm.Assembler import Z80Assembler
 from .Constants import *
 from ..data.Constants import *
 from .. import LOCATIONS_DATA, OracleOfSeasonsOldMenShuffle, OracleOfSeasonsGoal, OracleOfSeasonsAnimalCompanion, \
-    OracleOfSeasonsMasterKeys, OracleOfSeasonsFoolsOre, OracleOfSeasonsGoldenOreSpotsShuffle
+    OracleOfSeasonsMasterKeys, OracleOfSeasonsFoolsOre, OracleOfSeasonsShowDungeonsWithEssence
 from pathlib import Path
 
 
@@ -25,8 +25,6 @@ def get_asm_files(patch_data):
         asm_files.append("asm/conditional/remove_d2_alt_entrance.yaml")
     if patch_data["options"]["goal"] == OracleOfSeasonsGoal.option_beat_ganon:
         asm_files.append("asm/conditional/ganon_goal.yaml")
-    if patch_data["options"]["shuffle_essences"]:
-        asm_files.append("asm/conditional/essence_sanity.yaml")
     if get_settings()["tloz_oos_options"]["remove_music"]:
         asm_files.append("asm/conditional/mute_music.yaml")
     return asm_files
@@ -38,10 +36,7 @@ def write_chest_contents(rom: RomData, patch_data):
     This puts the item described in the patch data inside each chest in the game.
     """
     for location_name, location_data in LOCATIONS_DATA.items():
-        # Some very specific chests don't have the "COLLECT_CHEST" type but still are chests
-        is_special_chest = location_name in ["Sunken City: Chest in Master Diver's Cave",
-                                             "Explorer's Crypt (1F): Chest Behind Cracked Wall"]
-        if not is_special_chest and ('collect' not in location_data or location_data['collect'] != COLLECT_CHEST):
+        if location_data.get('collect', COLLECT_TOUCH) != COLLECT_CHEST and not location_data.get('is_chest', False):
             continue
         chest_addr = rom.get_chest_addr(location_data['room'])
         item = patch_data["locations"][location_name]
@@ -93,17 +88,6 @@ def define_samasa_combination(assembler: Z80Assembler, patch_data):
     if len(cutscene) > 0xFE:
         raise Exception("Samasa gate sequence is too long")
     assembler.add_floating_chunk("showSamasaCutscene", cutscene)
-
-
-def define_sign_guy_requirement_digits(assembler: Z80Assembler, requirement: int):
-    digits = []
-    while requirement > 0:
-        digits.append(0x30 + (requirement % 10))
-        requirement = int(requirement / 10)
-    # If list is empty, it means requirement was <= 0, so just display "0"
-    if len(digits) == 0:
-        digits = [0x30]
-    assembler.add_floating_chunk("signGuyRequirementDigits", list(reversed(digits)))
 
 
 def define_compass_rooms_table(assembler: Z80Assembler, patch_data):
@@ -269,7 +253,6 @@ def define_option_constants(assembler: Z80Assembler, patch_data):
     assembler.define_byte("option.treehouseOldManRequirement", options["treehouse_old_man_requirement"])
     assembler.define_byte("option.tarmGateRequiredJewels", options["tarm_gate_required_jewels"])
     assembler.define_byte("option.signGuyRequirement", options["sign_guy_requirement"])
-    define_sign_guy_requirement_digits(assembler, options["sign_guy_requirement"])
 
     assembler.define_byte("option.removeD0AltEntrance", options["remove_d0_alt_entrance"])
     assembler.define_byte("option.deterministicGashaLootCount", options["deterministic_gasha_locations"])
@@ -283,6 +266,12 @@ def define_option_constants(assembler: Z80Assembler, patch_data):
 
     master_keys_as_boss_keys = patch_data["options"]["master_keys"] == OracleOfSeasonsMasterKeys.option_all_dungeon_keys
     assembler.define_byte("option.smallKeySprite", 0x43 if master_keys_as_boss_keys else 0x42)
+
+    scrubs_all_refill = not patch_data["options"]["shuffle_business_scrubs"]
+    assembler.define_byte("var.spoolSwampScrubSubid", 0x04 if scrubs_all_refill else 0x00)
+    assembler.define_byte("var.samasaCaveScrubSubid", 0x04 if scrubs_all_refill else 0x01)
+    assembler.define_byte("var.d2ScrubSubid", 0x04 if scrubs_all_refill else 0x02)
+    assembler.define_byte("var.d4ScrubSubid", 0x04 if scrubs_all_refill else 0x03)
 
 
 def define_season_constants(assembler: Z80Assembler, patch_data):
@@ -391,7 +380,7 @@ def apply_miscellaneous_options(rom: RomData, patch_data):
     # If horon shop 3 is set to be a renewable Potion, manually edit the shop flag for
     # that slot to zero to make it stay after buying
     if patch_data["options"]["enforce_potion_in_shop"]:
-        rom.write_byte(0x20cfa, 0x00)
+        rom.write_byte(0x20cfb, 0x00)
 
     if patch_data["options"]["master_keys"] != OracleOfSeasonsMasterKeys.option_disabled:
         # Remove small key consumption on keydoor opened
@@ -450,7 +439,10 @@ def set_file_select_text(assembler: Z80Assembler, slot_name: str):
 
 def process_item_name_for_shop_text(item: Dict) -> List[int]:
     if "player" in item:
-        item_name = f"{item['player']}'s {item['item']}"
+        player_name = item['player']
+        if len(player_name) > 14:
+            player_name = player_name[0:13] + "."
+        item_name = f"{player_name}'s {item['item']}"
     else:
         item_name = item["item"]
 
@@ -486,14 +478,14 @@ def process_item_name_for_shop_text(item: Dict) -> List[int]:
 
 def define_text_constants(assembler: Z80Assembler, patch_data):
     # Holodrum shop slots
-    overworld_shops = [
+    OVERWORLD_SHOPS = [
         "Horon Village: Shop",
         "Horon Village: Member's Shop",
         "Sunken City: Syrup Shop",
         "Horon Village: Advance Shop"
     ]
 
-    for shop_name in overworld_shops:
+    for shop_name in OVERWORLD_SHOPS:
         for i in range(1, 4):
             location_name = f"{shop_name} #{i}"
             symbolic_name = LOCATIONS_DATA[location_name]["symbolic_name"]
@@ -520,6 +512,35 @@ def define_text_constants(assembler: Z80Assembler, patch_data):
         else:
             text_bytes.extend([0x09, 0x01, 0x0c, 0x08, 0x20, 0x02, 0x09, 0x2e, 0x01])  # "(number) Ore Chunks."
         assembler.add_floating_chunk(f"text.{symbolic_name}", text_bytes)
+
+    BUSINESS_SCRUBS = [
+        "Spool Swamp: Business Scrub",
+        "Samasa Desert: Business Scrub",
+        "Snake's Remains: Business Scrub",
+        "Dancing Dragon Dungeon (1F): Business Scrub"
+    ]
+    for location_name in BUSINESS_SCRUBS:
+        symbolic_name = LOCATIONS_DATA[location_name]["symbolic_name"]
+        if location_name not in patch_data["locations"]:
+            assembler.add_floating_chunk(f"text.{symbolic_name}", [])
+            assembler.define(f"text.{symbolic_name}Price", "$0000")
+            continue
+        # Scrub string asking the player if they want to buy the item
+        item_name_bytes = process_item_name_for_shop_text(patch_data["locations"][location_name])
+        text_bytes = [0x0e, 0xc6, 0x03, 0x79]  # \sfx(0xc6)Greetings!\n
+        text_bytes.extend([0x09, 0x01] + item_name_bytes + [0x03, 0xe2])  # (Item name)
+        text_bytes.extend([0x04, 0x91, 0x09, 0x04, 0x0c, 0x08])  # "for \green\num"
+        text_bytes.extend([0x02, 0x8f, 0x09, 0x00, 0x21, 0x01])  # " Rupees\white!\n"
+        text_bytes.extend([0x02, 0x00, 0x00])  # Yes / No
+        assembler.add_floating_chunk(f"text.{symbolic_name}", text_bytes)
+        # Price as BCD
+        price_as_string = str(patch_data["shop_prices"][symbolic_name])
+        assembler.define(f"text.{symbolic_name}Price", f"${price_as_string.zfill(4)}")
+
+    assembler.add_floating_chunk("text.signGuyRequirementDigits",
+                                 convert_value_to_digits(patch_data["options"]["sign_guy_requirement"]))
+    assembler.add_floating_chunk("text.deterministicGashaCountDigits",
+                                 convert_value_to_digits(patch_data["options"]["deterministic_gasha_locations"]))
 
 
 def set_heart_beep_interval_from_settings(rom: RomData):
@@ -549,8 +570,8 @@ def set_character_sprite_from_settings(rom: RomData):
 
     palette = get_settings()["tloz_oos_options"]["character_palette"]
     if palette == "random":
-        colors = list(PALETTE_BYTES.keys())
-        palette = colors[random.randint(0, len(colors) - 1)]
+        palette = random.choice(get_available_random_colors_from_sprite_name(sprite))
+
     if palette == "green":
         return  # Nothing to change
     if palette not in PALETTE_BYTES:
@@ -708,3 +729,24 @@ def define_dungeon_items_text_constants(assembler: Z80Assembler, patch_data):
             compasses_text.extend(dungeon_precision)
         compasses_text.extend([0x05, 0xd8, 0x00])  # "\color(WHITE)!(end)"
         assembler.add_floating_chunk(f"text.compassD{i}", compasses_text)
+
+
+def define_essence_sparkle_constants(assembler: Z80Assembler, patch_data):
+    byte_array = []
+    show_dungeons_with_essence = patch_data["options"]["show_dungeons_with_essence"]
+
+    essence_pedestals = [k for k, v in LOCATIONS_DATA.items() if v.get("essence", False)]
+    if show_dungeons_with_essence and not patch_data["options"]["shuffle_essences"]:
+        for i, pedestal in enumerate(essence_pedestals):
+            if patch_data["locations"][pedestal]["item"] not in ESSENCES:
+                continue
+
+            # Find where dungeon entrance is located, and place the sparkle hint there
+            dungeon = f"d{i+1}"
+            dungeon_entrance = [k for k, v in patch_data["dungeon_entrances"].items() if v == dungeon][0]
+            entrance_data = DUNGEON_ENTRANCES[dungeon_entrance]
+            byte_array.extend([entrance_data["group"], entrance_data["room"]])
+    assembler.add_floating_chunk("essenceLocationsTable", byte_array)
+
+    require_compass = show_dungeons_with_essence == OracleOfSeasonsShowDungeonsWithEssence.option_with_compass
+    assembler.define_byte("option.essenceSparklesRequireCompass", 1 if require_compass else 0)

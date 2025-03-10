@@ -130,9 +130,16 @@ def make_d2_logic(player: int):
             oos_can_break_bush(state, player, False),
             oos_has_bombs(state, player),
         ])],
+        ["d2 alt entrances", "d2 scrub", False, lambda state: oos_has_rupees_for_shop(state, player, "d2Scrub")],
 
         # 2 keys
-        ["d2 roller chest", "d2 spinner", False, lambda state: oos_has_small_keys(state, player, 2, 2)],
+        ["d2 roller chest", "d2 spinner", False, lambda state: all([
+            oos_has_small_keys(state, player, 2, 2),
+            oos_has_bombs(state, player)
+        ])],
+        # You can take the Facade miniboss teleporter to reach dungeon entrance, even if you entered the dungeon
+        # through the alt-entrance
+        ["d2 spinner", "d2 torch room", False, None],
         ["d2 spinner", "dodongo owl", False, lambda state: oos_can_use_mystery_seeds(state, player)],
         ["d2 spinner", "d2 boss", False, lambda state: all([
             oos_has_boss_key(state, player, 2),
@@ -287,13 +294,16 @@ def make_d4_logic(player: int):
             any([
                 oos_can_kill_stalfos(state, player),
                 all([
+                    # Kill Stalfos by using pots in the room
                     oos_option_medium_logic(state, player),
                     oos_has_bracelet(state, player)
                 ])
-            ])
+            ]),
+            oos_can_jump_2_wide_pit(state, player)
         ])],
 
         ["d4 stalfos stairs", "d4 terrace", False, None],
+        ["d4 terrace", "d4 scrub", False, lambda state: oos_has_rupees_for_shop(state, player, "d4Scrub")],
 
         ["d4 stalfos stairs", "d4 torch chest", False, lambda state: all([
             oos_has_slingshot(state, player),
@@ -481,10 +491,14 @@ def make_d5_logic(player: int):
         ["d5 pot room", "d5 magnet ball chest", False, lambda state: all([
             any([
                 oos_has_flippers(state, player),
-                oos_can_jump_6_wide_liquid(state, player),
                 all([
+                    # Lower route pushing secret blocks requires knowledge, therefore is medium+.
+                    # Going there requires jumping a 3.2 wide liquid gap which corresponds the best to a "4 wide pit"
+                    # in terms of logic requirements.
+                    oos_can_jump_4_wide_pit(state, player),
                     oos_option_medium_logic(state, player),
-                    oos_can_jump_3_wide_liquid(state, player),
+                    # Upper route would require 6 wide liquid that can only be jumped above with a bomb jump,
+                    # which makes the lower route always better when in medium+.
                 ])
             ]),
             any([
@@ -573,12 +587,12 @@ def make_d6_logic(player: int):
         ["enter d6", "d6 spinner north", False, lambda state: all([
             oos_can_break_crystal(state, player),
             oos_has_magnet_gloves(state, player),
+            oos_has_feather(state, player),
             any([
                 all([
                     oos_has_small_keys(state, player, 6, 1),
 
                     # Go through beamos room
-                    oos_has_feather(state, player),
                     oos_has_bombs(state, player),
 
                     state.has("_killed_vire", player)
@@ -586,11 +600,8 @@ def make_d6_logic(player: int):
                 all([
                     oos_has_small_keys(state, player, 6, 2),
                     any([
-                        all([
-                            # Go through beamos room
-                            oos_has_feather(state, player),
-                            oos_has_bombs(state, player),
-                        ]),
+                        # Go through beamos room
+                        oos_has_bombs(state, player),
 
                         state.has("_killed_vire", player)
                     ])
@@ -655,7 +666,7 @@ def make_d7_logic(player: int):
         ["enter d7", "enter poe A", False, lambda state: all([
             oos_has_small_keys(state, player, 7, 1),
             oos_has_slingshot(state, player),
-            oos_can_use_ember_seeds(state, player, False)
+            oos_can_use_ember_seeds(state, player, True)
         ])],
 
         ["enter poe A", "d7 pot room", False, lambda state: all([
@@ -663,7 +674,7 @@ def make_d7_logic(player: int):
                 # Kill poe sister
                 oos_can_kill_armored_enemy(state, player),
                 oos_has_rod(state, player),
-                oos_can_use_ember_seeds(state, player, False)
+                oos_can_use_ember_seeds(state, player, True)
             ]),
             oos_has_bracelet(state, player)
         ])],
@@ -797,11 +808,14 @@ def make_d7_logic(player: int):
 
         ["d7 stalfos chest", "shining blue owl", False, lambda state: oos_can_use_mystery_seeds(state, player)],
 
-        ["enter d7", "d7 right of entrance", False, lambda state: any([
-            oos_has_small_keys(state, player, 7, 5),
-            all([
-                oos_has_small_keys(state, player, 7, 1),
-                oos_self_locking_small_key(state, player, "d7 right of entrance", 7)
+        ["enter d7", "d7 right of entrance", False, lambda state: all([
+            oos_can_kill_normal_enemy(state, player),
+            any([
+                oos_has_small_keys(state, player, 7, 5),
+                all([
+                    oos_has_small_keys(state, player, 7, 1),
+                    oos_self_locking_small_key(state, player, "d7 right of entrance", 7)
+                ])
             ])
         ])],
 

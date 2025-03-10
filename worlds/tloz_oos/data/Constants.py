@@ -1,4 +1,4 @@
-VERSION = "7.1"
+VERSION = "8.0"
 ROM_HASH = "f2dc6c4e093e4f8c6cbea80e8dbd62cb"
 
 DIRECTION_UP = 0
@@ -23,6 +23,14 @@ SEASONS = [
     SEASON_AUTUMN,
     SEASON_WINTER
 ]
+
+SEASON_NAMES = {
+    SEASON_SPRING: "spring",
+    SEASON_SUMMER: "summer",
+    SEASON_AUTUMN: "autumn",
+    SEASON_WINTER: "winter",
+    SEASON_CHAOTIC: "chaotic"
+}
 
 SEASON_ITEMS = {
     SEASON_WINTER: "Rod of Seasons (Winter)",
@@ -69,9 +77,13 @@ JEWELS = [
    "X-Shaped Jewel"
 ]
 
-VALID_RUPEE_VALUES = [
-    0, 1, 2, 5, 10, 20, 25, 30, 40, 50, 60, 70, 80, 100, 200, 300, 400, 500, 900, 999
+VALID_RUPEE_PRICE_VALUES = [
+    1, 2, 5, 10, 20, 25, 30, 40, 50, 60, 70, 80, 100, 150, 200, 300, 400, 500, 900, 999
 ]
+VALID_RUPEE_ITEM_VALUES = [
+    1, 5, 10, 20, 30, 50, 100, 200
+]
+MARKET_LOCATIONS = ["subrosianMarket2", "subrosianMarket3", "subrosianMarket4", "subrosianMarket5"]
 
 DEFAULT_SEASONS = {
     "EYEGLASS_LAKE": SEASON_WINTER,
@@ -146,6 +158,13 @@ RUPEE_OLD_MAN_LOCATIONS = [
     "Tarm Ruins: Old Man Near D6"
 ]
 
+SCRUB_LOCATIONS = [
+    "Spool Swamp: Business Scrub",
+    "Snake's Remains: Business Scrub",
+    "Dancing Dragon Dungeon (1F): Business Scrub",
+    "Samasa Desert: Business Scrub"
+]
+
 SUBROSIA_HIDDEN_DIGGING_SPOTS_LOCATIONS = [
     "Subrosia: Hot Bath Digging Spot",
     "Subrosia: Market Portal Digging Spot",
@@ -158,23 +177,34 @@ SUBROSIA_HIDDEN_DIGGING_SPOTS_LOCATIONS = [
 
 SAMASA_GATE_CODE = [2, 2, 1, 0, 0, 3, 3, 3]
 
-SHOP_PRICES_DIVIDERS = {
-    "horonShop1": 1,
-    "horonShop2": 1,
-    "horonShop3": 1,
-    "memberShop1": 1,
-    "memberShop2": 1,
-    "memberShop3": 1,
-    "advanceShop1": 1,
-    "advanceShop2": 1,
-    "advanceShop3": 1,
-    "syrupShop1": 1,
-    "syrupShop2": 1,
-    "syrupShop3": 1,
-    "subrosianMarket2": 2,
-    "subrosianMarket3": 2,
-    "subrosianMarket4": 2,
-    "subrosianMarket5": 2,
+AVERAGE_PRICE_PER_LOCATION = {
+    "cheap": 50,
+    "reasonable": 100,
+    "expensive": 200,
+    "outrageous": 350
+}
+
+VANILLA_SHOP_PRICES = {
+    "horonShop1": 20,
+    "horonShop2": 30,
+    "horonShop3": 150,
+    "memberShop1": 300,
+    "memberShop2": 300,
+    "memberShop3": 200,
+    "advanceShop1": 100,
+    "advanceShop2": 100,
+    "advanceShop3": 100,
+    "syrupShop1": 100,
+    "syrupShop2": 300,
+    "syrupShop3": 300,
+    "subrosianMarket2": 30,
+    "subrosianMarket3": 40,
+    "subrosianMarket4": 50,
+    "subrosianMarket5": 60,
+    "spoolSwampScrub": 100,
+    "samasaCaveScrub": 100,
+    "d2Scrub": 30,
+    "d4Scrub": 20,
 }
 
 ITEM_GROUPS = {
@@ -262,6 +292,7 @@ LOCATION_GROUPS = {
         "Snake's Remains: Chest in Moving Blades Room",
         "Snake's Remains: Chest in Bomb Spiral Maze Room",
         "Snake's Remains: Chest on Terrace",
+        "Snake's Remains: Business Scrub",
         "Snake's Remains: Boss Reward",
         "Snake's Remains: Essence",
     ],
@@ -290,6 +321,7 @@ LOCATION_GROUPS = {
         'Dancing Dragon Dungeon (1F): Crumbling Room Chest',
         'Dancing Dragon Dungeon (1F): Eye Diving Spot Item',
         'Dancing Dragon Dungeon (B1F): Boss Reward',
+        'Dancing Dragon Dungeon (1F): Business Scrub',
         'Dancing Dragon Dungeon: Essence',
     ],
     'D5': [
@@ -421,3 +453,4 @@ COLLECT_DIVER_ROOM = 0x80
 COLLECT_POE_SKIP_ROOM = 0x81
 COLLECT_MAKU_TREE = 0x82
 COLLECT_D5_ARMOS_PUZZLE = 0x83
+COLLECT_D4_SCRUB_ROOM = 0x84

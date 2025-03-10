@@ -92,7 +92,7 @@ LOCATIONS_DATA = {
         "collect": COLLECT_CHEST,
         "map_tile": 0xc2,
     },
-    "Natzu: Chest after Moblin Keep": {
+    "Natzu Region: Chest after Moblin Keep": {
         "region_id": "moblin keep chest",
         "vanilla_item": "Piece of Heart",
         "flag_byte": 0xc75b,
@@ -123,6 +123,7 @@ LOCATIONS_DATA = {
         "flag_byte": 0xcabd,
         "room": 0x05bd,
         "collect": COLLECT_DIVER_ROOM,
+        "is_chest": True,
         "map_tile": 0x2e,
     },
     "Mt. Cucco: Spring Banana Tree": {
@@ -1029,7 +1030,8 @@ LOCATIONS_DATA = {
         "dungeon": 4,
         "flag_byte": 0xc963,
         "room": 0x0463,
-        "collect": COLLECT_CHEST,
+        "collect": COLLECT_D4_SCRUB_ROOM,
+        "is_chest": True,
         "map_tile": 0x1d,
     },
     "Dancing Dragon Dungeon (1F): Chest Revealed by Minecart Torches": {
@@ -1328,6 +1330,7 @@ LOCATIONS_DATA = {
         "flag_byte": 0xca52,
         "room": 0x0552,
         "collect": COLLECT_POE_SKIP_ROOM,
+        "is_chest": True,
         "map_tile": 0xd0,
     },
     "Explorer's Crypt (B1F): Zol Button Drop": {
@@ -1918,6 +1921,7 @@ LOCATIONS_DATA = {
 
     "Gnarled Root Dungeon: Essence": {
         "region_id": "d1 boss",
+        "dungeon": 1,
         "flag_byte": 0xc913,
         "room": 0x0413,
         "vanilla_item": "Fertile Soil",
@@ -1926,6 +1930,7 @@ LOCATIONS_DATA = {
     },
     "Snake's Remains: Essence": {
         "region_id": "d2 boss",
+        "dungeon": 2,
         "flag_byte": 0xc92c,
         "room": 0x042c,
         "vanilla_item": "Gift of Time",
@@ -1934,6 +1939,7 @@ LOCATIONS_DATA = {
     },
     "Poison Moth's Lair: Essence": {
         "region_id": "d3 boss",
+        "dungeon": 3,
         "flag_byte": 0xc940,
         "room": 0x0440,
         "vanilla_item": "Bright Sun",
@@ -1942,6 +1948,7 @@ LOCATIONS_DATA = {
     },
     "Dancing Dragon Dungeon: Essence": {
         "region_id": "d4 boss",
+        "dungeon": 4,
         "flag_byte": 0xc960,
         "room": 0x0460,
         "vanilla_item": "Soothing Rain",
@@ -1950,6 +1957,7 @@ LOCATIONS_DATA = {
     },
     "Unicorn's Cave: Essence": {
         "region_id": "d5 boss",
+        "dungeon": 5,
         "flag_byte": 0xc988,
         "room": 0x0488,
         "vanilla_item": "Nurturing Warmth",
@@ -1958,6 +1966,7 @@ LOCATIONS_DATA = {
     },
     "Ancient Ruins: Essence": {
         "region_id": "d6 boss",
+        "dungeon": 6,
         "flag_byte": 0xc898,
         "room": 0x0398,
         "vanilla_item": "Blowing Wind",
@@ -1966,6 +1975,7 @@ LOCATIONS_DATA = {
     },
     "Explorer's Crypt: Essence": {
         "region_id": "d7 boss",
+        "dungeon": 7,
         "flag_byte": 0xca4f,
         "room": 0x054f,
         "vanilla_item": "Seed of Life",
@@ -1974,6 +1984,7 @@ LOCATIONS_DATA = {
     },
     "Sword & Shield Dungeon: Essence": {
         "region_id": "d8 boss",
+        "dungeon": 8,
         "flag_byte": 0xca5f,
         "room": 0x055f,
         "vanilla_item": "Changing Seasons",
@@ -1982,6 +1993,7 @@ LOCATIONS_DATA = {
     },
     "Horon Village: Item Inside Maku Tree (3+ Essences)": {
         "region_id": "maku tree, 3 essences",
+        "conditional": True,
         "flag_byte": 0xc9e9,
         "vanilla_item": "Gasha Seed",
         "room": 0x04e9,
@@ -1991,6 +2003,7 @@ LOCATIONS_DATA = {
     },
     "Horon Village: Item Inside Maku Tree (5+ Essences)": {
         "region_id": "maku tree, 5 essences",
+        "conditional": True,
         "flag_byte": 0xc9ea,
         "vanilla_item": "Gasha Seed",
         "room": 0x04ea,
@@ -2000,6 +2013,7 @@ LOCATIONS_DATA = {
     },
     "Horon Village: Item Inside Maku Tree (7+ Essences)": {
         "region_id": "maku tree, 7 essences",
+        "conditional": True,
         "flag_byte": 0xc9ee,
         "vanilla_item": "Gasha Seed",
         "room": 0x04ee,
@@ -2183,4 +2197,54 @@ LOCATIONS_DATA = {
         "conditional": True,
         "room": [],
     },
+    "Spool Swamp: Business Scrub": {
+        "region_id": "spool swamp scrub",
+        "vanilla_item": "Filler Item",
+        "conditional": True,
+        "flag_byte": 0xc63f,
+        "bit_mask": 0x04,
+        "scouting_byte": 0xc780,
+        "room": 0x0080,
+        "collect": COLLECT_TOUCH,
+        "map_tile": 0x80,
+        "symbolic_name": "spoolSwampScrub",
+    },
+    "Samasa Desert: Business Scrub": {
+        "region_id": "samasa desert scrub",
+        "vanilla_item": "Filler Item",
+        "conditional": True,
+        "flag_byte": 0xc63f,
+        "bit_mask": 0x10,
+        "scouting_byte": 0xcad1,
+        "room": 0x05d1,
+        "collect": COLLECT_TOUCH,
+        "map_tile": 0xbf,
+        "symbolic_name": "samasaCaveScrub",
+    },
+    "Snake's Remains: Business Scrub": {
+        "region_id": "d2 scrub",
+        "vanilla_item": "Filler Item",
+        "conditional": True,
+        "dungeon": 2,
+        "flag_byte": 0xc642,
+        "bit_mask": 0x20,
+        "scouting_byte": 0xc933,
+        "room": 0x0433,
+        "collect": COLLECT_TOUCH,
+        "map_tile": 0x8d,
+        "symbolic_name": "d2Scrub",
+    },
+    "Dancing Dragon Dungeon (1F): Business Scrub": {
+        "region_id": "d4 scrub",
+        "vanilla_item": "Filler Item",
+        "conditional": True,
+        "dungeon": 4,
+        "flag_byte": 0xc642,
+        "bit_mask": 0x40,
+        "scouting_byte": 0xc963,
+        "room": 0x0463,
+        "collect": COLLECT_D4_SCRUB_ROOM,
+        "map_tile": 0x1d,
+        "symbolic_name": "d4Scrub",
+    }
 }

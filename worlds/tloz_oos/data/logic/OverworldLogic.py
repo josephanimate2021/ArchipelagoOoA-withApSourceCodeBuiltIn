@@ -52,11 +52,13 @@ def make_holodrum_logic(player: int):
 
         ["horon village", "horon village tree", False, lambda state: oos_can_harvest_tree(state, player, True)],
 
-        ["horon village", "horon shop", False, lambda state: oos_has_rupees(state, player, 150)],
-        ["horon village", "advance shop", False, lambda state: oos_has_rupees(state, player, 300)],
+        ["horon village", "horon shop", False, lambda state:
+            oos_has_rupees_for_shop(state, player, "horonShop")],
+        ["horon village", "advance shop", False, lambda state:
+            oos_has_rupees_for_shop(state, player, "advanceShop")],
         ["horon village", "member's shop", False, lambda state: all([
             state.has("Member's Card", player),
-            oos_has_rupees(state, player, 450)
+            oos_has_rupees_for_shop(state, player, "memberShop")
         ])],
 
         # WESTERN COAST ##############################################################################################
@@ -310,26 +312,44 @@ def make_holodrum_logic(player: int):
         ])],
 
         ["d5 stump", "d5 entrance", False, lambda state: all([
-            any([
-                oos_has_autumn(state, player),
-                # If we don't have autumn, we need to ensure we were able to reach that node with autumn as default
-                # season without changing to another season which we wouldn't be able to revert back
-                all([
-                    oos_get_default_season(state, player, "EYEGLASS_LAKE") == SEASON_AUTUMN,
-                    oos_can_swim(state, player, False)
-                ])
-            ]),
+            # If we don't have autumn, we need to ensure we were able to reach that node with autumn as default
+            # season without changing to another season which we wouldn't be able to revert back.
+            # For this reason, "default season is autumn" case is handled through direct routes from the lake portal
+            # and from D1 stump.
+            oos_has_autumn(state, player),
             oos_can_break_mushroom(state, player, True)
         ])],
-        ["d5 entrance", "d5 stump", False, lambda state: any([
-            # Leaving D5 entrance is a risky action since you need quite a few things to be able to get
-            # back to that entrance. Ensure player can warp if that's not the case.
-            all([
-                oos_can_jump_1_wide_pit(state, player, False),
-                oos_has_autumn(state, player),
-                oos_can_break_mushroom(state, player, True)
+        # Direct route #1 to reach D5 entrance taking advantage of autumn as default season
+        ["d1 stump", "d5 entrance", False, lambda state: all([
+            oos_get_default_season(state, player, "EYEGLASS_LAKE") == SEASON_AUTUMN,
+            oos_can_jump_1_wide_pit(state, player, True),
+            oos_can_break_mushroom(state, player, True),
+            any([
+                oos_can_swim(state, player, False),
+                all([
+                    # To be able to use Dimitri, we need the bracelet to throw him above the pit
+                    oos_option_medium_logic(state, player),
+                    oos_can_summon_dimitri(state, player),
+                    oos_has_bracelet(state, player)
+                ])
             ]),
-            oos_can_warp(state, player)
+        ])],
+        # Direct route #2 to reach D5 entrance taking advantage of autumn as default season
+        ["eyeglass lake portal", "d5 entrance", False, lambda state: all([
+            oos_get_default_season(state, player, "EYEGLASS_LAKE") == SEASON_AUTUMN,
+            oos_can_swim(state, player, False),
+            oos_can_break_mushroom(state, player, True)
+        ])],
+
+        ["d5 entrance", "d5 stump", False, lambda state: any([
+            all([
+                oos_can_warp(state, player),  # jumping off the cliff is a dangerous action
+                oos_can_jump_1_wide_pit(state, player, True)
+            ]),
+            all([
+                oos_get_default_season(state, player, "EYEGLASS_LAKE") == SEASON_AUTUMN,
+                oos_can_break_mushroom(state, player, False)
+            ])
         ])],
 
         ["d5 stump", "dry eyeglass lake, east cave", False, lambda state: all([
@@ -338,6 +358,7 @@ def make_holodrum_logic(player: int):
         ])],
 
         ["d5 entrance", "dry eyeglass lake, east cave", False, lambda state: all([
+            oos_can_jump_1_wide_pit(state, player, True),
             oos_get_default_season(state, player, "EYEGLASS_LAKE") == SEASON_SUMMER,
             oos_has_bracelet(state, player),
         ])],
@@ -429,6 +450,8 @@ def make_holodrum_logic(player: int):
             ]),
             oos_has_bracelet(state, player)
         ])],
+        ["floodgate keyhole", "spool swamp scrub", False, lambda state:
+            oos_has_rupees_for_shop(state, player, "spoolSwampScrub")],
         ["floodgate keyhole", "spool stump", False, lambda state: state.has("Floodgate Key", player)],
 
         ["spool stump", "d3 entrance", False, lambda state: oos_season_in_spool_swamp(state, player, SEASON_SUMMER)],
@@ -440,8 +463,8 @@ def make_holodrum_logic(player: int):
         ])],
 
         ["spool stump", "spool swamp middle", False, lambda state: any([
-            oos_get_default_season(state, player, "SPOOL_SWAMP") != 'spring',
-            oos_can_remove_season(state, player, 'spring'),
+            oos_get_default_season(state, player, "SPOOL_SWAMP") != SEASON_SPRING,
+            oos_can_remove_season(state, player, SEASON_SPRING),
             oos_has_flippers(state, player),
             oos_can_summon_dimitri(state, player)
         ])],
@@ -594,10 +617,19 @@ def make_holodrum_logic(player: int):
             ])
         ])],
 
-        ["sunken city", "ingo trade", False, lambda state: any([
-            state.has("Goron Vase", player),
-            oos_self_locking_item(state, player, "ingo trade", "Goron Vase")
+        ["sunken city", "ingo trade", False, lambda state: all([
+            any([
+                oos_has_feather(state, player),
+                oos_has_flippers(state, player),
+                oos_can_summon_dimitri(state, player),
+                oos_get_default_season(state, player, "SUNKEN_CITY") == SEASON_WINTER
+            ]),
+            any([
+                state.has("Goron Vase", player),
+                oos_self_locking_item(state, player, "ingo trade", "Goron Vase")
+            ])
         ])],
+
         ["sunken city", "syrup trade", False, lambda state: all([
             any([
                 oos_get_default_season(state, player, "SUNKEN_CITY") == SEASON_WINTER,
@@ -611,7 +643,8 @@ def make_holodrum_logic(player: int):
             ]),
             state.has("Mushroom", player)
         ])],
-        ["syrup trade", "syrup shop", False, lambda state: oos_has_rupees(state, player, 600)],
+        ["syrup trade", "syrup shop", False, lambda state:
+            oos_has_rupees_for_shop(state, player, "syrupShop")],
 
         # Use Dimitri to get the tree seeds, using dimitri to get seeds being medium difficulty
         ["sunken city dimitri", "sunken city tree", False,lambda state: all([
@@ -781,6 +814,8 @@ def make_holodrum_logic(player: int):
         ["suburbs", "samasa desert", False, lambda state: state.has("_met_pirates", player)],
         ["samasa desert", "samasa desert pit", False, lambda state: oos_has_bracelet(state, player)],
         ["samasa desert", "samasa desert chest", False, lambda state: oos_has_flippers(state, player)],
+        ["samasa desert", "samasa desert scrub", False, lambda state:
+            oos_has_rupees_for_shop(state, player, "samasaCaveScrub")],
 
         # TEMPLE REMAINS ####################################################################################
 
@@ -906,7 +941,14 @@ def make_holodrum_logic(player: int):
         # GOLDEN BEASTS #############################################################################################
 
         ["d0 entrance", "golden darknut", False, lambda state: all([
-            oos_season_in_western_coast(state, player, SEASON_SPRING),
+            any([
+                oos_get_default_season(state, player, "WESTERN_COAST") == SEASON_SPRING,
+                all([
+                    oos_season_in_western_coast(state, player, SEASON_SPRING),
+                    state.has("Pirate's Bell", player),
+                    state.has("_met_pirates", player),
+                ])
+            ]),
             any([
                 oos_has_sword(state, player),
                 oos_has_fools_ore(state, player)
@@ -977,19 +1019,19 @@ def make_holodrum_logic(player: int):
         ["north horon", "onox gasha spot", False, lambda state: oos_has_shovel(state, player)],
 
         ["Menu", "gasha tree 1",  False, lambda state: oos_can_harvest_gasha(state, player, 1)],
-        ["Menu", "gasha tree 2",  False, lambda state: oos_can_harvest_gasha(state, player, 2)],
-        ["Menu", "gasha tree 3",  False, lambda state: oos_can_harvest_gasha(state, player, 3)],
-        ["Menu", "gasha tree 4",  False, lambda state: oos_can_harvest_gasha(state, player, 4)],
-        ["Menu", "gasha tree 5",  False, lambda state: oos_can_harvest_gasha(state, player, 5)],
-        ["Menu", "gasha tree 6",  False, lambda state: oos_can_harvest_gasha(state, player, 6)],
-        ["Menu", "gasha tree 7",  False, lambda state: oos_can_harvest_gasha(state, player, 7)],
-        ["Menu", "gasha tree 8",  False, lambda state: oos_can_harvest_gasha(state, player, 8)],
-        ["Menu", "gasha tree 9",  False, lambda state: oos_can_harvest_gasha(state, player, 9)],
-        ["Menu", "gasha tree 10", False, lambda state: oos_can_harvest_gasha(state, player, 10)],
-        ["Menu", "gasha tree 11", False, lambda state: oos_can_harvest_gasha(state, player, 11)],
-        ["Menu", "gasha tree 12", False, lambda state: oos_can_harvest_gasha(state, player, 12)],
-        ["Menu", "gasha tree 13", False, lambda state: oos_can_harvest_gasha(state, player, 13)],
-        ["Menu", "gasha tree 14", False, lambda state: oos_can_harvest_gasha(state, player, 14)],
-        ["Menu", "gasha tree 15", False, lambda state: oos_can_harvest_gasha(state, player, 15)],
-        ["Menu", "gasha tree 16", False, lambda state: oos_can_harvest_gasha(state, player, 16)],
+        ["gasha tree 1", "gasha tree 2",  False, lambda state: oos_can_harvest_gasha(state, player, 2)],
+        ["gasha tree 2", "gasha tree 3",  False, lambda state: oos_can_harvest_gasha(state, player, 3)],
+        ["gasha tree 3", "gasha tree 4",  False, lambda state: oos_can_harvest_gasha(state, player, 4)],
+        ["gasha tree 4", "gasha tree 5",  False, lambda state: oos_can_harvest_gasha(state, player, 5)],
+        ["gasha tree 5", "gasha tree 6",  False, lambda state: oos_can_harvest_gasha(state, player, 6)],
+        ["gasha tree 6", "gasha tree 7",  False, lambda state: oos_can_harvest_gasha(state, player, 7)],
+        ["gasha tree 7", "gasha tree 8",  False, lambda state: oos_can_harvest_gasha(state, player, 8)],
+        ["gasha tree 8", "gasha tree 9",  False, lambda state: oos_can_harvest_gasha(state, player, 9)],
+        ["gasha tree 9", "gasha tree 10", False, lambda state: oos_can_harvest_gasha(state, player, 10)],
+        ["gasha tree 10", "gasha tree 11", False, lambda state: oos_can_harvest_gasha(state, player, 11)],
+        ["gasha tree 11", "gasha tree 12", False, lambda state: oos_can_harvest_gasha(state, player, 12)],
+        ["gasha tree 12", "gasha tree 13", False, lambda state: oos_can_harvest_gasha(state, player, 13)],
+        ["gasha tree 13", "gasha tree 14", False, lambda state: oos_can_harvest_gasha(state, player, 14)],
+        ["gasha tree 14", "gasha tree 15", False, lambda state: oos_can_harvest_gasha(state, player, 15)],
+        ["gasha tree 15", "gasha tree 16", False, lambda state: oos_can_harvest_gasha(state, player, 16)],
     ]

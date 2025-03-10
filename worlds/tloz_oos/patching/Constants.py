@@ -119,6 +119,7 @@ DEFINES = {
     "wFrameCounter": "$cc00",
     "wIsLinkedGame": "$cc01",
     "wMenuDisabled": "$cc02",
+    "wLinkDeathTrigger": "$cc34",
     "wRememberedCompanionRoom": "$cc42",
     "wRememberedCompanionY": "$cc43",
     "wLinkObjectIndex": "$cc48",
@@ -136,12 +137,17 @@ DEFINES = {
     "wWarpDestPos": "$cc66",
     "wWarpTransition2": "$cc67",
     "wLinkGrabState": "$cc75",
+    "wLinkSwimmingState": "$cc78",
+    "wLinkImmobilized": "$cc7c",
     "wDisabledObjects": "$cca4",
+    "wRoomEdgeY": "$cca0",
+    "wRoomEdgeX": "$cca1",
     "wDisableWarpTiles": "$ccaa",
     "wScreenTransitionDirection": "$cd02",
     "wScreenOffsetY": "$cd08",
 
     "w1Link.yh": "$d00b",
+    "w1Link.xh": "$d00d",
     "w7ActiveBank": "$d0d4",
 
     # High RAM offsets (FF00 + offset)
@@ -186,6 +192,7 @@ DEFINES = {
     "clearStaticObjects": "$3076",
     "checkGlobalFlag": "$30c7",
     "setGlobalFlag": "$30cd",
+    "unsetGlobalFlag": "$30d3",
     "fastFadeoutToWhite": "$313b",
     "loadScreenMusicAndSetRoomPack": "$32dc",
     "setTile": "$3a52",
@@ -194,6 +201,7 @@ DEFINES = {
     "getFreePartSlot": "$3ea7",
 
     # Byte constants
+    "TEXT_WARP_PROTECTION_MARGIN": "$09",
     "STARTING_TREE_MAP_INDEX": "$f8",
     "INTERACID_TREASURE": "$60",
     "BTN_A": "$01",
@@ -333,7 +341,9 @@ DEFINES = {
 
 ASM_FILES = [
     "asm/animals.yaml",
+    "asm/any_item_on_essence_pedestal.yaml",
     "asm/boss_items.yaml",
+    "asm/business_scrubs.yaml",
     "asm/collect.yaml",
     "asm/combat_difficulty.yaml",
     "asm/compass_chimes.yaml",
