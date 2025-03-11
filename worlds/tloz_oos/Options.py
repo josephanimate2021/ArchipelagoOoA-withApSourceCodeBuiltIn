@@ -542,6 +542,14 @@ class OracleOfSeasonsQuickFlute(DefaultOnToggle):
     include_in_patch = True
 
 
+class OracleOfSeasonsRosaQuickUnlock(Toggle):
+    """
+    When enabled, Rosa will instantly unlock all subrosia locks when given the Ribbon
+    """
+    display_name = "Rosa Quick Unlock"
+    include_in_patch = True
+
+
 class OracleOfSeasonsStartingMapsCompasses(Toggle):
     """
     When enabled, you will start the game with maps and compasses for every dungeon in the game.
@@ -621,6 +629,7 @@ class OracleOfSeasonsOptions(PerGameCommonOptions):
     warp_to_start: OracleOfSeasonsWarpToStart
     combat_difficulty: OracleOfSeasonsCombatDifficulty
     quick_flute: OracleOfSeasonsQuickFlute
+    rosa_quick_unlock: OracleOfSeasonsRosaQuickUnlock
     starting_maps_compasses: OracleOfSeasonsStartingMapsCompasses
 
     remove_items_from_pool: OracleOfSeasonsRemoveItemsFromPool
