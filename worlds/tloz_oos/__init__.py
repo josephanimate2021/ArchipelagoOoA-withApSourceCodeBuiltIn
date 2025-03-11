@@ -667,19 +667,41 @@ class OracleOfSeasonsWorld(World):
     def filter_confined_dungeon_items_from_pool(self):
         my_items = [item for item in self.multiworld.itempool if item.player == self.player]
         confined_dungeon_items = []
+
+        excluded_dungeons = []
+        if self.options.exclude_dungeons_without_essence and not self.options.shuffle_essences:
+            for i, essence_name in enumerate(ESSENCES):
+                if ESSENCES[i] not in self.essences_in_game:
+                    excluded_dungeons.append(i)
+
         # Put Small Keys / Master Keys unless keysanity is enabled for those
-        if not self.options.keysanity_small_keys:
+        if self.options.master_keys != OracleOfSeasonsMasterKeys.option_disabled:
+            small_keys_name = "Master Key"
+        else:
             small_keys_name = "Small Key"
-            if self.options.master_keys != OracleOfSeasonsMasterKeys.option_disabled:
-                small_keys_name = "Master Key"
+        if not self.options.keysanity_small_keys:
             confined_dungeon_items.extend([item for item in my_items if item.name.startswith(small_keys_name)])
+        else:
+            for i in excluded_dungeons:
+                confined_dungeon_items.extend([item for item in my_items if item.name == f"{small_keys_name} ({DUNGEON_NAMES[i]})"])
+
         # Put Boss Keys unless keysanity is enabled for those
         if not self.options.keysanity_boss_keys:
             confined_dungeon_items.extend([item for item in my_items if item.name.startswith("Boss Key")])
+        else:
+            for i in excluded_dungeons:
+                confined_dungeon_items.extend([item for item in my_items if item.name == f"Boss Key ({DUNGEON_NAMES[i]})"])
+
         # Put Maps & Compasses unless keysanity is enabled for those
         if not self.options.keysanity_maps_compasses:
             confined_dungeon_items.extend([item for item in my_items if item.name.startswith("Dungeon Map")
                                            or item.name.startswith("Compass")])
+        else:
+            for i in excluded_dungeons:
+                confined_dungeon_items.extend([item for item in my_items
+                                               if item.name == f"Dungeon Map ({DUNGEON_NAMES[i]})"
+                                               or item.name == f"Compass ({DUNGEON_NAMES[i]})"])
+
         return confined_dungeon_items
 
     def pre_fill_dungeon_items(self):
