@@ -365,7 +365,7 @@ class OracleOfSeasonsWorld(World):
         # Get a subset of as many rings as needed, with a potential filter on quality depending on chosen options
         ring_names = [name for name, idata in ITEMS_DATA.items() if "ring" in idata]
         if self.options.remove_useless_rings:
-            ring_names = [name for name in ring_names if ITEMS_DATA[name]["ring"] != "good"]
+            ring_names = [name for name in ring_names if ITEMS_DATA[name]["ring"] == "good"]
 
         self.random.shuffle(ring_names)
         self.random_rings_pool = ring_names
