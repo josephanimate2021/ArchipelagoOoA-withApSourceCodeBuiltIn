@@ -480,28 +480,31 @@ class OracleOfSeasonsWorld(World):
                 self.create_event(region_name, "rupees from " + region_name)
 
     def exclude_locations_automatically(self):
-        locations_to_exclude = []
+        locations_to_exclude = set()
         # If goal essence requirement is set to a specific value, prevent essence-bound checks which require more
         # essences than this goal to hold anything of value
         if self.options.required_essences < 7 and len(self.essences_in_game) >= 7:
-            locations_to_exclude.append("Horon Village: Item Inside Maku Tree (7+ Essences)")
+            locations_to_exclude.add("Horon Village: Item Inside Maku Tree (7+ Essences)")
             if self.options.required_essences < 5 and len(self.essences_in_game) >= 5:
-                locations_to_exclude.append("Horon Village: Item Inside Maku Tree (5+ Essences)")
+                locations_to_exclude.add("Horon Village: Item Inside Maku Tree (5+ Essences)")
                 if self.options.required_essences < 3 and len(self.essences_in_game) >= 3:
-                    locations_to_exclude.append("Horon Village: Item Inside Maku Tree (3+ Essences)")
+                    locations_to_exclude.add("Horon Village: Item Inside Maku Tree (3+ Essences)")
         if self.options.required_essences < self.options.treehouse_old_man_requirement:
-            locations_to_exclude.append("Holodrum Plain: Old Man in Treehouse")
+            locations_to_exclude.add("Holodrum Plain: Old Man in Treehouse")
 
         # If Temple Remains upper portal is connected to triggerable volcano portal in Subrosia, this makes a check
         # in the bombable cave of Temple Remains unreachable forever. Exclude it in such conditions.
         if not self.is_volcanoes_west_portal_reachable():
-            locations_to_exclude.append("Temple Remains: Item in Cave Behind Rockslide")
+            locations_to_exclude.add("Temple Remains: Item in Cave Behind Rockslide")
 
         # If dungeons without essence need to be excluded, do it if conditions are met
         if self.options.exclude_dungeons_without_essence and not self.options.shuffle_essences:
             for i, essence_name in enumerate(ESSENCES):
                 if ESSENCES[i] not in self.essences_in_game:
-                    locations_to_exclude.extend(self.location_name_groups[f"D{i+1}"])
+                    locations_to_exclude.update(self.location_name_groups[f"D{i+1}"])
+
+        if not self.options.shuffle_business_scrubs:
+            locations_to_exclude.difference_update(SCRUB_LOCATIONS)
 
         for name in locations_to_exclude:
             self.multiworld.get_location(name, self.player).progress_type = LocationProgressType.EXCLUDED
