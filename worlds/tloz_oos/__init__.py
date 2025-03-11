@@ -671,7 +671,7 @@ class OracleOfSeasonsWorld(World):
         if self.options.exclude_dungeons_without_essence and not self.options.shuffle_essences:
             for i, essence_name in enumerate(ESSENCES):
                 if ESSENCES[i] not in self.essences_in_game:
-                    excluded_dungeons.append(i)
+                    excluded_dungeons.append(i+1)
 
         # Put Small Keys / Master Keys unless keysanity is enabled for those
         if self.options.master_keys != OracleOfSeasonsMasterKeys.option_disabled:
