@@ -491,11 +491,6 @@ class OracleOfSeasonsWorld(World):
         if self.options.required_essences < self.options.treehouse_old_man_requirement:
             locations_to_exclude.add("Holodrum Plain: Old Man in Treehouse")
 
-        # If Temple Remains upper portal is connected to triggerable volcano portal in Subrosia, this makes a check
-        # in the bombable cave of Temple Remains unreachable forever. Exclude it in such conditions.
-        if not self.is_volcanoes_west_portal_reachable():
-            locations_to_exclude.add("Temple Remains: Item in Cave Behind Rockslide")
-
         # If dungeons without essence need to be excluded, do it if conditions are met
         if self.options.exclude_dungeons_without_essence and not self.options.shuffle_essences:
             for i, essence_name in enumerate(ESSENCES):
