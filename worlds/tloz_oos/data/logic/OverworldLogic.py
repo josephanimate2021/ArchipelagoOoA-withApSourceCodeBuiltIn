@@ -1,8 +1,28 @@
+from worlds.tloz_oos.Options import OracleOfSeasonsOptions
 from .LogicPredicates import *
 
 
-def make_holodrum_logic(player: int, origin_name: str):
-    return [
+def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsOptions):
+    gasha_connections = [
+        [origin_name, "gasha tree 1",  False, lambda state: oos_can_harvest_gasha(state, player, 1)],
+        ["gasha tree 1", "gasha tree 2",  False, lambda state: oos_can_harvest_gasha(state, player, 2)],
+        ["gasha tree 2", "gasha tree 3",  False, lambda state: oos_can_harvest_gasha(state, player, 3)],
+        ["gasha tree 3", "gasha tree 4",  False, lambda state: oos_can_harvest_gasha(state, player, 4)],
+        ["gasha tree 4", "gasha tree 5",  False, lambda state: oos_can_harvest_gasha(state, player, 5)],
+        ["gasha tree 5", "gasha tree 6",  False, lambda state: oos_can_harvest_gasha(state, player, 6)],
+        ["gasha tree 6", "gasha tree 7",  False, lambda state: oos_can_harvest_gasha(state, player, 7)],
+        ["gasha tree 7", "gasha tree 8",  False, lambda state: oos_can_harvest_gasha(state, player, 8)],
+        ["gasha tree 8", "gasha tree 9",  False, lambda state: oos_can_harvest_gasha(state, player, 9)],
+        ["gasha tree 9", "gasha tree 10", False, lambda state: oos_can_harvest_gasha(state, player, 10)],
+        ["gasha tree 10", "gasha tree 11", False, lambda state: oos_can_harvest_gasha(state, player, 11)],
+        ["gasha tree 11", "gasha tree 12", False, lambda state: oos_can_harvest_gasha(state, player, 12)],
+        ["gasha tree 12", "gasha tree 13", False, lambda state: oos_can_harvest_gasha(state, player, 13)],
+        ["gasha tree 13", "gasha tree 14", False, lambda state: oos_can_harvest_gasha(state, player, 14)],
+        ["gasha tree 14", "gasha tree 15", False, lambda state: oos_can_harvest_gasha(state, player, 15)],
+        ["gasha tree 15", "gasha tree 16", False, lambda state: oos_can_harvest_gasha(state, player, 16)],
+    ]
+
+    holodrum_logic = [
         ["maple encounter", "maple trade", False, lambda state: any([
             state.has("Lon Lon Egg", player),
             oos_self_locking_item(state, player, "maple trade", "Lon Lon Egg")
@@ -625,51 +645,6 @@ def make_holodrum_logic(player: int, origin_name: str):
 
         ["north horon", "natzu west", True, None],
 
-        ["natzu west", "natzu west (ricky)", True, lambda state: oos_is_companion_ricky(state, player)],
-        ["natzu west", "natzu west (moosh)", True, lambda state: oos_is_companion_moosh(state, player)],
-        ["natzu west", "natzu west (dimitri)", True, lambda state: oos_is_companion_dimitri(state, player)],
-
-        ["natzu west (ricky)", "natzu east (ricky)", True, lambda state: oos_can_summon_ricky(state, player)],
-        ["natzu west (moosh)", "natzu east (moosh)", True, lambda state: any([
-            oos_can_summon_moosh(state, player),
-            all([
-                oos_option_medium_logic(state, player),
-                oos_can_break_bush(state, player, True),
-                oos_can_jump_3_wide_pit(state, player)
-            ])
-        ])],
-        ["natzu west (dimitri)", "natzu east (dimitri)", True, lambda state: oos_can_swim(state, player, True)],
-
-        ["natzu east (ricky)", "sunken city", True, lambda state: oos_is_companion_ricky(state, player)],
-        ["natzu east (moosh)", "sunken city", True, lambda state: all([
-            oos_is_companion_moosh(state, player),
-            any([
-                oos_can_summon_moosh(state, player),
-                oos_can_jump_3_wide_liquid(state, player)  # Not a liquid, but it's a diagonal jump so that's the same
-            ])
-        ])],
-        ["natzu east (dimitri)", "sunken city", True, lambda state: all([
-            oos_is_companion_dimitri(state, player),
-            oos_can_jump_1_wide_pit(state, player, False)
-        ])],
-        ["natzu east (dimitri)", "natzu region, across water", False, lambda state: \
-            oos_can_jump_5_wide_liquid(state, player)],
-
-        ["natzu east (ricky)", "moblin keep bridge", False, None],
-        ["natzu east (moosh)", "moblin keep bridge", False, lambda state: any([
-            oos_can_summon_moosh(state, player),
-            all([
-                oos_can_break_bush(state, player),
-                oos_can_jump_3_wide_pit(state, player)
-            ])
-        ])],
-        ["natzu east (dimitri)", "moblin keep bridge", False, lambda state: any([
-            oos_can_summon_dimitri(state, player),
-            all([
-                oos_option_hard_logic(state, player),
-                state.has("Swimmer's Ring", player)
-            ])
-        ])],
         ["moblin keep bridge", "moblin keep", False, lambda state: any([
             oos_has_flippers(state, player),
             oos_can_jump_4_wide_liquid(state, player)
@@ -679,9 +654,6 @@ def make_holodrum_logic(player: int, origin_name: str):
         ])],
         ["moblin keep", "sunken city", False, None],
 
-        ["natzu east (ricky)", "natzu river bank", True, lambda state: oos_can_summon_ricky(state, player)],
-        ["natzu east (moosh)", "natzu river bank", True, lambda state: oos_is_companion_moosh(state, player)],
-        ["natzu east (dimitri)", "natzu river bank", True, lambda state: oos_is_companion_dimitri(state, player)],
         ["natzu river bank", "goron mountain entrance", True, lambda state: oos_can_swim(state, player, True)],
 
         # SUNKEN CITY ############################################################################################
@@ -808,6 +780,7 @@ def make_holodrum_logic(player: int, origin_name: str):
                 oos_can_remove_season(state, player, SEASON_WINTER)
             ])
         ])],
+        ["talon trade", "mt. cucco, talon's cave", False, None],
 
         ["mt. cucco, talon's cave entrance", "mt. cucco heart piece", False, None],
 
@@ -1190,22 +1163,64 @@ def make_holodrum_logic(player: int, origin_name: str):
         ["d6 sector", "tarm ruins gasha spot", False, lambda state: oos_has_shovel(state, player)],
         ["samasa desert", "samasa desert gasha spot", False, None],
         ["western coast after ship", "western coast gasha spot", False, None],
-        ["north horon", "onox gasha spot", False, lambda state: oos_has_shovel(state, player)],
-
-        [origin_name, "gasha tree 1",  False, lambda state: oos_can_harvest_gasha(state, player, 1)],
-        ["gasha tree 1", "gasha tree 2",  False, lambda state: oos_can_harvest_gasha(state, player, 2)],
-        ["gasha tree 2", "gasha tree 3",  False, lambda state: oos_can_harvest_gasha(state, player, 3)],
-        ["gasha tree 3", "gasha tree 4",  False, lambda state: oos_can_harvest_gasha(state, player, 4)],
-        ["gasha tree 4", "gasha tree 5",  False, lambda state: oos_can_harvest_gasha(state, player, 5)],
-        ["gasha tree 5", "gasha tree 6",  False, lambda state: oos_can_harvest_gasha(state, player, 6)],
-        ["gasha tree 6", "gasha tree 7",  False, lambda state: oos_can_harvest_gasha(state, player, 7)],
-        ["gasha tree 7", "gasha tree 8",  False, lambda state: oos_can_harvest_gasha(state, player, 8)],
-        ["gasha tree 8", "gasha tree 9",  False, lambda state: oos_can_harvest_gasha(state, player, 9)],
-        ["gasha tree 9", "gasha tree 10", False, lambda state: oos_can_harvest_gasha(state, player, 10)],
-        ["gasha tree 10", "gasha tree 11", False, lambda state: oos_can_harvest_gasha(state, player, 11)],
-        ["gasha tree 11", "gasha tree 12", False, lambda state: oos_can_harvest_gasha(state, player, 12)],
-        ["gasha tree 12", "gasha tree 13", False, lambda state: oos_can_harvest_gasha(state, player, 13)],
-        ["gasha tree 13", "gasha tree 14", False, lambda state: oos_can_harvest_gasha(state, player, 14)],
-        ["gasha tree 14", "gasha tree 15", False, lambda state: oos_can_harvest_gasha(state, player, 15)],
-        ["gasha tree 15", "gasha tree 16", False, lambda state: oos_can_harvest_gasha(state, player, 16)],
+        ["north horon", "onox gasha spot", False, lambda state: oos_has_shovel(state, player)]
     ]
+    if options.animal_companion == "ricky":
+        holodrum_logic.extend([
+            ["natzu west", "natzu west (ricky)", True, lambda state: oos_is_companion_ricky(state, player)],
+            ["natzu west (ricky)", "natzu east (ricky)", True, lambda state: oos_can_summon_ricky(state, player)],
+            ["natzu east (ricky)", "sunken city", True, lambda state: oos_is_companion_ricky(state, player)],
+            ["natzu east (ricky)", "moblin keep bridge", False, None],
+            ["natzu east (ricky)", "natzu river bank", True, lambda state: oos_can_summon_ricky(state, player)]
+        ])
+    elif options.animal_companion == "dimitri":
+        holodrum_logic.extend([
+            ["natzu west", "natzu west (dimitri)", True, lambda state: oos_is_companion_dimitri(state, player)],
+            ["natzu west (dimitri)", "natzu east (dimitri)", True, lambda state: oos_can_swim(state, player, True)],
+            ["natzu east (dimitri)", "sunken city", True, lambda state: all([
+                oos_is_companion_dimitri(state, player),
+                oos_can_jump_1_wide_pit(state, player, False)
+            ])],
+            ["natzu east (dimitri)", "natzu region, across water", False, lambda state: \
+                oos_can_jump_5_wide_liquid(state, player)],
+            ["natzu east (dimitri)", "moblin keep bridge", False, lambda state: any([
+                oos_can_summon_dimitri(state, player),
+                all([
+                    oos_option_hard_logic(state, player),
+                    state.has("Swimmer's Ring", player)
+                ])
+            ])],
+            ["natzu east (dimitri)", "natzu river bank", True, lambda state: oos_is_companion_dimitri(state, player)]
+        ])
+    elif options.animal_companion == "moosh":
+        holodrum_logic.extend([
+            ["natzu west", "natzu west (moosh)", True, lambda state: oos_is_companion_moosh(state, player)],
+            ["natzu west (moosh)", "natzu east (moosh)", True, lambda state: any([
+                oos_can_summon_moosh(state, player),
+                all([
+                    oos_option_medium_logic(state, player),
+                    oos_can_break_bush(state, player, True),
+                    oos_can_jump_3_wide_pit(state, player)
+                ])
+            ])],
+            ["natzu east (moosh)", "sunken city", True, lambda state: all([
+                oos_is_companion_moosh(state, player),
+                any([
+                    oos_can_summon_moosh(state, player),
+                    oos_can_jump_3_wide_liquid(state, player)  # Not a liquid, but it's a diagonal jump so that's the same
+                ])
+            ])],
+            ["natzu east (moosh)", "moblin keep bridge", False, lambda state: any([
+                oos_can_summon_moosh(state, player),
+                all([
+                    oos_can_break_bush(state, player),
+                    oos_can_jump_3_wide_pit(state, player)
+                ])
+            ])],
+            ["natzu east (moosh)", "natzu river bank", True, lambda state: oos_is_companion_moosh(state, player)]
+        ])
+
+    for i in range(options.deterministic_gasha_locations):
+        holodrum_logic.append(gasha_connections[i])
+    
+    return holodrum_logic

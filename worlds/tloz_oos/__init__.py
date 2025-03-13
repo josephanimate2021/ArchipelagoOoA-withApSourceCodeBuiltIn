@@ -14,7 +14,7 @@ from .PatchWriter import oos_create_ap_procedure_patch
 from .data import LOCATIONS_DATA
 from .data.Constants import *
 from .data.Items import ITEMS_DATA
-from .data.Regions import REGIONS
+from .data.Regions import REGIONS, NATZU_REGIONS, GASHA_REGIONS
 
 from .Client import OracleOfSeasonsClient  # Unused, but required to register with BizHawkClient
 
@@ -407,6 +407,15 @@ class OracleOfSeasonsWorld(World):
         for region_name in REGIONS:
             region = Region(region_name, self.player, self.multiworld)
             self.multiworld.regions.append(region)
+        
+        for region_name in NATZU_REGIONS[self.options.animal_companion.current_key]:
+            region = Region(region_name, self.player, self.multiworld)
+            self.multiworld.regions.append(region)
+        
+        if (self.options.deterministic_gasha_locations > 0):
+            for i in range(self.options.deterministic_gasha_locations):
+                region = Region(GASHA_REGIONS[i], self.player, self.multiworld)
+                self.multiworld.regions.append(region)
 
         # Create locations
         for location_name, location_data in LOCATIONS_DATA.items():
@@ -509,7 +518,7 @@ class OracleOfSeasonsWorld(World):
             self.multiworld.get_location(name, self.player).progress_type = LocationProgressType.EXCLUDED
 
     def set_rules(self):
-        create_connections(self.multiworld, self.player, self.origin_region_name)
+        create_connections(self.multiworld, self.player, self.origin_region_name, self.options)
         apply_self_locking_rules(self.multiworld, self.player)
         self.multiworld.completion_condition[self.player] = lambda state: state.has("_beaten_game", self.player)
 

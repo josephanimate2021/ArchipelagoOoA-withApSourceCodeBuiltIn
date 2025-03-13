@@ -398,7 +398,7 @@ LOCATION_GROUPS = {
         'Sunken City: Syrup Trade',
         'Horon Village: Tick Tock Trade',
         'Eastern Suburbs: Guru-Guru Trade',
-        'Mt. Cucco: Chest Behind Talon',
+        'Mt. Cucco: Talon Trade',
         'Sunken City: Syrup Shop #1',
         'Sunken City: Syrup Shop #2',
         'Sunken City: Syrup Shop #3'
