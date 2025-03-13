@@ -289,7 +289,8 @@ def oos_has_rupees(state: CollectionState, player: int, amount: int):
     world = state.multiworld.worlds[player]
     for region_name, value in world.old_man_rupee_values.items():
         event_name = "rupees from " + region_name
-        if state.has(event_name, player):
+        # Always assume bad rupees are obtained, otherwise getting an item could make a shop no longer available and break AP
+        if state.has(event_name, player) or value < 0:
             rupees += value
 
     return rupees >= amount
