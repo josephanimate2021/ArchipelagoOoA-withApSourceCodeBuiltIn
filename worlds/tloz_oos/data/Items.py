@@ -190,7 +190,7 @@ ITEMS_DATA = {
         'id': 0x2e
     },
     "Potion": {
-        'classification': ItemClassification.useful,
+        'classification': ItemClassification.filler,
         'id': 0x2f
     },
 

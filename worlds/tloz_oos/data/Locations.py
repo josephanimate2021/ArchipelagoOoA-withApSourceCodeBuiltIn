@@ -52,7 +52,7 @@ LOCATIONS_DATA = {
     },
     "North Horon: Blaino's Gym Prize": {
         "region_id": "blaino prize",
-        "vanilla_item": "Ricky's Gloves",
+        "vanilla_item": "Progressive Sword",  # Ricky's gloves are useless in current logic
         "flag_byte": 0xc8b4,
         "room": 0x03b4,
         "collect": COLLECT_TOUCH,
@@ -416,7 +416,7 @@ LOCATIONS_DATA = {
     },
     "Horon Village: Member's Shop #3": {
         "region_id": "member's shop",
-        "vanilla_item": "Treasure Map",
+        "vanilla_item": "Seed Satchel",  # Add a 3rd satchel that is usually obtained in linked games (99 seeds) while removing the treasure map which is not implemented yet
         "flag_byte": 0xc63f,
         "bit_mask": 0x08,
         "scouting_byte": 0xc8b0,
@@ -508,7 +508,7 @@ LOCATIONS_DATA = {
     },
     "Subrosia: Temple of Seasons": {
         "region_id": "temple of seasons",
-        "vanilla_item": "Rod of Seasons",
+        "vanilla_item": "Fool's Ore",  # Originally Rod of Seasons which is not used in the rando
         "flag_byte": 0xc8ac,
         "room": 0x03ac,
         "collect": COLLECT_TOUCH,

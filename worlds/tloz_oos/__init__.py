@@ -593,6 +593,18 @@ class OracleOfSeasonsWorld(World):
                     self.multiworld.get_location(loc_name, self.player).place_locked_item(essence_item)
                     continue
 
+            if item_name == "Gasha Seed":
+                # Remove all gasha seeds from the pool to read as many as needed a later while limiting their impact on the item pool
+                filler_item_count += 1
+                continue
+
+            if item_name == "Fool's Ore" and self.options.fools_ore == OracleOfSeasonsFoolsOre.option_excluded:
+                filler_item_count += 1
+                continue
+
+            if item_name == "Flute":
+                item_name = self.options.animal_companion.current_key.title() + "'s Flute"
+
             item_pool_dict[item_name] = item_pool_dict.get(item_name, 0) + 1
 
         # If Master Keys are enabled, put one for every dungeon
@@ -603,33 +615,15 @@ class OracleOfSeasonsWorld(World):
 
         item_pool_dict.update(self.build_rupee_item_dict(rupee_item_count))
 
+        # Add the required gasha seeds to the pool
+        required_gasha_seeds = self.options.deterministic_gasha_locations.value
+        item_pool_dict["Gasha Seed"] = required_gasha_seeds
+        filler_item_count -= required_gasha_seeds
+
         # Add as many filler items as required
         for _ in range(filler_item_count):
             random_filler_item = self.get_filler_item_name()
             item_pool_dict[random_filler_item] = item_pool_dict.get(random_filler_item, 0) + 1
-
-        # Perform adjustments on the item pool
-        item_pool_adjustements = [
-            ["Flute", self.options.animal_companion.current_key.title() + "'s Flute"],  # Put a specific flute
-            ["Ricky's Gloves", "Progressive Sword"],  # Ricky's gloves are useless in current logic
-            ["Treasure Map", "Ore Chunks (50)"],  # Treasure Map would be non-functional in most cases, just remove it
-            ["Gasha Seed", "Seed Satchel"],  # Add a 3rd satchel that is usually obtained in linked games (99 seeds)
-            ["Gasha Seed", "Rupees (200)"],  # Too many Gasha Seeds in vanilla pool, add more rupees and ore instead
-        ]
-        for _ in range(4):
-            # Replace a few Gasha Seeds by random filler items
-            item_pool_adjustements.append(["Gasha Seed", self.get_filler_item_name()])
-
-        fools_ore_item = "Fool's Ore"
-        if self.options.fools_ore == OracleOfSeasonsFoolsOre.option_excluded:
-            fools_ore_item = "Gasha Seed"
-        item_pool_adjustements.append(["Rod of Seasons", fools_ore_item])
-
-        for i, pair in enumerate(item_pool_adjustements):
-            original_name = pair[0]
-            replacement_name = pair[1]
-            item_pool_dict[original_name] -= 1
-            item_pool_dict[replacement_name] = item_pool_dict.get(replacement_name, 0) + 1
 
         if "Random Ring" in item_pool_dict:
             quantity = item_pool_dict["Random Ring"]
@@ -786,8 +780,8 @@ class OracleOfSeasonsWorld(World):
         FILLER_ITEM_NAMES = [
             "Rupees (1)", "Rupees (5)", "Rupees (5)", "Rupees (10)", "Rupees (10)",
             "Rupees (20)", "Rupees (30)",
-            "Ore Chunks (50)", "Ore Chunks (25)", "Ore Chunks (10)", "Ore Chunks (10)",
-            "Random Ring", "Random Ring",
+            "Ore Chunks (10)", "Ore Chunks (10)",
+            "Random Ring", "Random Ring", "Random Ring",
             "Gasha Seed", "Gasha Seed",
             "Potion"
         ]
@@ -800,7 +794,7 @@ class OracleOfSeasonsWorld(World):
     def get_random_ring_name(self):
         if len(self.random_rings_pool) > 0:
             return self.random_rings_pool.pop()
-        return "Rupees (1)"
+        return self.get_filler_item_name()  # It might loop but not enough to really matter
 
     def generate_output(self, output_directory: str):
         patch = oos_create_ap_procedure_patch(self)
