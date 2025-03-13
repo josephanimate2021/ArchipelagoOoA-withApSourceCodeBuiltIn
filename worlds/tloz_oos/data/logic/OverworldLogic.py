@@ -75,6 +75,17 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
             state.has("Member's Card", player),
             oos_has_rupees_for_shop(state, player, "memberShop")
         ])],
+        ["horon village", "clock shop secret", False, lambda state: all([
+            oos_has_shovel(state, player),
+            any([
+                oos_has_noble_sword(state, player),
+                oos_has_fools_ore(state, player),
+                all([
+                    oos_option_medium_logic(state, player),
+                        oos_has_sword(state, player),
+                ])
+            ])
+        ])],
 
         # WESTERN COAST ##############################################################################################
 
@@ -140,6 +151,8 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
             oos_get_default_season(state, player, "WESTERN_COAST") in [SEASON_SUMMER, SEASON_SPRING]],
 
         ["graveyard (autumn)", "graveyard heart piece", False, lambda state: oos_can_break_mushroom(state, player, False)],
+
+        ["d7 entrance", "graveyard secret", False, lambda state: oos_has_shovel(state, player)],
 
         # EASTERN SUBURBS #############################################################################################
 
@@ -656,6 +669,16 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
 
         ["natzu river bank", "goron mountain entrance", True, lambda state: oos_can_swim(state, player, True)],
 
+        # Access to natzu deku is companion specific
+        ["natzu deku", "deku secret", False, lambda state: all([
+            oos_can_use_seeds(state, player),
+            oos_has_ember_seeds(state, player),
+            oos_has_scent_seeds(state, player),
+            oos_has_pegasus_seeds(state, player),
+            oos_has_gale_seeds(state, player),
+            oos_has_mystery_seeds(state, player)
+        ])],
+
         # SUNKEN CITY ############################################################################################
 
         ["sunken city", "sunken city tree", False, lambda state: all([
@@ -733,6 +756,15 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
             oos_season_in_sunken_city(state, player, SEASON_SUMMER),
             oos_has_flippers(state, player),
             oos_can_break_bush(state, player, False)
+        ])],
+
+        ["sunken city", "diver secret", False, lambda state: all([
+            oos_has_flippers(state, player),
+            any([
+                oos_option_medium_logic(state, player),
+                oos_has_sword(state, player),
+                oos_has_fools_ore(state, player),
+            ])
         ])],
 
         ["mount cucco", "sunken city", False, lambda state: oos_has_flippers(state, player)],
@@ -1163,7 +1195,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ["d6 sector", "tarm ruins gasha spot", False, lambda state: oos_has_shovel(state, player)],
         ["samasa desert", "samasa desert gasha spot", False, None],
         ["western coast after ship", "western coast gasha spot", False, None],
-        ["north horon", "onox gasha spot", False, lambda state: oos_has_shovel(state, player)]
+        ["north horon", "onox gasha spot", False, lambda state: oos_has_shovel(state, player)],
     ]
     if options.animal_companion == "ricky":
         holodrum_logic.extend([
@@ -1171,7 +1203,8 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
             ["natzu west (ricky)", "natzu east (ricky)", True, lambda state: oos_can_summon_ricky(state, player)],
             ["natzu east (ricky)", "sunken city", True, lambda state: oos_is_companion_ricky(state, player)],
             ["natzu east (ricky)", "moblin keep bridge", False, None],
-            ["natzu east (ricky)", "natzu river bank", True, lambda state: oos_can_summon_ricky(state, player)]
+            ["natzu east (ricky)", "natzu river bank", True, lambda state: oos_can_summon_ricky(state, player)],
+            ["natzu east (ricky)", "natzu deku", False, lambda state: oos_can_break_bush(state, player)],
         ])
     elif options.animal_companion == "dimitri":
         holodrum_logic.extend([
@@ -1190,7 +1223,8 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
                     state.has("Swimmer's Ring", player)
                 ])
             ])],
-            ["natzu east (dimitri)", "natzu river bank", True, lambda state: oos_is_companion_dimitri(state, player)]
+            ["natzu east (dimitri)", "natzu river bank", True, lambda state: oos_is_companion_dimitri(state, player)],
+            ["natzu west (dimitri)", "natzu deku", False, lambda state: oos_can_summon_dimitri(state, player)],
         ])
     elif options.animal_companion == "moosh":
         holodrum_logic.extend([
@@ -1217,7 +1251,15 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
                     oos_can_jump_3_wide_pit(state, player)
                 ])
             ])],
-            ["natzu east (moosh)", "natzu river bank", True, lambda state: oos_is_companion_moosh(state, player)]
+            ["natzu east (moosh)", "natzu river bank", True, lambda state: oos_is_companion_moosh(state, player)],
+            ["natzu west (moosh)", "natzu deku", False, lambda state: any([
+                oos_can_summon_moosh(state, player),
+                oos_can_jump_4_wide_liquid(state, player),
+                all([
+                    oos_can_jump_4_wide_pit(state, player),
+                    oos_can_break_bush(state, player)
+                ])
+            ])],
         ])
 
     for i in range(options.deterministic_gasha_locations):

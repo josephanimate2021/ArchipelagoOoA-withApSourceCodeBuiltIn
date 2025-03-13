@@ -548,6 +548,7 @@ class OracleOfSeasonsStartingMapsCompasses(Toggle):
     display_name = "Start with Dungeon Maps & Compasses"
     include_in_patch = True
 
+
 class OracleOfSeasonsRemoveItemsFromPool(ItemDict):
     """
     Removes specified amount of given items from the item pool, replacing them with random filler items.
@@ -556,6 +557,14 @@ class OracleOfSeasonsRemoveItemsFromPool(ItemDict):
     """
     display_name = "Remove Items from Pool"
     verify_item_name = False
+
+
+class OracleOfSeasonsIncludeSecretLocations(DefaultOnToggle):
+    """
+    When enabled, add the some secrets to the list of locations
+    """
+    display_name = "Secret Locations"
+    include_in_patch = True
 
 
 @dataclass
@@ -591,6 +600,7 @@ class OracleOfSeasonsOptions(PerGameCommonOptions):
     shuffle_golden_ore_spots: OracleOfSeasonsGoldenOreSpotsShuffle
     deterministic_gasha_locations: OracleOfSeasonsGashaLocations
     advance_shop: OracleOfSeasonsAdvanceShop
+    secret_locations: OracleOfSeasonsIncludeSecretLocations
 
     # Dungeon items
     master_keys: OracleOfSeasonsMasterKeys

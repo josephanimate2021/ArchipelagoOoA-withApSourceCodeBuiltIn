@@ -399,6 +399,8 @@ class OracleOfSeasonsWorld(World):
             return len(self.essences_in_game) >= 5
         if location_name == "Horon Village: Item Inside Maku Tree (7+ Essences)":
             return len(self.essences_in_game) >= 7
+        if location_name in SECRETS:
+            return self.options.secret_locations
         return False
 
     def create_location(self, region_name: str, location_name: str, local: bool):
@@ -815,12 +817,13 @@ class OracleOfSeasonsWorld(World):
                    "remove_d0_alt_entrance", "remove_d2_alt_entrance",
                    # Locations
                    "shuffle_golden_ore_spots", "shuffle_old_men", "advance_shop", "shuffle_essences",
+                   "shuffle_business_scrubs", "secret_locations",
                    # Requirements
                    "required_essences", "tarm_gate_required_jewels", "treehouse_old_man_requirement",
                    "sign_guy_requirement", "golden_beasts_requirement",
                    # Tracker QoL
                    "enforce_potion_in_shop", "keysanity_small_keys", "keysanity_boss_keys", "starting_maps_compasses",
-                   "deterministic_gasha_locations", "shuffle_business_scrubs", "shop_prices"
+                   "deterministic_gasha_locations", "shop_prices"
                    ]
 
         slot_data = self.options.as_dict(*options)

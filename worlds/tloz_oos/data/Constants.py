@@ -175,6 +175,19 @@ SUBROSIA_HIDDEN_DIGGING_SPOTS_LOCATIONS = [
     "Subrosia: Western Volcanoes Digging Spot"
 ]
 
+SECRETS = [
+    "Horon Village: Clock Shop Secret",
+    "Western Coast: Graveyard Secret",
+    "Subrosia: Subrosian Secret",
+    "Sunken City: Diver Secret",
+    "Subrosia: Smith Secret",
+    "Subrosia: Piratian Secret",
+    "Subrosia: Temple Secret",
+    "Natzu: Deku Secret",
+    "Goron Mountain: Biggoron Secret",
+    "Horon Village: Mayor Secret"
+]
+
 SAMASA_GATE_CODE = [2, 2, 1, 0, 0, 3, 3, 3]
 
 AVERAGE_PRICE_PER_LOCATION = {

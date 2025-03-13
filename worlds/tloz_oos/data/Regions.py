@@ -411,5 +411,13 @@ REGIONS = [
     "tarm ruins gasha spot",
     "western coast gasha spot",
     "samasa desert gasha spot",
-    "onox gasha spot"
+    "onox gasha spot",
+
+    "clock shop secret",
+    "graveyard secret",
+    "subrosian secret",
+    "diver secret",
+    "smith secret",
+    "natzu deku",
+    "deku secret"
 ]
