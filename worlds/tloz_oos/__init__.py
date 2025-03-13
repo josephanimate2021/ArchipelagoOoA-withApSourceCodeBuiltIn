@@ -266,16 +266,17 @@ class OracleOfSeasonsWorld(World):
             self.portal_connections = dict(zip(it, it))
             self.portal_connections[guaranteed_portal_holodrum] = guaranteed_portal_subrosia
 
-        # If essences are placed in dungeons and D8 dungeon portal is unreachable, this makes the seed unbeatable.
-        # To avoid this, we re-shuffle portals recursively until we end up with a satisfying shuffle.
-        if self.options.required_essences == 8 and not self.options.shuffle_essences and not self.is_d8_portal_reachable():
-            self.shuffle_portals()
-
         # If accessibility option expects all locations or all progression items to be reachable, portals need to be
         # set in a way that is valid regarding this condition. If that is not the case, re-shuffle portals recursively
         # until we end up with a satisfying shuffle.
         if self.options.accessibility != Accessibility.option_minimal and not self.is_volcanoes_west_portal_reachable():
-            self.shuffle_portals()
+            return self.shuffle_portals()
+
+        # If essences are placed in dungeons and D8 dungeon portal is unreachable, this makes the seed unbeatable.
+        # To avoid this, we re-shuffle portals recursively until we end up with a satisfying shuffle.
+        if (self.options.required_essences == self.options.placed_essences
+                and not self.options.shuffle_essences and not self.is_d8_portal_reachable()):
+            return self.shuffle_portals()
 
     def are_portals_connected(self, portal_1, portal_2):
         if portal_1 in self.portal_connections:
