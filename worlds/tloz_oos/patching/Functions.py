@@ -248,7 +248,7 @@ def define_option_constants(assembler: Z80Assembler, patch_data):
     assembler.define_byte("option.defaultSeedType", 0x20 + patch_data["options"]["default_seed"])
     assembler.define_byte("option.receivedDamageModifier", options["combat_difficulty"])
     assembler.define_byte("option.openAdvanceShop", options["advance_shop"])
-    assembler.define_byte("option.warpToStart", options["warp_to_start"])
+    assembler.define_byte("option.warpToStart", True)
 
     assembler.define_byte("option.requiredEssences", options["required_essences"])
     assembler.define_byte("option.goldenBeastsRequirement", options["golden_beasts_requirement"])

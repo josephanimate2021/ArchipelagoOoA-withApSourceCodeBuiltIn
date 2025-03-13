@@ -1,3 +1,36 @@
+NATZU_REGIONS = {
+    "ricky": [
+        "natzu west (ricky)",
+        "natzu east (ricky)"
+    ],
+    "dimitri": [
+        "natzu west (dimitri)",
+        "natzu east (dimitri)"
+    ],
+    "moosh": [
+        "natzu west (moosh)",
+        "natzu east (moosh)"
+    ]
+}
+GASHA_REGIONS = [
+    "gasha tree 1",
+    "gasha tree 2",
+    "gasha tree 3",
+    "gasha tree 4",
+    "gasha tree 5",
+    "gasha tree 6",
+    "gasha tree 7",
+    "gasha tree 8",
+    "gasha tree 9",
+    "gasha tree 10",
+    "gasha tree 11",
+    "gasha tree 12",
+    "gasha tree 13",
+    "gasha tree 14",
+    "gasha tree 15",
+    "gasha tree 16"
+]
+
 REGIONS = [
     "impa's house",
     "horon village",
@@ -100,12 +133,6 @@ REGIONS = [
     "dry eyeglass lake, west cave",
     "natzu west",
     "natzu river bank",
-    "natzu west (ricky)",
-    "natzu west (dimitri)",
-    "natzu west (moosh)",
-    "natzu east (ricky)",
-    "natzu east (dimitri)",
-    "natzu east (moosh)",
     "moblin keep bridge",
     "moblin keep",
     "moblin keep chest",
@@ -384,22 +411,5 @@ REGIONS = [
     "tarm ruins gasha spot",
     "western coast gasha spot",
     "samasa desert gasha spot",
-    "onox gasha spot",
-
-    "gasha tree 1",
-    "gasha tree 2",
-    "gasha tree 3",
-    "gasha tree 4",
-    "gasha tree 5",
-    "gasha tree 6",
-    "gasha tree 7",
-    "gasha tree 8",
-    "gasha tree 9",
-    "gasha tree 10",
-    "gasha tree 11",
-    "gasha tree 12",
-    "gasha tree 13",
-    "gasha tree 14",
-    "gasha tree 15",
-    "gasha tree 16",
+    "onox gasha spot"
 ]

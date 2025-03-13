@@ -145,10 +145,6 @@ def oos_option_shuffled_dungeons(state: CollectionState, player: int):
     return state.multiworld.worlds[player].options.shuffle_dungeons
 
 
-def oos_option_allow_warp_to_start(state: CollectionState, player: int):
-    return state.multiworld.worlds[player].options.warp_to_start.value
-
-
 def oos_option_no_d0_alt_entrance(state: CollectionState, player: int):
     return state.multiworld.worlds[player].options.remove_d0_alt_entrance.value
 
