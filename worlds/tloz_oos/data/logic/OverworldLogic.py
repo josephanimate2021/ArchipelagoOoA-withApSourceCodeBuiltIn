@@ -780,7 +780,6 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
                 oos_can_remove_season(state, player, SEASON_WINTER)
             ])
         ])],
-        ["talon trade", "mt. cucco, talon's cave", False, None],
 
         ["mt. cucco, talon's cave entrance", "mt. cucco heart piece", False, None],
 
@@ -926,38 +925,31 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         
         ["temple remains lower stump", "temple remains upper stump", False, lambda state: all([
             oos_has_feather(state, player), # Require feather in case volcano has erupted
+            oos_can_break_bush(state, player),
             any([
                 state.has("_triggered_volcano", player), # Volcano rule
                 all([  # Winter rule
                     oos_season_in_temple_remains(state, player, SEASON_WINTER),
                     oos_can_remove_snow(state, player, False),
-                    oos_can_break_bush(state, player, False),
                     oos_can_jump_6_wide_pit(state, player)
                 ]),
                 all([  # Summer rule
                     oos_season_in_temple_remains(state, player, SEASON_SUMMER),
-                    oos_can_break_bush(state, player, False),
                     oos_can_jump_6_wide_pit(state, player)
                 ]),
                 all([  # Spring rule
                     oos_season_in_temple_remains(state, player, SEASON_SPRING),
                     oos_can_break_flowers(state, player),
-                    oos_can_break_bush(state, player, False),
                     oos_can_jump_6_wide_pit(state, player)
                 ]),
-                all([  # Autumn rule
-                    oos_season_in_temple_remains(state, player, SEASON_AUTUMN),
-                    oos_can_break_bush(state, player)
-                ])
+                oos_season_in_temple_remains(state, player, SEASON_AUTUMN) # Autumn rule
             ])
         ])],
         ["temple remains upper stump", "temple remains lower stump", False, lambda state: all([
             oos_has_feather(state, player), # Require feather in case volcano has erupted
             any([
                 state.has("_triggered_volcano", player), # Volcano rule
-                all([  # Winter rule
-                    oos_season_in_temple_remains(state, player, SEASON_WINTER),
-                ]),
+                oos_season_in_temple_remains(state, player, SEASON_WINTER), # Winter rule
                 all([  # Summer rule
                     oos_season_in_temple_remains(state, player, SEASON_SUMMER),
                     oos_can_break_bush(state, player, False),
@@ -985,7 +977,15 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
             oos_has_feather(state, player),
             any([
                 oos_has_winter(state, player),
-                state.has("_triggered_volcano", player)
+                state.has("_triggered_volcano", player),
+                all([
+                    # You can only reach the portal from here with the default Winter if you made the zipper jump first
+                    # Otherwise you would have turned it Autumn first
+                    oos_season_in_temple_remains(state, player, SEASON_WINTER),
+                    oos_can_remove_snow(state, player, False),
+                    oos_can_break_bush(state, player, False),
+                    oos_can_jump_6_wide_pit(state, player)
+                ])
             ])
         ])],
 
