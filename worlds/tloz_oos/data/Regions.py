@@ -152,7 +152,6 @@ REGIONS = [
     "mt. cucco, platform cave",
     "goron mountain, across pits",
     "mt. cucco, talon's cave entrance",
-    "mt. cucco, talon's cave",
     "mt. cucco heart piece",
     "diving spot outside D4",
     "dragon keyhole",

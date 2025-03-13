@@ -318,7 +318,7 @@ LOCATIONS_DATA = {
         "map_tile": 0x49,
     },
     "Mt. Cucco: Chest Behind Talon": {
-        "region_id": "mt. cucco, talon's cave",
+        "region_id": "talon trade",
         "vanilla_item": "Subrosian Ring",
         "flag_byte": 0xcab6,
         "bit_mask": 0x60,  # 0x60 is needed here to ensure we're not sending Talon's wakeup item as a false positive
