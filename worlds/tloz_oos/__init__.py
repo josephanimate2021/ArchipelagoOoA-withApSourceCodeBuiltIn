@@ -251,8 +251,11 @@ class OracleOfSeasonsWorld(World):
             self.portal_connections = dict(zip(holodrum_portals, subrosian_portals))
         else:
             # Shuffle: connect any portal with any other portal. To keep both dimensions available, we need to ensure
-            # that at least one Subrosian portal that is not D8 portal is connected to Holodrum
+            # that at least one Subrosian portal that is not D8 portal is connected to Holodrum that isn't the
+            # temple remains upper portal (since that portal is only available with a subrosia access)
             self.random.shuffle(holodrum_portals)
+            if holodrum_portals[0] == "temple remains upper portal":
+                holodrum_portals[0], holodrum_portals[1] = holodrum_portals[1], holodrum_portals[0]
             guaranteed_portal_holodrum = holodrum_portals.pop(0)
 
             self.random.shuffle(subrosian_portals)
@@ -274,7 +277,9 @@ class OracleOfSeasonsWorld(World):
 
         # If essences are placed in dungeons and D8 dungeon portal is unreachable, this makes the seed unbeatable.
         # To avoid this, we re-shuffle portals recursively until we end up with a satisfying shuffle.
-        if (self.options.required_essences == self.options.placed_essences
+        # We only need to check that if accessibility is minimal since the above check should cover the blocked D8 already otherwise
+        if (self.options.accessibility == Accessibility.option_minimal
+                and self.options.required_essences == self.options.placed_essences
                 and not self.options.shuffle_essences and not self.is_d8_portal_reachable()):
             return self.shuffle_portals()
 
