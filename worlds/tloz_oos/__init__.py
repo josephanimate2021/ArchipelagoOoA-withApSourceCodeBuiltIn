@@ -363,10 +363,9 @@ class OracleOfSeasonsWorld(World):
 
     def create_random_rings_pool(self):
         # Get a subset of as many rings as needed, with a potential filter on quality depending on chosen options
-        ring_names = [name for name, idata in ITEMS_DATA.items() if "ring" in idata and idata["ring"] is True]
+        ring_names = [name for name, idata in ITEMS_DATA.items() if "ring" in idata]
         if self.options.remove_useless_rings:
-            forbidden_classes = [ItemClassification.filler, ItemClassification.trap]
-            ring_names = [name for name in ring_names if ITEMS_DATA[name]["classification"] not in forbidden_classes]
+            ring_names = [name for name in ring_names if ITEMS_DATA[name]["ring"] == "good"]
 
         self.random.shuffle(ring_names)
         self.random_rings_pool = ring_names
@@ -480,28 +479,31 @@ class OracleOfSeasonsWorld(World):
                 self.create_event(region_name, "rupees from " + region_name)
 
     def exclude_locations_automatically(self):
-        locations_to_exclude = []
+        locations_to_exclude = set()
         # If goal essence requirement is set to a specific value, prevent essence-bound checks which require more
         # essences than this goal to hold anything of value
         if self.options.required_essences < 7 and len(self.essences_in_game) >= 7:
-            locations_to_exclude.append("Horon Village: Item Inside Maku Tree (7+ Essences)")
+            locations_to_exclude.add("Horon Village: Item Inside Maku Tree (7+ Essences)")
             if self.options.required_essences < 5 and len(self.essences_in_game) >= 5:
-                locations_to_exclude.append("Horon Village: Item Inside Maku Tree (5+ Essences)")
+                locations_to_exclude.add("Horon Village: Item Inside Maku Tree (5+ Essences)")
                 if self.options.required_essences < 3 and len(self.essences_in_game) >= 3:
-                    locations_to_exclude.append("Horon Village: Item Inside Maku Tree (3+ Essences)")
+                    locations_to_exclude.add("Horon Village: Item Inside Maku Tree (3+ Essences)")
         if self.options.required_essences < self.options.treehouse_old_man_requirement:
-            locations_to_exclude.append("Holodrum Plain: Old Man in Treehouse")
+            locations_to_exclude.add("Holodrum Plain: Old Man in Treehouse")
 
         # If Temple Remains upper portal is connected to triggerable volcano portal in Subrosia, this makes a check
         # in the bombable cave of Temple Remains unreachable forever. Exclude it in such conditions.
         if not self.is_volcanoes_west_portal_reachable():
-            locations_to_exclude.append("Temple Remains: Item in Cave Behind Rockslide")
+            locations_to_exclude.add("Temple Remains: Item in Cave Behind Rockslide")
 
         # If dungeons without essence need to be excluded, do it if conditions are met
         if self.options.exclude_dungeons_without_essence and not self.options.shuffle_essences:
             for i, essence_name in enumerate(ESSENCES):
                 if ESSENCES[i] not in self.essences_in_game:
-                    locations_to_exclude.extend(self.location_name_groups[f"D{i+1}"])
+                    locations_to_exclude.update(self.location_name_groups[f"D{i+1}"])
+
+        if not self.options.shuffle_business_scrubs:
+            locations_to_exclude.difference_update(SCRUB_LOCATIONS)
 
         for name in locations_to_exclude:
             self.multiworld.get_location(name, self.player).progress_type = LocationProgressType.EXCLUDED
@@ -664,19 +666,41 @@ class OracleOfSeasonsWorld(World):
     def filter_confined_dungeon_items_from_pool(self):
         my_items = [item for item in self.multiworld.itempool if item.player == self.player]
         confined_dungeon_items = []
+
+        excluded_dungeons = []
+        if self.options.exclude_dungeons_without_essence and not self.options.shuffle_essences:
+            for i, essence_name in enumerate(ESSENCES):
+                if ESSENCES[i] not in self.essences_in_game:
+                    excluded_dungeons.append(i+1)
+
         # Put Small Keys / Master Keys unless keysanity is enabled for those
-        if not self.options.keysanity_small_keys:
+        if self.options.master_keys != OracleOfSeasonsMasterKeys.option_disabled:
+            small_keys_name = "Master Key"
+        else:
             small_keys_name = "Small Key"
-            if self.options.master_keys != OracleOfSeasonsMasterKeys.option_disabled:
-                small_keys_name = "Master Key"
+        if not self.options.keysanity_small_keys:
             confined_dungeon_items.extend([item for item in my_items if item.name.startswith(small_keys_name)])
+        else:
+            for i in excluded_dungeons:
+                confined_dungeon_items.extend([item for item in my_items if item.name == f"{small_keys_name} ({DUNGEON_NAMES[i]})"])
+
         # Put Boss Keys unless keysanity is enabled for those
         if not self.options.keysanity_boss_keys:
             confined_dungeon_items.extend([item for item in my_items if item.name.startswith("Boss Key")])
+        else:
+            for i in excluded_dungeons:
+                confined_dungeon_items.extend([item for item in my_items if item.name == f"Boss Key ({DUNGEON_NAMES[i]})"])
+
         # Put Maps & Compasses unless keysanity is enabled for those
         if not self.options.keysanity_maps_compasses:
             confined_dungeon_items.extend([item for item in my_items if item.name.startswith("Dungeon Map")
                                            or item.name.startswith("Compass")])
+        else:
+            for i in excluded_dungeons:
+                confined_dungeon_items.extend([item for item in my_items
+                                               if item.name == f"Dungeon Map ({DUNGEON_NAMES[i]})"
+                                               or item.name == f"Compass ({DUNGEON_NAMES[i]})"])
+
         return confined_dungeon_items
 
     def pre_fill_dungeon_items(self):
@@ -685,7 +709,6 @@ class OracleOfSeasonsWorld(World):
         # This usually ends up with generator not having anywhere to place a few small keys, making the seed unbeatable.
         # To circumvent this, we perform a restricted pre-fill here, placing only those dungeon items
         # before anything else.
-        collection_state = self.multiworld.get_all_state(False)
         # Build a list of all dungeon items that will need to be placed in their own dungeon.
         all_confined_dungeon_items = self.filter_confined_dungeon_items_from_pool()
         for i in range(0, 9):
@@ -703,8 +726,9 @@ class OracleOfSeasonsWorld(World):
                 continue  # This list might be empty with some keysanity options
             for item in confined_dungeon_items:
                 self.multiworld.itempool.remove(item)
-                collection_state.remove(item)
 
+            # Get a new state each time to avoid poluting other prefills
+            collection_state = self.multiworld.get_all_state(False)
             # Perform a prefill to place confined items inside locations of this dungeon
             self.random.shuffle(dungeon_locations)
             fill_restrictive(self.multiworld, collection_state, dungeon_locations, confined_dungeon_items,
