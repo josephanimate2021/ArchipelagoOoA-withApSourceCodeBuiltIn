@@ -951,62 +951,52 @@ def make_holodrum_logic(player: int, origin_name: str):
         ["temple remains lower stump", "maple encounter", False, lambda state: 
             oos_can_meet_maple(state, player)],
         
-        ["temple remains lower stump", "temple remains upper stump", False, lambda state: any([
-            all([  # Volcano rule
-                state.has("_triggered_volcano", player),
-                oos_has_feather(state, player)
-            ]),
-            all([  # Winter rule
-                not state.has("_triggered_volcano", player),
-                oos_season_in_temple_remains(state, player, SEASON_WINTER),
-                oos_can_remove_snow(state, player, False),
-                oos_can_break_bush(state, player, False),
-                oos_can_jump_6_wide_pit(state, player)
-            ]),
-            all([  # Summer rule
-                not state.has("_triggered_volcano", player),
-                oos_season_in_temple_remains(state, player, SEASON_SUMMER),
-                oos_can_break_bush(state, player, False),
-                oos_can_jump_6_wide_pit(state, player)
-            ]),
-            all([  # Spring rule
-                not state.has("_triggered_volcano", player),
-                oos_season_in_temple_remains(state, player, SEASON_SPRING),
-                oos_can_break_flowers(state, player),
-                oos_can_break_bush(state, player, False),
-                oos_can_jump_6_wide_pit(state, player)
-            ]),
-            all([  # Autumn rule
-                not state.has("_triggered_volcano", player),
-                oos_season_in_temple_remains(state, player, SEASON_AUTUMN),
-                oos_can_break_bush(state, player)
-            ])
-        ])],
-        ["temple remains upper stump", "temple remains lower stump", False, lambda state: all([
+        ["temple remains lower stump", "temple remains upper stump", False, lambda state: all([
+            oos_has_feather(state, player), # Require feather in case volcano has erupted
             any([
-                all([  # Volcano rule
-                    state.has("_triggered_volcano", player),
-                    oos_has_feather(state, player)
-                ]),
+                state.has("_triggered_volcano", player), # Volcano rule
                 all([  # Winter rule
-                    not state.has("_triggered_volcano", player),
                     oos_season_in_temple_remains(state, player, SEASON_WINTER),
+                    oos_can_remove_snow(state, player, False),
+                    oos_can_break_bush(state, player, False),
+                    oos_can_jump_6_wide_pit(state, player)
                 ]),
                 all([  # Summer rule
-                    not state.has("_triggered_volcano", player),
                     oos_season_in_temple_remains(state, player, SEASON_SUMMER),
                     oos_can_break_bush(state, player, False),
                     oos_can_jump_6_wide_pit(state, player)
                 ]),
                 all([  # Spring rule
-                    not state.has("_triggered_volcano", player),
                     oos_season_in_temple_remains(state, player, SEASON_SPRING),
                     oos_can_break_flowers(state, player),
                     oos_can_break_bush(state, player, False),
                     oos_can_jump_6_wide_pit(state, player)
                 ]),
                 all([  # Autumn rule
-                    not state.has("_triggered_volcano", player),
+                    oos_season_in_temple_remains(state, player, SEASON_AUTUMN),
+                    oos_can_break_bush(state, player)
+                ])
+            ])
+        ])],
+        ["temple remains upper stump", "temple remains lower stump", False, lambda state: all([
+            oos_has_feather(state, player), # Require feather in case volcano has erupted
+            any([
+                state.has("_triggered_volcano", player), # Volcano rule
+                all([  # Winter rule
+                    oos_season_in_temple_remains(state, player, SEASON_WINTER),
+                ]),
+                all([  # Summer rule
+                    oos_season_in_temple_remains(state, player, SEASON_SUMMER),
+                    oos_can_break_bush(state, player, False),
+                    oos_can_jump_6_wide_pit(state, player)
+                ]),
+                all([  # Spring rule
+                    oos_season_in_temple_remains(state, player, SEASON_SPRING),
+                    oos_can_break_flowers(state, player),
+                    oos_can_break_bush(state, player, False),
+                    oos_can_jump_6_wide_pit(state, player)
+                ]),
+                all([  # Autumn rule
                     oos_season_in_temple_remains(state, player, SEASON_AUTUMN),
                     oos_can_break_bush(state, player)
                 ])
@@ -1018,15 +1008,11 @@ def make_holodrum_logic(player: int, origin_name: str):
             oos_has_feather(state, player)
         ])],
 
-        ["temple remains upper stump", "temple remains lower portal access", False, lambda state: any([
-            all([
-                not state.has("_triggered_volcano", player),
+        ["temple remains upper stump", "temple remains lower portal access", False, lambda state: all([
+            oos_has_feather(state, player),
+            any([
                 oos_has_winter(state, player),
-                oos_has_feather(state, player)
-            ]),
-            all([
-                state.has("_triggered_volcano", player),
-                oos_has_feather(state, player)
+                state.has("_triggered_volcano", player)
             ])
         ])],
 
@@ -1058,10 +1044,10 @@ def make_holodrum_logic(player: int, origin_name: str):
         ["temple remains upper portal", "temple remains upper stump", False, lambda state:
             oos_can_jump_1_wide_pit(state, player, False)],
 
-        ["temple remains upper portal", "temple remains lower portal access", False, lambda state: any([
-            oos_can_jump_1_wide_pit(state, player, False),
-            all([
-                not state.has("_triggered_volcano", player),
+        ["temple remains upper portal", "temple remains lower portal access", False, lambda state: all([
+            oos_has_feather(state, player), # Require feather in case volcano has erupted
+            any([
+                state.has("_triggered_volcano", player),
                 oos_get_default_season(state, player, "TEMPLE_REMAINS") == SEASON_WINTER
             ])
         ])],

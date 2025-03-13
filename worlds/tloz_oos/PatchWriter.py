@@ -23,7 +23,7 @@ def oos_create_ap_procedure_patch(world: "OracleOfSeasonsWorld") -> OoSProcedure
             "enforce_potion_in_shop", "fools_ore", "goal", "golden_beasts_requirement", "master_keys",
             "quick_flute", "remove_d0_alt_entrance", "remove_d2_alt_entrance", "required_essences",
             "shuffle_golden_ore_spots", "shuffle_old_men", "sign_guy_requirement", "tarm_gate_required_jewels",
-            "treehouse_old_man_requirement", "warp_to_start", "starting_maps_compasses",
+            "treehouse_old_man_requirement", "starting_maps_compasses",
             "keysanity_small_keys", "keysanity_boss_keys", "keysanity_maps_compasses",
             "deterministic_gasha_locations", "shuffle_essences", "shuffle_business_scrubs", "show_dungeons_with_essence"
         ]),

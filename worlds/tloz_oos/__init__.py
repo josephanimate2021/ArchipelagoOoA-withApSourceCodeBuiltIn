@@ -784,7 +784,7 @@ class OracleOfSeasonsWorld(World):
         # Put options that are useful to the tracker inside slot data
         options = ["goal", "death_link",
                    # Logic-impacting options
-                   "logic_difficulty", "normalize_horon_village_season", "warp_to_start",
+                   "logic_difficulty", "normalize_horon_village_season",
                    "shuffle_dungeons", "shuffle_portals",
                    "randomize_lost_woods_item_sequence", "randomize_lost_woods_main_sequence",
                    "duplicate_seed_tree", "default_seed", "master_keys",
