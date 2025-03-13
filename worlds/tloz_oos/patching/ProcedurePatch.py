@@ -22,7 +22,7 @@ class OoSPatchExtensions(APPatchExtension):
             raise Exception(f"Invalid version: this patch was generated on v{patch_data['version']}, "
                             f"you are currently using v{VERSION}")
 
-        assembler = Z80Assembler(EOB_ADDR, DEFINES)
+        assembler = Z80Assembler(EOB_ADDR, DEFINES, rom)
 
         # Define assembly constants & floating chunks
         define_location_constants(assembler, patch_data)
