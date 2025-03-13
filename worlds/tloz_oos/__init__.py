@@ -462,6 +462,7 @@ class OracleOfSeasonsWorld(World):
         self.create_event("d7 entrance wild embers", "_wild_ember_seeds")
         self.create_event("frypolar room wild mystery", "_wild_mystery_seeds")
         # Various events to help with logic
+        self.create_event("bomb temple remains", "_triggered_volcano")
         self.create_event("subrosia market sector", "_reached_rosa")
         self.create_event("subrosian dance hall", "_reached_subrosian_dance_hall")
         self.create_event("subrosia pirates sector", "_met_pirates")
@@ -478,11 +479,6 @@ class OracleOfSeasonsWorld(World):
             self.create_event("onox beaten", "_beaten_game")
         elif self.options.goal == OracleOfSeasonsGoal.option_beat_ganon:
             self.create_event("ganon beaten", "_beaten_game")
-
-        # Don't create an event for the triggerable volcano in Subrosia if portals layout make it unreachable, since
-        # events are technically progression and generator doesn't like locked progression. At all.
-        if self.is_volcanoes_west_portal_reachable():
-            self.create_event("bomb temple remains", "_triggered_volcano")
 
         # Create events for reaching Gasha spots, used when Gasha-sanity is on
         for region_name in GASHA_SPOT_REGIONS:
