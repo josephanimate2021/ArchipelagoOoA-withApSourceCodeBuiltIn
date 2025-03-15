@@ -400,6 +400,8 @@ class OracleOfSeasonsWorld(World):
             return not self.options.enforce_potion_in_shop
         if location_name.startswith("Gasha Nut #"):
             return int(location_name[11:]) <= self.options.deterministic_gasha_locations
+        if location_name in SECRETS:
+            return self.options.secret_locations
         if location_name == "Horon Village: Item Inside Maku Tree (3+ Essences)":
             return len(self.essences_in_game) >= 3
         if location_name == "Horon Village: Item Inside Maku Tree (5+ Essences)":

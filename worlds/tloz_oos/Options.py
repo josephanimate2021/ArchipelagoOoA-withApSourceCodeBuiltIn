@@ -561,7 +561,7 @@ class OracleOfSeasonsRemoveItemsFromPool(ItemDict):
 
 class OracleOfSeasonsIncludeSecretLocations(DefaultOnToggle):
     """
-    When enabled, add the some secrets to the list of locations
+    When enabled, add the linked game secrets to the list of locations
     """
     display_name = "Secret Locations"
     include_in_patch = True
