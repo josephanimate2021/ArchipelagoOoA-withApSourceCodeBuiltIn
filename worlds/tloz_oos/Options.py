@@ -589,6 +589,12 @@ class OracleOfSeasonsRemoveItemsFromPool(ItemDict):
     display_name = "Remove Items from Pool"
     verify_item_name = False
 
+class OracleOfSeasonsIncludeCrossItems(DefaultOnToggle):
+    """
+    When enabled, add the cane of somaria to the item pool (requires the OoA rom)
+    """
+    display_name = "Cross Items"
+
 
 class OracleOfSeasonsIncludeSecretLocations(Toggle):
     """
@@ -668,6 +674,7 @@ class OracleOfSeasonsOptions(PerGameCommonOptions):
     required_rings: OracleOfSeasonsRequiredRings
     excluded_rings: OracleOfSeasonsExcludedRings
     fools_ore: OracleOfSeasonsFoolsOre
+    cross_items: OracleOfSeasonsIncludeCrossItems
     combat_difficulty: OracleOfSeasonsCombatDifficulty
     quick_flute: OracleOfSeasonsQuickFlute
     rosa_quick_unlock: OracleOfSeasonsRosaQuickUnlock

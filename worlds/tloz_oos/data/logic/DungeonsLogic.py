@@ -82,7 +82,7 @@ def make_d1_logic(player: int):
         ["d1 railway chest", "d1 basement", False, lambda state: any([
             oos_self_locking_small_key(state, player, "d1 basement", 1),
             all([
-                oos_has_bombs(state, player),
+                oos_can_remove_rockslide(state, player, False),
                 oos_has_small_keys(state, player, 1, 2),
                 oos_can_kill_armored_enemy(state, player)
             ])
@@ -99,19 +99,27 @@ def make_d2_logic(player: int):
         ["d2 torch room", "d2 arrow room", False, lambda state: oos_can_use_ember_seeds(state, player, True)],
 
         ["d2 arrow room", "d2 torch room", False, lambda state: oos_can_kill_normal_enemy(state, player)],
-        ["d2 arrow room", "d2 rupee room", False, lambda state: oos_has_bombs(state, player)],
+        ["d2 arrow room", "d2 rupee room", False, lambda state: oos_can_remove_rockslide(state, player, False)],
         ["d2 arrow room", "d2 rope chest", False, lambda state: oos_can_kill_normal_enemy(state, player)],
         ["d2 arrow room", "d2 blade chest", False, lambda state: oos_can_kill_normal_enemy(state, player)],
 
         ["d2 blade chest", "d2 arrow room", False, None],  # Backwards path
         ["d2 blade chest", "d2 alt entrances", True, lambda state: oos_has_bracelet(state, player)],
         ["d2 blade chest", "d2 roller chest", False, lambda state: all([
-            oos_has_bombs(state, player),
+            oos_can_remove_rockslide(state, player, False),
             oos_has_bracelet(state, player),
         ])],
         ["d2 alt entrances", "d2 spiral chest", False, lambda state: all([
-            oos_can_break_bush(state, player, False),
-            oos_has_bombs(state, player),
+            oos_can_break_bush(state, player, False, True),
+            any([
+                oos_has_bombs(state, player),
+                all([
+                    # It's tight but doable
+                    oos_option_medium_logic(state, player),
+                    oos_can_use_pegasus_seeds(state, player),
+                    oos_has_bombchus(state, player, 5)
+                ])
+            ])
         ])],
         ["d2 alt entrances", "d2 scrub", False, lambda state: oos_has_rupees_for_shop(state, player, "d2Scrub")],
 
@@ -162,7 +170,13 @@ def make_d3_logic(player: int):
         ])],
 
         ["d3 center", "d3 water room", False, lambda state: oos_has_feather(state, player)],
-        ["d3 center", "d3 mimic stairs", False, lambda state: oos_has_bracelet(state, player)],
+        ["d3 center", "d3 mimic stairs", False, lambda state: any([
+            oos_has_bracelet(state, player),
+            all([
+                oos_can_break_pot(state, player),
+                oos_has_cane(state, player)
+            ])
+        ])],
         ["d3 center", "trampoline owl", False, lambda state: all([
             oos_has_feather(state, player),
             oos_can_use_mystery_seeds(state, player)
@@ -178,7 +192,7 @@ def make_d3_logic(player: int):
             oos_can_use_mystery_seeds(state, player)
         ])],
         ["d3 mimic stairs", "d3 moldorm chest", False, lambda state: oos_can_kill_armored_enemy(state, player)],
-        ["d3 mimic stairs", "d3 bombed wall chest", False, lambda state: oos_has_bombs(state, player)],
+        ["d3 mimic stairs", "d3 bombed wall chest", False, lambda state: oos_can_remove_rockslide(state, player, False)],
 
         # 2 keys
         ["d3 water room", "d3 mimic chest", False, lambda state: all([
@@ -207,7 +221,7 @@ def make_d4_logic(player: int):
             oos_has_cape(state, player)
         ])],
         ["d4 north of entrance", "d4 pot puzzle", False, lambda state: all([
-            oos_has_bombs(state, player),
+            oos_can_remove_rockslide(state, player, False),
             oos_has_bracelet(state, player)
         ])],
         ["d4 north of entrance", "d4 maze chest", False, lambda state: any([
@@ -230,7 +244,7 @@ def make_d4_logic(player: int):
                     oos_has_flippers(state, player)
                 ])
             ]),
-            oos_has_bombs(state, player),
+            oos_can_remove_rockslide(state, player, False),
             any([
                 oos_can_kill_normal_enemy(state, player),
                 all([  # killing enemies with pots
@@ -420,6 +434,7 @@ def make_d5_logic(player: int):
 
         ["enter d5", "d5 spiral chest", False, lambda state: any([
             oos_can_kill_armored_enemy(state, player),
+            oos_has_bombchus(state, player, 2),
             # Push everyone into holes
             oos_has_shield(state, player),
             all([
@@ -431,7 +446,10 @@ def make_d5_logic(player: int):
         ["enter d5", "d5 terrace chest", False, lambda state: oos_has_magnet_gloves(state, player)],
 
         ["d5 terrace chest", "armos knights owl", False, lambda state: oos_can_use_mystery_seeds(state, player)],
-        ["d5 terrace chest", "d5 armos chest", False, lambda state: oos_can_kill_armored_enemy(state, player)],
+        ["d5 terrace chest", "d5 armos chest", False, lambda state: any([
+            oos_can_kill_armored_enemy(state, player),
+            oos_has_bombchus(state, player, 2)
+        ])],
 
         ["enter d5", "d5 cart bay", False, lambda state: any([
             oos_has_flippers(state, player),
@@ -440,7 +458,7 @@ def make_d5_logic(player: int):
 
         ["d5 cart bay", "d5 terrace chest", False, lambda state: all([
             oos_has_feather(state, player),
-            oos_has_bombs(state, player)
+            oos_can_remove_rockslide(state, player, False)  # Bombchus can be thrown from the middle platform
         ])],
 
         ["d5 cart bay", "d5 cart chest", False, lambda state: oos_can_trigger_lever_from_minecart(state, player)],
@@ -454,7 +472,12 @@ def make_d5_logic(player: int):
             oos_can_trigger_lever_from_minecart(state, player),
             any([
                 oos_can_kill_armored_enemy(state, player),
-                # Pushing is also an option but doesn't impact logic in any way
+                oos_has_bombchus(state, player, 2),
+                oos_has_shield(state, player),
+                all([
+                    oos_option_medium_logic(state, player),
+                    oos_has_shovel(state, player)
+                ]),
                 all([
                     oos_option_medium_logic(state, player),
                     # Pull the darknut in the water
@@ -465,7 +488,7 @@ def make_d5_logic(player: int):
 
         ["enter d5", "d5 pot room", False, lambda state: all([
             oos_has_magnet_gloves(state, player),
-            oos_has_bombs(state, player),
+            oos_can_remove_rockslide(state, player, False),
             oos_has_feather(state, player)
         ])],
 
@@ -529,14 +552,38 @@ def make_d5_logic(player: int):
         ])],
 
         ["d5 post syger", "d5 basement", False, lambda state: all([
-            oos_has_small_keys(state, player, 5, 5),
-            state.has("_dropped_d5_magnet_ball", player),
-            oos_has_magnet_gloves(state, player),
             any([
-                oos_can_kill_magunesu(state, player),
+                oos_has_small_keys(state, player, 5, 5),
+                oos_self_locking_small_key(state, player, "d5 basement", 5)
+            ]),
+
+            # Magnet ball button
+            any([
+                all([
+                    state.has("_dropped_d5_magnet_ball", player),
+                    oos_has_magnet_gloves(state, player),
+                ]),
+                oos_has_cane(state, player)
+            ]),
+
+            # Flamme wall
+            any([
+                all([
+                    oos_has_magnet_gloves(state, player),
+                    oos_can_kill_magunesu(state, player),
+                ]),
                 all([
                     oos_option_medium_logic(state, player),
                     oos_has_feather(state, player)
+                ])
+            ]),
+
+            # Basement
+            any([
+                oos_has_magnet_gloves(state, player),
+                all([
+                    oos_has_cane(state, player),
+                    oos_can_jump_3_wide_pit(state, player)
                 ])
             ])
         ])],
@@ -563,12 +610,15 @@ def make_d6_logic(player: int):
             oos_option_hard_logic(state, player)
         ])],
 
-        ["d6 1F east", "d6 rupee room", False, lambda state: oos_has_bombs(state, player)],
+        ["d6 1F east", "d6 rupee room", False, lambda state: oos_can_remove_rockslide(state, player, False)],
 
         ["d6 1F east", "d6 1F terrace", False, None],
         ["enter d6", "d6 1F terrace", False, lambda state: all([
             oos_has_small_keys(state, player, 6, 2),
-            oos_has_magnet_gloves(state, player)
+            any([
+                oos_has_magnet_gloves(state, player),
+                oos_has_cane(state, player)
+            ])
         ])],
 
         ["d6 1F terrace", "d6 magnet ball drop", False, lambda state: any([
@@ -577,6 +627,11 @@ def make_d6_logic(player: int):
                 oos_has_magnet_gloves(state, player)
             ]),
             oos_can_jump_4_wide_pit(state, player),
+            all([
+                # Cane through the block
+                oos_option_medium_logic(state, player),
+                oos_has_cane(state, player)
+            ])
         ])],
         ["d6 1F terrace", "d6 crystal trap room", False, None],
         ["d6 1F terrace", "d6 U-room", False, lambda state: all([
@@ -599,19 +654,25 @@ def make_d6_logic(player: int):
         # 3 keys
         ["enter d6", "d6 beamos room", False, lambda state: oos_has_small_keys(state, player, 6, 3)],
         ["d6 beamos room", "d6 2F gibdo chest", False, None],
-        ["d6 beamos room", "d6 2F armos chest", False, lambda state: oos_has_bombs(state, player)],
+        ["d6 beamos room", "d6 2F armos chest", False, lambda state: oos_can_remove_rockslide(state, player, False)],
         ["d6 2F armos chest", "d6 armos hall", False, lambda state: oos_has_feather(state, player)],
 
         ["enter d6", "d6 spinner north", False, lambda state: all([
             oos_can_break_crystal(state, player),
-            oos_has_magnet_gloves(state, player),
+            any([
+                oos_has_magnet_gloves(state, player),
+                all([  # Clip into the blocks to place the somaria block on the button
+                    oos_option_hard_logic(state, player),
+                    oos_has_cane(state, player)
+                ])
+            ]),
             oos_has_feather(state, player),
             any([
                 all([
                     oos_has_small_keys(state, player, 6, 1),
 
                     # Go through beamos room
-                    oos_has_bombs(state, player),
+                    oos_can_remove_rockslide(state, player, False),
 
                     any([
                         # Kill Vire (the rest doesn't matter because we don't care about not being able to not spend a key somewhere)
@@ -632,7 +693,7 @@ def make_d6_logic(player: int):
                     oos_has_small_keys(state, player, 6, 2),
                     any([
                         # Go through beamos room
-                        oos_has_bombs(state, player),
+                        oos_can_remove_rockslide(state, player, False),
 
                         # Kill Vire
                         oos_has_sword(state, player, False),
@@ -708,8 +769,8 @@ def make_d7_logic(player: int):
     return [
         # 0 keys
         ["enter d7", "poe curse owl", False, lambda state: oos_can_use_mystery_seeds(state, player)],
-        ["enter d7", "d7 wizzrobe chest", False, lambda state: oos_can_kill_normal_enemy(state, player)],
-        ["enter d7", "d7 bombed wall chest", False, lambda state: oos_has_bombs(state, player)],
+        ["enter d7", "d7 wizzrobe chest", False, lambda state: oos_can_kill_normal_enemy_no_cane(state, player)],
+        ["enter d7", "d7 bombed wall chest", False, lambda state: oos_can_break_crystal(state, player)],
         ["enter d7", "d7 entrance wild embers", False, lambda state: oos_can_harvest_regrowing_bush(state, player)],
 
         # 1 key
@@ -741,7 +802,7 @@ def make_d7_logic(player: int):
         ["enter d7", "d7 pot room", False, lambda state: all([
             # Poe skip
             oos_option_hell_logic(state, player),
-            oos_has_bombs(state, player),
+            oos_can_remove_rockslide(state, player, False),
             oos_can_use_pegasus_seeds(state, player),
             oos_has_feather(state, player),
             oos_has_bracelet(state, player),
@@ -752,6 +813,7 @@ def make_d7_logic(player: int):
             oos_can_jump_3_wide_pit(state, player),
             oos_has_magnet_gloves(state, player)
         ])],
+        ["d7 pot room", "d7 magunesu chest", False, lambda state: oos_has_cane(state, player)],
 
         ["d7 armos puzzle", "d7 magunesu chest", False, lambda state: all([
             oos_can_jump_3_wide_pit(state, player),
@@ -813,6 +875,7 @@ def make_d7_logic(player: int):
                 oos_has_magnet_gloves(state, player),
                 any([
                     oos_can_kill_armored_enemy(state, player),
+                    oos_has_bombchus(state, player, 2),
                     oos_has_shield(state, player),  # To push the darknut, the rod not really working
                     oos_option_medium_logic(state, player)
                     # Pull the right darknut by just going and stalling in the hole
@@ -830,7 +893,8 @@ def make_d7_logic(player: int):
                     oos_has_sword(state, player),
                     oos_has_fools_ore(state, player),
                     oos_has_rod(state, player),
-                    oos_has_bombs(state, player)
+                    oos_has_bombs(state, player),
+                    oos_has_bombchus(state, player)
                 ]),
                 # Reach trampolines using the magnet gloves
                 oos_has_feather(state, player),
@@ -967,7 +1031,7 @@ def make_d8_logic(player: int):
 
         ["d8 hardhat room", "d8 hardhat drop", False, lambda state: any([
             all([
-                oos_has_bombs(state, player),
+                oos_can_remove_rockslide(state, player, False),  # For the bombchus, leave the hardhat stuck in the upper line to guide the bombchus
                 oos_has_magnet_gloves(state, player)
             ]),
             oos_can_use_gale_seeds_offensively(state, player)
@@ -990,7 +1054,15 @@ def make_d8_logic(player: int):
         ["d8 spike room", "d8 spinner", False, lambda state: oos_has_small_keys(state, player, 8, 2)],
         ["d8 spinner", "silent watch owl", False, lambda state: oos_can_use_mystery_seeds(state, player)],
         ["d8 spinner", "d8 magnet ball room", False, None],
-        ["d8 spinner", "d8 armos chest", False, lambda state: oos_has_magnet_gloves(state, player)],
+        ["d8 spinner", "d8 armos chest", False, lambda state: any([
+            oos_has_magnet_gloves(state, player),
+            all([
+                # Clip into the block right of staircase with pegasus seeds and use the cane of somaria to activate the bridge, save&exit and redo the whole dungeon to get to the other side
+                oos_option_hard_logic(state, player),
+                oos_can_use_pegasus_seeds(state, player),
+                oos_has_cane(state, player)
+            ])
+        ])],
         ["d8 armos chest", "d8 spinner chest", False, None],
         ["d8 spinner chest", "frypolar entrance", False, lambda state: oos_has_magnet_gloves(state, player)],
         ["frypolar entrance", "frypolar owl", False, lambda state: oos_can_use_mystery_seeds(state, player)],
@@ -1007,7 +1079,7 @@ def make_d8_logic(player: int):
                 ])
             ]),
             # oos_can_kill_armored_enemy(state, player),
-            oos_has_bombs(state, player),
+            oos_can_remove_rockslide(state, player, False),
         ])],
         ["frypolar entrance", "frypolar room", False, lambda state: oos_has_small_keys(state, player, 8, 3)],
         ["frypolar room", "frypolar room wild mystery", False, lambda state: \
@@ -1045,13 +1117,17 @@ def make_d8_logic(player: int):
 
         ["d8 ice puzzle room", "d8 pols voice chest", False, lambda state: any([
             oos_has_magic_boomerang(state, player),
-            oos_can_jump_6_wide_pit(state, player)
+            oos_can_jump_6_wide_pit(state, player),
+            all([
+                oos_option_medium_logic(state, player),
+                oos_has_bombchus(state, player, 2)
+            ])
         ])],
 
         # 4 keys
         ["d8 ice puzzle room", "d8 crystal room", False, lambda state: oos_has_small_keys(state, player, 8, 4)],
         ["d8 crystal room", "magical ice owl", False, lambda state: oos_can_use_mystery_seeds(state, player)],
-        ["d8 crystal room", "d8 ghost armos drop", False, lambda state: oos_has_bombs(state, player)],
+        ["d8 crystal room", "d8 ghost armos drop", False, lambda state: oos_can_remove_rockslide(state, player, False)],
         ["d8 crystal room", "d8 NE crystal", False, lambda state: all([
             oos_has_bracelet(state, player),
             oos_can_trigger_lever(state, player)

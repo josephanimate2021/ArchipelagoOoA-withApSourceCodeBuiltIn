@@ -30,7 +30,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
 
         ["horon village", "mayor's gift", False, None],
         ["horon village", "vasu's gift", False, None],
-        ["horon village", "mayor's house secret room", False, lambda state: oos_has_bombs(state, player)],
+        ["horon village", "mayor's house secret room", False, lambda state: oos_can_remove_rockslide(state, player, False)],
         ["horon village", "horon heart piece", False, lambda state: oos_can_use_ember_seeds(state, player, False)],
         ["horon village", "dr. left reward", False, lambda state: oos_can_use_ember_seeds(state, player, True)],
         ["horon village", "old man in horon", False, lambda state: oos_can_use_ember_seeds(state, player, False)],
@@ -44,7 +44,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ])],
         ["horon village", "maku tree", False, lambda state: oos_has_sword(state, player, False)],
         ["horon village", "horon village SE chest", False, lambda state: all([
-            oos_has_bombs(state, player),
+            oos_can_remove_rockslide(state, player, False),
             any([
                 oos_can_swim(state, player, False),
                 oos_season_in_horon_village(state, player, SEASON_WINTER),
@@ -83,7 +83,10 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
                 oos_has_fools_ore(state, player),
                 all([
                     oos_option_medium_logic(state, player),
-                    oos_has_sword(state, player),
+                    any([
+                        oos_has_sword(state, player),
+                        oos_has_bombchus(state, player, 3)
+                    ])
                 ])
             ])
         ])],
@@ -98,7 +101,10 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
                 oos_can_use_ember_seeds(state, player, True),
             ]),
             oos_can_use_mystery_seeds(state, player),
-            oos_can_kill_armored_enemy(state, player),
+            any([
+                oos_can_kill_armored_enemy(state, player),
+                oos_has_bombchus(state, player, 2)
+            ]),
         ])],
 
         ["western coast", "d0 entrance", True, None],
@@ -113,7 +119,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ])],
 
         ["western coast after ship", "coast stump", False, lambda state: all([
-            oos_has_bombs(state, player),
+            oos_can_remove_rockslide(state, player, False),
             any([
                 oos_has_feather(state, player),
                 oos_option_hard_logic(state, player)
@@ -217,7 +223,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
 
         ["moblin road", "woods of winter, 1st cave", False, lambda state: all([
             oos_can_remove_rockslide(state, player, True),
-            oos_can_break_bush(state, player, False),
+            oos_can_break_bush(state, player, False, True),
             any([
                 oos_get_default_season(state, player, "WOODS_OF_WINTER") != SEASON_WINTER,
                 oos_can_remove_season(state, player, SEASON_WINTER)
@@ -247,7 +253,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ])],
 
         ["central woods of winter", "woods of winter tree", False, lambda state: oos_can_harvest_tree(state, player, True)],
-        ["central woods of winter", "d2 entrance", True, lambda state: oos_can_break_bush(state, player, True)],
+        ["central woods of winter", "d2 entrance", True, lambda state: oos_can_break_bush(state, player, True, True)],
         ["central woods of winter", "cave outside D2", False, lambda state: all([
             oos_season_in_central_woods_of_winter(state, player, SEASON_AUTUMN),
             oos_can_break_mushroom(state, player, True),
@@ -280,13 +286,13 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
             ])
         ])],
 
-        ["impa's house", "d1 stump", True, lambda state: oos_can_break_bush(state, player, True)],
+        ["impa's house", "d1 stump", True, lambda state: oos_can_break_bush(state, player, True, True)],
         ["d1 stump", "north horon", True, lambda state: oos_has_bracelet(state, player)],
         ["d1 stump", "malon trade", False, lambda state: any([
             state.has("Cuccodex", player),
             oos_self_locking_item(state, player, "malon trade", "Cuccodex")
         ])],
-        ["d1 stump", "d1 island", True, lambda state: oos_can_break_bush(state, player, True)],
+        ["d1 stump", "d1 island", True, lambda state: oos_can_break_bush(state, player, True, True)],
         ["d1 stump", "old man near d1", False, lambda state: oos_can_use_ember_seeds(state, player, False)],
 
         ["d1 island", "d1 entrance", True, lambda state: state.has("Gnarled Key", player)],
@@ -512,7 +518,8 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
             any([
                 oos_can_use_pegasus_seeds(state, player),
                 oos_has_flippers(state, player),
-                oos_has_feather(state, player)
+                oos_has_feather(state, player),
+                oos_has_cane(state, player)
             ]),
             oos_has_bracelet(state, player)
         ])],
@@ -735,7 +742,16 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ["sunken city", "sunken city, summer cave", False, lambda state: all([
             oos_season_in_sunken_city(state, player, SEASON_SUMMER),
             oos_has_flippers(state, player),
-            oos_can_break_bush(state, player, False)
+            oos_can_break_bush(state, player, False, True)
+        ])],
+
+        ["sunken city", "diver secret", False, lambda state: all([
+            oos_has_flippers(state, player),
+            any([
+                oos_option_medium_logic(state, player),
+                oos_has_sword(state, player),
+                oos_has_fools_ore(state, player),
+            ])
         ])],
 
         ["sunken city", "diver secret", False, lambda state: all([
@@ -833,7 +849,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
 
         ["goron mountain", "maple encounter", False, lambda state: oos_can_meet_maple(state, player)],
 
-        ["goron blocked cave entrance", "goron's gift", False, lambda state: oos_has_bombs(state, player)],
+        ["goron blocked cave entrance", "goron's gift", False, lambda state: oos_can_remove_rockslide(state, player, False)],
 
         ["goron mountain", "biggoron trade", False, lambda state: all([
             oos_can_jump_1_wide_liquid(state, player, False),
@@ -847,8 +863,15 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ])],
 
         ["goron mountain", "chest in goron mountain", False, lambda state: all([
-            oos_has_bombs(state, player),
-            oos_can_jump_3_wide_liquid(state, player)
+            oos_can_jump_3_wide_liquid(state, player),
+            any([
+                oos_has_bombs(state, player),
+                all([  # Bombchu can only destroy the second block, so we need to use cape to jump around the first
+                    oos_option_medium_logic(state, player),
+                    oos_has_bombchus(state, player, 5),
+                    oos_can_use_pegasus_seeds(state, player)
+                ]),
+            ])
         ])],
         ["goron mountain", "old man in goron mountain", False, lambda state: \
             oos_can_use_ember_seeds(state, player, False)],
@@ -953,7 +976,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
 
         ["temple remains lower stump", "temple remains upper stump", False, lambda state: all([
             oos_has_feather(state, player),  # Require feather in case volcano has erupted
-            oos_can_break_bush(state, player),
+            oos_can_break_bush(state, player, False, False),
             any([
                 state.has("_triggered_volcano", player),  # Volcano rule
                 all([  # Winter rule
@@ -980,13 +1003,13 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
                 oos_season_in_temple_remains(state, player, SEASON_WINTER),  # Winter rule
                 all([  # Summer rule
                     oos_season_in_temple_remains(state, player, SEASON_SUMMER),
-                    oos_can_break_bush(state, player, False),
+                    oos_can_break_bush(state, player, False, False),
                     oos_can_jump_6_wide_pit(state, player)
                 ]),
                 all([  # Spring rule
                     oos_season_in_temple_remains(state, player, SEASON_SPRING),
                     oos_can_break_flowers(state, player),
-                    oos_can_break_bush(state, player, False),
+                    oos_can_break_bush(state, player, False, False),
                     oos_can_jump_6_wide_pit(state, player)
                 ]),
                 all([  # Autumn rule
@@ -1063,7 +1086,10 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ["north horon", "d9 entrance", False, lambda state: state.has("Maku Seed", player)],
         ["d9 entrance", "onox beaten", False, lambda state: all([
             oos_can_kill_armored_enemy(state, player),
-            oos_has_bombs(state, player),
+            any([
+                oos_has_bombs(state, player),
+                oos_has_bombchus(state, player, 2)
+            ]),
             oos_has_sword(state, player, False),
             oos_has_feather(state, player),
             any([
@@ -1159,16 +1185,16 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         # GASHA TREES #############################################################################################
 
         ["horon village", "horon gasha spot", False, None],
-        ["impa's house", "impa gasha spot", False, lambda state: oos_can_break_bush(state, player, True)],
-        ["suburbs", "suburbs gasha spot", False, lambda state: oos_can_break_bush(state, player, True)],
+        ["impa's house", "impa gasha spot", False, lambda state: oos_can_break_bush(state, player, True, True)],
+        ["suburbs", "suburbs gasha spot", False, lambda state: oos_can_break_bush(state, player, True, True)],
         ["ghastly stump", "holodrum plain gasha spot", False, lambda state: all([
-            oos_can_break_bush(state, player, True),
+            oos_can_break_bush(state, player, True, False),  # Zoras make the bombchus not viable
             oos_has_shovel(state, player),
         ])],
         ["d1 island", "holodrum plain island gasha spot", False, lambda state: all([
             oos_can_swim(state, player, True),
             any([
-                oos_can_break_bush(state, player, False),
+                oos_can_break_bush(state, player, False, False),
                 oos_can_summon_dimitri(state, player),  # Only Dimitri can be brought here
             ]),
         ])],
@@ -1177,14 +1203,14 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ["sunken city", "sunken city gasha spot", False, lambda state: all([
             oos_season_in_sunken_city(state, player, SEASON_SUMMER),
             oos_can_swim(state, player, False),
-            oos_can_break_bush(state, player, False),
+            oos_can_break_bush(state, player, False, False),  # Technically doable by positioning link with a sword
         ])],
         ["sunken city dimitri", "sunken city gasha spot", False, None],
         ["goron mountain entrance", "goron mountain left gasha spot", False, lambda state: oos_has_shovel(state, player)],
         ["goron mountain entrance", "goron mountain right gasha spot", False, lambda state: oos_has_bracelet(state, player)],
         ["d5 stump", "eyeglass lake gasha spot", False, lambda state: all([
             oos_has_shovel(state, player),
-            oos_can_break_bush(state, player),
+            oos_can_break_bush(state, player, True, True),
         ])],
         ["mount cucco", "mt cucco gasha spot", False, lambda state: all([
             oos_season_in_mt_cucco(state, player, SEASON_AUTUMN),

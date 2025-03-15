@@ -278,6 +278,14 @@
     db $09,$04,$0c,$08,$02,$8f,$09,$00,$20,$04,$b5,$2e,$01      ; "XXX Rupees only."
     db $02,$00,$00                                              ; "  > Yes  > No   "
 
+# Got a cane of somaria
+3f//TX_5632: |
+    db $02,$03,$09,$01,$43,$61,$6e,$65
+    db $03,$e3,$53,$6f,$6d,$61,$72,$69
+    db $61,$03,$e4,$55,$73,$65,$03,$53
+    db $20,$63,$04,$09,$65,$01,$62,$05
+    db $a6,$73,$2e,$00
+
 3f//customTextTable: |
     dw TX_5600, TX_5601, TX_5602, TX_5603
     dw TX_5604, TX_5605, TX_5606, TX_5607
@@ -291,7 +299,7 @@
     dw TX_5624, TX_5625, TX_5626, TX_5627
     dw TX_5628, TX_5629, TX_562a, TX_562b
     dw TX_562c, TX_562d, TX_562e, TX_562f
-    dw TX_5630, TX_5631
+    dw TX_5630, TX_5631, TX_5632
 
 # Override getTextAddress to have a specific custom bank_id point to text somewhere else
 3f//checkCustomTextOverride: |

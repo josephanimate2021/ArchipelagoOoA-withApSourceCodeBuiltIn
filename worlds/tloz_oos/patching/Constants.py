@@ -64,7 +64,10 @@ EOB_ADDR = [
     0x4000,  # 3c
     0x4000,  # 3d
     0x4000,  # 3e
-    0x314b   # 3f - also here
+    0x314b,  # 3f - also here
+
+    # New banks
+    0x0000,  # 40
 ]
 
 DEFINES = {
@@ -89,14 +92,16 @@ DEFINES = {
     "wGashaSpotFlags": "$c649",
     "wDungeonCompasses": "$c67c",
     "wDungeonMaps": "$c67e",
-    "wInventoryB": "$c680",
+    "wSeedSatchelLevel": "$c680",  # Moved from c6ae
+    "<wSeedSatchelLevel": "$80",
     "wObtainedTreasureFlags": "$c692",
     "wNetCountIn": "$c6a0",
     "wLinkMaxHealth": "$c6a3",
     "wShieldLevel": "$c6a9",
     "wCurrentBombs": "$c6aa",
     "wMaxBombs": "$c6ab",
-    "wSeedSatchelLevel": "$c6ae",
+    "wNumBombchus": "$c6ad",
+    "wMaxBombchus": "$c6ae",
     "wFluteIcon": "$c6af",
     "wFeatherLevel": "$c6b4",
     "wNumEmberSeeds": "$c6b5",
@@ -105,6 +110,12 @@ DEFINES = {
     "wActiveRing": "$c6c5",
     "wRingBoxLevel": "$c6c6",
     "wInsertedJewels": "$c6e1",
+    "wInventoryB": "$c6e8",  # Moved from c680
+    "wInventoryA": "$c6e9",  # Moved from c681
+    "wInventoryStorage": "$c6ea",  # Moved from c682-691
+    "<wInventoryB": "$e8",
+    "<wInventoryA": "$e9",
+    "<wInventoryStorage": "$ea",
     "wTextIndexL": "$cba2",
     "wTextIndexH": "$cba3",
     "wTextNumberSubstitution": "$cba8",
@@ -114,6 +125,7 @@ DEFINES = {
     "wMenuLoadState": "$cbcc",
     "wMenuActiveState": "$cbcd",
     "wDungeonMapScrollState": "$cbce",
+    "wInventorySubmenu0CursorPos": "$cbd0",
     "wInventorySubmenu1CursorPos": "$cbd1",
     "wRingMenu_mode": "$cbd3",
     "wStatusBarNeedsRefresh": "$cbea",
@@ -158,6 +170,7 @@ DEFINES = {
 
     # Bank 0 functions
     "addAToDe": "$0068",
+    "addAToBc": "$006d",
     "interBankCall": "$008a",
     "getNumSetBits": "$0176",
     "checkFlag": "$0205",
@@ -204,6 +217,7 @@ DEFINES = {
     "getFreePartSlot": "$3ea7",
 
     # Byte constants
+    "INVENTORY_CAPACITY": "$14",
     "TEXT_WARP_PROTECTION_MARGIN": "$09",
     "STARTING_TREE_MAP_INDEX": "$f8",
     "INTERACID_TREASURE": "$60",
@@ -236,10 +250,12 @@ DEFINES = {
     "TREASURE_SHIELD": "$01",
     "TREASURE_PUNCH": "$02",
     "TREASURE_BOMBS": "$03",
+    "TREASURE_CANE_OF_SOMARIA": "$04",
     "TREASURE_SWORD": "$05",
     "TREASURE_BOOMERANG": "$06",
     "TREASURE_ROD_OF_SEASONS": "$07",
     "TREASURE_MAGNET_GLOVES": "$08",
+    "TREASURE_BOMBCHUS": "$0d",
     "TREASURE_FLUTE": "$0e",
     "TREASURE_SLINGSHOT": "$13",
     "TREASURE_BRACELET": "$16",
