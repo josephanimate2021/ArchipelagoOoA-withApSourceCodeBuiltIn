@@ -196,8 +196,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
 
         ["suburbs fairy fountain", "sunken city", False, lambda state: \
             oos_season_in_eastern_suburbs(state, player, SEASON_SPRING)],
-        ["sunken city", "suburbs fairy fountain", False, lambda state: 
-            oos_season_in_eastern_suburbs(state, player, SEASON_SPRING)],
+        ["sunken city", "suburbs fairy fountain", False, None],
 
         # WOODS OF WINTER / 2D SECTOR ################################################################################
 
