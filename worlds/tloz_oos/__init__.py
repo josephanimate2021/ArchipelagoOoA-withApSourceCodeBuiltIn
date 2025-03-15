@@ -1,6 +1,6 @@
 import os
 import logging
-from typing import List, Union, ClassVar
+from typing import List, Union, ClassVar, Any, Optional
 import settings
 from BaseClasses import Tutorial, Region, Location, LocationProgressType, Item, ItemClassification
 from Fill import fill_restrictive, FillError
@@ -123,6 +123,9 @@ class OracleOfSeasonsWorld(World):
         self.remaining_progressive_gasha_seeds = 0
 
     def generate_early(self):
+        if self.interpret_slot_data(None):
+            return
+
         self.remaining_progressive_gasha_seeds = self.options.deterministic_gasha_locations.value
 
         self.pick_essences_in_game()
@@ -871,3 +874,42 @@ class OracleOfSeasonsWorld(World):
                     currency = "Ore Chunks" if shop_code.startswith("subrosia") else "Rupees"
                     spoiler_handle.write(f"\t- {loc_name}: {price} {currency}\n")
                 break
+
+    # UT stuff
+    def interpret_slot_data(self, slot_data: Optional[dict[str, Any]]) -> Any:
+        if slot_data is not None:
+            return slot_data
+
+        if not hasattr(self.multiworld, "re_gen_passthrough") or self.game not in self.multiworld.re_gen_passthrough:
+            return False
+
+        slot_data = self.multiworld.re_gen_passthrough[self.game]
+
+        self.options.default_seed = OracleOfSeasonsDefaultSeedType.from_any(SEED_ITEMS.index(slot_data["default_seed"]))
+        self.options.master_keys = OracleOfSeasonsMasterKeys.from_any(slot_data["master_keys"])
+        self.options.logic_difficulty = OracleOfSeasonsLogicDifficulty.from_any(slot_data["logic_difficulty"])
+        self.options.remove_d0_alt_entrance = OracleOfSeasonsD0AltEntrance.from_any(slot_data["remove_d0_alt_entrance"])
+        self.options.remove_d2_alt_entrance = OracleOfSeasonsD2AltEntrance.from_any(slot_data["remove_d2_alt_entrance"])
+        self.options.animal_companion = OracleOfSeasonsAnimalCompanion.from_any(slot_data["animal_companion"])
+        self.options.treehouse_old_man_requirement = OraclesOfSeasonsTreehouseOldManRequirement.from_any(slot_data["treehouse_old_man_requirement"])
+        self.options.tarm_gate_required_jewels = OraclesOfSeasonsTarmGateRequirement.from_any(slot_data["tarm_gate_required_jewels"])
+        self.options.randomize_lost_woods_item_sequence = OracleOfSeasonsLostWoodsItemSequence.from_any(slot_data["randomize_lost_woods_item_sequence"])
+        self.options.randomize_lost_woods_main_sequence = OracleOfSeasonsLostWoodsItemSequence.from_any(slot_data["randomize_lost_woods_main_sequence"])
+        self.options.golden_beasts_requirement = OraclesOfSeasonsGoldenBeastsRequirement.from_any(slot_data["golden_beasts_requirement"])
+        self.options.shuffle_golden_ore_spots = OracleOfSeasonsGoldenOreSpotsShuffle.from_any(slot_data["shuffle_golden_ore_spots"])
+        self.options.normalize_horon_village_season = OracleOfSeasonsHoronSeason.from_any(slot_data["normalize_horon_village_season"])
+        self.options.deterministic_gasha_locations = OracleOfSeasonsGashaLocations.from_any(slot_data["deterministic_gasha_locations"])
+
+        self.remaining_progressive_gasha_seeds = 999999  # All gasha seeds need to be progression
+
+        self.default_seasons = slot_data["default_seasons"]
+        self.lost_woods_item_sequence = []  # Unknown
+        self.lost_woods_main_sequence = []  # Unknown
+
+        self.dungeon_entrances = slot_data["dungeon_entrances"]
+        self.portal_connections = slot_data["portal_connections"]
+        self.shop_order = slot_data["shop_order"]
+        self.shop_rupee_requirements = slot_data["shop_rupee_requirements"]
+        self.shop_prices = slot_data["shop_costs"]
+
+        return True
