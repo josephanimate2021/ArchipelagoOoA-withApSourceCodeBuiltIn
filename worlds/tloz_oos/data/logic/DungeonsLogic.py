@@ -8,6 +8,7 @@ def make_d0_logic(player: int):
         ["enter d0", "d0 rupee chest", False, lambda state:
             # If hole is removed, stairs are added inside dungeon to make the chest reachable
             oos_option_no_d0_alt_entrance(state, player),
+         ],
         ["d0 rupee chest", "enter d0", False, None],
         ["enter d0", "d0 hidden 2d section", False, lambda state: any([
             oos_can_kill_normal_enemy(state, player),
