@@ -420,7 +420,7 @@ ITEMS_DATA = {
         'id': 0x34,
         'subid': 0x01
     },
-    
+
     #     "Maku Seed": {
     #           'classification': ItemClassification.progression,
     #         'id': 0x36
@@ -471,8 +471,8 @@ ITEMS_DATA = {
         'id': 0x3e
     },
     "Phonograph": {
-         'classification': ItemClassification.progression,
-         'id': 0x3f
+        'classification': ItemClassification.progression,
+        'id': 0x3f
     },
 
     "Gnarled Key": {

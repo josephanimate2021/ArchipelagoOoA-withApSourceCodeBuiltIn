@@ -166,4 +166,3 @@ def make_subrosia_logic(player: int):
 
         ["subrosia bridge sector", "subrosia bridge digging spot", False, lambda state: oos_has_shovel(state, player)],
     ]
-

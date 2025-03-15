@@ -30,7 +30,7 @@ LOCATIONS_DATA = {
     "Horon Village: Chest in Dr. Left's Backyard": {
         "region_id": "horon village SE chest",
         "vanilla_item": "Rupees (20)",
-        "flag_byte": 0xc7f9,  
+        "flag_byte": 0xc7f9,
         "room": 0x00f9,
         "collect": COLLECT_CHEST,
     },
@@ -416,7 +416,8 @@ LOCATIONS_DATA = {
     },
     "Horon Village: Member's Shop #3": {
         "region_id": "member's shop",
-        "vanilla_item": "Seed Satchel",  # Add a 3rd satchel that is usually obtained in linked games (99 seeds) while removing the treasure map which is not implemented yet
+        "vanilla_item": "Seed Satchel",
+        # Add a 3rd satchel that is usually obtained in linked games (99 seeds) while removing the treasure map which is not implemented yet
         "flag_byte": 0xc63f,
         "bit_mask": 0x08,
         "scouting_byte": 0xc8b0,

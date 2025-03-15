@@ -71,10 +71,10 @@ ESSENCES = [
 ]
 
 JEWELS = [
-   "Square Jewel",
-   "Pyramid Jewel",
-   "Round Jewel",
-   "X-Shaped Jewel"
+    "Square Jewel",
+    "Pyramid Jewel",
+    "Round Jewel",
+    "X-Shaped Jewel"
 ]
 
 VALID_RUPEE_PRICE_VALUES = [

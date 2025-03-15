@@ -32,20 +32,24 @@ class OracleOfSeasonsSettings(settings.Group):
         Putting "link" as a value uses the default game sprite.
         Putting "random" as a value randomly picks a sprite from your sprites directory for each generated ROM.
         """
+
     class OoSCharacterPalette(str):
         """
         The color palette used for character sprite throughout the game.
         Valid values are: "green", "red", "blue", "orange", and "random"
         """
+
     class OoSRevealDiggingSpots(str):
         """
         If enabled, hidden digging spots in Subrosia are revealed as diggable tiles.
         """
+
     class OoSHeartBeepInterval(str):
         """
         A factor applied to the infamous heart beep sound interval.
         Valid values are: "vanilla", "half", "quarter", "disabled"
         """
+
     class OoSRemoveMusic(str):
         """
         If true, no music will be played in the game while sound effects remain untouched
@@ -70,7 +74,7 @@ class OracleOfSeasonsWeb(WebWorld):
         "oos_setup/en",
         ["Dinopony"]
     )
-    
+
     setup_fr = Tutorial(
         "Guide de configuration MultiWorld",
         "Un guide pour configurer Oracle of Seasons d'Archipelago sur votre PC.",
@@ -179,7 +183,7 @@ class OracleOfSeasonsWorld(World):
         # If some essence pedestal locations were excluded and essences are not shuffled,
         # remove those essences in priority
         if not self.options.shuffle_essences:
-            excluded_locations_data = {name: data for name,data in LOCATIONS_DATA.items() if name in self.options.exclude_locations.value}
+            excluded_locations_data = {name: data for name, data in LOCATIONS_DATA.items() if name in self.options.exclude_locations.value}
             for loc_name, loc_data in excluded_locations_data.items():
                 if "essence" in loc_data and loc_data["essence"] is True:
                     self.essences_in_game.remove(loc_data["vanilla_item"])
@@ -418,12 +422,12 @@ class OracleOfSeasonsWorld(World):
         for region_name in REGIONS:
             region = Region(region_name, self.player, self.multiworld)
             self.multiworld.regions.append(region)
-        
+
         for region_name in NATZU_REGIONS[self.options.animal_companion.current_key]:
             region = Region(region_name, self.player, self.multiworld)
             self.multiworld.regions.append(region)
-        
-        if (self.options.deterministic_gasha_locations > 0):
+
+        if self.options.deterministic_gasha_locations > 0:
             for i in range(self.options.deterministic_gasha_locations):
                 region = Region(GASHA_REGIONS[i], self.player, self.multiworld)
                 self.multiworld.regions.append(region)
@@ -499,11 +503,11 @@ class OracleOfSeasonsWorld(World):
         locations_to_exclude = set()
         # If goal essence requirement is set to a specific value, prevent essence-bound checks which require more
         # essences than this goal to hold anything of value
-        if self.options.required_essences < 7 and len(self.essences_in_game) >= 7:
+        if self.options.required_essences < 7 <= len(self.essences_in_game):
             locations_to_exclude.add("Horon Village: Item Inside Maku Tree (7+ Essences)")
-            if self.options.required_essences < 5 and len(self.essences_in_game) >= 5:
+            if self.options.required_essences < 5 <= len(self.essences_in_game):
                 locations_to_exclude.add("Horon Village: Item Inside Maku Tree (5+ Essences)")
-                if self.options.required_essences < 3 and len(self.essences_in_game) >= 3:
+                if self.options.required_essences < 3 <= len(self.essences_in_game):
                     locations_to_exclude.add("Horon Village: Item Inside Maku Tree (3+ Essences)")
         if self.options.required_essences < self.options.treehouse_old_man_requirement:
             locations_to_exclude.add("Holodrum Plain: Old Man in Treehouse")
@@ -512,7 +516,7 @@ class OracleOfSeasonsWorld(World):
         if self.options.exclude_dungeons_without_essence and not self.options.shuffle_essences:
             for i, essence_name in enumerate(ESSENCES):
                 if ESSENCES[i] not in self.essences_in_game:
-                    locations_to_exclude.update(self.location_name_groups[f"D{i+1}"])
+                    locations_to_exclude.update(self.location_name_groups[f"D{i + 1}"])
 
         if not self.options.shuffle_business_scrubs:
             locations_to_exclude.difference_update(SCRUB_LOCATIONS)
@@ -677,7 +681,7 @@ class OracleOfSeasonsWorld(World):
         if self.options.exclude_dungeons_without_essence and not self.options.shuffle_essences:
             for i, essence_name in enumerate(ESSENCES):
                 if ESSENCES[i] not in self.essences_in_game:
-                    excluded_dungeons.append(i+1)
+                    excluded_dungeons.append(i + 1)
 
         # Put Small Keys / Master Keys unless keysanity is enabled for those
         if self.options.master_keys != OracleOfSeasonsMasterKeys.option_disabled:

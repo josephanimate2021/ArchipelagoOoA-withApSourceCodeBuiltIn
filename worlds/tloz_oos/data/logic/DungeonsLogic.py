@@ -5,10 +5,9 @@ def make_d0_logic(player: int):
     return [
         # 0 keys
         ["enter d0", "d0 key chest", False, None],
-        ["enter d0", "d0 rupee chest", False, lambda state: 
+        ["enter d0", "d0 rupee chest", False, lambda state:
             # If hole is removed, stairs are added inside dungeon to make the chest reachable
             oos_option_no_d0_alt_entrance(state, player),
-        ],
         ["d0 rupee chest", "enter d0", False, None],
         ["enter d0", "d0 hidden 2d section", False, lambda state: any([
             oos_can_kill_normal_enemy(state, player),
@@ -97,8 +96,7 @@ def make_d2_logic(player: int):
         ["d2 torch room", "d2 rope drop", False, lambda state: oos_can_kill_normal_enemy(state, player)],
         ["d2 torch room", "d2 arrow room", False, lambda state: oos_can_use_ember_seeds(state, player, True)],
 
-        ["d2 arrow room", "d2 torch room", False, lambda state:
-            oos_can_kill_normal_enemy(state, player)],
+        ["d2 arrow room", "d2 torch room", False, lambda state: oos_can_kill_normal_enemy(state, player)],
         ["d2 arrow room", "d2 rupee room", False, lambda state: oos_has_bombs(state, player)],
         ["d2 arrow room", "d2 rope chest", False, lambda state: oos_can_kill_normal_enemy(state, player)],
         ["d2 arrow room", "d2 blade chest", False, lambda state: oos_can_kill_normal_enemy(state, player)],
