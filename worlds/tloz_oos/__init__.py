@@ -379,6 +379,10 @@ class OracleOfSeasonsWorld(World):
         ring_names = [name for name, idata in ITEMS_DATA.items() if "ring" in idata]
         if self.options.remove_useless_rings:
             ring_names = [name for name in ring_names if ITEMS_DATA[name]["ring"] == "good"]
+        
+        # Remove required rings because they'll be added later anyway
+        ring_names = [name for name in ring_names if name not in self.options.required_rings.value.copy()]
+        ring_names = [name for name in ring_names if name not in self.options.excluded_rings.value.copy()]
 
         self.random.shuffle(ring_names)
         self.random_rings_pool = ring_names
@@ -633,6 +637,12 @@ class OracleOfSeasonsWorld(World):
         required_gasha_seeds = self.options.deterministic_gasha_locations.value
         item_pool_dict["Gasha Seed"] = required_gasha_seeds
         filler_item_count -= required_gasha_seeds
+
+        # Add the required rings
+        for ring in self.options.required_rings.value:
+            if ITEMS_DATA.get(ring):
+                item_pool_dict[ring] = item_pool_dict.get(item_name, 0) + 1
+                filler_item_count -= 1
 
         # Add as many filler items as required
         for _ in range(filler_item_count):

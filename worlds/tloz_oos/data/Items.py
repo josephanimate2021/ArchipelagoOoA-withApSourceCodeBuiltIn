@@ -862,7 +862,7 @@ ITEMS_DATA = {
         'subid': 0x35,
         'ring': 'good'
     },
-    "Double Edge Ring": {
+    "Dbl. Edge Ring": {
         'classification': ItemClassification.filler,
         'id': 0x2d,
         'subid': 0x36,

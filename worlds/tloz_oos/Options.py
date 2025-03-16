@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from Options import Choice, DeathLink, DefaultOnToggle, PerGameCommonOptions, Range, Toggle, StartInventoryPool, \
-    ItemDict, ItemsAccessibility
+    ItemDict, ItemsAccessibility, OptionSet
 
 
 class OracleOfSeasonsGoal(Choice):
@@ -446,6 +446,24 @@ class OracleOfSeasonsRingQuality(DefaultOnToggle):
     display_name = "Remove Useless Rings"
 
 
+class OracleOfSeasonsRequiredRings(OptionSet):
+    """
+    Forces a specified set of rings to appear somewhere in the seed.
+    This is required in order for Start Inventory From Pool to consistently generate.
+    Rings will be added regardless of if Remove Useless Rings is true or not.
+    List of ring names can be found here: https://zeldawiki.wiki/wiki/Magic_Ring
+    """
+    display_name = "Required Rings"
+
+
+class OracleOfSeasonsExcludedRings(OptionSet):
+    """
+    Forces a specified set of rings to not appear in the seed.
+    List of ring names can be found here: https://zeldawiki.wiki/wiki/Magic_Ring
+    """
+    display_name = "Excluded Rings"
+
+
 class OracleOfSeasonsShopPrices(Choice):
     """
     Determine the cost of items found in shops of all sorts (including Subrosian Market and Business Scrubs):
@@ -624,6 +642,8 @@ class OracleOfSeasonsOptions(PerGameCommonOptions):
     shop_prices: OracleOfSeasonsShopPrices
     enforce_potion_in_shop: OracleOfSeasonsEnforcePotionInShop
     remove_useless_rings: OracleOfSeasonsRingQuality
+    required_rings: OracleOfSeasonsRequiredRings
+    excluded_rings: OracleOfSeasonsExcludedRings
     fools_ore: OracleOfSeasonsFoolsOre
     combat_difficulty: OracleOfSeasonsCombatDifficulty
     quick_flute: OracleOfSeasonsQuickFlute
