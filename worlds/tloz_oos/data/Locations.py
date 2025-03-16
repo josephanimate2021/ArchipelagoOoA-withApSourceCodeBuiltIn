@@ -2307,7 +2307,7 @@ LOCATIONS_DATA = {
         "symbolic_name": "smithSecret",
     },
     "Subrosia: Piratian Secret": {
-        "region_id": "western coast after ship",
+        "region_id": "pirates after bell",
         "vanilla_item": "Filler Item",
         "conditional": True,
         "flag_byte": 0xc6d5,

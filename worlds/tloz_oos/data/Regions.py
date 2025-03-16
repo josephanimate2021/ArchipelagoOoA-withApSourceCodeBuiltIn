@@ -216,6 +216,7 @@ REGIONS = [
     "subrosia, locked cave",
     "subrosia village chest",
     "great furnace",
+    "pirates after bell",
     "enter d0",
     "d0 key chest",
     "d0 rupee chest",
