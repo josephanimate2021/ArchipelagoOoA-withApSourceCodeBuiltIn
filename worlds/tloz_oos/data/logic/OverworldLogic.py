@@ -1199,7 +1199,8 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
             ["natzu east (dimitri)", "moblin keep bridge", False, lambda state: any([
                 oos_can_summon_dimitri(state, player),
                 all([
-                    oos_option_hard_logic(state, player),
+                    oos_option_medium_logic(state, player),
+                    oos_has_flippers(state, player),
                     state.has("Swimmer's Ring", player)
                 ])
             ])],

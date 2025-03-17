@@ -364,10 +364,7 @@ def make_d4_logic(player: int):
                 oos_option_medium_logic(state, player),
                 any([
                     oos_has_noble_sword(state, player),
-                    all([
-                        oos_has_sword(state, player),
-                        state.has("Energy Ring", player)
-                    ])
+                    oos_use_energy_ring(state, player)
                 ])
             ]),
             all([
@@ -730,10 +727,7 @@ def make_d7_logic(player: int):
                     # Pull the right darknut by just going and stalling in the hole
                 ])
             ]),
-            all([
-                oos_has_sword(state, player, False),
-                state.has("Energy Ring", player),
-            ])
+            oos_use_energy_ring(state, player)
         ])],
         ["d7 past darknut bridge", "d7 darknut bridge trampolines", False, lambda state: any([
             # Reach trampolines directly
