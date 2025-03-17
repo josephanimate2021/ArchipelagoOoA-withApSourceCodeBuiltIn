@@ -386,8 +386,7 @@ class OracleOfSeasonsWorld(World):
         ring_names = [name for name, idata in ITEMS_DATA.items() if "ring" in idata]
         
         # Remove required rings because they'll be added later anyway
-        ring_names = [name for name in ring_names if name not in self.options.required_rings.value.copy()]
-        ring_names = [name for name in ring_names if name not in self.options.excluded_rings.value.copy()]
+        ring_names = [name for name in ring_names if name not in self.options.required_rings.value and name not in self.options.excluded_rings.value]
 
         self.random.shuffle(ring_names)
         self.random_rings_pool = ring_names
@@ -550,14 +549,16 @@ class OracleOfSeasonsWorld(World):
             # Same for above but with useful. This is typically used for Required Rings,
             # as we don't want those locked in a barren dungeon
             name = name.removesuffix("!USEFUL")
-            classification = ItemClassification.useful
+            classification = ITEMS_DATA[name]["classification"]
+            if classification == ItemClassification.filler:
+                classification = ItemClassification.useful
         else:
             classification = ITEMS_DATA[name]["classification"]
         ap_code = self.item_name_to_id[name]
 
         # A few items become progression only in hard logic
-        progression_items_in_hard_logic = ["Expert's Ring", "Fist Ring", "Swimmer's Ring"]
-        if self.options.logic_difficulty == "hard" and name in progression_items_in_hard_logic:
+        progression_items_in_medium_logic = ["Expert's Ring", "Fist Ring", "Swimmer's Ring", "Energy Ring"]
+        if (self.options.logic_difficulty == "medium" or self.options.logic_difficulty == "hard") and name in progression_items_in_medium_logic:
             classification = ItemClassification.progression
         # As many Gasha Seeds become progression as the number of deterministic Gasha Nuts
         if self.remaining_progressive_gasha_seeds > 0 and name == "Gasha Seed":
@@ -656,16 +657,12 @@ class OracleOfSeasonsWorld(World):
         # Add the required rings
         ring_copy = sorted(self.options.required_rings.value.copy())
         for _ in range(len(ring_copy)):
-            ring_name = ring_copy.pop()
-            if ITEMS_DATA[ring_name]["classification"] == ItemClassification.filler:
-                ring_name = f"{ring_name}!USEFUL"
+            ring_name = f"{ring_copy.pop()}!USEFUL"
             item_pool_dict[ring_name] = item_pool_dict.get(ring_name, 0) + 1
             
             if item_pool_dict["Random Ring"] > 0:
                 # Take from set ring pool first
                 item_pool_dict["Random Ring"] -= 1
-                if item_pool_dict["Random Ring"] <= 0:
-                    del item_pool_dict["Random Ring"]
             else:
                 # Take from filler after
                 filler_item_count -= 1

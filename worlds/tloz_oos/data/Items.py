@@ -857,7 +857,7 @@ ITEMS_DATA = {
         'ring': 'good'
     },
     "Energy Ring": {
-        'classification': ItemClassification.progression,
+        'classification': ItemClassification.filler,
         'id': 0x2d,
         'subid': 0x35,
         'ring': 'good'

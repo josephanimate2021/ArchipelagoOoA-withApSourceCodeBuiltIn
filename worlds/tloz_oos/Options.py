@@ -447,6 +447,7 @@ class OracleOfSeasonsRequiredRings(ItemSet):
     List of ring names can be found here: https://zeldawiki.wiki/wiki/Magic_Ring
     """
     display_name = "Required Rings"
+    valid_keys = {name for name, idata in ITEMS_DATA.items() if "ring" in idata}
 
 
 class OracleOfSeasonsExcludedRings(ItemSet):
