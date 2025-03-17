@@ -1,6 +1,6 @@
 import os
 import logging
-from typing import List, Union, ClassVar, Any, Optional
+from typing import List, Union, ClassVar, Any, Optional, Tuple
 import settings
 from BaseClasses import Tutorial, Region, Location, LocationProgressType, Item, ItemClassification
 from Fill import fill_restrictive, FillError
@@ -325,6 +325,9 @@ class OracleOfSeasonsWorld(World):
         elif self.options.shuffle_old_men == OracleOfSeasonsOldMenShuffle.option_random_positive_values:
             for key in self.old_man_rupee_values.keys():
                 self.old_man_rupee_values[key] = self.random.choice(get_old_man_values_pool())
+        else:
+            # Remove the old man values from the pool so that they don't count negative when they are shuffled as items
+            self.old_man_rupee_values = {}
 
     def randomize_shop_order(self):
         self.shop_order = [
@@ -591,7 +594,10 @@ class OracleOfSeasonsWorld(World):
                 filler_item_count += 1
                 continue
             if item_name.startswith("Rupees ("):
-                rupee_item_count += 1
+                if self.options.shop_prices == OracleOfSeasonsShopPrices.option_free:
+                    filler_item_count += 1
+                else:
+                    rupee_item_count += 1
                 continue
             if self.options.master_keys != OracleOfSeasonsMasterKeys.option_disabled and "Small Key" in item_name:
                 # Small Keys don't exist if Master Keys are set to replace them
@@ -638,12 +644,14 @@ class OracleOfSeasonsWorld(World):
                 item_pool_dict[small_key_name] = 1
                 filler_item_count -= 1
 
-        item_pool_dict.update(self.build_rupee_item_dict(rupee_item_count))
-
         # Add the required gasha seeds to the pool
         required_gasha_seeds = self.options.deterministic_gasha_locations.value
         item_pool_dict["Gasha Seed"] = required_gasha_seeds
         filler_item_count -= required_gasha_seeds
+
+        if rupee_item_count > 0:
+            rupee_item_pool, filler_item_count = self.build_rupee_item_dict(rupee_item_count, filler_item_count)
+            item_pool_dict.update(rupee_item_pool)
 
         # Add the required rings
         ring_copy = sorted(self.options.required_rings.value.copy())
@@ -676,25 +684,47 @@ class OracleOfSeasonsWorld(World):
 
         return item_pool_dict
 
-    def build_rupee_item_dict(self, rupee_item_count: int):
+    def build_rupee_item_dict(self, rupee_item_count: int, filler_item_count: int) -> Tuple[int, int]:
         total_cost = max(self.shop_rupee_requirements.values())
-        average_rupee_value = total_cost / rupee_item_count
+
+        # Count the old man's contribution, it's especially important as it may be negative
+        old_man_rupee = 0
+        for name in self.old_man_rupee_values:
+            old_man_rupee += self.old_man_rupee_values[name]
+
+        average_rupee_value = (total_cost - old_man_rupee) / rupee_item_count
         deviation = average_rupee_value / 2.5
 
         rupee_item_dict = {}
+        target = total_cost / 2 - old_man_rupee
         for i in range(0, rupee_item_count):
             value = self.random.gauss(average_rupee_value, deviation)
             value = min(VALID_RUPEE_ITEM_VALUES, key=lambda x: abs(x - value))
-            # Put a "!PROG" suffix to force them to be created as progression items (see `create_item`)
-            item_name = f"Rupees ({value})!PROG"
+            if value > average_rupee_value / 3:
+                # Put a "!PROG" suffix to force them to be created as progression items (see `create_item`)
+                item_name = f"Rupees ({value})!PROG"
+                target -= value
+            else:
+                # Don't count little packs as progression since they are likely irrelevant
+                item_name = f"Rupees ({value})"
             rupee_item_dict[item_name] = rupee_item_dict.get(item_name, 0) + 1
-        return rupee_item_dict
+
+        # If the target is positive, it means there aren't enough rupees, so we'll steal a filler from the pool and reroll
+        # (We ignore dungeons here because we don't want to worry about whether they'll be available)
+        # TODO : With GER that note will be obsolete
+        if target > 0:
+            return self.build_rupee_item_dict(rupee_item_count + 1, filler_item_count - 1)
+
+        return rupee_item_dict, filler_item_count
 
     def create_items(self):
         item_pool_dict = self.build_item_pool_dict()
+        items = []
         for item_name, quantity in item_pool_dict.items():
             for _ in range(quantity):
-                self.multiworld.itempool.append(self.create_item(item_name))
+                items.append(self.create_item(item_name))
+        self.filter_confined_dungeon_items_from_pool(items)
+        self.multiworld.itempool.extend(items)
 
     def get_pre_fill_items(self):
         return self.pre_fill_items
@@ -703,10 +733,8 @@ class OracleOfSeasonsWorld(World):
         self.pre_fill_seeds()
         self.pre_fill_dungeon_items()
 
-    def filter_confined_dungeon_items_from_pool(self):
-        my_items = [item for item in self.multiworld.itempool if item.player == self.player]
+    def filter_confined_dungeon_items_from_pool(self, items: List[Item]):
         confined_dungeon_items = []
-
         excluded_dungeons = []
         if self.options.exclude_dungeons_without_essence and not self.options.shuffle_essences:
             for i, essence_name in enumerate(ESSENCES):
@@ -719,29 +747,31 @@ class OracleOfSeasonsWorld(World):
         else:
             small_keys_name = "Small Key"
         if not self.options.keysanity_small_keys:
-            confined_dungeon_items.extend([item for item in my_items if item.name.startswith(small_keys_name)])
+            confined_dungeon_items.extend([item for item in items if item.name.startswith(small_keys_name)])
         else:
             for i in excluded_dungeons:
-                confined_dungeon_items.extend([item for item in my_items if item.name == f"{small_keys_name} ({DUNGEON_NAMES[i]})"])
+                confined_dungeon_items.extend([item for item in items if item.name == f"{small_keys_name} ({DUNGEON_NAMES[i]})"])
 
         # Put Boss Keys unless keysanity is enabled for those
         if not self.options.keysanity_boss_keys:
-            confined_dungeon_items.extend([item for item in my_items if item.name.startswith("Boss Key")])
+            confined_dungeon_items.extend([item for item in items if item.name.startswith("Boss Key")])
         else:
             for i in excluded_dungeons:
-                confined_dungeon_items.extend([item for item in my_items if item.name == f"Boss Key ({DUNGEON_NAMES[i]})"])
+                confined_dungeon_items.extend([item for item in items if item.name == f"Boss Key ({DUNGEON_NAMES[i]})"])
 
         # Put Maps & Compasses unless keysanity is enabled for those
         if not self.options.keysanity_maps_compasses:
-            confined_dungeon_items.extend([item for item in my_items if item.name.startswith("Dungeon Map")
+            confined_dungeon_items.extend([item for item in items if item.name.startswith("Dungeon Map")
                                            or item.name.startswith("Compass")])
         else:
             for i in excluded_dungeons:
-                confined_dungeon_items.extend([item for item in my_items
+                confined_dungeon_items.extend([item for item in items
                                                if item.name == f"Dungeon Map ({DUNGEON_NAMES[i]})"
                                                or item.name == f"Compass ({DUNGEON_NAMES[i]})"])
 
-        return confined_dungeon_items
+        for item in confined_dungeon_items:
+            items.remove(item)
+        self.pre_fill_items.extend(confined_dungeon_items)
 
     def pre_fill_dungeon_items(self):
         # If keysanity is off, dungeon items can only be put inside local dungeon locations, and there are not so many
@@ -749,8 +779,6 @@ class OracleOfSeasonsWorld(World):
         # This usually ends up with generator not having anywhere to place a few small keys, making the seed unbeatable.
         # To circumvent this, we perform a restricted pre-fill here, placing only those dungeon items
         # before anything else.
-        # Build a list of all dungeon items that will need to be placed in their own dungeon.
-        all_confined_dungeon_items = self.filter_confined_dungeon_items_from_pool()
         for i in range(0, 9):
             # Build a list of locations in this dungeon
             dungeon_location_names = [name for name, loc in LOCATIONS_DATA.items()
@@ -760,14 +788,14 @@ class OracleOfSeasonsWorld(World):
 
             # From the list of all dungeon items that needs to be placed restrictively, only filter the ones for the
             # dungeon we are currently processing.
-            confined_dungeon_items = [item for item in all_confined_dungeon_items
+            confined_dungeon_items = [item for item in self.pre_fill_items
                                       if item.name.endswith(f"({DUNGEON_NAMES[i]})")]
             if len(confined_dungeon_items) == 0:
                 continue  # This list might be empty with some keysanity options
-            for item in confined_dungeon_items:
-                self.multiworld.itempool.remove(item)
 
-            # Get a new state each time to avoid poluting other prefills
+            # Remove from the all_state the items we're about to place
+            for item in confined_dungeon_items:
+                self.pre_fill_items.remove(item)
             collection_state = self.multiworld.get_all_state(False)
             # Perform a prefill to place confined items inside locations of this dungeon
             self.random.shuffle(dungeon_locations)
