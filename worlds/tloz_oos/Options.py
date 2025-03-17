@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 
 from Options import Choice, DeathLink, DefaultOnToggle, PerGameCommonOptions, Range, Toggle, StartInventoryPool, \
-    ItemDict, ItemsAccessibility
+    ItemDict, ItemsAccessibility, ItemSet
+from worlds.tloz_oos.data.Items import ITEMS_DATA
 
 
 class OracleOfSeasonsGoal(Choice):
@@ -438,12 +439,25 @@ class OracleOfSeasonsGashaLocations(Range):
     include_in_patch = True
 
 
-class OracleOfSeasonsRingQuality(DefaultOnToggle):
+class OracleOfSeasonsRequiredRings(ItemSet):
     """
-    If enabled, this option prevents useless rings from being shuffled in the item pool.
-    Both rings with no effect and rings providing maluses are considered useless.
+    Forces a specified set of rings to appear somewhere in the seed.
+    This is required in order for Start Inventory From Pool to consistently generate.
+    Adding too many rings to this list can cause generation failures.
+    List of ring names can be found here: https://zeldawiki.wiki/wiki/Magic_Ring
     """
-    display_name = "Remove Useless Rings"
+    display_name = "Required Rings"
+    valid_keys = {name for name, idata in ITEMS_DATA.items() if "ring" in idata}
+
+
+class OracleOfSeasonsExcludedRings(ItemSet):
+    """
+    Forces a specified set of rings to not appear in the seed.
+    List of ring names can be found here: https://zeldawiki.wiki/wiki/Magic_Ring
+    """
+    display_name = "Excluded Rings"
+    default = {name for name, idata in ITEMS_DATA.items() if "ring" in idata and idata["ring"] == "useless"}
+    valid_keys = {name for name, idata in ITEMS_DATA.items() if "ring" in idata}
 
 
 class OracleOfSeasonsShopPrices(Choice):
@@ -623,7 +637,8 @@ class OracleOfSeasonsOptions(PerGameCommonOptions):
     # Miscellaneous options
     shop_prices: OracleOfSeasonsShopPrices
     enforce_potion_in_shop: OracleOfSeasonsEnforcePotionInShop
-    remove_useless_rings: OracleOfSeasonsRingQuality
+    required_rings: OracleOfSeasonsRequiredRings
+    excluded_rings: OracleOfSeasonsExcludedRings
     fools_ore: OracleOfSeasonsFoolsOre
     combat_difficulty: OracleOfSeasonsCombatDifficulty
     quick_flute: OracleOfSeasonsQuickFlute
