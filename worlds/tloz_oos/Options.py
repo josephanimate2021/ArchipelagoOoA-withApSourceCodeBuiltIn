@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 
 from Options import Choice, DeathLink, DefaultOnToggle, PerGameCommonOptions, Range, Toggle, StartInventoryPool, \
-    ItemDict, ItemsAccessibility, OptionSet
+    ItemDict, ItemsAccessibility, ItemSet
+from worlds.tloz_oos.data.Items import ITEMS_DATA
 
 
 class OracleOfSeasonsGoal(Choice):
@@ -438,23 +439,24 @@ class OracleOfSeasonsGashaLocations(Range):
     include_in_patch = True
 
 
-class OracleOfSeasonsRequiredRings(OptionSet):
+class OracleOfSeasonsRequiredRings(ItemSet):
     """
     Forces a specified set of rings to appear somewhere in the seed.
     This is required in order for Start Inventory From Pool to consistently generate.
-    Rings will be added regardless of if Remove Useless Rings is true or not.
+    Adding too many rings to this list can cause generation failures.
     List of ring names can be found here: https://zeldawiki.wiki/wiki/Magic_Ring
     """
     display_name = "Required Rings"
 
 
-class OracleOfSeasonsExcludedRings(OptionSet):
+class OracleOfSeasonsExcludedRings(ItemSet):
     """
     Forces a specified set of rings to not appear in the seed.
     List of ring names can be found here: https://zeldawiki.wiki/wiki/Magic_Ring
     """
     display_name = "Excluded Rings"
-    default = ["Friendship Ring", "Cursed Ring", "GBA Time Ring", "Octo Ring", "Moblin Ring", "Like Like Ring", "Subrosian Ring", "First Gen Ring", "GBA Nature Ring", "Slayer's Ring", "Rupee Ring", "Victory Ring", "Sign Ring", "100th Ring"]
+    default = {name for name, idata in ITEMS_DATA.items() if "ring" in idata and idata["ring"] == "useless"}
+    valid_keys = {name for name, idata in ITEMS_DATA.items() if "ring" in idata}
 
 
 class OracleOfSeasonsShopPrices(Choice):

@@ -130,6 +130,10 @@ class OracleOfSeasonsWorld(World):
         if self.interpret_slot_data(None):
             return
 
+        conflicting_rings = self.options.required_rings.value & self.options.excluded_rings.value
+        if len(conflicting_rings) > 0:
+            raise Exception("Required Rings and Excluded Rings contain the same element(s)", conflicting_rings)
+
         self.remaining_progressive_gasha_seeds = self.options.deterministic_gasha_locations.value
 
         self.pick_essences_in_game()
@@ -539,6 +543,11 @@ class OracleOfSeasonsWorld(World):
         if name.endswith("!PROG"):
             name = name.removesuffix("!PROG")
             classification = ItemClassification.progression_skip_balancing
+        elif name.endswith("!USEFUL"):
+            # Same for above but with useful. This is typically used for Required Rings,
+            # as we don't want those locked in a barren dungeon
+            name = name.removesuffix("!USEFUL")
+            classification = ItemClassification.useful
         else:
             classification = ITEMS_DATA[name]["classification"]
         ap_code = self.item_name_to_id[name]
@@ -637,9 +646,20 @@ class OracleOfSeasonsWorld(World):
         filler_item_count -= required_gasha_seeds
 
         # Add the required rings
-        for ring in self.options.required_rings.value:
-            if ITEMS_DATA.get(ring):
-                item_pool_dict[ring] = item_pool_dict.get(item_name, 0) + 1
+        ring_copy = sorted(self.options.required_rings.value.copy())
+        for _ in range(len(ring_copy)):
+            ring_name = ring_copy.pop()
+            if ITEMS_DATA[ring_name]["classification"] == ItemClassification.filler:
+                ring_name = f"{ring_name}!USEFUL"
+            item_pool_dict[ring_name] = item_pool_dict.get(ring_name, 0) + 1
+            
+            if item_pool_dict["Random Ring"] > 0:
+                # Take from set ring pool first
+                item_pool_dict["Random Ring"] -= 1
+                if item_pool_dict["Random Ring"] <= 0:
+                    del item_pool_dict["Random Ring"]
+            else:
+                # Take from filler after
                 filler_item_count -= 1
 
         # Add as many filler items as required
