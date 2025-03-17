@@ -259,6 +259,9 @@ def oos_can_beat_required_golden_beasts(state: CollectionState, player: int):
 # Various item predicates ###########################################
 
 def oos_has_rupees(state: CollectionState, player: int, amount: int):
+    # Make free shops sphere 1 as players will get them at the start of the game anyway
+    if amount == 0:
+        return True
     # Rupee checks being quite approximative, being able to farm is a must-have to prevent any stupid lock
     if not oos_can_farm_rupees(state, player):
         return False

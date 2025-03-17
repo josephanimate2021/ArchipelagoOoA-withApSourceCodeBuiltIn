@@ -1,6 +1,6 @@
 import os
 import logging
-from typing import List, Union, ClassVar, Any, Optional
+from typing import List, Union, ClassVar, Any, Optional, Tuple
 import settings
 from BaseClasses import Tutorial, Region, Location, LocationProgressType, Item, ItemClassification
 from Fill import fill_restrictive, FillError
@@ -321,6 +321,9 @@ class OracleOfSeasonsWorld(World):
         elif self.options.shuffle_old_men == OracleOfSeasonsOldMenShuffle.option_random_positive_values:
             for key in self.old_man_rupee_values.keys():
                 self.old_man_rupee_values[key] = self.random.choice(get_old_man_values_pool())
+        else:
+            # Remove the old man values from the pool so that they don't count negative when they are shuffled as items
+            self.old_man_rupee_values = {}
 
     def randomize_shop_order(self):
         self.shop_order = [
@@ -580,7 +583,10 @@ class OracleOfSeasonsWorld(World):
                 filler_item_count += 1
                 continue
             if item_name.startswith("Rupees ("):
-                rupee_item_count += 1
+                if self.options.shop_prices == OracleOfSeasonsShopPrices.option_free:
+                    filler_item_count += 1
+                else:
+                    rupee_item_count += 1
                 continue
             if self.options.master_keys != OracleOfSeasonsMasterKeys.option_disabled and "Small Key" in item_name:
                 # Small Keys don't exist if Master Keys are set to replace them
@@ -627,12 +633,14 @@ class OracleOfSeasonsWorld(World):
                 item_pool_dict[small_key_name] = 1
                 filler_item_count -= 1
 
-        item_pool_dict.update(self.build_rupee_item_dict(rupee_item_count))
-
         # Add the required gasha seeds to the pool
         required_gasha_seeds = self.options.deterministic_gasha_locations.value
         item_pool_dict["Gasha Seed"] = required_gasha_seeds
         filler_item_count -= required_gasha_seeds
+
+        if rupee_item_count > 0:
+            rupee_item_pool, filler_item_count = self.build_rupee_item_dict(rupee_item_count, filler_item_count)
+            item_pool_dict.update(rupee_item_pool)
 
         # Add as many filler items as required
         for _ in range(filler_item_count):
@@ -648,19 +656,38 @@ class OracleOfSeasonsWorld(World):
 
         return item_pool_dict
 
-    def build_rupee_item_dict(self, rupee_item_count: int):
+    def build_rupee_item_dict(self, rupee_item_count: int, filler_item_count: int) -> Tuple[int, int]:
         total_cost = max(self.shop_rupee_requirements.values())
-        average_rupee_value = total_cost / rupee_item_count
+
+        # Count the old man's contribution, it's especially important as it may be negative
+        old_man_rupee = 0
+        for name in self.old_man_rupee_values:
+            old_man_rupee += self.old_man_rupee_values[name]
+
+        average_rupee_value = (total_cost - old_man_rupee) / rupee_item_count
         deviation = average_rupee_value / 2.5
 
         rupee_item_dict = {}
+        target = total_cost / 2 - old_man_rupee
         for i in range(0, rupee_item_count):
             value = self.random.gauss(average_rupee_value, deviation)
             value = min(VALID_RUPEE_ITEM_VALUES, key=lambda x: abs(x - value))
-            # Put a "!PROG" suffix to force them to be created as progression items (see `create_item`)
-            item_name = f"Rupees ({value})!PROG"
+            if value > average_rupee_value / 3:
+                # Put a "!PROG" suffix to force them to be created as progression items (see `create_item`)
+                item_name = f"Rupees ({value})!PROG"
+                target -= value
+            else:
+                # Don't count little packs as progression since they are likely irrelevant
+                item_name = f"Rupees ({value})"
             rupee_item_dict[item_name] = rupee_item_dict.get(item_name, 0) + 1
-        return rupee_item_dict
+
+        # If the target is positive, it means there aren't enough rupees, so we'll steal a filler from the pool and reroll
+        # (We ignore dungeons here because we don't want to worry about whether they'll be available)
+        # TODO : With GER that note will be obsolete
+        if target > 0:
+            return self.build_rupee_item_dict(rupee_item_count + 1, filler_item_count - 1)
+
+        return rupee_item_dict, filler_item_count
 
     def create_items(self):
         item_pool_dict = self.build_item_pool_dict()
