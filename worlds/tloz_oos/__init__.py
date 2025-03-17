@@ -4,7 +4,7 @@ from typing import List, Union, ClassVar, Any, Optional, Tuple
 import settings
 from BaseClasses import Tutorial, Region, Location, LocationProgressType, Item, ItemClassification
 from Fill import fill_restrictive, FillError
-from Options import Accessibility
+from Options import Accessibility, OptionError
 from worlds.AutoWorld import WebWorld, World
 
 from .Util import *
@@ -132,7 +132,7 @@ class OracleOfSeasonsWorld(World):
 
         conflicting_rings = self.options.required_rings.value & self.options.excluded_rings.value
         if len(conflicting_rings) > 0:
-            raise Exception("Required Rings and Excluded Rings contain the same element(s)", conflicting_rings)
+            raise OptionError("Required Rings and Excluded Rings contain the same element(s)", conflicting_rings)
 
         self.remaining_progressive_gasha_seeds = self.options.deterministic_gasha_locations.value
 
