@@ -375,10 +375,8 @@ class OracleOfSeasonsWorld(World):
             self.shop_rupee_requirements[shop_name] = cumulated_requirement
 
     def create_random_rings_pool(self):
-        # Get a subset of as many rings as needed, with a potential filter on quality depending on chosen options
+        # Get a subset of as many rings as needed, with a potential filter depending on chosen options
         ring_names = [name for name, idata in ITEMS_DATA.items() if "ring" in idata]
-        if self.options.remove_useless_rings:
-            ring_names = [name for name in ring_names if ITEMS_DATA[name]["ring"] == "good"]
         
         # Remove required rings because they'll be added later anyway
         ring_names = [name for name in ring_names if name not in self.options.required_rings.value.copy()]

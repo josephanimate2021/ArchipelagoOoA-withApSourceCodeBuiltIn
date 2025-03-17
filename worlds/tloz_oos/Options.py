@@ -438,14 +438,6 @@ class OracleOfSeasonsGashaLocations(Range):
     include_in_patch = True
 
 
-class OracleOfSeasonsRingQuality(DefaultOnToggle):
-    """
-    If enabled, this option prevents useless rings from being shuffled in the item pool.
-    Both rings with no effect and rings providing maluses are considered useless.
-    """
-    display_name = "Remove Useless Rings"
-
-
 class OracleOfSeasonsRequiredRings(OptionSet):
     """
     Forces a specified set of rings to appear somewhere in the seed.
@@ -462,6 +454,7 @@ class OracleOfSeasonsExcludedRings(OptionSet):
     List of ring names can be found here: https://zeldawiki.wiki/wiki/Magic_Ring
     """
     display_name = "Excluded Rings"
+    default = ["Friendship Ring", "Cursed Ring", "GBA Time Ring", "Octo Ring", "Moblin Ring", "Like Like Ring", "Subrosian Ring", "First Gen Ring", "GBA Nature Ring", "Slayer's Ring", "Rupee Ring", "Victory Ring", "Sign Ring", "100th Ring"]
 
 
 class OracleOfSeasonsShopPrices(Choice):
@@ -641,7 +634,6 @@ class OracleOfSeasonsOptions(PerGameCommonOptions):
     # Miscellaneous options
     shop_prices: OracleOfSeasonsShopPrices
     enforce_potion_in_shop: OracleOfSeasonsEnforcePotionInShop
-    remove_useless_rings: OracleOfSeasonsRingQuality
     required_rings: OracleOfSeasonsRequiredRings
     excluded_rings: OracleOfSeasonsExcludedRings
     fools_ore: OracleOfSeasonsFoolsOre
