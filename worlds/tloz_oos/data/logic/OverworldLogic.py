@@ -1200,6 +1200,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
                 oos_can_summon_dimitri(state, player),
                 all([
                     oos_option_medium_logic(state, player),
+                    oos_has_flippers(state, player),
                     state.has("Swimmer's Ring", player)
                 ])
             ])],
