@@ -359,7 +359,7 @@ def oos_can_trigger_far_switch(state: CollectionState, player: int):
         oos_has_bombs(state, player),
         oos_has_slingshot(state, player),
         all([
-            oos_option_hard_logic(state, player),
+            oos_option_medium_logic(state, player),
             oos_has_sword(state, player, False),
             state.has("Energy Ring", player)
         ])
@@ -657,7 +657,7 @@ def oos_can_break_crystal(state: CollectionState, player: int):
         oos_has_bombs(state, player),
         oos_has_bracelet(state, player),
         all([
-            oos_option_hard_logic(state, player),
+            oos_option_medium_logic(state, player),
             state.has("Expert's Ring", player)
         ])
     ])
@@ -803,7 +803,7 @@ def oos_can_kill_stalfos(state: CollectionState, player: int):
 
 def oos_can_punch(state: CollectionState, player: int):
     return all([
-        oos_option_hard_logic(state, player),
+        oos_option_medium_logic(state, player),
         any([
             state.has("Fist Ring", player),
             state.has("Expert's Ring", player)

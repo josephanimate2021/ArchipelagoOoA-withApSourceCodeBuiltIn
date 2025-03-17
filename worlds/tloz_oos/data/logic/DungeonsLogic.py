@@ -732,6 +732,7 @@ def make_d7_logic(player: int):
             ]),
             all([
                 oos_has_sword(state, player, False),
+                oos_option_medium_logic(state, player),
                 state.has("Energy Ring", player),
             ])
         ])],
