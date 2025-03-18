@@ -273,6 +273,7 @@ def oos_has_rupees(state: CollectionState, player: int, amount: int):
     rupees += state.count("Rupees (5)", player) * 5
     rupees += state.count("Rupees (10)", player) * 10
     rupees += state.count("Rupees (20)", player) * 20
+    rupees += state.count("Rupees (30)", player) * 30
     rupees += state.count("Rupees (50)", player) * 50
     rupees += state.count("Rupees (100)", player) * 100
     rupees += state.count("Rupees (200)", player) * 200
