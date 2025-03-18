@@ -577,6 +577,7 @@ class OracleOfSeasonsWorld(World):
         item_pool_dict = {}
         filler_item_count = 0
         rupee_item_count = 0
+        ore_item_count = 0
         for loc_name, loc_data in LOCATIONS_DATA.items():
             if not self.location_is_active(loc_name, loc_data):
                 continue
@@ -599,6 +600,12 @@ class OracleOfSeasonsWorld(World):
                     filler_item_count += 1
                 else:
                     rupee_item_count += 1
+                continue
+            if item_name.startswith("Ore Chunks ("):
+                if self.options.shop_prices == OracleOfSeasonsShopPrices.option_free or not self.options.shuffle_golden_ore_spots:
+                    filler_item_count += 1
+                else:
+                    ore_item_count += 1
                 continue
             if self.options.master_keys != OracleOfSeasonsMasterKeys.option_disabled and "Small Key" in item_name:
                 # Small Keys don't exist if Master Keys are set to replace them
@@ -654,12 +661,16 @@ class OracleOfSeasonsWorld(World):
             rupee_item_pool, filler_item_count = self.build_rupee_item_dict(rupee_item_count, filler_item_count)
             item_pool_dict.update(rupee_item_pool)
 
+        if ore_item_count > 0:
+            ore_item_pool, filler_item_count = self.build_ore_item_dict(ore_item_count, filler_item_count)
+            item_pool_dict.update(ore_item_pool)
+
         # Add the required rings
         ring_copy = sorted(self.options.required_rings.value.copy())
         for _ in range(len(ring_copy)):
             ring_name = f"{ring_copy.pop()}!USEFUL"
             item_pool_dict[ring_name] = item_pool_dict.get(ring_name, 0) + 1
-            
+
             if item_pool_dict["Random Ring"] > 0:
                 # Take from set ring pool first
                 item_pool_dict["Random Ring"] -= 1
@@ -685,34 +696,44 @@ class OracleOfSeasonsWorld(World):
         total_cost = max(self.shop_rupee_requirements.values())
 
         # Count the old man's contribution, it's especially important as it may be negative
+        # (We ignore dungeons here because we don't want to worry about whether they'll be available)
+        # TODO : With GER that note will be obsolete
         old_man_rupee = 0
         for name in self.old_man_rupee_values:
             old_man_rupee += self.old_man_rupee_values[name]
 
-        average_rupee_value = (total_cost - old_man_rupee) / rupee_item_count
-        deviation = average_rupee_value / 2.5
-
-        rupee_item_dict = {}
         target = total_cost / 2 - old_man_rupee
-        for i in range(0, rupee_item_count):
-            value = self.random.gauss(average_rupee_value, deviation)
-            value = min(VALID_RUPEE_ITEM_VALUES, key=lambda x: abs(x - value))
-            if value > average_rupee_value / 3:
+        total_cost -= old_man_rupee
+        return self.build_currency_item_dict(rupee_item_count, filler_item_count, target, total_cost, "Rupees", VALID_RUPEE_ITEM_VALUES)
+
+    def build_ore_item_dict(self, ore_item_count: int, filler_item_count: int) -> Tuple[int, int]:
+        total_cost = sum([self.shop_prices[loc] for loc in MARKET_LOCATIONS])
+        target = total_cost / 2
+
+        return self.build_currency_item_dict(ore_item_count, filler_item_count, target, total_cost, "Ore Chunks", VALID_ORE_ITEM_VALUES)
+
+    def build_currency_item_dict(self, currency_item_count: int, filler_item_count: int, initial_target: int,
+                                 total_cost: int, currency_name: str, valid_currency_item_values: list[int]):
+        average_ore_value = total_cost / currency_item_count
+        deviation = average_ore_value / 2.5
+        currency_item_dict = {}
+        target = initial_target
+        for i in range(0, currency_item_count):
+            value = self.random.gauss(average_ore_value, deviation)
+            value = min(valid_currency_item_values, key=lambda x: abs(x - value))
+            if value > average_ore_value / 3:
                 # Put a "!PROG" suffix to force them to be created as progression items (see `create_item`)
-                item_name = f"Rupees ({value})!PROG"
+                item_name = f"{currency_name} ({value})!PROG"
                 target -= value
             else:
                 # Don't count little packs as progression since they are likely irrelevant
-                item_name = f"Rupees ({value})"
-            rupee_item_dict[item_name] = rupee_item_dict.get(item_name, 0) + 1
-
+                item_name = f"{currency_name} ({value})"
+            currency_item_dict[item_name] = currency_item_dict.get(item_name, 0) + 1
         # If the target is positive, it means there aren't enough rupees, so we'll steal a filler from the pool and reroll
-        # (We ignore dungeons here because we don't want to worry about whether they'll be available)
-        # TODO : With GER that note will be obsolete
         if target > 0:
-            return self.build_rupee_item_dict(rupee_item_count + 1, filler_item_count - 1)
-
-        return rupee_item_dict, filler_item_count
+            return self.build_currency_item_dict(currency_item_count + 1, filler_item_count - 1, initial_target,
+                                                 total_cost, currency_name, valid_currency_item_values)
+        return currency_item_dict, filler_item_count
 
     def create_items(self):
         item_pool_dict = self.build_item_pool_dict()
@@ -845,9 +866,9 @@ class OracleOfSeasonsWorld(World):
 
     def get_filler_item_name(self) -> str:
         FILLER_ITEM_NAMES = [
-            "Rupees (1)", "Rupees (5)", "Rupees (5)", "Rupees (10)", "Rupees (10)",
+            "Rupees (1)", "Rupees (5)", "Rupees (10)", "Rupees (10)",
             "Rupees (20)", "Rupees (30)",
-            "Ore Chunks (10)", "Ore Chunks (10)",
+            "Ore Chunks (10)", "Ore Chunks (10)", "Ore Chunks (25)",
             "Random Ring", "Random Ring", "Random Ring",
             "Gasha Seed", "Gasha Seed",
             "Potion"
