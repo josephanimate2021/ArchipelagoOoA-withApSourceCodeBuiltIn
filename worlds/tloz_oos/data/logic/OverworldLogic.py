@@ -840,7 +840,10 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
             oos_can_jump_1_wide_liquid(state, player, False),
             any([
                 state.has("Lava Soup", player),
-                oos_self_locking_item(state, player, "biggoron trade", "Lava Soup")
+                all([
+                    oos_self_locking_item(state, player, "biggoron trade", "Lava Soup"),
+                    not state.multiworld.worlds[player].options.secret_locations
+                ])
             ])
         ])],
 
