@@ -74,7 +74,6 @@ def apply_self_locking_rules(multiworld: MultiWorld, player: int):
         "Maple Trade": "Lon Lon Egg",
         "Holodrum Plain: Mrs. Ruul Trade": "Ghastly Doll",
         "Subrosia: Subrosian Chef Trade": "Iron Pot",
-        "Goron Mountain: Biggoron Trade": "Lava Soup",
         "Sunken City: Ingo Trade": "Goron Vase",
         "North Horon: Yelling Old Man Trade": "Fish",
         "Horon Village: Tick Tock Trade": "Wooden Bird",
@@ -84,6 +83,8 @@ def apply_self_locking_rules(multiworld: MultiWorld, player: int):
         "Sunken City: Master's Plaque Trade": "Master's Plaque",
         "Subrosia: Market #1": "Star Ore",
     }
+    if not multiworld.worlds[player].options.secret_locations:
+        OTHER_SELF_LOCKING_ITEMS["Goron Mountain: Biggoron Trade"] = "Lava Soup"
 
     for loc_name, item_name in OTHER_SELF_LOCKING_ITEMS.items():
         location = multiworld.get_location(loc_name, player)
