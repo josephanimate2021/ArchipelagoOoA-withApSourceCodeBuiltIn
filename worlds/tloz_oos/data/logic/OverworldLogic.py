@@ -79,6 +79,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
             oos_has_shovel(state, player),
             any([
                 oos_has_noble_sword(state, player),
+                state.has("Biggoron's Sword", player),
                 oos_has_fools_ore(state, player),
                 all([
                     oos_option_medium_logic(state, player),
