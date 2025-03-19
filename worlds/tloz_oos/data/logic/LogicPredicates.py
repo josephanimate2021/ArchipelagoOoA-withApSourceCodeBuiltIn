@@ -362,12 +362,14 @@ def oos_can_trigger_far_switch(state: CollectionState, player: int):
         oos_use_energy_ring(state, player)
     ])
 
+
 def oos_use_energy_ring(state: CollectionState, player: int):
     return all([
         oos_option_medium_logic(state, player),
         oos_has_sword(state, player, False),
         state.has("Energy Ring", player)
     ])
+
 
 def oos_has_rod(state: CollectionState, player: int):
     return any([
