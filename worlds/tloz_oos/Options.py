@@ -248,10 +248,10 @@ class OracleOfSeasonsShowDungeonsWithEssence(Choice):
     This is especially useful when using "Exclude Dungeons Without Essence" to know which dungeons you can ignore.
     If "Shuffle Essences" is enabled, this option has no effect.
     - Disabled: Dungeons with an essence are never shown on the map
-    - With Treasure Map: Dungeons with an essence all become highlighted when you obtain the unique Treasure Map item
     - With Compass: Dungeons with an essence can only be highlighted after obtaining their Compass
     - Always: Dungeons with an essence are always shown on the map
     """
+    # TODO: - With Treasure Map: Dungeons with an essence all become highlighted when you obtain the unique Treasure Map item
     display_name = "Show Dungeons With Essence"
 
     option_disabled = 0
@@ -442,7 +442,6 @@ class OracleOfSeasonsGashaLocations(Range):
 class OracleOfSeasonsRequiredRings(ItemSet):
     """
     Forces a specified set of rings to appear somewhere in the seed.
-    This is required in order for Start Inventory From Pool to consistently generate.
     Adding too many rings to this list can cause generation failures.
     List of ring names can be found here: https://zeldawiki.wiki/wiki/Magic_Ring
     """

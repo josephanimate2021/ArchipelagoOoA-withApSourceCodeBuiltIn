@@ -384,7 +384,7 @@ class OracleOfSeasonsWorld(World):
     def create_random_rings_pool(self):
         # Get a subset of as many rings as needed, with a potential filter depending on chosen options
         ring_names = [name for name, idata in ITEMS_DATA.items() if "ring" in idata]
-        
+
         # Remove required rings because they'll be added later anyway
         ring_names = [name for name in ring_names if name not in self.options.required_rings.value and name not in self.options.excluded_rings.value]
 
