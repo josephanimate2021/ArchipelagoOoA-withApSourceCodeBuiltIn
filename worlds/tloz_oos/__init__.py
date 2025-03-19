@@ -844,7 +844,6 @@ class OracleOfSeasonsWorld(World):
         def place_seed(seed_name: str, location_name: str):
             seed_item = self.create_item(seed_name)
             self.multiworld.get_location(location_name, self.player).place_locked_item(seed_item)
-            self.pre_fill_items.append(seed_item)
 
         seeds_to_place = list(SEED_ITEMS)
 

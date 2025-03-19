@@ -22,7 +22,8 @@ def make_d0_logic(player: int):
         # 1 key
         ["enter d0", "d0 sword chest", False, lambda state: any([
             oos_has_small_keys(state, player, 0, 1),
-            oos_self_locking_small_key(state, player, "d0 sword chest", 0)
+            oos_self_locking_small_key(state, player, "d0 sword chest", 0),
+            oos_self_locking_item(state, player, "d0 sword chest", "Master Key (Hero's Cave)")
         ])],
     ]
 
@@ -78,13 +79,13 @@ def make_d1_logic(player: int):
         ["d1 railway chest", "d1 button chest", False, None],
 
         # 2 keys
-        ["d1 railway chest", "d1 basement", False, lambda state: all([
-            oos_has_bombs(state, player),
-            any([
+        ["d1 railway chest", "d1 basement", False, lambda state: any([
+            oos_self_locking_small_key(state, player, "d1 basement", 1),
+            all([
+                oos_has_bombs(state, player),
                 oos_has_small_keys(state, player, 1, 2),
-                oos_self_locking_small_key(state, player, "d1 basement", 1)
-            ]),
-            oos_can_kill_armored_enemy(state, player)
+                oos_can_kill_armored_enemy(state, player)
+            ])
         ])],
     ]
 
