@@ -287,7 +287,7 @@ class OracleOfAgesWorld(World):
         ap_code = self.item_name_to_id[name]
 
         # A few items become progression only in hard logic
-        progression_items_in_medium_logic = ["Expert's Ring", "Fist Ring", "Toss Ring", "Enery Ring"]
+        progression_items_in_medium_logic = ["Expert's Ring", "Fist Ring", "Toss Ring", "Energy Ring"]
         if self.options.logic_difficulty == "medium" and name in progression_items_in_medium_logic:
             classification = ItemClassification.progression
 
