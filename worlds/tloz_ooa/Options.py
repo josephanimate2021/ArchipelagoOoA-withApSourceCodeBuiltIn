@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 
-from Options import Choice, DeathLink, DefaultOnToggle, PerGameCommonOptions, Range, Toggle, StartInventoryPool
+from Options import Choice, DeathLink, DefaultOnToggle, PerGameCommonOptions, Range, Toggle, StartInventoryPool, ItemSet
+
+from worlds.tloz_ooa.data.Items import ITEMS_DATA
 
 
 class OracleOfAgesGoal(Choice):
@@ -145,18 +147,25 @@ class OracleOfAgesSlateShuffle(Toggle):
     display_name = "Slates Outside Dungeon 8"
 
 
-class OracleOfAgesRingQuality(Choice):
+class OracleOfSeasonsRequiredRings(ItemSet):
     """
-    Defines the quality of the rings that will be shuffled in your seed:
-    - Any: any ring can potentially be shuffled (including literally useless ones)
-    - Only Useful: only useful rings will be shuffled
+    Forces a specified set of rings to appear somewhere in the seed.
+    Adding too many rings to this list can cause generation failures.
+    List of ring names can be found here: https://zeldawiki.wiki/wiki/Magic_Ring
     """
-    display_name = "Rings Quality"
+    display_name = "Required Rings"
+    valid_keys = {name for name, idata in ITEMS_DATA.items() if "ring" in idata}
 
-    option_any = 0
-    option_only_useful = 1
 
-    default = 1
+class OracleOfSeasonsExcludedRings(ItemSet):
+    """
+    Forces a specified set of rings to not appear in the seed.
+    List of ring names can be found here: https://zeldawiki.wiki/wiki/Magic_Ring
+    """
+    display_name = "Excluded Rings"
+    default = sorted({name for name, idata in ITEMS_DATA.items() if "ring" in idata and idata["ring"] == "useless"})
+    valid_keys = {name for name, idata in ITEMS_DATA.items() if "ring" in idata}
+
 
 class OracleOfAgesPricesFactor(Range):
     """
@@ -222,9 +231,9 @@ class OracleOfAgesOptions(PerGameCommonOptions):
     keysanity_boss_keys: OracleOfAgesBossKeyShuffle
     keysanity_maps_compasses: OracleOfAgesMapCompassShuffle
     keysanity_slates: OracleOfAgesSlateShuffle
-    ring_quality: OracleOfAgesRingQuality
+    required_rings: OracleOfSeasonsRequiredRings
+    excluded_rings: OracleOfSeasonsExcludedRings
     shop_prices_factor: OracleOfAgesPricesFactor
     advance_shop: OracleOfAgesAdvanceShop
-    warp_to_start: OracleOfAgesWarpToStart
     combat_difficulty: OracleOfAgesCombatDifficulty
     death_link: DeathLink

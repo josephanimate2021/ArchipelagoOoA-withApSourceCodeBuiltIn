@@ -207,7 +207,7 @@ def make_overworld_logic(player: int):
             ])
         ])],
         ["deku forest", "deku forest tree", False, lambda state: all([
-            ooa_can_harvest_tree(state, player, False),                    
+            ooa_can_harvest_tree(state, player, False),
             any([
                 ooa_can_jump_1_wide_pit(state, player, False),
                 ooa_has_switch_hook(state, player),
@@ -255,11 +255,7 @@ def make_overworld_logic(player: int):
             ooa_can_go_back_to_present(state, player),
             all([
                 ooa_has_shovel(state, player),
-                ooa_can_open_portal(state, player),
-                any([
-                    ooa_can_warp(state,player),
-                    ooa_has_bracelet(state,player)
-                ])
+                ooa_can_open_portal(state, player)
             ])
         ])],
         ["crescent present west", "d3 entrance", False, None],
@@ -328,10 +324,7 @@ def make_overworld_logic(player: int):
             state.has("Tuni Nut", player),
             any([
                 ooa_can_go_back_to_present(state, player),
-                all([
-                    ooa_can_open_portal(state, player),
-                    ooa_can_warp(state, player),
-                ])
+                ooa_can_open_portal(state, player)
             ])
         ])],
 

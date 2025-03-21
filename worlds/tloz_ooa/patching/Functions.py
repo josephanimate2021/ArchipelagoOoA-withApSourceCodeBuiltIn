@@ -58,8 +58,6 @@ def get_asm_files(patch_data):
         asm_files.append("asm/conditional/skip_joke.yaml")
     if get_settings()["tloz_ooa_options"]["qol_mermaid_suit"]:
         asm_files.append("asm/conditional/qol_mermaid_suit.yaml")
-    if patch_data["options"]["warp_to_start"]:
-        asm_files.append("asm/conditional/warp_to_start.yaml")
     if patch_data["options"]["goal"] == OracleOfAgesGoal.option_beat_ganon:
         asm_files.append("asm/conditional/ganon_goal.yaml")
     return asm_files
@@ -97,7 +95,7 @@ def define_option_constants(assembler: Z80Assembler, patch_data):
     assembler.define_byte("option.defaultSeedType", 0x20 + patch_data["options"]["default_seed"])
     assembler.define_byte("option.receivedDamageModifier", options["combat_difficulty"])
     assembler.define_byte("option.openAdvanceShop", options["advance_shop"])
-    assembler.define_byte("option.warpToStart", options["warp_to_start"])
+    assembler.define_byte("option.warpToStart", True)
 
     assembler.define_byte("option.requiredEssences", options["required_essences"])
     assembler.define_byte("option.required_slates", options["required_slates"])
