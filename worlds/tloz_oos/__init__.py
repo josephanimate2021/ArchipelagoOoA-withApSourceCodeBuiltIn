@@ -578,6 +578,7 @@ class OracleOfSeasonsWorld(World):
         filler_item_count = 0
         rupee_item_count = 0
         ore_item_count = 0
+        remaining_rings = len({name for name, idata in ITEMS_DATA.items() if "ring" in idata}) - len(self.options.excluded_rings.value)
         for loc_name, loc_data in LOCATIONS_DATA.items():
             if not self.location_is_active(loc_name, loc_data):
                 continue
@@ -586,7 +587,12 @@ class OracleOfSeasonsWorld(World):
 
             item_name = loc_data['vanilla_item']
             if "Ring" in item_name:
-                item_name = "Random Ring"
+                if remaining_rings > 0:
+                    item_name = "Random Ring"
+                    remaining_rings -= 1
+                else:
+                    filler_item_count += 1
+                    continue
             if item_name in removed_item_quantities and removed_item_quantities[item_name] > 0:
                 # If item was put in the "remove_items_from_pool" option, replace it with a random filler item
                 removed_item_quantities[item_name] -= 1
@@ -671,7 +677,7 @@ class OracleOfSeasonsWorld(World):
             ring_name = f"{ring_copy.pop()}!USEFUL"
             item_pool_dict[ring_name] = item_pool_dict.get(ring_name, 0) + 1
 
-            if item_pool_dict["Random Ring"] > 0:
+            if item_pool_dict.get("Random Ring", 0) > 0:
                 # Take from set ring pool first
                 item_pool_dict["Random Ring"] -= 1
             else:
