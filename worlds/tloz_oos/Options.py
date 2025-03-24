@@ -224,7 +224,7 @@ class OracleOfSeasonsGoldenOreSpotsShuffle(Toggle):
 
 class OracleOfSeasonsEssenceSanity(Toggle):
     """
-    If enabled, essences will be shuffled anywhere in the multiworld instead of being guranteed to be found
+    If enabled, essences will be shuffled anywhere in the multiworld instead of being guaranteed to be found
     at the end their respective dungeons.
     """
     display_name = "Shuffle Essences"

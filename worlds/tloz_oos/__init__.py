@@ -570,6 +570,10 @@ class OracleOfSeasonsWorld(World):
         if self.options.logic_difficulty in difficulties and not self.options.randomize_lost_woods_item_sequence and name == "Phonograph":
             classification = ItemClassification.filler
 
+        # UT doesn't let us know if the item is progression or not, so it is always progression
+        if hasattr(self.multiworld, "generation_is_fake"):
+            classification = ItemClassification.progression
+
         return Item(name, classification, ap_code, self.player)
 
     def build_item_pool_dict(self):
@@ -984,8 +988,6 @@ class OracleOfSeasonsWorld(World):
         self.options.shuffle_golden_ore_spots = OracleOfSeasonsGoldenOreSpotsShuffle.from_any(slot_data["shuffle_golden_ore_spots"])
         self.options.normalize_horon_village_season = OracleOfSeasonsHoronSeason.from_any(slot_data["normalize_horon_village_season"])
         self.options.deterministic_gasha_locations = OracleOfSeasonsGashaLocations.from_any(slot_data["deterministic_gasha_locations"])
-
-        self.remaining_progressive_gasha_seeds = 999999  # All gasha seeds need to be progression
 
         self.default_seasons = slot_data["default_seasons"]
         self.lost_woods_item_sequence = []  # Unknown
