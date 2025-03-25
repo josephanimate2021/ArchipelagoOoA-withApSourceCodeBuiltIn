@@ -2328,7 +2328,7 @@ LOCATIONS_DATA = {
         "map_tile": 0xb0,
         "symbolic_name": "templeSecret",
     },
-    "Natzu: Deku Secret": {
+    "Natzu Region: Deku Secret": {
         "region_id": "deku secret",
         "vanilla_item": "Filler Item",
         "conditional": True,
