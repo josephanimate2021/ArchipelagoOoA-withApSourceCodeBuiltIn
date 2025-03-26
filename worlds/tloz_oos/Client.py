@@ -158,18 +158,12 @@ class OracleOfSeasonsClient(BizHawkClient):
             if "flag_byte" not in location:
                 continue
 
-            bytes_to_test = location["flag_byte"]
-            if not hasattr(bytes_to_test, "__len__"):
-                bytes_to_test = [bytes_to_test]
-
-            # Check all "flag_byte" to see if location has been checked
-            for byte_addr in bytes_to_test:
-                byte_offset = byte_addr - RAM_ADDRS["location_flags"][0]
-                bit_mask = location["bit_mask"] if "bit_mask" in location else 0x20
-                if flag_bytes[byte_offset] & bit_mask == bit_mask:
-                    location_id = self.location_name_to_id[name]
-                    local_checked_locations.add(location_id)
-                    break
+            byte_addr = location["flag_byte"]
+            byte_offset = byte_addr - RAM_ADDRS["location_flags"][0]
+            bit_mask = location["bit_mask"] if "bit_mask" in location else 0x20
+            if flag_bytes[byte_offset] & bit_mask == bit_mask:
+                location_id = self.location_name_to_id[name]
+                local_checked_locations.add(location_id)
 
         # Check how many deterministic Gasha Nuts have been opened, and mark their matching locations as checked
         byte_offset = 0xC649 - RAM_ADDRS["location_flags"][0]

@@ -1,7 +1,5 @@
 from BaseClasses import ItemClassification
 
-BASE_ITEM_ID = 27022001000
-
 ITEMS_DATA = {
     #   "No Item": {
     #   'classification': ItemClassification.filler,
