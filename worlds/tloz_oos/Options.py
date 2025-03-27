@@ -572,7 +572,7 @@ class OracleOfSeasonsRemoveItemsFromPool(ItemDict):
     verify_item_name = False
 
 
-class OracleOfSeasonsIncludeSecretLocations(DefaultOnToggle):
+class OracleOfSeasonsIncludeSecretLocations(Toggle):
     """
     When enabled, add the linked game secrets to the list of locations
     """
