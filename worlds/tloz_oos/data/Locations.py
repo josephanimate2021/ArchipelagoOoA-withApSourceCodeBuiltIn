@@ -48,7 +48,7 @@ LOCATIONS_DATA = {
         "room": 0x008e,
         "collect": COLLECT_CHEST,
     },
-    "North Horon: Blaino's Gym Prize": {
+    "Holodrum Plain: Blaino's Gym Prize": {
         "region_id": "blaino prize",
         "vanilla_item": "Progressive Sword",  # Ricky's gloves are useless in current logic
         "flag_byte": 0xc8b4,
