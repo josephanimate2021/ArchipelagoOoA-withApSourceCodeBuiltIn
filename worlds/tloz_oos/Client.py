@@ -191,6 +191,11 @@ class OracleOfSeasonsClient(BizHawkClient):
                 if ctx.slot_data is None or ctx.slot_data["enforce_potion_in_shop"]:
                     continue
 
+            # Do not hint buisiness scrubs if disabled, since it would cause an error on MultiServer's side
+            if name.endswith("Business Scrub"):
+                if ctx.slot_data is None or not ctx.slot_data["shuffle_business_scrubs"]:
+                    continue
+
             # Check "scouting_byte" to see if map has been visited for scoutable locations
             byte_to_test = location["scouting_byte"]
             byte_offset = byte_to_test - RAM_ADDRS["location_flags"][0]
