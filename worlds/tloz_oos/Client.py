@@ -212,11 +212,12 @@ class OracleOfSeasonsClient(BizHawkClient):
         # If the game hasn't received all items yet and the received item struct doesn't contain an item, then
         # fill it with the next item
         if num_received_items < len(ctx.items_received):
-            next_item_name = self.item_id_to_name[ctx.items_received[num_received_items].item]
-            await bizhawk.write(ctx.bizhawk_ctx, [(0xCBFB, [
-                ITEMS_DATA[next_item_name]["id"],
-                ITEMS_DATA[next_item_name]["subid"] if "subid" in ITEMS_DATA[next_item_name] else 0
-            ], "System Bus")])
+            next_item = ctx.items_received[num_received_items].item
+            item_id = next_item // 0x100
+            item_subid = next_item % 0x100
+            if item_id == 0x30:  # Small or master key
+                item_subid = item_subid % 0x80  # TODO: Remove this if/when both master and small can be obtained in the same world
+            await bizhawk.write(ctx.bizhawk_ctx, [(0xCBFB, [item_id, item_subid], "System Bus")])
 
     async def process_game_completion(self, ctx: "BizHawkClientContext", flag_bytes, current_room: int):
         game_clear = False
