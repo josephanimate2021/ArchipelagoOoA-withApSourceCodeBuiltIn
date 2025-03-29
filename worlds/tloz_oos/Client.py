@@ -146,6 +146,10 @@ class OracleOfSeasonsClient(BizHawkClient):
             current_room = (read_result[4][0] << 8) | read_result[5][0]
             is_dead = (read_result[6][0] != 0)
 
+            if "MoveLink" in ctx.tags:
+                # We need to move the player first to not teleport the player away from an item
+                await self.process_movelink_for_april_fools(ctx, current_room)
+
             await self.process_checked_locations(ctx, flag_bytes)
             await self.process_scouted_locations(ctx, flag_bytes)
             await self.process_tracker_updates(ctx, flag_bytes, current_room)
@@ -159,9 +163,6 @@ class OracleOfSeasonsClient(BizHawkClient):
 
             if "DeathLink" in ctx.tags:
                 await self.process_deathlink(ctx, is_dead)
-
-            if "MoveLink" in ctx.tags:
-                await self.process_movelink_for_april_fools(ctx, current_room)
 
         except bizhawk.RequestFailedError:
             # Exit handler and return to main loop to reconnect

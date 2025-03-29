@@ -600,6 +600,8 @@ class OracleOfSeasonsMoveLink(Toggle):
     """
     When enabled, movement will be linked between games that enabled this option.
     This option is only visible on yamls generated in April.
+
+    ⚠ This option may easily cause softlocks and may cause some issues. Some graphical oddities are also to be expected.
     """
     display_name = "Randomize AI"
     visibility = Visibility.all if (datetime.now().month == 4) else Visibility.none  # Only visible in april
