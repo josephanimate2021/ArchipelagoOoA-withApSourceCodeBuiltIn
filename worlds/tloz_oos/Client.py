@@ -290,6 +290,16 @@ class OracleOfSeasonsClient(BizHawkClient):
             if key not in self.local_tracker or self.local_tracker[key] != value:
                 updates[key] = value
 
+        if "Current room" in updates:
+            await ctx.send_msgs([{
+                "cmd": "Bounce",
+                "slots": [ctx.slot],
+                "data": {
+                    "Current room": current_room
+                }
+            }])
+            del updates["Current room"]
+
         if len(updates) > 0:
             await ctx.send_msgs([{
                 "cmd": "Set",
@@ -300,4 +310,5 @@ class OracleOfSeasonsClient(BizHawkClient):
                     "value": updates
                 }],
             }])
-            self.local_tracker = local_tracker
+
+        self.local_tracker = local_tracker
