@@ -130,6 +130,9 @@ class OracleOfSeasonsWorld(World):
         if self.interpret_slot_data(None):
             return
 
+        if self.options.randomize_ai:
+            self.options.treehouse_old_man_requirement.value = 0
+
         conflicting_rings = self.options.required_rings.value & self.options.excluded_rings.value
         if len(conflicting_rings) > 0:
             raise OptionError("Required Rings and Excluded Rings contain the same element(s)", conflicting_rings)
