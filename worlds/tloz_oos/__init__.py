@@ -31,12 +31,16 @@ class OracleOfSeasonsSettings(settings.Group):
         The name of the sprite file to use (from "data/sprites/oos_ooa/").
         Putting "link" as a value uses the default game sprite.
         Putting "random" as a value randomly picks a sprite from your sprites directory for each generated ROM.
+        If you want some weighted result, you can arrange the options like in your option yaml.
         """
 
     class OoSCharacterPalette(str):
         """
         The color palette used for character sprite throughout the game.
         Valid values are: "green", "red", "blue", "orange", and "random"
+        If you want some weighted result, you can arrange the options like in your option yaml.
+        If you want a color weight to only apply to a specific sprite, you can write color|sprite: weight.
+        For example, red|link: 1 would add red in the possible palettes with a weight of 1 only if link is the selected sprite
         """
 
     class OoSRevealDiggingSpots(str):

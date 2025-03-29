@@ -561,9 +561,46 @@ def set_character_sprite_from_settings(rom: RomData):
     sprite = get_settings()["tloz_oos_options"]["character_sprite"]
     sprite_dir = Path(Utils.local_path(os.path.join('data', 'sprites', 'oos_ooa')))
     if sprite == "random":
-        sprite_filenames = [f for f in os.listdir(sprite_dir) if sprite_dir.joinpath(f).is_file() and f.endswith(".bin")]
-        sprite = sprite_filenames[random.randint(0, len(sprite_filenames) - 1)]
-    elif not sprite.endswith(".bin"):
+        sprite_weights = {f: 1 for f in os.listdir(sprite_dir) if sprite_dir.joinpath(f).is_file() and f.endswith(".bin")}
+    elif isinstance(sprite, str):
+        sprite_weights = {sprite: 1}
+    else:
+        sprite_weights = sprite
+
+    weights = random.randrange(sum(sprite_weights.values()))
+    for sprite, weight in sprite_weights.items():
+        weights -= weight
+        if weights < 0:
+            break
+
+    palette_option = get_settings()["tloz_oos_options"]["character_palette"]
+    if palette_option == "random":
+        palette_weights = {palette: 1 for palette in get_available_random_colors_from_sprite_name(sprite)}
+    elif isinstance(palette_option, str):
+        palette_weights = {palette_option: 1}
+    else:
+        valid_palettes = get_available_random_colors_from_sprite_name(sprite)
+        palette_weights = {}
+        for palette, weight in palette_option.items():
+            splitted_palette = palette.split("|")
+            if len(splitted_palette) == 2 and splitted_palette[1] != sprite:
+                continue
+            palette_name = splitted_palette[0]
+            if palette_name == "random":
+                for valid_palette in valid_palettes:
+                    palette_weights[valid_palette] = weight
+            elif palette_name in valid_palettes:
+                palette_weights[palette_name] = weight
+        if len(palette_weights) == 0:
+            palette_weights["green"] = 1
+
+    weights = random.randrange(sum(palette_weights.values()))
+    for palette, weight in palette_weights.items():
+        weights -= weight
+        if weights < 0:
+            break
+
+    if not sprite.endswith(".bin"):
         sprite += ".bin"
     if sprite != "link.bin":
         sprite_path = sprite_dir.joinpath(sprite)
@@ -571,10 +608,6 @@ def set_character_sprite_from_settings(rom: RomData):
             raise ValueError(f"Path '{sprite_path}' doesn't exist")
         sprite_bytes = list(Path(sprite_path).read_bytes())
         rom.write_bytes(0x68000, sprite_bytes)
-
-    palette = get_settings()["tloz_oos_options"]["character_palette"]
-    if palette == "random":
-        palette = random.choice(get_available_random_colors_from_sprite_name(sprite))
 
     if palette == "green":
         return  # Nothing to change
