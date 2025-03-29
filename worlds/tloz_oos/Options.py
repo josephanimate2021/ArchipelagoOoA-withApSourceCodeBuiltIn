@@ -596,6 +596,15 @@ class OracleOfSeasonsIncludeSecretLocations(Toggle):
     include_in_patch = True
 
 
+class OracleOfSeasonsMoveLink(Toggle):
+    """
+    When enabled, movement will be linked between games that enabled this option.
+    This option is only visible on yamls generated in April.
+    """
+    display_name = "Randomize AI"
+    visibility = Visibility.all if (datetime.now().month == 4) else Visibility.none  # Only visible in april
+
+
 @dataclass
 class OracleOfSeasonsOptions(PerGameCommonOptions):
     accessibility: ItemsAccessibility
@@ -663,3 +672,4 @@ class OracleOfSeasonsOptions(PerGameCommonOptions):
 
     remove_items_from_pool: OracleOfSeasonsRemoveItemsFromPool
     death_link: DeathLink
+    move_link: OracleOfSeasonsMoveLink

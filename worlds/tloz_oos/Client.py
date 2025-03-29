@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Set, Dict, Any
 
 from NetUtils import ClientStatus
 import worlds._bizhawk as bizhawk
+from Utils import async_start
 from worlds._bizhawk.client import BizHawkClient
 from worlds.tloz_oos import LOCATIONS_DATA, ITEMS_DATA, OracleOfSeasonsGoal
 from .Util import build_item_id_to_name_dict, build_location_name_to_id_dict
@@ -102,6 +103,17 @@ class OracleOfSeasonsClient(BizHawkClient):
             if 'death_link' in args['slot_data'] and args['slot_data']['death_link']:
                 self.set_deathlink = True
                 self.last_deathlink = time.time()
+            if 'move_link' in args['slot_data'] and args['slot_data']['move_link']:
+                ctx.tags.add("MoveLink")
+                self.move_link = []
+                async_start(ctx.send_msgs([{"cmd": "ConnectUpdate", "tags": ctx.tags}]))
+        if cmd == "Bounced":
+            if ctx.slot_data["move_link"] and "tags" in args and args["tags"][0] == "MoveLink":
+                data = args["data"]
+                if data["slot"] != ctx.slot:
+                    data["last_process"] = time.time()
+                    data["spoilage"] = data["last_process"] + data["timespan"]
+                    self.move_link.append(data)
         super().on_package(ctx, cmd, args)
 
     async def game_watcher(self, ctx: "BizHawkClientContext") -> None:
@@ -147,6 +159,9 @@ class OracleOfSeasonsClient(BizHawkClient):
 
             if "DeathLink" in ctx.tags:
                 await self.process_deathlink(ctx, is_dead)
+
+            if "MoveLink" in ctx.tags:
+                await self.process_movelink_for_april_fools(ctx, current_room)
 
         except bizhawk.RequestFailedError:
             # Exit handler and return to main loop to reconnect
@@ -312,3 +327,78 @@ class OracleOfSeasonsClient(BizHawkClient):
             }])
 
         self.local_tracker = local_tracker
+
+    async def process_movelink_for_april_fools(self, ctx: "BizHawkClientContext", current_room: int):
+        values = await bizhawk.read(ctx.bizhawk_ctx, [(0xD00A, 4, "System Bus"), (0xCD00, 1, "System Bus")])
+        positions = values[0]
+        x = positions[3] / 0x10 + positions[2] / 0x1000
+        y = positions[1] / 0x10 + positions[0] / 0x1000
+        now = time.time()
+
+        if hasattr(self, "movelink_data"):
+            accumulator = self.movelink_data["accumulator"]
+            can_move = values[1][0] == 1 and current_room == self.movelink_data["room"]
+            if self.movelink_data["position"]:
+                last_x, last_y = self.movelink_data["position"]
+                if can_move:  # can link move and didn't warp
+                    accumulator["x"] += x - last_x
+                    accumulator["y"] += y - last_y
+            if now - accumulator["time"] >= 1:
+                if abs(accumulator["x"]) > 0.2 or abs(accumulator["y"]) > 0.2:
+                    await ctx.send_msgs([{
+                        "cmd": "Bounce",
+                        "tags": ["MoveLink"],
+                        "data": {
+                            "slot": ctx.slot,
+                            "timespan": 1,
+                            "x": accumulator["x"],
+                            "y": accumulator["y"]
+                        }
+                    }])
+                    self.movelink_data["accumulator"] = {"x": 0, "y": 0, "time": now}
+            self.movelink_data["room"] = current_room
+        else:
+            self.movelink_data = {
+                "position": (0, 0),
+                "accumulator": {
+                    "x": 0,
+                    "y": 0,
+                    "time": now,
+                },
+                "room": current_room
+            }
+            can_move = False
+
+        i = 0
+        has_moved = False
+        while i < len(self.move_link):
+            move = self.move_link[i]
+            if can_move:
+                proportion = (min(now, move["spoilage"]) - move["last_process"]) / move["timespan"]
+                x += move["x"] * proportion
+                y += move["y"] * proportion
+                has_moved = True
+            if now >= move["spoilage"]:
+                del self.move_link[i]
+            else:
+                move["last_process"] = now
+                i += 1
+
+        x = int(x * 0x1000)
+        y = int(y * 0x1000)
+
+        x = max(x, 0x600)
+        y = max(y, 0x600)
+        if current_room < 0x400:
+            x = min(x, 0x9AFF)
+            y = min(y, 0x79FF)
+        else:
+            x = min(x, 0xEAFF)
+            y = min(y, 0xA9FF)
+        if can_move:
+            self.movelink_data["position"] = (x / 0x1000, y / 0x1000)
+        else:
+            self.movelink_data["position"] = None
+
+        if has_moved:
+            await bizhawk.write(ctx.bizhawk_ctx, [(0xD00A, [y % 0x100, y // 0x100, x % 0x100, x // 0x100], "System Bus")])

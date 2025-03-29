@@ -131,7 +131,7 @@ class OracleOfSeasonsWorld(World):
             return
 
         if self.options.randomize_ai:
-            self.options.treehouse_old_man_requirement.value = 0
+            self.options.golden_beasts_requirement.value = 0
 
         conflicting_rings = self.options.required_rings.value & self.options.excluded_rings.value
         if len(conflicting_rings) > 0:
@@ -898,7 +898,7 @@ class OracleOfSeasonsWorld(World):
 
     def fill_slot_data(self) -> dict:
         # Put options that are useful to the tracker inside slot data
-        options = ["goal", "death_link",
+        options = ["goal", "death_link", "move_link",
                    # Logic-impacting options
                    "logic_difficulty", "normalize_horon_village_season",
                    "shuffle_dungeons", "shuffle_portals",
