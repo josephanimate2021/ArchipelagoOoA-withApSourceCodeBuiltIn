@@ -78,7 +78,7 @@
 
 ##### SUBROSIA SEASIDE ########################################
 
-# Note for the future, Rosa interac subid 2 is an interaction that follows the player until they leave the beach
+# Note for the future, INTERAC_DATING_ROSA_EVENT subid 2 is an interaction that follows the player until they leave the beach
 # (warp (can't find why) or walk to a room <60) and creates the treasure if the right tile is dug
 
 08/22a5/: |  # Replace "checkGlobalFlag" on GLOBALFLAG_STAR_ORE_FOUND
@@ -94,6 +94,7 @@
 08/22e3/: |
     jr z,$18
     /copy s,$08,$22e4,$06
+    jr nz,$10
     push bc
     ld bc,locations.subrosiaSeaside
     call createTreasure
