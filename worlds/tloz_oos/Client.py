@@ -237,7 +237,7 @@ class OracleOfSeasonsClient(BizHawkClient):
             item_id = next_item // 0x100
             item_subid = next_item % 0x100
             if item_id == 0x30:  # Small or master key
-                item_subid = item_subid % 0x80  # TODO: Remove this if/when both master and small can be obtained in the same world
+                item_subid = item_subid & 0x7F  # TODO: Remove this if/when both master and small can be obtained in the same world
             await bizhawk.write(ctx.bizhawk_ctx, [(0xCBFB, [item_id, item_subid], "System Bus")])
 
     async def process_game_completion(self, ctx: "BizHawkClientContext", flag_bytes, current_room: int):
