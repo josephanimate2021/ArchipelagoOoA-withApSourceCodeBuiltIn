@@ -776,6 +776,7 @@ def define_essence_sparkle_constants(assembler: Z80Assembler, patch_data):
     if show_dungeons_with_essence and not patch_data["options"]["shuffle_essences"]:
         for i, pedestal in enumerate(essence_pedestals):
             if patch_data["locations"][pedestal]["item"] not in ESSENCES:
+                byte_array.extend([0xF0, 0x00])  # Nonexistent room, for padding
                 continue
 
             # Find where dungeon entrance is located, and place the sparkle hint there
