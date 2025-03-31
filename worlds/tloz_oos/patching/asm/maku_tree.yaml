@@ -7,8 +7,12 @@
   ret
 
 09/3dc0/checkMakuItemObtained: |
-  ld hl,$c80b
-  bit 6,(hl)
+  call getThisRoomFlags
+  call $7df9
+  ld a,($c80b)
+  bit 5,a
+  ret z
+  set 6,(hl)
   ret
 
 # Rework makuTree_setAppropriateStage to map a small amount of stages to all
