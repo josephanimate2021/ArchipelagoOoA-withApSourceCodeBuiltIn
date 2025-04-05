@@ -784,6 +784,7 @@ def oos_can_kill_armored_enemy(state: CollectionState, player: int):
     return any([
         oos_has_sword(state, player),
         oos_has_fools_ore(state, player),
+        (oos_option_medium_logic(state, player) and oos_has_bombs(state, player, 4)),
         all([
             oos_has_satchel(state, player, 2),  # Expect a 50+ seeds satchel to be able to chain rooms in dungeons
             oos_has_scent_seeds(state, player),
