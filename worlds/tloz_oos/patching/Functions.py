@@ -812,13 +812,11 @@ def randomize_ai_for_april_fools(rom: RomData, seed: int):
                 0x1a,  # crab
                 0x20,  # masked moblin
                 0x22,
-                0x23,
+                0x23,  # pol's voice
                 0x25,  # goponga flower
-                0x27,
                 0x29,
                 0x2d,
                 0x2e,
-                0x2f,
             ],
             1: [
                 0x0a,  # boomerang moblin
@@ -854,7 +852,7 @@ def randomize_ai_for_april_fools(rom: RomData, seed: int):
                 0x18,  # buzzblob
                 0x1a,  # crab
                 0x22,
-                0x23,
+                0x23,  # pol's voice
                 0x0d,  # lynel
                 0x0c,  # arrow moblin
                 0x20,  # masked moblin
@@ -884,7 +882,6 @@ def randomize_ai_for_april_fools(rom: RomData, seed: int):
                 0x36,
                 0x37,
                 0x38,
-                0x3a,  # water tektite
                 0x3b,
                 0x3c,
                 0x3d,
@@ -907,7 +904,7 @@ def randomize_ai_for_april_fools(rom: RomData, seed: int):
                 0x4c,
             ],
             2: [
-                0x40,
+                # 0x40,
                 0x52,
             ],
             3: [
@@ -924,12 +921,10 @@ def randomize_ai_for_april_fools(rom: RomData, seed: int):
             0: [
                 0x30,
                 0x31,
-                0x3a,  # water tektite
                 0x3c,
                 0x3d,
                 0x3e,
                 0x43,
-                0x46,
                 0x48,
                 0x49,
                 0x4a,
@@ -945,7 +940,7 @@ def randomize_ai_for_april_fools(rom: RomData, seed: int):
                 0x4c
             ],
             2: [
-                0x40
+                # 0x40
             ],
         }
     ]
@@ -994,8 +989,8 @@ def randomize_ai_for_april_fools(rom: RomData, seed: int):
         rom.write_byte(0xFDE02, 0xA2)  # like-like
     if ai_table[0x34] not in blinkers:
         rom.write_byte(0xFDE42, 0xAA)  # zol
-    if ai_table[0x40] not in blinkers:
-        rom.write_byte(0xFDE72, 0xAF)  # wizzrobes
+    # if ai_table[0x40] not in blinkers:
+    #     rom.write_byte(0xFDE72, 0xAF)  # wizzrobes
     if ai_table[0x41] not in blinkers:
         rom.write_byte(0xFDE76, 0xB0)  # crow
 
