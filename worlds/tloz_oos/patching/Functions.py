@@ -931,7 +931,6 @@ def randomize_ai_for_april_fools(rom: RomData, seed: int):
                 0x4b,
                 0x4d,
                 0x4e,
-                0x5e,
             ],
             1: [
                 0x32,
