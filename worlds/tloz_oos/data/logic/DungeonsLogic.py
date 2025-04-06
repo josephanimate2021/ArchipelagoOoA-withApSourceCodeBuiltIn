@@ -596,7 +596,12 @@ def make_d6_logic(player: int):
                 # Kill Vire
                 oos_has_sword(state, player, False),
                 oos_has_fools_ore(state, player),
-                # state.has("expert's ring", player)
+                (oos_option_medium_logic(state, player) and oos_has_bombs(state, player, 4)),
+                all([
+                    # Fist Ring doesn't damage Vire
+                    state.has("expert's ring", player),
+                    oos_option_medium_logic(state, player)
+                ])
             ])
         ])],
         ["d6 kill vire", "d6 pre-boss room", False, lambda state: all([
