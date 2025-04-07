@@ -1051,7 +1051,11 @@ def randomize_ai_for_april_fools(rom: RomData, seed: int):
         rom.write_byte(0xFDE76, 0xB0)  # crow
 
     if ai_table[0x14] != 0x14:
-        rom.write_byte(0xFDDC2, 0xCE)  # make spiked beetles have the flipped collisions
+        rom.write_byte(0xFDDC2, 0xCE)  # Make spiked beetles have the flipped collisions
+    if ai_table[0x1C] != 0x1C:
+        rom.write_byte(0xFDDE2, 0xD0)  # Make iron mask have the unmasked collisions
+    if ai_table[0x3e] != 0x3e:
+        rom.write_byte(0xFDE6A, 0xAE)  # Make peahats have vulnerable collisions
 
     if ai_table[0x24] != 0x24:
         # make like like deal low knockback instead of softlocking by grabbing him then never releasing him due to the lack of AI
