@@ -430,7 +430,9 @@ def make_d5_logic(player: int):
                 oos_can_kill_armored_enemy(state, player),
                 all([
                     oos_option_medium_logic(state, player),
-                    oos_has_shield(state, player)
+                    # Pull the darknut in the water
+                    oos_has_magnet_gloves(state, player),
+                    # Shield is also an option but doesn't impact logic in any way
                 ])
             ])
         ])],
