@@ -411,7 +411,7 @@ def oos_has_bombs(state: CollectionState, player: int, amount: int = 1):
     return any([
         state.has("Bombs (10)", player, amount),
         all([
-            # With hard logic, player is expected to know they can get free bombs
+            # With medium logic, player is expected to know they can get free bombs
             # from D2 moblin room even if they never had bombs before
             amount == 1,
             oos_option_medium_logic(state, player),
