@@ -17,22 +17,24 @@
 # No new item can be obtained from this, it can only refill what the player had and used/lost at some point.
 3f//refillInventory: |
     ld b,TREASURE_EMBER_SEEDS
-    ld hl,wNumEmberSeeds
+    ld de,wNumEmberSeeds
     
     @refillSeedsLoop:
     ld a,b
     call checkTreasureObtained_bodyProxy
     jr nc,@nextSeed
-    ld a,(hl)           ; currently owned seeds
-    cp $20
+    ld a,(de)           ; currently owned seeds
+    cp c
     jr nc,@nextSeed
-    ld (hl),$20
+    ld a,c
+    ld (de),a
+    call $460a          ; part of giveTreasure_body@modef that caps the number of seeds based on satchel level
     
     @nextSeed:
     ld a,b
     cp TREASURE_MYSTERY_SEEDS
     jr z,@refillBombs
-    inc hl
+    inc e
     inc b
     jr @refillSeedsLoop
     
@@ -42,6 +44,12 @@
     jr nc,@refillShield
     ld hl,wMaxBombs
     ldd a,(hl)
+    cp c
+    jr c,@changeBombAmount
+    ld a,c
+    @changeBombAmount:
+    cp (hl)
+    jr c,@refillShield
     ld (hl),a
     
     @refillShield:
@@ -70,6 +78,7 @@
 15//impaRefill: |
     push hl
     push de
+    ld c,$20
     ld e,$3f
     ld hl,refillInventory
     call interBankCall
