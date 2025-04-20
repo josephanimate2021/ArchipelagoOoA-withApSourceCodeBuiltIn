@@ -921,8 +921,11 @@ def oos_can_kill_d2_hardhat(state: CollectionState, player: int):
 
 def oos_can_kill_d2_far_moblin(state: CollectionState, player: int):
     return any([
+        # Use the regrowable bombs that are there
         oos_has_sword(state, player),
         oos_has_fools_ore(state, player),
+        oos_has_bombs(state, player),
+
         oos_can_kill_normal_using_slingshot(state, player),
         all([
             oos_has_feather(state, player),
