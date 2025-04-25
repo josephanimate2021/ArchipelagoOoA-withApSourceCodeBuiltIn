@@ -947,6 +947,9 @@ class OracleOfSeasonsWorld(World):
             if "Bush Breaker" in items:
                 items.remove("Bush Breaker")
                 items.extend(multiworld.random.choice(bush_breakers))
+            for item in multiworld.precollected_items[player]:
+                if item.name in items:
+                    items.remove(item.name)
             weight_dict[player] = items
 
         indexes = {player: [] for player in players}
