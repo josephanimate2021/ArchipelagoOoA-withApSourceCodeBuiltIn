@@ -32,6 +32,8 @@
   call setGlobalFlag
   ld a,$1c
   call setGlobalFlag
+  ld a,$21
+  call setGlobalFlag
 
   ; Animal vars
   ld a,$ff
