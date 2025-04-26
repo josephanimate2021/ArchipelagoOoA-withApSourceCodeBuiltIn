@@ -538,6 +538,9 @@ class OracleOfSeasonsWorld(World):
         if not self.options.shuffle_business_scrubs:
             locations_to_exclude.difference_update(SCRUB_LOCATIONS)
 
+        if self.options.randomize_ai:
+            locations_to_exclude.add("Western Coast: Black Beast's Chest")
+
         for name in locations_to_exclude:
             self.multiworld.get_location(name, self.player).progress_type = LocationProgressType.EXCLUDED
 

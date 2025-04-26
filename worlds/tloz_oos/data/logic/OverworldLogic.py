@@ -804,7 +804,13 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
 
         ["mt. cucco, talon's cave entrance", "mt. cucco heart piece", False, None],
 
-        ["mt. cucco, talon's cave entrance", "diving spot outside D4", False, lambda state: oos_has_flippers(state, player)],
+        ["mt. cucco, talon's cave entrance", "diving spot outside D4", False, lambda state: all([
+            oos_has_flippers(state, player),
+            any([
+                oos_get_default_season(state, player, "SUNKEN_CITY") != SEASON_WINTER,
+                oos_can_remove_season(state, player, SEASON_WINTER)
+            ])
+        ])],
 
         ["mt. cucco, talon's cave entrance", "dragon keyhole", False, lambda state: all([
             oos_has_winter(state, player),  # to reach cave
