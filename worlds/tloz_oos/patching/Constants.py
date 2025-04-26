@@ -128,6 +128,7 @@ DEFINES = {
     "wActiveRoom": "$cc4c",
     "wActiveRoomPack": "$cc4d",
     "wRoomStateModifier": "$cc4e",
+    "wActiveMusic": "$cc51",
     "wLostWoodsTransitionCounter1": "$cc53",
     "wLostWoodsTransitionCounter2": "$cc54",
     "wDungeonIndex": "$cc55",

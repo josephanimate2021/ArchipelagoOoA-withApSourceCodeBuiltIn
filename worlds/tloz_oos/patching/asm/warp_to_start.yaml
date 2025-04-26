@@ -14,14 +14,10 @@
 
 # warp to horon village tree if holding start when opening the map screen.
 02//checkWarpToStart: |
-    ld a,option.warpToStart
-    or a
-    jr z,@done
-    
     ld a,(wKeysPressed)
     and BTN_B | BTN_A
     cp BTN_B | BTN_A
-    jr nz,@done
+    jp nz,$5029 ; @openMenu, we're done
     
     ld a,option.startingGroup
     set 7,a
@@ -66,10 +62,14 @@
     
     ld a,$03
     ld (wMenuLoadState),a
+    
+    ld a,(wActiveMusic)
+    or a
+    jr nz,@noResetMusic
+    ld a,$ff
+    ld (wActiveMusic),a
+    @noResetMusic:
     pop af      ; pop return addr from stack
     ret
-    
-    @done:
-    jp $5029    ; @openMenu
 # Replace the unique call to @openMenu by the above extension checking for warp to start
 02/101f/: call checkWarpToStart
