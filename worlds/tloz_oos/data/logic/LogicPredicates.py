@@ -326,9 +326,9 @@ def oos_has_rupees_for_shop(state: CollectionState, player: int, shop_name: str)
 
 
 def oos_can_farm_rupees(state: CollectionState, player: int):
-    # Having a sword or a shovel is enough to guarantee that we can reach a significant amount of rupees
+    # Having a weapon to get  or a shovel is enough to guarantee that we can reach a significant amount of rupees
     return any([
-        oos_has_sword(state, player),
+        oos_can_kill_normal_enemy(state, player, False, False),
         oos_has_shovel(state, player)
     ])
 
