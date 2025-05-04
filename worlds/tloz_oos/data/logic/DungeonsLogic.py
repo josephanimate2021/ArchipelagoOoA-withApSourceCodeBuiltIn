@@ -481,6 +481,7 @@ def make_d5_logic(player: int):
         ["d5 entrance", "d5 basement", False, lambda state: all([
             oos_self_locking_small_key(state, player, "d5 basement", 5),
             state.has("_dropped_d5_magnet_ball", player),
+            oos_has_small_keys(state, player, 5, 3),
             oos_has_magnet_gloves(state, player),
             any([
                 oos_can_kill_magunesu(state, player),
@@ -794,6 +795,7 @@ def make_d7_logic(player: int):
 
         # 5 keys
         ["d7 entrance", "d7 stalfos chest", False, lambda state: all([
+            oos_has_small_keys(state, player, 7, 4),
             oos_self_locking_small_key(state, player, "d7 stalfos chest", 7),
             any([
                 oos_can_jump_5_wide_pit(state, player),
