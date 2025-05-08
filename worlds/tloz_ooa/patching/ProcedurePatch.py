@@ -25,9 +25,6 @@ class OoAPatchExtensions(APPatchExtension):
         rom_data = RomData(rom)
         patch_data = yaml.load(caller.get_file(patch_file).decode("utf-8"), yaml.Loader)
 
-        print(patch_data["version"])
-        print(RETRO_COMPAT_VERSION)
-        print(patch_data["version"] in RETRO_COMPAT_VERSION)
         if not (patch_data["version"] in RETRO_COMPAT_VERSION):
             raise Exception(f"Invalid version: this seed was generated on v{patch_data['version']}, "
                             f"and is not compatible with current : v{VERSION}")
