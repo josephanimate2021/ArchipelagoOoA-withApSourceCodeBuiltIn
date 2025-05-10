@@ -708,8 +708,18 @@ def make_d7_logic(player: int):
             any([
                 # Kill poe sister
                 oos_can_kill_armored_enemy(state, player),
-                oos_has_rod(state, player),
-                oos_can_use_ember_seeds(state, player, True)
+                all([
+                    oos_option_medium_logic(state, player),
+                    oos_has_rod(state, player),
+                ]),
+                all([
+                    # Mystery isn't reasonable due to having only ~8.8% chance of not getting a gale before killing the sister
+                    oos_has_ember_seeds(state, player),
+                    any([
+                        oos_option_medium_logic(state, player),
+                        oos_has_satchel(state, player, 2)
+                    ])
+                ])
             ]),
             oos_has_bracelet(state, player)
         ])],
@@ -808,7 +818,30 @@ def make_d7_logic(player: int):
         # 4 keys
         ["d7 water stairs", "d7 maze chest", False, lambda state: all([
             oos_has_small_keys(state, player, 7, 4),
-            oos_can_kill_armored_enemy(state, player),  # Moldorms are more restrictive than Poe sisters to kill
+            any([
+                oos_can_kill_armored_enemy(state, player),
+                all([
+                    oos_option_medium_logic(state, player),
+                    any([
+                        # For the moldorms
+                        oos_has_shovel(state, player),
+                        oos_has_shield(state, player)
+                    ]),
+                    any([
+                        # Kill poe sisters
+                        oos_has_rod(state, player),
+                        all([
+                            # 18 embers are needed to kill the boss
+                            oos_has_ember_seeds(state, player),
+                            any([
+                                oos_option_hard_logic(state, player),
+                                oos_has_bombs(state, player),  # refill embers in the middle
+                                oos_has_satchel(state, player, 2)
+                            ])
+                        ])
+                    ]),
+                ])
+            ]),
             oos_can_jump_3_wide_liquid(state, player),  # Technically not a liquid but a diagonal pit
         ])],
 
