@@ -593,7 +593,20 @@ def make_d6_logic(player: int):
                     # Go through beamos room
                     oos_has_bombs(state, player),
 
-                    state.has("_can_kill_vire", player)
+                    any([
+                        # Kill Vire (the rest doesn't matter because we don't care about not being able to not spend a key somewhere)
+                        oos_has_sword(state, player, False),
+                        oos_has_fools_ore(state, player),
+                        all([
+                            oos_option_medium_logic(state, player),
+                            oos_has_bombs(state, player, 4)
+                        ]),
+                        all([
+                            # Fist Ring doesn't damage Vire
+                            state.has("expert's ring", player),
+                            oos_option_medium_logic(state, player)
+                        ])
+                    ])
                 ]),
                 all([
                     oos_has_small_keys(state, player, 6, 2),
@@ -601,15 +614,26 @@ def make_d6_logic(player: int):
                         # Go through beamos room
                         oos_has_bombs(state, player),
 
-                        state.has("_can_kill_vire", player)
+                        # Kill Vire
+                        oos_has_sword(state, player, False),
+                        oos_has_fools_ore(state, player),
+                        all([
+                            oos_option_medium_logic(state, player),
+                            oos_has_bombs(state, player, 4)
+                        ]),
+                        all([
+                            # Fist Ring doesn't damage Vire
+                            state.has("expert's ring", player),
+                            oos_option_medium_logic(state, player)
+                        ])
                     ])
                 ]),
                 oos_has_small_keys(state, player, 6, 3),
             ])
         ])],
 
-        ["d6 vire chest", "d6 kill vire", False, lambda state: all([
-            oos_has_small_keys(state, player, 6, 1),
+        ["d6 vire chest", "d6 enter vire", False, lambda state: all([
+            oos_has_small_keys(state, player, 6, 3),
             any([
                 # Kill Vire
                 oos_has_sword(state, player, False),
@@ -625,7 +649,7 @@ def make_d6_logic(player: int):
                 ])
             ])
         ])],
-        ["d6 kill vire", "d6 pre-boss room", False, lambda state: all([
+        ["d6 enter vire", "d6 pre-boss room", False, lambda state: all([
             oos_has_small_keys(state, player, 6, 3),
             any([
                 # Kill hardhats
