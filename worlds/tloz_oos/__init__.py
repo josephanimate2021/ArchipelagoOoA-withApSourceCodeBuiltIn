@@ -2,7 +2,7 @@ import os
 import logging
 from typing import List, Union, ClassVar, Any, Optional, Tuple
 import settings
-from BaseClasses import Tutorial, Region, Location, LocationProgressType, Item, ItemClassification, MultiWorld
+from BaseClasses import Tutorial, Region, Location, LocationProgressType, Item, ItemClassification, MultiWorld, CollectionState
 from Fill import fill_restrictive, FillError
 from Options import Accessibility, OptionError
 from worlds.AutoWorld import WebWorld, World
@@ -444,6 +444,10 @@ class OracleOfSeasonsWorld(World):
             region = Region(region_name, self.player, self.multiworld)
             self.multiworld.regions.append(region)
 
+        if self.options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_hell:
+            region = Region("rooster adventure", self.player, self.multiworld)
+            self.multiworld.regions.append(region)
+
         if self.options.deterministic_gasha_locations > 0:
             for i in range(self.options.deterministic_gasha_locations):
                 region = Region(GASHA_REGIONS[i], self.player, self.multiworld)
@@ -547,6 +551,12 @@ class OracleOfSeasonsWorld(World):
         create_connections(self.multiworld, self.player, self.origin_region_name, self.options)
         apply_self_locking_rules(self.multiworld, self.player)
         self.multiworld.completion_condition[self.player] = lambda state: state.has("_beaten_game", self.player)
+
+        if self.options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_hell:
+            cucco_region = self.get_region("rooster adventure")
+            # This saves using an event which is slightly more efficient
+            self.multiworld.register_indirect_condition(cucco_region, self.get_entrance("d6 sector -> old man near d6"))
+            self.multiworld.register_indirect_condition(cucco_region, self.get_entrance("d6 sector -> d6 entrance"))
 
     def create_item(self, name: str) -> Item:
         # If item name has a "!PROG" suffix, force it to be progression. This is typically used to create the right
@@ -1044,6 +1054,24 @@ class OracleOfSeasonsWorld(World):
                     currency = "Ore Chunks" if shop_code.startswith("subrosia") else "Rupees"
                     spoiler_handle.write(f"\t- {loc_name}: {price} {currency}\n")
                 break
+
+    def collect(self, state: CollectionState, item: Item) -> bool:
+        change = super().collect(state, item)
+        if not change or self.options.logic_difficulty < OracleOfSeasonsLogicDifficulty.option_hell:
+            return change
+        if item.code is None or item.code >= 0x2100 and item.code != 0x2e00:  # Not usable item nor ember nor flippers
+            return True
+        state.tloz_oos_available_cuccos[self.player] = None
+        return True
+
+    def remove(self, state: CollectionState, item: Item) -> bool:
+        change = super().collect(state, item)
+        if not change or self.options.logic_difficulty < OracleOfSeasonsLogicDifficulty.option_hell:
+            return change
+        if item.code is None or item.code >= 0x2100 and item.code != 0x2e00:  # Not usable item nor ember nor flippers
+            return True
+        state.tloz_oos_available_cuccos[self.player] = None
+        return True
 
     # UT stuff
     def interpret_slot_data(self, slot_data: Optional[dict[str, Any]]) -> Any:

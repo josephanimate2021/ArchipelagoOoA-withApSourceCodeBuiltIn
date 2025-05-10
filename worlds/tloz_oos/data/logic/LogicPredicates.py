@@ -1159,3 +1159,92 @@ def oos_self_locking_item(state: CollectionState, player: int, region_name: str,
 def oos_self_locking_small_key(state: CollectionState, player: int, region_name: str, dungeon: int):
     item_name = f"Small Key ({DUNGEON_NAMES[dungeon]})"
     return oos_self_locking_item(state, player, region_name, item_name)
+
+
+# Rooster adventure logic  ######################################################
+def oos_roosters(state: CollectionState, player: int):
+    if state.tloz_oos_available_cuccos[player] is None:
+        # This computes cuccos for the whole game then caches it
+        available_cuccos = {
+            "cucco mountain": (-1, -1, -1),
+            "horon": (-1, -1, -1),
+            "suburbs": (-1, -1, -1),
+            "moblin road": (-1, -1, -1),
+            "sunken": (-1, -1, -1),
+            "swamp": (-1, -1, -1)
+        }
+
+        def register_cucco(region: str, new_cuccos: tuple[int, int, int]):
+            old_cuccos = available_cuccos[region]
+            available_cuccos[region] = tuple([max(old_cuccos[i], new_cuccos[i]) for i in range(3)])
+
+        def use_any_cucco(cuccos: tuple[int, int, int]) -> tuple[int, int, int]:
+            return cuccos[0] - 1, cuccos[1], cuccos[2]
+
+        def use_top_cucco(cuccos: tuple[int, int, int]) -> tuple[int, int, int]:
+            return cuccos[0] - 1, cuccos[1] - 1, cuccos[2]
+
+        def use_bottom_cucco(cuccos: tuple[int, int, int]) -> tuple[int, int, int]:
+            return cuccos[0] - 1, cuccos[1], cuccos[2] - 1
+
+        if state.has("Shovel", player):
+            if state.has("Progressive Boomerang", player):
+                top = 3
+            else:
+                top = 2
+        else:
+            top = 1
+
+        if oos_season_in_mt_cucco(state, player, SEASON_SPRING) \
+                and (oos_can_break_flowers(state, player) or state.has("Spring Banana", player)):
+            bottom = 2
+        else:
+            bottom = 0
+
+        available_cuccos["cucco mountain"] = (top + bottom, top, bottom)
+
+        if oos_can_jump_3_wide_pit(state, player) or oos_can_swim(state, player, True):
+            available_cuccos["horon"] = available_cuccos["cucco mountain"]
+
+        if oos_has_flute(state, player):
+            available_cuccos["sunken"] = available_cuccos["horon"]
+        elif oos_is_companion_moosh(state, player):
+            if oos_can_jump_4_wide_liquid(state, player) or oos_has_flute(state, player):
+                available_cuccos["sunken"] = available_cuccos["horon"]
+            elif oos_can_jump_3_wide_pit(state, player):
+                available_cuccos["sunken"] = use_top_cucco(available_cuccos["horon"])
+        elif oos_is_companion_dimitri(state, player):
+            if oos_can_break_flowers(state, player) and oos_can_swim(state, player, False):  # distance bush break
+                available_cuccos["sunken"] = use_any_cucco(available_cuccos["cucco mountain"])
+        elif oos_can_swim(state, player, False):
+            available_cuccos["sunken"] = available_cuccos["cucco mountain"]
+        available_cuccos["suburbs"] = available_cuccos["sunken"]
+
+        if oos_can_use_ember_seeds(state, player, False):
+            available_cuccos["suburbs"] = available_cuccos["horon"]
+        elif oos_season_in_eyeglass_lake(state, player, SEASON_WINTER) \
+                or ((oos_get_default_season(state, player, "SPOOL_SWAMP") != SEASON_SPRING or
+                     oos_can_remove_season(state, player, SEASON_SPRING)) and oos_can_swim(state, player, True)):
+            available_cuccos["suburbs"] = use_any_cucco(available_cuccos["horon"])
+
+        if oos_season_in_eastern_suburbs(state, player, SEASON_SPRING):
+            register_cucco("sunken", available_cuccos["suburbs"])
+
+        if oos_season_in_eastern_suburbs(state, player, SEASON_WINTER):
+            available_cuccos["moblin road"] = available_cuccos["suburbs"]
+        else:
+            available_cuccos["moblin road"] = use_top_cucco(available_cuccos["sunken"])
+
+        available_cuccos["swamp"] = use_bottom_cucco(available_cuccos["horon"])
+
+        for region in available_cuccos:
+            if any([available_cuccos[region][i] < 0 for i in range(3)]):
+                available_cuccos[region] = (-1, -1, -1)
+        state.tloz_oos_available_cuccos[player] = available_cuccos
+
+    return state.tloz_oos_available_cuccos[player]
+
+
+def oos_can_reach_rooster_adventure(state: CollectionState, player: int):
+    # This is only safe if an indirect condition is set
+    return oos_option_hell_logic(state, player) and state.can_reach_region("rooster adventure", player)
