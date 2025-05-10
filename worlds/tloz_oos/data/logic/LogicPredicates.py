@@ -818,9 +818,11 @@ def oos_can_kill_normal_using_slingshot(state: CollectionState, player: int, all
             all([
                 oos_option_medium_logic(state, player),
                 any([
-                    allow_gale_seeds,
+                    all([
+                        allow_gale_seeds,
+                        oos_has_gale_seeds(state, player),
+                    ]),
                     oos_has_mystery_seeds(state, player),
-                    oos_has_gale_seeds(state, player),
                 ])
             ])
         ])
