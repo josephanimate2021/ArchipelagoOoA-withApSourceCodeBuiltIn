@@ -5,6 +5,7 @@
 02/2c5a/: db locations.spoolSwampSeedTree.id - $0b
 02/2c54/: db locations.sunkenCitySeedTree.id - $0b
 02/2c51/: db locations.tarmRuinsSeedTree.id - $0b
+02/2c61/: db $2d,$44 ; New warp to cucco mountain as QOl
 
 # Store a few additional variables when checking the SELECT button to open map
 02//extendedMenuOpenCheck: |
