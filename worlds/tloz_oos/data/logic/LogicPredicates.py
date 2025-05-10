@@ -162,6 +162,10 @@ def oos_option_hard_logic(state: CollectionState, player: int):
     return state.multiworld.worlds[player].options.logic_difficulty >= OracleOfSeasonsLogicDifficulty.option_hard
 
 
+def oos_option_hell_logic(state: CollectionState, player: int):
+    return state.multiworld.worlds[player].options.logic_difficulty >= OracleOfSeasonsLogicDifficulty.option_hell
+
+
 def oos_option_shuffled_dungeons(state: CollectionState, player: int):
     return state.multiworld.worlds[player].options.shuffle_dungeons
 

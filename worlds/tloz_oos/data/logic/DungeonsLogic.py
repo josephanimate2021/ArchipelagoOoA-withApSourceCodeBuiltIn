@@ -400,7 +400,13 @@ def make_d5_logic(player: int):
         ["enter d5", "d5 left chest", False, lambda state: any([
             oos_has_magnet_gloves(state, player),
             oos_has_cape(state, player),
-            oos_can_jump_4_wide_pit(state, player),
+            all([
+                # Tight bomb jump to reach the chest
+                oos_option_hell_logic(state, player),
+                oos_has_feather(state, player),
+                oos_has_pegasus_seeds(state, player),
+                oos_has_bombs(state, player)
+            ])
         ])],
 
         ["enter d5", "d5 spiral chest", False, lambda state: any([
@@ -725,7 +731,7 @@ def make_d7_logic(player: int):
         ])],
         ["enter d7", "d7 pot room", False, lambda state: all([
             # Poe skip
-            oos_option_hard_logic(state, player),
+            oos_option_hell_logic(state, player),
             oos_has_bombs(state, player),
             oos_can_use_pegasus_seeds(state, player),
             oos_has_feather(state, player),
@@ -748,6 +754,16 @@ def make_d7_logic(player: int):
         ["d7 pot room", "d7 quicksand chest", False, lambda state: all([
             oos_has_small_keys(state, player, 7, 2),
             oos_has_feather(state, player)
+        ])],
+        ["d7 pot room", "d7 water stairs", False, lambda state: all([
+            # poe skip 2 : https://youtu.be/MIMm6q_yGyQ
+            oos_option_hell_logic(state, player),
+            oos_has_small_keys(state, player, 7, 2),
+            oos_has_bombs(state, player),
+            oos_has_cape(state, player),
+            oos_can_use_pegasus_seeds(state, player),
+            oos_has_flippers(state, player),
+            state.has("Swimmer's Ring", player)
         ])],
 
         # 3 keys
@@ -928,7 +944,7 @@ def make_d8_logic(player: int):
             any([
                 oos_has_hyper_slingshot(state, player),
                 all([
-                    oos_option_hard_logic(state, player),
+                    oos_option_hell_logic(state, player),
                     any([
                         oos_can_use_ember_seeds(state, player, False),
                         oos_can_use_scent_seeds(state, player),
@@ -973,7 +989,7 @@ def make_d8_logic(player: int):
             any([
                 oos_has_hyper_slingshot(state, player),
                 all([
-                    oos_option_hard_logic(state, player),
+                    oos_option_hell_logic(state, player),
                     any([
                         oos_can_use_ember_seeds(state, player, False),
                         oos_can_use_scent_seeds(state, player),
