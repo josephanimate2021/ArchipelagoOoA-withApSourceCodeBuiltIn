@@ -421,7 +421,7 @@ def set_file_select_text(assembler: Z80Assembler, slot_name: str):
         else:
             return 0xfc  # All other chars are blank spaces
 
-    row_1 = [char_to_tile(c) for c in f"ARCHIPELAGO {VERSION[0]},{VERSION[1]}".ljust(16, " ")]
+    row_1 = [char_to_tile(c) for c in f"ARCHIPELAGO {VERSION[0]}.{VERSION[1]}".ljust(16, " ")]
     row_2 = [char_to_tile(c) for c in slot_name.replace("-", " ").upper()]
     row_2_left_padding = int((16 - len(row_2)) / 2)
     row_2_right_padding = int(16 - row_2_left_padding - len(row_2))
