@@ -751,7 +751,11 @@ def oos_can_harvest_gasha(state: CollectionState, player: int, count: int):
 def oos_can_push_enemy(state: CollectionState, player: int):
     return any([
         oos_has_rod(state, player),
-        oos_has_shield(state, player)
+        oos_has_shield(state, player),
+        all([
+            oos_option_medium_logic(state, player),
+            oos_has_shovel(state, player)
+        ])
     ])
 
 

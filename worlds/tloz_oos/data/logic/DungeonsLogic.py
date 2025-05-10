@@ -405,7 +405,12 @@ def make_d5_logic(player: int):
 
         ["enter d5", "d5 spiral chest", False, lambda state: any([
             oos_can_kill_armored_enemy(state, player),
-            oos_has_shield(state, player)
+            # Push everyone into holes
+            oos_has_shield(state, player),
+            all([
+                oos_option_medium_logic(state, player),
+                oos_has_shovel(state, player)
+            ])
         ])],
 
         ["enter d5", "d5 terrace chest", False, lambda state: oos_has_magnet_gloves(state, player)],
@@ -434,11 +439,11 @@ def make_d5_logic(player: int):
             oos_can_trigger_lever_from_minecart(state, player),
             any([
                 oos_can_kill_armored_enemy(state, player),
+                # Pushing is also an option but doesn't impact logic in any way
                 all([
                     oos_option_medium_logic(state, player),
                     # Pull the darknut in the water
-                    oos_has_magnet_gloves(state, player),
-                    # Shield is also an option but doesn't impact logic in any way
+                    oos_has_magnet_gloves(state, player)
                 ])
             ])
         ])],
