@@ -652,9 +652,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
             oos_has_flippers(state, player),
             oos_can_jump_4_wide_liquid(state, player)
         ])],
-        ["moblin keep", "moblin keep chest", False, lambda state: any([
-            oos_has_bracelet(state, player)
-        ])],
+        ["moblin keep", "moblin keep chest", False, lambda state: oos_has_bracelet(state, player)],
         ["moblin keep", "sunken city", False, None],
 
         ["natzu river bank", "goron mountain entrance", True, lambda state: oos_can_swim(state, player, True)],
@@ -707,16 +705,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ])],
 
         ["sunken city", "syrup trade", False, lambda state: all([
-            any([
-                oos_get_default_season(state, player, "SUNKEN_CITY") == SEASON_WINTER,
-                all([
-                    oos_has_winter(state, player),
-                    any([
-                        oos_can_swim(state, player, True),
-                        state.has("_saved_dimitri_in_sunken_city", player)
-                    ])
-                ])
-            ]),
+            oos_season_in_sunken_city(state, player, SEASON_WINTER),
             state.has("Mushroom", player)
         ])],
         ["syrup trade", "syrup shop", False, lambda state: oos_has_rupees_for_shop(state, player, "syrupShop")],
@@ -1191,23 +1180,19 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
     ]
     if options.animal_companion == "ricky":
         holodrum_logic.extend([
-            ["natzu west", "natzu west (ricky)", True, lambda state: oos_is_companion_ricky(state, player)],
+            ["natzu west", "natzu west (ricky)", True, None],
             ["natzu west (ricky)", "natzu east (ricky)", True, lambda state: oos_can_summon_ricky(state, player)],
-            ["natzu east (ricky)", "sunken city", True, lambda state: oos_is_companion_ricky(state, player)],
+            ["natzu east (ricky)", "sunken city", True, None],
             ["natzu east (ricky)", "moblin keep bridge", False, None],
             ["natzu east (ricky)", "natzu river bank", True, lambda state: oos_can_summon_ricky(state, player)],
-            ["natzu east (ricky)", "natzu deku", False, lambda state: oos_can_break_bush(state, player)],
+            ["natzu east (ricky)", "natzu deku", False, lambda state: oos_can_break_bush(state, player, True)],
         ])
     elif options.animal_companion == "dimitri":
         holodrum_logic.extend([
-            ["natzu west", "natzu west (dimitri)", True, lambda state: oos_is_companion_dimitri(state, player)],
+            ["natzu west", "natzu west (dimitri)", True, None],
             ["natzu west (dimitri)", "natzu east (dimitri)", True, lambda state: oos_can_swim(state, player, True)],
-            ["natzu east (dimitri)", "sunken city", True, lambda state: all([
-                oos_is_companion_dimitri(state, player),
-                oos_can_jump_1_wide_pit(state, player, False)
-            ])],
-            ["natzu east (dimitri)", "natzu region, across water", False, lambda state: \
-                oos_can_jump_5_wide_liquid(state, player)],
+            ["natzu east (dimitri)", "sunken city", True, lambda state: oos_can_jump_1_wide_pit(state, player, False)],
+            ["natzu east (dimitri)", "natzu region, across water", False, lambda state: oos_can_jump_5_wide_liquid(state, player)],
             ["natzu east (dimitri)", "moblin keep bridge", False, lambda state: any([
                 oos_can_summon_dimitri(state, player),
                 all([
@@ -1216,7 +1201,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
                     state.has("Swimmer's Ring", player)
                 ])
             ])],
-            ["natzu east (dimitri)", "natzu river bank", True, lambda state: oos_is_companion_dimitri(state, player)],
+            ["natzu east (dimitri)", "natzu river bank", True, None],
             ["natzu west (dimitri)", "natzu deku", False, lambda state: oos_can_summon_dimitri(state, player)],
         ])
     elif options.animal_companion == "moosh":
@@ -1230,12 +1215,9 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
                     oos_can_jump_3_wide_pit(state, player)
                 ])
             ])],
-            ["natzu east (moosh)", "sunken city", True, lambda state: all([
-                oos_is_companion_moosh(state, player),
-                any([
-                    oos_can_summon_moosh(state, player),
-                    oos_can_jump_3_wide_liquid(state, player)  # Not a liquid, but it's a diagonal jump so that's the same
-                ])
+            ["natzu east (moosh)", "sunken city", True, lambda state: any([
+                oos_can_summon_moosh(state, player),
+                oos_can_jump_3_wide_liquid(state, player)  # Not a liquid, but it's a diagonal jump so that's the same
             ])],
             ["natzu east (moosh)", "moblin keep bridge", False, lambda state: any([
                 oos_can_summon_moosh(state, player),

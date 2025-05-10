@@ -1,6 +1,7 @@
 from BaseClasses import CollectionState
 from Options import Accessibility
 from ..Constants import *
+from ... import OracleOfSeasonsLogicDifficulty
 
 
 # Items predicates ############################################################
@@ -154,11 +155,11 @@ def oos_has_boss_key(state: CollectionState, player: int, dungeon_id: int):
 # Options and generation predicates ###########################################
 
 def oos_option_medium_logic(state: CollectionState, player: int):
-    return state.multiworld.worlds[player].options.logic_difficulty in ["medium", "hard"]
+    return state.multiworld.worlds[player].options.logic_difficulty >= OracleOfSeasonsLogicDifficulty.option_medium
 
 
 def oos_option_hard_logic(state: CollectionState, player: int):
-    return state.multiworld.worlds[player].options.logic_difficulty == "hard"
+    return state.multiworld.worlds[player].options.logic_difficulty >= OracleOfSeasonsLogicDifficulty.option_hard
 
 
 def oos_option_shuffled_dungeons(state: CollectionState, player: int):
@@ -1075,7 +1076,14 @@ def oos_season_in_eastern_suburbs(state: CollectionState, player: int, season: i
 def oos_season_in_sunken_city(state: CollectionState, player: int, season: int):
     return any([
         oos_get_default_season(state, player, "SUNKEN_CITY") == season,
-        oos_has_season(state, player, season)
+        all([
+            oos_has_season(state, player, season),
+            any([
+                oos_get_default_season(state, player, "SUNKEN_CITY") == SEASON_WINTER,
+                oos_can_swim(state, player, True),
+                state.has("_saved_dimitri_in_sunken_city", player)
+            ])
+        ])
     ])
 
 
