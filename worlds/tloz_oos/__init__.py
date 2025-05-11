@@ -577,7 +577,7 @@ class OracleOfSeasonsWorld(World):
 
         # A few items become progression only in hard logic
         progression_items_in_medium_logic = ["Expert's Ring", "Fist Ring", "Swimmer's Ring", "Energy Ring"]
-        if (self.options.logic_difficulty == "medium" or self.options.logic_difficulty == "hard") and name in progression_items_in_medium_logic:
+        if self.options.logic_difficulty >= OracleOfSeasonsLogicDifficulty.option_medium and name in progression_items_in_medium_logic:
             classification = ItemClassification.progression
         # As many Gasha Seeds become progression as the number of deterministic Gasha Nuts
         if self.remaining_progressive_gasha_seeds > 0 and name == "Gasha Seed":
