@@ -2,7 +2,7 @@
   ; This is where the game usually forbids opening a menu during intro, so we can use that space
   ld hl,wKeysPressed
   ldi a,(hl)
-  and BTN_SELECT|BTN_START
+  and BTN_START
   jr z,@end
   ld a,(hl) ; wKeysJustPressed
   and BTN_B|BTN_A
@@ -13,7 +13,7 @@
 
 02//quick_switch: |
   ld a,(hl) ; wKeysJustPressed
-  and BTN_SELECT|BTN_START
+  and BTN_START
   jr z,@clear_keys
   ld a,(hl) ; wKeysJustPressed
   ld hl,$cbd0 ; wInventorySubmenu0CursorPos
