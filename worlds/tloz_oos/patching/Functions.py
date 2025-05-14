@@ -314,6 +314,37 @@ def process_lost_woods_sequence(sequence):
     return sequence_bytes, text_bytes
 
 
+def define_tree_sprites(assembler: Z80Assembler, patch_data):
+    tree_data = {  # Name: (map, position)
+        "Horon Village: Seed Tree": (0xf8, 0x48),
+        "Woods of Winter: Seed Tree": (0x9e, 0x88),
+        "Holodrum Plain: Seed Tree": (0x67, 0x88),
+        "Spool Swamp: Seed Tree": (0x72, 0x88),
+        "Sunken City: Seed Tree": (0x5f, 0x86),
+        "Tarm Ruins: Seed Tree": (0x10, 0x48),
+    }
+    i = 1
+    for tree_name in tree_data:
+        seed = patch_data["locations"][tree_name]
+        if seed["item"] == "Ember Seeds":
+            continue
+        seed_id, _ = get_item_id_and_subid(seed)
+        assembler.define_byte(f"seedTree{i}.map", tree_data[tree_name][0])
+        assembler.define_byte(f"seedTree{i}.position", tree_data[tree_name][1])
+        assembler.define_byte(f"seedTree{i}.gfx", seed_id - 26)
+        assembler.define(f"seedTree{i}.rectangle", f"treeRect{seed_id}")
+        i += 1
+    if i == 5:
+        # Duplicate ember, we have to blank some data
+        assembler.define_byte("seedTree5.enabled", 0x0e)
+        assembler.define_byte("seedTree5.map", 0xff)
+        assembler.define_byte("seedTree5.position", 0)
+        assembler.define_byte("seedTree5.gfx", 0)
+        assembler.define_word("seedTree5.rectangle", 0)
+    else:
+        assembler.define_byte("seedTree5.enabled", 0x0d)
+
+
 def get_treasure_addr(rom: RomData, item_name: str):
     item_id, item_subid = get_item_id_and_subid({"item": item_name})
     addr = 0x55129 + (item_id * 4)

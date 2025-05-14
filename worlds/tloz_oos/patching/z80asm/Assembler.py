@@ -141,7 +141,8 @@ class Z80Assembler:
 
         output = arg
         if arg in self.defines:
-            output = self.defines[arg]
+            # Do another pass in case the define is a label
+            return self.resolve_names(self.defines[arg], current_addr, local_labels, opcode)
         else:
             addr = None
             if arg in local_labels:

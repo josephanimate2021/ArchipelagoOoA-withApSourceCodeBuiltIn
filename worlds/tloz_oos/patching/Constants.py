@@ -373,6 +373,7 @@ ASM_FILES = [
     "asm/rings.yaml",
     "asm/samasa_combination.yaml",
     "asm/seasons_handling.yaml",
+    "asm/seed_tree.yaml",
     "asm/shops_handling.yaml",
     "asm/subscreen_1_improvement.yaml",
     "asm/static_items.yaml",
