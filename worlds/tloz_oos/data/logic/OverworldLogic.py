@@ -179,23 +179,25 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ["eastern suburbs portal", "suburbs", False, lambda state: oos_can_break_bush(state, player, False)],
         ["suburbs", "eastern suburbs portal", False, lambda state: oos_can_break_bush(state, player, True)],
 
-        ["suburbs", "suburbs fairy fountain", True, lambda state: any([
-            oos_can_swim(state, player, True),
-            oos_can_jump_1_wide_liquid(state, player, True)
+        ["suburbs", "suburbs fairy fountain", True, lambda state: all([
+            any([
+                oos_can_swim(state, player, True),
+                oos_can_jump_1_wide_liquid(state, player, True)
+            ]),
+            oos_not_season_in_eastern_suburbs(state, player, SEASON_WINTER)
         ])],
         ["suburbs fairy fountain", "maple encounter", False, lambda state: oos_can_meet_maple(state, player)],
-        ["suburbs", "suburbs fairy fountain (winter)", True, lambda state: any([
-            oos_season_in_eastern_suburbs(state, player, SEASON_WINTER)
-        ])],
+        ["suburbs fairy fountain", "suburbs fairy fountain (winter)", False, lambda state: \
+            oos_has_winter(state, player)],  # Should be a useless transition, but it might be useful someday
+        ["suburbs", "suburbs fairy fountain (winter)", True, lambda state: oos_season_in_eastern_suburbs(state, player, SEASON_WINTER)],
         ["suburbs fairy fountain (winter)", "maple encounter", False, lambda state: oos_can_meet_maple(state, player)],
         ["suburbs fairy fountain (winter)", "suburbs fairy fountain", False, lambda state: \
             oos_can_remove_season(state, player, SEASON_WINTER)],
-        ["suburbs fairy fountain", "suburbs fairy fountain (winter)", False, lambda state: \
-            oos_has_winter(state, player)],
 
         ["suburbs fairy fountain", "sunken city", False, lambda state: \
             oos_season_in_eastern_suburbs(state, player, SEASON_SPRING)],
-        ["sunken city", "suburbs fairy fountain", False, None],
+        ["sunken city", "suburbs fairy fountain", False, lambda state: oos_not_season_in_eastern_suburbs(state, player, SEASON_WINTER)],
+        ["sunken city", "suburbs fairy fountain (winter)", False, lambda state: oos_season_in_eastern_suburbs(state, player, SEASON_WINTER)],
 
         # WOODS OF WINTER / 2D SECTOR ################################################################################
 
