@@ -1081,6 +1081,13 @@ def oos_season_in_eastern_suburbs(state: CollectionState, player: int, season: i
     ])
 
 
+def oos_not_season_in_eastern_suburbs(state: CollectionState, player: int, season: int):
+    return any([
+        oos_get_default_season(state, player, "EASTERN_SUBURBS") != season,
+        oos_can_remove_season(state, player, season)
+    ])
+
+
 def oos_season_in_sunken_city(state: CollectionState, player: int, season: int):
     return any([
         oos_get_default_season(state, player, "SUNKEN_CITY") == season,
