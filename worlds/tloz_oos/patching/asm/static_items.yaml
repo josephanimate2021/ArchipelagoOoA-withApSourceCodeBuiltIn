@@ -109,13 +109,24 @@
 # Call our custom handler in scriptCmd_spawnItem
 0b/0416/: call handleRandomizedSpawnedItem
 
-# stop d4 pool item from incrementing subindex when it hits the water.
-09/00fb/: |
+# stop d4 pool item from incrementing subindex when it hits the water,
+# instead making it change behavior to item obtained when diving
+09/00f5/: |
+    ld a,$04 ; diving
+    ld l,$71 ; Interaction.var31 - collect mode
+    ld (hl),a
     nop
     nop
     nop
     nop
     nop
+    nop
+
+# Remove useless stuff that makes dive items behave wrong on small keys
+09/019E/: |
+    db $00,$00,$00
+09/01A4/: |
+    db $00,$00,$00,$00,$00
 
 # for the item dropped in the room *above* the trampoline.
 15/15d8/aboveD7ZolButtonId: db locations.d7ZolButton.id

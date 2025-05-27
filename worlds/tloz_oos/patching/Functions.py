@@ -130,9 +130,9 @@ def define_collect_properties_table(assembler: Z80Assembler, patch_data):
             continue
         mode = location_data["collect"]
 
-        # Use no pickup animation for falling small keys
+        # Use no pickup animation for drop or diving small keys
         item_id, _ = get_item_id_and_subid(item)
-        if mode == COLLECT_DROP and item_id == 0x30:
+        if item_id == 0x30 and (mode == COLLECT_DROP or mode == COLLECT_DIVE):
             mode &= 0xf8  # Set grab mode to TREASURE_GRAB_INSTANT
 
         rooms = location_data["room"]

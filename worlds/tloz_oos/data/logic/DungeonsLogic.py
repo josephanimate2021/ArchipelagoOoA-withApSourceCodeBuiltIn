@@ -245,13 +245,24 @@ def make_d4_logic(player: int):
         ])],
 
         ["enter d4", "d4 roller minecart", False, lambda state: all([
-            oos_has_flippers(state, player),
             oos_has_small_keys(state, player, 4, 1),
-            oos_has_feather(state, player)
+            oos_has_feather(state, player),
+            any([
+                oos_has_flippers(state, player),
+                all([
+                    oos_option_hell_logic(state, player),
+                    oos_has_cape(state, player),
+                    oos_can_use_pegasus_seeds(state, player),
+                    oos_has_bombs(state, player)
+                ])
+            ])
         ])],
 
         ["d4 roller minecart", "d4 pool", False, lambda state: all([
-            oos_has_flippers(state, player),
+            any([
+                oos_has_flippers(state, player),
+                oos_option_medium_logic(state, player)
+            ]),
             any([
                 oos_can_kill_normal_enemy(state, player),
                 all([
