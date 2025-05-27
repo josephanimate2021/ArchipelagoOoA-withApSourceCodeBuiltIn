@@ -1324,7 +1324,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
                 oos_roosters(state, player)["horon"][1] > 0,
                 state.has("_met_pirates", player),
                 state.has("Pirate's Bell", player),
-                oos_get_default_season(state, player, "SPOOL_SWAMP") == SEASON_SUMMER
+                oos_get_default_season(state, player, "WESTERN_COAST") == SEASON_SUMMER
             ])],
 
             ["rooster adventure", "spool swamp north", False, lambda state: oos_roosters(state, player)["swamp"][0] >= 0],

@@ -403,9 +403,7 @@ def make_d5_logic(player: int):
             all([
                 # Tight bomb jump to reach the chest
                 oos_option_hell_logic(state, player),
-                oos_has_feather(state, player),
-                oos_has_pegasus_seeds(state, player),
-                oos_has_bombs(state, player)
+                oos_can_jump_3_wide_liquid(state, player),
             ])
         ])],
 
