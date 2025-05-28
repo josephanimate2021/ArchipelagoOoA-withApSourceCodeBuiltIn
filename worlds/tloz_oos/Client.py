@@ -282,6 +282,8 @@ class OracleOfSeasonsClient(BizHawkClient):
     async def process_tracker_updates(self, ctx: "BizHawkClientContext", flag_bytes: bytes, current_room: int):
         # Processes the gasha tracking
         local_tracker = dict(self.local_tracker)
+
+        # Gasha handling
         byte_offset = 0xC64a - RAM_ADDRS["location_flags"][0]
         gasha_seed_bytes = flag_bytes[byte_offset] + flag_bytes[byte_offset + 1] * 0x100
         for gasha_name in GASHA_ADDRS:
@@ -293,13 +295,51 @@ class OracleOfSeasonsClient(BizHawkClient):
                 local_tracker[f"Harvested {gasha_name}"] = True
             else:
                 # Check if the seed is currently planted
-                flag_bit = 0x1 << flag
-                if gasha_seed_bytes & flag_bit == 0:
+                flag_mask = 0x01 << flag
+                if gasha_seed_bytes & flag_mask:
                     continue
 
             local_tracker[f"Planted {gasha_name}"] = True
 
-        local_tracker["Current room"] = current_room
+        # Position tracking
+        local_tracker["Current Room"] = current_room
+
+        # Beast tracking
+        byte_offset = 0xc6c9 - RAM_ADDRS["location_flags"][0]
+        golden_beast_data = [
+            (0x01, "Octorock"),
+            (0x02, "Moblin"),
+            (0x04, "Darknut"),
+            (0x08, "Lynel")
+        ]
+        golden_beast_flags = flag_bytes[byte_offset]
+        for mask, name in golden_beast_data:
+            if golden_beast_flags & mask:
+                local_tracker[f"Golden {name} Beaten"] = True
+
+        # Wild seed/bomb tracking
+        wild_item_data = [
+            (0x03, "Bombs"),
+            (0x20, "Ember"),
+            (0x21, "Scent"),
+            (0x22, "Pegasus"),
+            (0x23, "Gale"),
+            (0x24, "Mystery"),
+        ]
+        base_offset = 0xc692 - RAM_ADDRS["location_flags"][0]
+        for item_id, item_name in wild_item_data:
+            byte_offset = base_offset + item_id // 8
+            mask = 0x01 << item_id % 8
+            if flag_bytes[byte_offset] & mask:
+                local_tracker[f"Obtained {item_name}"] = True
+
+        # Blown up remains
+        base_offset = 0xc6ca - RAM_ADDRS["location_flags"][0]
+        blown_up_flag = 0x15
+        byte_offset = base_offset + blown_up_flag // 8
+        mask = 0x01 << blown_up_flag % 8
+        if flag_bytes[byte_offset] & mask:
+            local_tracker["Blew Up Volcano"] = True
 
         updates = {}
         for key, value in local_tracker.items():
