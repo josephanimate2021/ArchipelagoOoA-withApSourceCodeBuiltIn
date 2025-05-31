@@ -291,12 +291,12 @@ class OracleOfSeasonsClient(BizHawkClient):
 
             # Check if the seed has been harvested
             byte_offset = byte_addr - RAM_ADDRS["location_flags"][0]
-            if flag_bytes[byte_offset] & 0x20 != 0:
+            if flag_bytes[byte_offset] & 0x20:
                 local_tracker[f"Harvested {gasha_name}"] = True
             else:
                 # Check if the seed is currently planted
                 flag_mask = 0x01 << flag
-                if gasha_seed_bytes & flag_mask:
+                if not gasha_seed_bytes & flag_mask:
                     continue
 
             local_tracker[f"Planted {gasha_name}"] = True
@@ -346,15 +346,15 @@ class OracleOfSeasonsClient(BizHawkClient):
             if key not in self.local_tracker or self.local_tracker[key] != value:
                 updates[key] = value
 
-        if "Current room" in updates:
+        if "Current Room" in updates:
             await ctx.send_msgs([{
                 "cmd": "Bounce",
                 "slots": [ctx.slot],
                 "data": {
-                    "Current room": current_room
+                    "Current Room": current_room
                 }
             }])
-            del updates["Current room"]
+            del updates["Current Room"]
 
         if len(updates) > 0:
             await ctx.send_msgs([{
