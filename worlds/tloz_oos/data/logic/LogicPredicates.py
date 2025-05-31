@@ -1194,17 +1194,21 @@ def oos_roosters(state: CollectionState, player: int):
         def use_bottom_cucco(cuccos: tuple[int, int, int]) -> tuple[int, int, int]:
             return cuccos[0] - 1, cuccos[1], cuccos[2] - 1
 
+        # These tops count the 2 tops that have to be sacrificed to exit mt cucco
         if state.has("Shovel", player):
             if state.has("Progressive Boomerang", player):
                 top = 3
             else:
                 top = 2
+        elif state.has("Progressive Boomerang", player) and oos_can_use_pegasus_seeds(state, player):
+            top = 2
         else:
-            top = 1
+            top = 1  # Sign + season indicator
 
         if oos_season_in_mt_cucco(state, player, SEASON_SPRING) \
                 and (oos_can_break_flowers(state, player) or state.has("Spring Banana", player)):
-            bottom = 2
+            bottom = 2  # Sign
+            # No more than 2 bottoms can be used in logic currently
         else:
             bottom = 0
 
