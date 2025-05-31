@@ -20,12 +20,23 @@
 07/018e/satchelInitialSelection: db $be, option.defaultSeedType - $20
 07/019a/slingshotInitialSelection: db $bf, option.defaultSeedType - $20
 
+07//startingInventory: /include startingInventory
 # On file creation, set additional flags to skip a few events/cutscenes/tutorials
 # from the vanilla game which are cumbersome in a rando context.
 07//setInitialFlags: |
-  ; No linked gaming
-  xor a
-  ld (wIsLinkedGame),a
+  ; Start inventory handling
+  ld hl,startingInventory
+  @startInventoryLoop:
+  ldi a,(hl)
+  or a
+  jr z,@endStartInventory
+  ld d,a
+  ld e,(hl)
+  inc hl
+  ldi a,(hl)
+  ld (de),a
+  jr @startInventoryLoop
+  @endStartInventory:
 
   ; Mark intro as seen
   ld a,$0a
@@ -34,32 +45,6 @@
   call setGlobalFlag
   ld a,$21
   call setGlobalFlag
-
-  ; Animal vars
-  ld a,$ff
-  ld (wAnimalTutorialFlags),a
-  
-  ; Starting Maps & Compasses
-  ld a,option.startingMapsCompasses
-  or a
-  jr z,@skipMapsCompasses
-  ld a,$ff
-  ld hl,wDungeonCompasses
-  ldi (hl),a
-  ldi (hl),a
-  ldi (hl),a
-  ld (hl),a
-  @skipMapsCompasses:
-  
-  ; Remove the requirement to go in the screen under Sunken City tree to make Dimitri bullies appear
-  ld a,$20
-  ld (wDimitriState),a
-
-  ; Change seeds selected by default inside slingshot and satchel
-  ld a,option.defaultSeedType
-  ld hl,wSatchelSelectedSeeds
-  ldi (hl),a    ; Satchel initial selection
-  ld (hl),a     ; Slingshot initial selection
 
   ; Room flag 6
   ld a,$40
@@ -90,12 +75,6 @@
   ld a,$01
   ld ($c716),a  ; Enable a tile replacement in Temple Remains to prevent softlock when exiting cave
 
-  ; Give L-3 ring box
-  ld a,$10
-  ld ($c697),a  # treasure flag
-  ld a,$03
-  ld (wRingBoxLevel),a
-
   # automatically open tarm gate if requirement is 0 jewels
   ld a,option.tarmGateRequiredJewels
   or a
@@ -104,9 +83,9 @@
   ld ($c763),a
 
   @done:
-  ld hl,$4182  ; initialFileVariables
+  ld hl,$4404  ; initializeChildOnGameStart, probably useless but we never know
   ret
-07/000a/: call setInitialFlags
+07/0049/: call setInitialFlags
 
 # Remove the "Accept our quest, hero!" cutscene when launching the game
 # for the first time

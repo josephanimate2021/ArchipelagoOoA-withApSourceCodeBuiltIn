@@ -87,7 +87,7 @@ class OracleOfSeasonsClient(BizHawkClient):
             return False
 
         ctx.game = self.game
-        ctx.items_handling = 0b101  # Remote items + starting inventory
+        ctx.items_handling = 0b001  # Only remote items
         ctx.want_slot_data = True
         ctx.watcher_timeout = 0.5
 

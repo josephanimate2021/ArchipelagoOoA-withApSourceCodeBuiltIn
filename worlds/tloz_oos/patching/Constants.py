@@ -89,6 +89,7 @@ DEFINES = {
     "wGashaSpotFlags": "$c649",
     "wDungeonCompasses": "$c67c",
     "wDungeonMaps": "$c67e",
+    "wInventoryB": "$c680",
     "wObtainedTreasureFlags": "$c692",
     "wNetCountIn": "$c6a0",
     "wLinkMaxHealth": "$c6a3",
