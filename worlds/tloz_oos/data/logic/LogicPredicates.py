@@ -1215,38 +1215,60 @@ def oos_roosters(state: CollectionState, player: int):
         available_cuccos["cucco mountain"] = (top + bottom, top, bottom)
 
         if oos_can_jump_3_wide_pit(state, player) or oos_can_swim(state, player, True):
+            # Either go to holdrum plains through natzu's water or through temple remains
             available_cuccos["horon"] = available_cuccos["cucco mountain"]
 
         if oos_has_flute(state, player):
+            # go from holodrum to sunken
             available_cuccos["sunken"] = available_cuccos["horon"]
         elif oos_is_companion_moosh(state, player):
             if oos_can_jump_4_wide_liquid(state, player) or oos_has_flute(state, player):
+                # go from holodrum to sunken
                 available_cuccos["sunken"] = available_cuccos["horon"]
             elif oos_can_jump_3_wide_pit(state, player):
+                # go from holodrum to sunken, through moblin fortress
                 available_cuccos["sunken"] = use_top_cucco(available_cuccos["horon"])
-        elif oos_is_companion_dimitri(state, player):
+        elif oos_is_companion_ricky(state, player):
+            # go from natzu north to sunken
             if oos_can_break_flowers(state, player) and oos_can_swim(state, player, False):  # distance bush break
                 available_cuccos["sunken"] = use_any_cucco(available_cuccos["cucco mountain"])
         elif oos_can_swim(state, player, False):
+            # go from natzu north to sunken
             available_cuccos["sunken"] = available_cuccos["cucco mountain"]
+        # Jump from sunken to suburbs
         available_cuccos["suburbs"] = available_cuccos["sunken"]
 
         if oos_can_use_ember_seeds(state, player, False):
+            # Go through horon village
             available_cuccos["suburbs"] = available_cuccos["horon"]
         elif oos_season_in_eyeglass_lake(state, player, SEASON_WINTER) \
-                or ((oos_get_default_season(state, player, "SPOOL_SWAMP") != SEASON_SPRING or
-                     oos_can_remove_season(state, player, SEASON_SPRING)) and oos_can_swim(state, player, True)):
+                or ((oos_get_default_season(state, player, "EYEGLASS_LAKE") != SEASON_SUMMER or
+                     oos_can_remove_season(state, player, SEASON_SUMMER)) and oos_can_swim(state, player, True)):
+            # Go through the suburbs portal screen
             available_cuccos["suburbs"] = use_any_cucco(available_cuccos["horon"])
 
         if oos_season_in_eastern_suburbs(state, player, SEASON_SPRING):
+            # Use the flower to go from suburbs to sunken
             register_cucco("sunken", available_cuccos["suburbs"])
 
         if oos_season_in_eastern_suburbs(state, player, SEASON_WINTER):
+            # Walk
             available_cuccos["moblin road"] = available_cuccos["suburbs"]
         else:
+            # Use a top cucco from the top of the spring flower to go past the tree
             available_cuccos["moblin road"] = use_top_cucco(available_cuccos["sunken"])
 
-        available_cuccos["swamp"] = use_bottom_cucco(available_cuccos["horon"])
+        if any([
+            oos_season_in_holodrum_plain(state, player, SEASON_SUMMER),
+            oos_can_jump_4_wide_pit(state, player),
+            oos_can_summon_ricky(state, player),
+            oos_can_summon_moosh(state, player)
+        ]):
+            # Move up the swamp vines regularly
+            available_cuccos["swamp"] = available_cuccos["horon"]
+        else:
+            # Or use a bottom cucco
+            available_cuccos["swamp"] = use_bottom_cucco(available_cuccos["horon"])
 
         for region in available_cuccos:
             if any([available_cuccos[region][i] < 0 for i in range(3)]):
