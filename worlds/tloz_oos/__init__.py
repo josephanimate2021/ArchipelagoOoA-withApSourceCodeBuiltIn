@@ -1025,6 +1025,8 @@ class OracleOfSeasonsWorld(World):
         slot_data["shop_rupee_requirements"] = self.shop_rupee_requirements
         slot_data["shop_costs"] = self.shop_prices
 
+        slot_data["version"] = f"{VERSION[0]}.{VERSION[1]}"
+
         return slot_data
 
     def write_spoiler(self, spoiler_handle):
