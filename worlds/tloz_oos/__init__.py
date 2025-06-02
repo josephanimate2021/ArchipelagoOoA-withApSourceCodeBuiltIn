@@ -927,7 +927,7 @@ class OracleOfSeasonsWorld(World):
                 if portal_connections["horon village portal"] not in bad_portals:
                     possible_items.append(["Progressive Boomerang", "Progressive Boomerang"])
                 else:
-                    possible_items.append(["Progressive Boomerang", "Progressive Boomerang"])
+                    bush_breakers.append(["Progressive Boomerang", "Progressive Boomerang"])
 
             if portal_connections["eyeglass lake portal"] not in bad_portals and world.options.default_seed == "pegasus":
                 items = ["Progressive Feather", "Progressive Feather", "Seed Satchel", "Bush Breaker"]
