@@ -124,6 +124,10 @@ class Z80Assembler:
 
         if block.label:
             self.add_global_label(block.label, block.addr)
+        for label in block.local_labels:
+            if not label.startswith('@'):
+                self.add_global_label(label, block.local_labels[label])
+
         self.blocks.append(block)
 
     def resolve_names(self, arg: str, current_addr: GameboyAddress, local_labels: Dict[str, GameboyAddress], opcode: str):

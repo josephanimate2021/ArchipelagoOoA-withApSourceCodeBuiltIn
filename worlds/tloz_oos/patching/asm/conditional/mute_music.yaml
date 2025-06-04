@@ -12,7 +12,7 @@
     pop hl
     pop de
     pop bc
-39/0068/muteMusic: | # Fallthrough for label
+    muteMusic:
     xor a
     ld ($c022),a
     ld a,$01
