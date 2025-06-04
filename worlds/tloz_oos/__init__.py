@@ -941,6 +941,10 @@ class OracleOfSeasonsWorld(World):
 
             if world.options.animal_companion == "dimitri":
                 possible_items.append(["Dimitri's Flute"])
+            elif world.options.animal_companion == "ricky":
+                bush_breakers.append(["Ricky's Flute"])
+            else:
+                bush_breakers.append(["Moosh's Flute"])
 
             if not world.options.remove_d0_alt_entrance:
                 if world.dungeon_entrances["d2 entrance"] == "enter d0" \
