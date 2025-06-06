@@ -433,7 +433,7 @@ def make_d5_logic(player: int):
         ["d5 terrace chest", "armos knights owl", False, lambda state: oos_can_use_mystery_seeds(state, player)],
         ["d5 terrace chest", "d5 armos chest", False, lambda state: oos_can_kill_armored_enemy(state, player)],
 
-        ["enter d5", "d5 cart bay", False, lambda state: all([
+        ["enter d5", "d5 cart bay", False, lambda state: any([
             oos_has_flippers(state, player),
             oos_can_jump_2_wide_liquid(state, player)
         ])],
