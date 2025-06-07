@@ -1114,7 +1114,8 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
             ]),
             any([
                 oos_has_sword(state, player),
-                oos_has_fools_ore(state, player)
+                oos_has_fools_ore(state, player),
+                oos_can_summon_dimitri(state, player)
             ])
         ])],
         ["tarm ruins", "golden lynel", False, lambda state: all([
@@ -1144,13 +1145,15 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
                 # Moblin has the interesting property of being one-shottable using an ember seed
                 all([
                     oos_option_medium_logic(state, player),
-                    oos_can_use_ember_seeds(state, player, False)
-                ])
+                    oos_can_use_ember_seeds(state, player, True)
+                ]),
+                oos_can_summon_dimitri(state, player)
             ])
         ])],
         ["spool swamp south (summer)", "golden octorok", False, lambda state: any([
             oos_has_sword(state, player),
-            oos_has_fools_ore(state, player)
+            oos_has_fools_ore(state, player),
+            oos_can_summon_dimitri(state, player)
         ])],
 
         # GASHA TREES #############################################################################################
