@@ -1,4 +1,4 @@
-02/0FAB/: |
+02/4FAB/: |
   ; This is where the game usually forbids opening a menu during intro, so we can use that space
   ld hl,wKeysPressed
   ldi a,(hl)

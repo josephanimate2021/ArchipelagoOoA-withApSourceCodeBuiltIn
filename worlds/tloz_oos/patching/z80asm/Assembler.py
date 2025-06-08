@@ -32,10 +32,14 @@ class Z80Block:
         if split_metalabel[1] == "":
             split_metalabel[1] = "ffff"  # <-- means that it needs to be injected in some code cave
 
+        bank = int(split_metalabel[0], 16)
         offset = int(split_metalabel[1], 16)
-        if offset >= 0x4000 and offset != 0xffff:
-            raise InvalidAddressError(offset)
-        self.addr = GameboyAddress(int(split_metalabel[0], 16), offset)
+        if offset != 0xffff:
+            if bank > 0:
+                offset -= 0x4000
+            if offset < 0x0000 or offset >= 0x4000:
+                raise InvalidAddressError(split_metalabel[1])
+        self.addr = GameboyAddress(bank, offset)
 
         self.label = split_metalabel[2]
 
