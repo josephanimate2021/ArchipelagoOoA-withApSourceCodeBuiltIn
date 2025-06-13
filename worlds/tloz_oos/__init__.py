@@ -766,6 +766,7 @@ class OracleOfSeasonsWorld(World):
                 items.append(self.create_item(item_name))
         self.filter_confined_dungeon_items_from_pool(items)
         self.multiworld.itempool.extend(items)
+        self.pre_fill_items.extend([Item(seed_name, ItemClassification.progression, None, self.player) for seed_name in SEED_ITEMS])
 
     def get_pre_fill_items(self):
         return self.pre_fill_items
@@ -1071,7 +1072,7 @@ class OracleOfSeasonsWorld(World):
         return True
 
     def remove(self, state: CollectionState, item: Item) -> bool:
-        change = super().collect(state, item)
+        change = super().remove(state, item)
         if not change or self.options.logic_difficulty < OracleOfSeasonsLogicDifficulty.option_hell:
             return change
         if item.code is None or item.code >= 0x2100 and item.code != 0x2e00:  # Not usable item nor ember nor flippers

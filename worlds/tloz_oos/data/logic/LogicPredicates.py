@@ -1026,11 +1026,11 @@ def oos_can_meet_maple(state: CollectionState, player: int):
 
 def oos_season_in_spool_swamp(state: CollectionState, player: int, season: int):
     return any([
-       oos_get_default_season(state, player, "SPOOL_SWAMP") == season,
-       all([
-           oos_has_season(state, player, season),
-           state.has("_reached_spool_stump", player)
-       ]) 
+        oos_get_default_season(state, player, "SPOOL_SWAMP") == season,
+        all([
+            oos_has_season(state, player, season),
+            state.has("_reached_spool_stump", player)
+        ])
     ])
 
 
