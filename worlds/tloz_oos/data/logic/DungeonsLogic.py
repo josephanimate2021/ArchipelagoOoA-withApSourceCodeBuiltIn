@@ -605,13 +605,19 @@ def make_d6_logic(player: int):
         ["enter d6", "d6 spinner north", False, lambda state: all([
             oos_can_break_crystal(state, player),
             oos_has_magnet_gloves(state, player),
-            oos_has_feather(state, player),
+            any([
+                oos_option_medium_logic(state, player),  # Iframes through the spikes
+                oos_has_feather(state, player)
+            ]),
             any([
                 all([
                     oos_has_small_keys(state, player, 6, 1),
 
                     # Go through beamos room
-                    oos_has_bombs(state, player),
+                    all([
+                        oos_has_bombs(state, player),
+                        oos_has_feather(state, player)
+                    ]),
 
                     any([
                         # Kill Vire (the rest doesn't matter because we don't care about not being able to not spend a key somewhere)
@@ -632,7 +638,10 @@ def make_d6_logic(player: int):
                     oos_has_small_keys(state, player, 6, 2),
                     any([
                         # Go through beamos room
-                        oos_has_bombs(state, player),
+                        all([
+                            oos_has_bombs(state, player),
+                            oos_has_feather(state, player)
+                        ]),
 
                         # Kill Vire
                         oos_has_sword(state, player, False),
