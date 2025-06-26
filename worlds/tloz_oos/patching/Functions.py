@@ -16,7 +16,8 @@ from pathlib import Path
 
 
 def get_asm_files(patch_data):
-    asm_files = ASM_FILES.copy()
+    dir_name = os.path.dirname(__file__) + "/asm"
+    asm_files = [f"asm/{filename}" for filename in os.listdir(dir_name) if filename.endswith(".yaml")]
     if patch_data["options"]["quick_flute"]:
         asm_files.append("asm/conditional/quick_flute.yaml")
     if patch_data["options"]["shuffle_old_men"] == OracleOfSeasonsOldMenShuffle.option_turn_into_locations:
