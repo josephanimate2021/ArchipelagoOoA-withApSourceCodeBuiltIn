@@ -333,6 +333,11 @@ class OracleOfSeasonsClient(BizHawkClient):
             if flag_bytes[byte_offset] & mask:
                 local_tracker[f"Obtained {item_name}"] = True
 
+        # Lost woods deku
+        byte_offset = 0xc8b7 - RAM_ADDRS["location_flags"][0]
+        if flag_bytes[byte_offset] & 0x20:
+            local_tracker["Learned Lost Woods Sequence"] = True
+
         # Blown up remains
         base_offset = 0xc6ca - RAM_ADDRS["location_flags"][0]
         blown_up_flag = 0x15
