@@ -1,18 +1,29 @@
 from ..data.Constants import *
 
-EOB_ADDR = [
+CAVE_DATA = [
     0x3ec8,  # 00
     0x3e89,  # 01
     0x35bb,  # 02
     0x3dd7,  # 03
-    0x3e12,  # 04
+    [  # 04
+        [0x2776, 0x280f],  # roomTileChangesAfterLoad for trees, which are reimplemented
+        0x3e12  # End of bank
+    ],
     0x3e2d,  # 05
     0x3864,  # 06 - 128 bytes reserved for sprite expansion w/ web patcher
     0x3900,  # 07
-    0x3fc0,  # 08
+    [  # 08
+        [0x2395, 0x26fd],  # Bipin & Blossom child mechanic
+        0x3fc0  # End of bank
+    ],
     0x3f4e,  # 09
     0x3bf9,  # 0a
-    0x3f6d,  # 0b
+    [  # 0b
+        [0x34ac, 0x34ee],  # Impa intro script
+        [0x39b4, 0x39e9],  # Twinrova cutscene 1
+        [0x39f5, 0x3a29],  # Twinrova cutscene 2
+        0x3f6d  # End of bank
+    ],
     0x3ea1,  # 0c
     0x3b82,  # 0d
     0x3ef3,  # 0e
@@ -58,13 +69,19 @@ EOB_ADDR = [
     0x4000,  # 36
     0x4000,  # 37
     0x3df0,  # 38
-    0x4000,  # 39
+    [  # 39
+        [0x0c00, 0x0c08],  # Skipped weird call, this bank is packed so better use any room
+        [0x115d, 0x1169],  # "sndd6"-"snddd", unused sound descriptors
+        [0x145c, 0x1468],  # mus41, unused music descriptor
+        [0x1a79, 0x1a85],  # Junk data at the end of sndde
+        0x3ff2  # End of bank
+    ],
     0x4000,  # 3a
     0x4000,  # 3b
     0x4000,  # 3c
     0x4000,  # 3d
     0x4000,  # 3e
-    0x314b   # 3f - also here
+    0x314b  # 3f - also here
 ]
 
 DEFINES = {
