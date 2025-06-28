@@ -13,3 +13,11 @@
   ld b,$45 ; high byte of TX_45xx
   call getThisRoomFlags
   set 5,(hl)
+
+0b/6540/: |
+  dw setPhonographFlag
+  post_setPhonographFlag:
+0b//setPhonographFlag: |
+  db $b1,$20 ; orroomflag $20
+  db $98,$50 ; showtextlowindex <TX_0b50
+  dw post_setPhonographFlag

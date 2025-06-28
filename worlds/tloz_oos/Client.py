@@ -337,6 +337,10 @@ class OracleOfSeasonsClient(BizHawkClient):
         byte_offset = 0xc8b7 - RAM_ADDRS["location_flags"][0]
         if flag_bytes[byte_offset] & 0x20:
             local_tracker["Learned Lost Woods Sequence"] = True
+        # Pedestal deku
+        byte_offset = 0xc9f8 - RAM_ADDRS["location_flags"][0]
+        if flag_bytes[byte_offset] & 0x20:
+            local_tracker["Learned Pedestal Sequence"] = True
 
         # Blown up remains
         base_offset = 0xc6ca - RAM_ADDRS["location_flags"][0]
