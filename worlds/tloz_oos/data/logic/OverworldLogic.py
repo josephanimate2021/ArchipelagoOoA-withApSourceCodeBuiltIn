@@ -363,8 +363,14 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
             oos_can_swim(state, player, True),
             oos_can_jump_5_wide_liquid(state, player)
         ])],
-        ["eyeglass lake portal", "eyeglass lake (dry)", False, lambda state: \
-            oos_is_default_season(state, player, "EYEGLASS_LAKE", SEASON_SUMMER)],
+        # This transition has been removed since the anti-softlock has been removed
+        # ["eyeglass lake portal", "eyeglass lake (dry)", False, lambda state: \
+        #     oos_is_default_season(state, player, "EYEGLASS_LAKE", SEASON_SUMMER)],
+        # Instead, jump straight from the portal to lost woods in summer
+        ["eyeglass lake portal", "lost woods", False, lambda state: all([
+            oos_option_hard_logic(state, player),
+            oos_is_default_season(state, player, "EYEGLASS_LAKE", SEASON_SUMMER)
+        ])],
 
         ["eyeglass lake (dry)", "dry eyeglass lake, west cave", False, lambda state: all([
             oos_can_remove_rockslide(state, player, True),
@@ -869,11 +875,13 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         # TARM RUINS ###############################################################################################
 
         ["spool swamp north", "tarm ruins", False, lambda state: oos_has_required_jewels(state, player)],
+        ["tarm ruins", "spool swamp north", False, lambda state: state.multiworld.worlds[player].options.tarm_gate_required_jewels.value == 0],
 
-        ["tarm ruins", "lost woods stump", False, lambda state: all([
+        ["tarm ruins", "lost woods top statue", False, lambda state: all([
             any([
                 oos_season_in_lost_woods(state, player, SEASON_SUMMER),
                 all([
+                    oos_season_in_lost_woods(state, player, SEASON_AUTUMN),
                     oos_option_medium_logic(state, player),
                     oos_has_magic_boomerang(state, player),
                     any([
@@ -883,19 +891,59 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
                 ])
             ]),
             oos_season_in_lost_woods(state, player, SEASON_WINTER),
+            oos_can_remove_season(state, player, SEASON_WINTER)
+        ])],
+        ["lost woods top statue", "lost woods stump", False, lambda state: all([
+            # Winter has to be in inventory to be here, it allows crossing the water
             oos_has_autumn(state, player),
             oos_can_break_mushroom(state, player, False)
         ])],
+        ["lost woods top statue", "lost woods deku", False, lambda state: all([
+            oos_has_autumn(state, player),
+            any([
+                oos_can_jump_2_wide_liquid(state, player),
+                oos_can_swim(state, player, False)
+            ]),
+            oos_can_break_mushroom(state, player, False),
+            oos_has_shield(state, player)
+        ])],
 
         ["lost woods stump", "maple encounter", False, lambda state: oos_can_meet_maple(state, player)],
+        ["lost woods stump", "tarm ruins", False, lambda state: all([
+            oos_season_in_lost_woods(state, player, SEASON_AUTUMN),
+            oos_can_break_mushroom(state, player, False),
+            oos_has_winter(state, player)
+        ])],
+        ["lost woods stump", "lost woods phonograph", False, lambda state: all([
+            any([
+                oos_can_remove_snow(state, player, False),
+                oos_can_remove_season(state, player, SEASON_WINTER),
+            ]),
+            oos_can_use_ember_seeds(state, player, False),
+            state.has("Phonograph", player)
+        ])],
 
         ["lost woods stump", "lost woods", False, lambda state: oos_can_reach_lost_woods_pedestal(state, player)],
+        # When coming back from the eyeglass lake
+        ["lost woods", "lost woods stump", False, None],
+        ["lost woods", "lost woods deku", False, lambda state: all([
+            oos_season_in_tarm_ruins(state, player, SEASON_AUTUMN),
+            state.can_reach("lost woods top statue"),
+            any([
+                # A bit tight and diagonal, above water
+                oos_can_jump_3_wide_pit(state, player),
+                oos_can_swim(state, player, False)
+            ]),
+            oos_can_break_mushroom(state, player, False),
+            oos_has_shield(state, player)
+        ])],
         # special case for getting to d6 using default season
         ["lost woods", "d6 sector", False, lambda state: all([
             oos_can_complete_lost_woods_main_sequence(state, player, True),
             oos_option_medium_logic(state, player)
         ])],
         ["lost woods stump", "d6 sector", False, lambda state: oos_can_complete_lost_woods_main_sequence(state, player)],
+        ["d6 sector", "lost woods stump", False, None],
         # special case for getting to pedestal using default season
         ["d6 sector", "lost woods", False, lambda state: all([
             oos_can_reach_lost_woods_pedestal(state, player, True),
@@ -918,7 +966,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
                 oos_can_use_ember_seeds(state, player, False),
                 all([
                     oos_can_reach_rooster_adventure(state, player),
-                    oos_roosters(state, player)["swamp"][0] > 0
+                    oos_roosters(state, player)["d6"][0] > 0
                 ])
             ]),
             oos_season_in_tarm_ruins(state, player, SEASON_SPRING),
@@ -934,7 +982,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
                 ]),
                 all([
                     oos_can_reach_rooster_adventure(state, player),
-                    oos_roosters(state, player)["swamp"][1] > 0
+                    oos_roosters(state, player)["d6"][1] > 0
                 ])
             ])
         ])],
@@ -1123,20 +1171,15 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
                 oos_can_summon_dimitri(state, player)
             ])
         ])],
-        ["tarm ruins", "golden lynel", False, lambda state: all([
-            any([
-                oos_season_in_lost_woods(state, player, SEASON_SUMMER),
-                all([
-                    oos_option_medium_logic(state, player),
-                    oos_season_in_lost_woods(state, player, SEASON_AUTUMN),
-                    oos_has_magic_boomerang(state, player),
-                    any([
-                        oos_can_jump_1_wide_pit(state, player, False),
-                        oos_option_hard_logic(state, player)
-                    ])
-                ])
-            ]),
-            oos_season_in_lost_woods(state, player, SEASON_WINTER),
+        ["lost woods top statue", "golden lynel", False, lambda state: any([
+            oos_has_sword(state, player),
+            oos_has_fools_ore(state, player)
+        ])],
+        ["lost woods stump", "golden lynel", False, lambda state: all([
+            # We can assume coming from d6 or pedestal otherwise rule above applies
+            oos_season_in_lost_woods(state, player, SEASON_AUTUMN),
+            oos_can_break_mushroom(state, player, False),
+            oos_has_winter(state, player),
             any([
                 oos_has_sword(state, player),
                 oos_has_fools_ore(state, player)
@@ -1336,6 +1379,14 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
             ])],
 
             ["rooster adventure", "spool swamp north", False, lambda state: oos_roosters(state, player)["swamp"][0] >= 0],
+            ["rooster adventure", "lost woods deku", False, lambda state: all([
+                oos_roosters(state, player)["swamp"][1] > 0,
+                oos_has_required_jewels(state, player),
+                any([
+                    oos_season_in_lost_woods(state, player, SEASON_SUMMER),
+                    state.can_reach("lost woods top statue")
+                ])
+            ])],
             ["rooster adventure", "spool swamp cave", False, lambda state: any([
                 all([
                     oos_can_swim(state, player, True),

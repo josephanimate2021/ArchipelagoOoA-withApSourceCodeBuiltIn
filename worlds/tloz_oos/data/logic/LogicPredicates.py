@@ -220,17 +220,15 @@ def oos_has_required_jewels(state: CollectionState, player: int):
     return count >= target_count
 
 
-def oos_can_reach_lost_woods_pedestal(state: CollectionState, player: int, allow_default: bool = False):
+def oos_can_reach_lost_woods_pedestal(state: CollectionState, player: int, allow_default: bool = False, force_deku = False):
     world = state.multiworld.worlds[player]
     seasons_in_pedestal_sequence = [season for [_, season] in world.lost_woods_item_sequence]
 
     return all([
         oos_can_complete_season_sequence(state, player, seasons_in_pedestal_sequence, allow_default),
         any([
-            all([
-                oos_can_use_ember_seeds(state, player, False),
-                state.has("Phonograph", player)
-            ]),
+            force_deku,
+            state.can_reach_region("lost woods phonograph", player),
             all([
                 # if sequence is vanilla, medium+ players are expected to know it
                 oos_option_medium_logic(state, player),
@@ -240,17 +238,15 @@ def oos_can_reach_lost_woods_pedestal(state: CollectionState, player: int, allow
     ])
 
 
-def oos_can_complete_lost_woods_main_sequence(state: CollectionState, player: int, allow_default: bool = False):
+def oos_can_complete_lost_woods_main_sequence(state: CollectionState, player: int, allow_default: bool = False, force_deku = False):
     world = state.multiworld.worlds[player]
     seasons_in_main_sequence = [season for [_, season] in world.lost_woods_main_sequence]
 
     return all([
         oos_can_complete_season_sequence(state, player, seasons_in_main_sequence, allow_default),
         any([
-            all([
-                oos_can_break_mushroom(state, player, False),
-                oos_has_shield(state, player)
-            ]),
+            force_deku,
+            state.can_reach_region("lost woods deku", player),
             all([
                 # if sequence is vanilla, medium+ players are expected to know it
                 oos_option_medium_logic(state, player),
@@ -1172,14 +1168,15 @@ def oos_self_locking_small_key(state: CollectionState, player: int, region_name:
 # Rooster adventure logic  ######################################################
 def oos_roosters(state: CollectionState, player: int):
     if state.tloz_oos_available_cuccos[player] is None:
-        # This computes cuccos for the whole game then caches it
+        # This computes cuccos for the whole game then caches it (total, top, bottom)
         available_cuccos = {
             "cucco mountain": (-1, -1, -1),
             "horon": (-1, -1, -1),
             "suburbs": (-1, -1, -1),
             "moblin road": (-1, -1, -1),
             "sunken": (-1, -1, -1),
-            "swamp": (-1, -1, -1)
+            "swamp": (-1, -1, -1),
+            "d6": (-1, -1, -1),
         }
 
         def register_cucco(region: str, new_cuccos: tuple[int, int, int]):
@@ -1270,6 +1267,47 @@ def oos_roosters(state: CollectionState, player: int):
         else:
             # Or use a bottom cucco
             available_cuccos["swamp"] = use_bottom_cucco(available_cuccos["horon"])
+
+        if all([  # Reach tarm ruins, could probably be optimized
+            oos_has_required_jewels(state, player),
+            any([
+                oos_season_in_lost_woods(state, player, SEASON_SUMMER),
+                all([
+                    oos_season_in_lost_woods(state, player, SEASON_AUTUMN),
+                    oos_option_medium_logic(state, player),
+                    oos_has_magic_boomerang(state, player),
+                    any([
+                        oos_can_jump_1_wide_pit(state, player, False),
+                        oos_option_hard_logic(state, player)
+                    ])
+                ])
+            ]),
+            oos_season_in_lost_woods(state, player, SEASON_WINTER),
+            oos_can_remove_season(state, player, SEASON_WINTER)
+        ]):
+            can_reach_deku = all([
+                oos_has_shield(state, player),
+                any([
+                    available_cuccos["swamp"][1],
+                    oos_can_jump_2_wide_liquid(state, player),
+                    oos_can_swim(state, player, False)
+                ])
+            ])
+            if all([
+                oos_has_autumn(state, player),
+                oos_can_break_mushroom(state, player, False),
+                any([
+                    oos_can_complete_lost_woods_main_sequence(state, player, False, can_reach_deku),
+                    all([
+                        oos_can_complete_lost_woods_main_sequence(state, player, True, can_reach_deku),
+                        oos_can_reach_lost_woods_pedestal(state, player, False, all([
+                            oos_can_use_ember_seeds(state, player, False),
+                            state.has("Phonograph", player)
+                        ])),
+                    ])
+                ])
+            ]):
+                available_cuccos["d6"] = available_cuccos["swamp"]
 
         for region in available_cuccos:
             if any([available_cuccos[region][i] < 0 for i in range(3)]):

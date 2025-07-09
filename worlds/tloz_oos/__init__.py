@@ -552,11 +552,18 @@ class OracleOfSeasonsWorld(World):
         apply_self_locking_rules(self.multiworld, self.player)
         self.multiworld.completion_condition[self.player] = lambda state: state.has("_beaten_game", self.player)
 
+        self.multiworld.register_indirect_condition(self.get_region("lost woods top statue"), self.get_entrance("lost woods stump -> lost woods deku"))
+        self.multiworld.register_indirect_condition(self.get_region("lost woods deku"), self.get_entrance("lost woods stump -> lost woods"))
+        self.multiworld.register_indirect_condition(self.get_region("lost woods deku"), self.get_entrance("d6 sector -> lost woods"))
+        self.multiworld.register_indirect_condition(self.get_region("lost woods phonograph"), self.get_entrance("lost woods -> d6 sector"))
+        self.multiworld.register_indirect_condition(self.get_region("lost woods phonograph"), self.get_entrance("lost woods stump -> d6 sector"))
+
         if self.options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_hell:
             cucco_region = self.get_region("rooster adventure")
             # This saves using an event which is slightly more efficient
             self.multiworld.register_indirect_condition(cucco_region, self.get_entrance("d6 sector -> old man near d6"))
             self.multiworld.register_indirect_condition(cucco_region, self.get_entrance("d6 sector -> d6 entrance"))
+            self.multiworld.register_indirect_condition(self.get_region("lost woods top statue"), self.get_entrance("rooster adventure -> lost woods deku"))
 
     def create_item(self, name: str) -> Item:
         # If item name has a "!PROG" suffix, force it to be progression. This is typically used to create the right
