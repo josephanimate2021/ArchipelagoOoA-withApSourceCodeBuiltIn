@@ -146,11 +146,13 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ["graveyard (summer or spring)", "d7 entrance", False, None],
 
         ["d7 entrance", "graveyard (winter)", False, lambda state: \
-            oos_get_default_season(state, player, "WESTERN_COAST") == SEASON_WINTER],
+            oos_is_default_season(state, player, "WESTERN_COAST", SEASON_WINTER)],
         ["d7 entrance", "graveyard (autumn)", False, lambda state: \
-            oos_get_default_season(state, player, "WESTERN_COAST") == SEASON_AUTUMN],
-        ["d7 entrance", "graveyard (summer or spring)", False, lambda state: \
-            oos_get_default_season(state, player, "WESTERN_COAST") in [SEASON_SUMMER, SEASON_SPRING]],
+            oos_is_default_season(state, player, "WESTERN_COAST", SEASON_AUTUMN)],
+        ["d7 entrance", "graveyard (summer or spring)", False, lambda state: any([
+            oos_is_default_season(state, player, "WESTERN_COAST", SEASON_SUMMER),
+            oos_is_default_season(state, player, "WESTERN_COAST", SEASON_SPRING)
+        ])],
 
         ["graveyard (autumn)", "graveyard heart piece", False, lambda state: oos_can_break_mushroom(state, player, False)],
 
@@ -210,7 +212,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ["sunken city", "moblin road", False, lambda state: all([
             oos_has_flippers(state, player),
             any([
-                oos_get_default_season(state, player, "SUNKEN_CITY") != SEASON_WINTER,
+                not oos_is_default_season(state, player, "SUNKEN_CITY", SEASON_WINTER),
                 oos_can_remove_season(state, player, SEASON_WINTER)
             ])
         ])],
@@ -219,7 +221,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
             oos_can_remove_rockslide(state, player, True),
             oos_can_break_bush(state, player, False),
             any([
-                oos_get_default_season(state, player, "WOODS_OF_WINTER") != SEASON_WINTER,
+                not oos_is_default_season(state, player, "WOODS_OF_WINTER", SEASON_WINTER),
                 oos_can_remove_season(state, player, SEASON_WINTER)
             ])
         ])],
@@ -271,7 +273,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
             all([
                 oos_has_feather(state, player),
                 any([
-                    oos_get_default_season(state, player, "EYEGLASS_LAKE") == SEASON_AUTUMN,
+                    oos_is_default_season(state, player, "EYEGLASS_LAKE", SEASON_AUTUMN),
                     all([
                         oos_has_autumn(state, player),
                         oos_can_break_bush(state, player, True)
@@ -292,7 +294,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ["d1 island", "d1 entrance", True, lambda state: state.has("Gnarled Key", player)],
         ["d1 island", "golden beasts old man", False, lambda state: all([
             any([
-                oos_get_default_season(state, player, "EYEGLASS_LAKE") == SEASON_SUMMER,
+                oos_is_default_season(state, player, "EYEGLASS_LAKE", SEASON_SUMMER),
                 all([
                     oos_has_summer(state, player),
                     oos_can_break_bush(state, player, True)
@@ -343,12 +345,15 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
             oos_season_in_eyeglass_lake(state, player, SEASON_WINTER)],
 
         ["eyeglass lake portal", "eyeglass lake (default)", False, lambda state: all([
-            oos_get_default_season(state, player, "EYEGLASS_LAKE") in [SEASON_AUTUMN, SEASON_SPRING],
+            any([
+                oos_is_default_season(state, player, "EYEGLASS_LAKE", SEASON_AUTUMN),
+                oos_is_default_season(state, player, "EYEGLASS_LAKE", SEASON_SPRING)
+            ]),
             oos_can_swim(state, player, False)
         ])],
         ["eyeglass lake (default)", "eyeglass lake portal", False, None],
         ["eyeglass lake portal", "eyeglass lake (frozen)", False, lambda state: all([
-            oos_get_default_season(state, player, "EYEGLASS_LAKE") == SEASON_WINTER,
+            oos_is_default_season(state, player, "EYEGLASS_LAKE", SEASON_WINTER),
             any([
                 oos_can_swim(state, player, False),
                 oos_can_jump_5_wide_liquid(state, player)
@@ -359,7 +364,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
             oos_can_jump_5_wide_liquid(state, player)
         ])],
         ["eyeglass lake portal", "eyeglass lake (dry)", False, lambda state: \
-            oos_get_default_season(state, player, "EYEGLASS_LAKE") == SEASON_SUMMER],
+            oos_is_default_season(state, player, "EYEGLASS_LAKE", SEASON_SUMMER)],
 
         ["eyeglass lake (dry)", "dry eyeglass lake, west cave", False, lambda state: all([
             oos_can_remove_rockslide(state, player, True),
@@ -376,7 +381,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ])],
         # Direct route #1 to reach D5 entrance taking advantage of autumn as default season
         ["d1 stump", "d5 entrance", False, lambda state: all([
-            oos_get_default_season(state, player, "EYEGLASS_LAKE") == SEASON_AUTUMN,
+            oos_is_default_season(state, player, "EYEGLASS_LAKE", SEASON_AUTUMN),
             oos_can_jump_1_wide_pit(state, player, True),
             oos_can_break_mushroom(state, player, True),
             any([
@@ -391,7 +396,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ])],
         # Direct route #2 to reach D5 entrance taking advantage of autumn as default season
         ["eyeglass lake portal", "d5 entrance", False, lambda state: all([
-            oos_get_default_season(state, player, "EYEGLASS_LAKE") == SEASON_AUTUMN,
+            oos_is_default_season(state, player, "EYEGLASS_LAKE", SEASON_AUTUMN),
             oos_can_swim(state, player, False),
             oos_can_break_mushroom(state, player, True)
         ])],
@@ -399,7 +404,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ["d5 entrance", "d5 stump", False, lambda state: any([
             oos_can_jump_1_wide_pit(state, player, True),
             all([
-                oos_get_default_season(state, player, "EYEGLASS_LAKE") == SEASON_AUTUMN,
+                oos_is_default_season(state, player, "EYEGLASS_LAKE", SEASON_AUTUMN),
                 oos_can_break_mushroom(state, player, False)
             ])
         ])],
@@ -411,7 +416,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
 
         ["d5 entrance", "dry eyeglass lake, east cave", False, lambda state: all([
             oos_can_jump_1_wide_pit(state, player, True),
-            oos_get_default_season(state, player, "EYEGLASS_LAKE") == SEASON_SUMMER,
+            oos_is_default_season(state, player, "EYEGLASS_LAKE", SEASON_SUMMER),
             oos_has_bracelet(state, player),
         ])],
 
@@ -428,7 +433,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ["north horon", "old man near blaino", False, lambda state: all([
             oos_can_use_ember_seeds(state, player, False),
             any([
-                oos_get_default_season(state, player, "HOLODRUM_PLAIN") == SEASON_SUMMER,
+                oos_is_default_season(state, player, "HOLODRUM_PLAIN", SEASON_SUMMER),
                 oos_can_summon_ricky(state, player),
                 all([
                     # can get from the stump to old man in summer
@@ -523,7 +528,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ["spool stump", "d3 entrance", False, lambda state: oos_season_in_spool_swamp(state, player, SEASON_SUMMER)],
 
         ["spool stump", "spool swamp middle", False, lambda state: any([
-            oos_get_default_season(state, player, "SPOOL_SWAMP") != SEASON_SPRING,
+            not oos_is_default_season(state, player, "SPOOL_SWAMP", SEASON_SPRING),
             oos_can_remove_season(state, player, SEASON_SPRING),
             oos_can_swim(state, player, True)
         ])],
@@ -569,7 +574,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         # just because you can reach the stump doesn't mean you can also get there
         # ex. only access to gasha section is through subrosia
         ["spool swamp south", "spool swamp south (spring)", False, lambda state: \
-            oos_get_default_season(state, player, "SPOOL_SWAMP") == SEASON_SPRING],
+            oos_is_default_season(state, player, "SPOOL_SWAMP", SEASON_SPRING)],
         ["spool stump", "spool swamp south (spring)", False, lambda state: all([
             oos_has_spring(state, player),
             oos_can_swim(state, player, True),
@@ -580,7 +585,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
             ])
         ])],
         ["spool swamp south", "spool swamp south (summer)", False, lambda state: \
-            oos_get_default_season(state, player, "SPOOL_SWAMP") == SEASON_SUMMER],
+            oos_is_default_season(state, player, "SPOOL_SWAMP", SEASON_SUMMER)],
         ["spool stump", "spool swamp south (summer)", False, lambda state: all([
             oos_has_summer(state, player),
             any([
@@ -591,7 +596,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
             ])
         ])],
         ["spool swamp south", "spool swamp south (autumn)", False, lambda state: \
-            oos_get_default_season(state, player, "SPOOL_SWAMP") == SEASON_AUTUMN],
+            oos_is_default_season(state, player, "SPOOL_SWAMP", SEASON_AUTUMN)],
         ["spool stump", "spool swamp south (autumn)", False, lambda state: all([
             oos_has_autumn(state, player),
             any([
@@ -602,7 +607,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
             ])
         ])],
         ["spool swamp south", "spool swamp south (winter)", False, lambda state: \
-            oos_get_default_season(state, player, "SPOOL_SWAMP") == SEASON_WINTER],
+            oos_is_default_season(state, player, "SPOOL_SWAMP", SEASON_WINTER)],
         ["spool stump", "spool swamp south (winter)", False, lambda state: all([
             oos_has_winter(state, player),
             any([
@@ -626,15 +631,15 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
 
         # default season only because of the portal
         ["spool swamp south near gasha spot", "spool swamp south (spring)", False, lambda state: all([
-            oos_get_default_season(state, player, "SPOOL_SWAMP") == SEASON_SPRING,
+            oos_is_default_season(state, player, "SPOOL_SWAMP", SEASON_SPRING),
             oos_can_break_flowers(state, player, True)
         ])],
         ["spool swamp south near gasha spot", "spool swamp south (summer)", False, lambda state: \
-            oos_get_default_season(state, player, "SPOOL_SWAMP") == SEASON_SUMMER],
+            oos_is_default_season(state, player, "SPOOL_SWAMP", SEASON_SUMMER)],
         ["spool swamp south near gasha spot", "spool swamp south (autumn)", False, lambda state: \
-            oos_get_default_season(state, player, "SPOOL_SWAMP") == SEASON_AUTUMN],
+            oos_is_default_season(state, player, "SPOOL_SWAMP", SEASON_AUTUMN)],
         ["spool swamp south near gasha spot", "spool swamp south (winter)", False, lambda state: all([
-            oos_get_default_season(state, player, "SPOOL_SWAMP") == SEASON_WINTER,
+            oos_is_default_season(state, player, "SPOOL_SWAMP", SEASON_WINTER),
             oos_can_remove_snow(state, player, True)
         ])],
 
@@ -676,7 +681,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
                 oos_has_feather(state, player),
                 oos_has_flippers(state, player),
                 oos_can_summon_dimitri(state, player),
-                oos_get_default_season(state, player, "SUNKEN_CITY") == SEASON_WINTER
+                oos_is_default_season(state, player, "SUNKEN_CITY", SEASON_WINTER)
             ]),
             oos_can_harvest_tree(state, player, True)
         ])],
@@ -688,7 +693,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
                 any([
                     oos_has_feather(state, player),
                     oos_has_flippers(state, player),
-                    oos_get_default_season(state, player, "SUNKEN_CITY") == SEASON_WINTER
+                    oos_is_default_season(state, player, "SUNKEN_CITY", SEASON_WINTER)
                 ])
             ])
         ])],
@@ -698,7 +703,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
                 oos_has_feather(state, player),
                 oos_has_flippers(state, player),
                 oos_can_summon_dimitri(state, player),
-                oos_get_default_season(state, player, "SUNKEN_CITY") == SEASON_WINTER
+                oos_is_default_season(state, player, "SUNKEN_CITY", SEASON_WINTER)
             ]),
             any([
                 state.has("Goron Vase", player),
@@ -788,7 +793,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ["mt. cucco, talon's cave entrance", "talon trade", False, lambda state: all([
             state.has("Megaphone", player),
             any([
-                oos_get_default_season(state, player, "SUNKEN_CITY") != SEASON_WINTER,
+                not oos_is_default_season(state, player, "SUNKEN_CITY", SEASON_WINTER),
                 oos_can_remove_season(state, player, SEASON_WINTER)
             ])
         ])],
@@ -798,7 +803,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ["mt. cucco, talon's cave entrance", "diving spot outside D4", False, lambda state: all([
             oos_has_flippers(state, player),
             any([
-                oos_get_default_season(state, player, "SUNKEN_CITY") != SEASON_WINTER,
+                not oos_is_default_season(state, player, "SUNKEN_CITY", SEASON_WINTER),
                 oos_can_remove_season(state, player, SEASON_WINTER)
             ])
         ])],
@@ -935,7 +940,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ])],
         # When coming from D6 entrance, the pillar needs to be broken during spring to be able to go backwards
         ["d6 entrance", "d6 sector", False, lambda state: all([
-            oos_get_default_season(state, player, "TARM_RUINS") == SEASON_SPRING,
+            oos_is_default_season(state, player, "TARM_RUINS", SEASON_SPRING),
             oos_can_break_flowers(state, player)
         ])],
 
@@ -1049,7 +1054,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
             oos_has_feather(state, player),  # Require feather in case volcano has erupted
             any([
                 state.has("_triggered_volcano", player),
-                oos_get_default_season(state, player, "TEMPLE_REMAINS") == SEASON_WINTER
+                oos_is_default_season(state, player, "TEMPLE_REMAINS", SEASON_WINTER)
             ])
         ])],
 
@@ -1105,7 +1110,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
 
         ["d0 entrance", "golden darknut", False, lambda state: all([
             any([
-                oos_get_default_season(state, player, "WESTERN_COAST") == SEASON_SPRING,
+                oos_is_default_season(state, player, "WESTERN_COAST", SEASON_SPRING),
                 all([
                     oos_season_in_western_coast(state, player, SEASON_SPRING),
                     state.has("Pirate's Bell", player),
@@ -1259,7 +1264,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         holodrum_logic.extend([
             ["d4 entrance", "dragon keyhole", False, lambda state: all([
                 # Rule specifically to get to the dragon keyhole from a side entrance, only useful for rooster's adventure
-                oos_get_default_season(state, player, "SUNKEN_CITY") == SEASON_WINTER,  # to reach cave
+                oos_is_default_season(state, player, "SUNKEN_CITY", SEASON_WINTER),  # to reach cave
                 oos_has_feather(state, player),  # to jump in cave
                 oos_has_bracelet(state, player)  # to grab the rooster
             ])],
@@ -1327,7 +1332,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
                 oos_roosters(state, player)["horon"][1] > 0,
                 state.has("_met_pirates", player),
                 state.has("Pirate's Bell", player),
-                oos_get_default_season(state, player, "WESTERN_COAST") == SEASON_SUMMER
+                oos_is_default_season(state, player, "WESTERN_COAST", SEASON_SUMMER)
             ])],
 
             ["rooster adventure", "spool swamp north", False, lambda state: oos_roosters(state, player)["swamp"][0] >= 0],
@@ -1340,7 +1345,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
                     # We can assume jump 3 holes here, coming from the north
                     state.has("Floodgate Key", player),
                     any([
-                        oos_get_default_season(state, player, "SPOOL_SWAMP") != SEASON_SPRING,
+                        not oos_is_default_season(state, player, "SPOOL_SWAMP", SEASON_SPRING),
                         oos_can_remove_season(state, player, SEASON_SPRING)
                     ]),
                     oos_roosters(state, player)["swamp"][0] > 0
