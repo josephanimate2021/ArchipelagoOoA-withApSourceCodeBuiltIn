@@ -552,7 +552,7 @@ class OracleOfSeasonsWorld(World):
         apply_self_locking_rules(self.multiworld, self.player)
         self.multiworld.completion_condition[self.player] = lambda state: state.has("_beaten_game", self.player)
 
-        self.multiworld.register_indirect_condition(self.get_region("lost woods top statue"), self.get_entrance("lost woods stump -> lost woods deku"))
+        self.multiworld.register_indirect_condition(self.get_region("lost woods top statue"), self.get_entrance("lost woods -> lost woods deku"))
         self.multiworld.register_indirect_condition(self.get_region("lost woods deku"), self.get_entrance("lost woods stump -> lost woods"))
         self.multiworld.register_indirect_condition(self.get_region("lost woods deku"), self.get_entrance("d6 sector -> lost woods"))
         self.multiworld.register_indirect_condition(self.get_region("lost woods phonograph"), self.get_entrance("lost woods -> d6 sector"))

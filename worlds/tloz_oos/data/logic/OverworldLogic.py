@@ -929,7 +929,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         # To allow reaching the deku if base season is autumn
         ["lost woods", "lost woods deku", False, lambda state: all([
             oos_season_in_tarm_ruins(state, player, SEASON_AUTUMN),
-            state.can_reach("lost woods top statue"),
+            state.can_reach_region("lost woods top statue", player),
             any([
                 # A bit tight and diagonal, above water
                 oos_can_jump_3_wide_pit(state, player),
@@ -1385,7 +1385,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
                 oos_has_required_jewels(state, player),
                 any([
                     oos_season_in_lost_woods(state, player, SEASON_SUMMER),
-                    state.can_reach("lost woods top statue")
+                    state.can_reach_region("lost woods top statue", player)
                 ])
             ])],
             ["rooster adventure", "spool swamp cave", False, lambda state: any([
