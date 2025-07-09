@@ -926,6 +926,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ["lost woods stump", "lost woods", False, lambda state: oos_can_reach_lost_woods_pedestal(state, player)],
         # When coming back from the eyeglass lake
         ["lost woods", "lost woods stump", False, None],
+        # To allow reaching the deku if base season is autumn
         ["lost woods", "lost woods deku", False, lambda state: all([
             oos_season_in_tarm_ruins(state, player, SEASON_AUTUMN),
             state.can_reach("lost woods top statue"),
