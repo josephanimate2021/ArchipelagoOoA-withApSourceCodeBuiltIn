@@ -220,7 +220,7 @@ def oos_has_required_jewels(state: CollectionState, player: int):
     return count >= target_count
 
 
-def oos_can_reach_lost_woods_pedestal(state: CollectionState, player: int, allow_default: bool = False, force_deku = False):
+def oos_can_reach_lost_woods_pedestal(state: CollectionState, player: int, allow_default: bool = False, force_deku=False):
     world = state.multiworld.worlds[player]
     seasons_in_pedestal_sequence = [season for [_, season] in world.lost_woods_item_sequence]
 
@@ -238,7 +238,7 @@ def oos_can_reach_lost_woods_pedestal(state: CollectionState, player: int, allow
     ])
 
 
-def oos_can_complete_lost_woods_main_sequence(state: CollectionState, player: int, allow_default: bool = False, force_deku = False):
+def oos_can_complete_lost_woods_main_sequence(state: CollectionState, player: int, allow_default: bool = False, force_deku=False):
     world = state.multiworld.worlds[player]
     seasons_in_main_sequence = [season for [_, season] in world.lost_woods_main_sequence]
 
@@ -1017,6 +1017,16 @@ def oos_can_remove_rockslide(state: CollectionState, player: int, can_summon_com
 
 def oos_can_meet_maple(state: CollectionState, player: int):
     return oos_can_kill_normal_enemy(state, player, False, False)
+
+
+def oos_can_dimitri_clip(state: CollectionState, player: int):
+    return all([
+        oos_option_hell_logic(state, player),
+        oos_can_summon_dimitri(state, player),
+        oos_has_bracelet(state, player),
+        oos_has_gale_seeds(state, player),
+        oos_has_satchel(state, player)
+    ])
 
 
 # Season in region predicates ##########################################

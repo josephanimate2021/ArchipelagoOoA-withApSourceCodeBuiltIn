@@ -553,10 +553,10 @@ class OracleOfSeasonsWorld(World):
         self.multiworld.completion_condition[self.player] = lambda state: state.has("_beaten_game", self.player)
 
         self.multiworld.register_indirect_condition(self.get_region("lost woods top statue"), self.get_entrance("lost woods -> lost woods deku"))
-        self.multiworld.register_indirect_condition(self.get_region("lost woods deku"), self.get_entrance("lost woods stump -> lost woods"))
-        self.multiworld.register_indirect_condition(self.get_region("lost woods deku"), self.get_entrance("d6 sector -> lost woods"))
-        self.multiworld.register_indirect_condition(self.get_region("lost woods phonograph"), self.get_entrance("lost woods -> d6 sector"))
-        self.multiworld.register_indirect_condition(self.get_region("lost woods phonograph"), self.get_entrance("lost woods stump -> d6 sector"))
+        self.multiworld.register_indirect_condition(self.get_region("lost woods phonograph"), self.get_entrance("lost woods stump -> lost woods"))
+        self.multiworld.register_indirect_condition(self.get_region("lost woods phonograph"), self.get_entrance("d6 sector -> lost woods"))
+        self.multiworld.register_indirect_condition(self.get_region("lost woods deku"), self.get_entrance("lost woods -> d6 sector"))
+        self.multiworld.register_indirect_condition(self.get_region("lost woods deku"), self.get_entrance("lost woods stump -> d6 sector"))
 
         if self.options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_hell:
             cucco_region = self.get_region("rooster adventure")

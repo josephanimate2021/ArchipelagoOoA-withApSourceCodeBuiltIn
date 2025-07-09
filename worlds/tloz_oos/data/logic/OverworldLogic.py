@@ -31,7 +31,10 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ["horon village", "mayor's gift", False, None],
         ["horon village", "vasu's gift", False, None],
         ["horon village", "mayor's house secret room", False, lambda state: oos_has_bombs(state, player)],
-        ["horon village", "horon heart piece", False, lambda state: oos_can_use_ember_seeds(state, player, False)],
+        ["horon village", "horon heart piece", False, lambda state: any([
+            oos_can_use_ember_seeds(state, player, False),
+            oos_can_dimitri_clip(state, player)
+        ])],
         ["horon village", "dr. left reward", False, lambda state: oos_can_use_ember_seeds(state, player, True)],
         ["horon village", "old man in horon", False, lambda state: oos_can_use_ember_seeds(state, player, False)],
         ["horon village", "old man trade", False, lambda state: any([
@@ -51,9 +54,12 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
                 oos_can_jump_2_wide_liquid(state, player)
             ])
         ])],
-        ["horon village", "horon village SW chest", False, lambda state: all([
-            oos_season_in_horon_village(state, player, SEASON_AUTUMN),
-            oos_can_break_mushroom(state, player, True)
+        ["horon village", "horon village SW chest", False, lambda state: any([
+            all([
+                oos_season_in_horon_village(state, player, SEASON_AUTUMN),
+                oos_can_break_mushroom(state, player, True)
+            ]),
+            oos_can_dimitri_clip(state, player)
         ])],
 
         ["horon village", "horon village portal", False, lambda state: any([
@@ -163,7 +169,10 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ["horon village", "suburbs", True, lambda state: oos_can_use_ember_seeds(state, player, False)],
 
         ["suburbs", "maple encounter", False, lambda state: oos_can_meet_maple(state, player)],
-        ["suburbs", "windmill heart piece", False, lambda state: oos_season_in_eastern_suburbs(state, player, SEASON_WINTER)],
+        ["suburbs", "windmill heart piece", False, lambda state: any([
+            oos_season_in_eastern_suburbs(state, player, SEASON_WINTER),
+            oos_can_dimitri_clip(state, player)
+        ])],
         ["suburbs", "guru-guru trade", False, lambda state: any([
             state.has("Engine Grease", player),
             oos_self_locking_item(state, player, "guru-guru trade", "Engine Grease")
@@ -251,8 +260,13 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ["central woods of winter", "woods of winter tree", False, lambda state: oos_can_harvest_tree(state, player, True)],
         ["central woods of winter", "d2 entrance", True, lambda state: oos_can_break_bush(state, player, True)],
         ["central woods of winter", "cave outside D2", False, lambda state: all([
-            oos_season_in_central_woods_of_winter(state, player, SEASON_AUTUMN),
-            oos_can_break_mushroom(state, player, True),
+            any([
+                all([
+                    oos_season_in_central_woods_of_winter(state, player, SEASON_AUTUMN),
+                    oos_can_break_mushroom(state, player, True),
+                ]),
+                oos_can_dimitri_clip(state, player)
+            ]),
             any([
                 oos_can_jump_4_wide_pit(state, player),
                 oos_has_magnet_gloves(state, player)
@@ -432,8 +446,13 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ["north horon", "north horon tree", False, lambda state: oos_can_harvest_tree(state, player, True)],
         ["north horon", "blaino prize", False, lambda state: oos_can_farm_rupees(state, player)],
         ["north horon", "cave north of D1", False, lambda state: all([
-            oos_season_in_holodrum_plain(state, player, SEASON_AUTUMN),
-            oos_can_break_mushroom(state, player, True),
+            any([
+                all([
+                    oos_season_in_holodrum_plain(state, player, SEASON_AUTUMN),
+                    oos_can_break_mushroom(state, player, True),
+                ]),
+                oos_can_dimitri_clip(state, player)
+            ]),
             oos_has_flippers(state, player)
         ])],
         ["north horon", "old man near blaino", False, lambda state: all([
@@ -1269,6 +1288,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
             ])],
             ["natzu east (dimitri)", "natzu river bank", True, None],
             ["natzu west (dimitri)", "natzu deku", False, lambda state: oos_can_summon_dimitri(state, player)],
+            ["sunken city", "moblin keep", False, lambda state: oos_can_dimitri_clip(state, player)]
         ])
     elif options.animal_companion == "moosh":
         holodrum_logic.extend([
