@@ -1,10 +1,10 @@
 import os
 import logging
-from typing import List, Union, ClassVar, Any, Optional, Tuple
+from typing import List, Union, ClassVar, Any, Optional, Tuple, Type
 import settings
 from BaseClasses import Tutorial, Region, Location, LocationProgressType, Item, ItemClassification, MultiWorld, CollectionState
 from Fill import fill_restrictive, FillError
-from Options import Accessibility, OptionError
+from Options import Accessibility, OptionError, Option
 from worlds.AutoWorld import WebWorld, World
 
 from .Util import *
@@ -1078,28 +1078,18 @@ class OracleOfSeasonsWorld(World):
 
         slot_data = self.multiworld.re_gen_passthrough[self.game]
 
-        self.options.default_seed = OracleOfSeasonsDefaultSeedType.from_any(SEED_ITEMS.index(slot_data["default_seed"]))
-        self.options.master_keys = OracleOfSeasonsMasterKeys.from_any(slot_data["master_keys"])
-        self.options.logic_difficulty = OracleOfSeasonsLogicDifficulty.from_any(slot_data["logic_difficulty"])
-        self.options.remove_d0_alt_entrance = OracleOfSeasonsD0AltEntrance.from_any(slot_data["remove_d0_alt_entrance"])
-        self.options.remove_d2_alt_entrance = OracleOfSeasonsD2AltEntrance.from_any(slot_data["remove_d2_alt_entrance"])
-        self.options.animal_companion = OracleOfSeasonsAnimalCompanion.from_any(slot_data["animal_companion"])
-        self.options.treehouse_old_man_requirement = OraclesOfSeasonsTreehouseOldManRequirement.from_any(slot_data["treehouse_old_man_requirement"])
-        self.options.tarm_gate_required_jewels = OraclesOfSeasonsTarmGateRequirement.from_any(slot_data["tarm_gate_required_jewels"])
-        self.options.randomize_lost_woods_item_sequence = OracleOfSeasonsLostWoodsItemSequence.from_any(slot_data["randomize_lost_woods_item_sequence"])
-        self.options.randomize_lost_woods_main_sequence = OracleOfSeasonsLostWoodsItemSequence.from_any(slot_data["randomize_lost_woods_main_sequence"])
-        self.options.golden_beasts_requirement = OraclesOfSeasonsGoldenBeastsRequirement.from_any(slot_data["golden_beasts_requirement"])
-        self.options.shuffle_golden_ore_spots = OracleOfSeasonsGoldenOreSpotsShuffle.from_any(slot_data["shuffle_golden_ore_spots"])
-        self.options.normalize_horon_village_season = OracleOfSeasonsHoronSeason.from_any(slot_data["normalize_horon_village_season"])
-        self.options.deterministic_gasha_locations = OracleOfSeasonsGashaLocations.from_any(slot_data["deterministic_gasha_locations"])
+        for option in [option_name for option_name in OracleOfSeasonsOptions.type_hints
+                       if hasattr(OracleOfSeasonsOptions.type_hints[option_name], "include_in_slot_data")]:
+            option_class: Type[Option] = OracleOfSeasonsOptions.type_hints[option]
+            self.options.__setattr__(option, option_class.from_any(slot_data["options"][option]))
 
+        self.lost_woods_item_sequence = slot_data["lost_woods_item_sequence"]
+        self.lost_woods_main_sequence = slot_data["lost_woods_main_sequence"]
         self.default_seasons = slot_data["default_seasons"]
-        self.lost_woods_item_sequence = []  # Unknown
-        self.lost_woods_main_sequence = []  # Unknown
-
-        self.dungeon_entrances = slot_data["dungeon_entrances"]
-        self.portal_connections = slot_data["portal_connections"]
-        self.shop_order = slot_data["shop_order"]
+        self.old_man_rupee_values = slot_data["old_man_rupee_values"]
+        self.dungeon_entrances = {f"{a} entrance": f"enter {b}"
+                                  for a, b in slot_data["dungeon_entrances"].items()}
+        self.portal_connections = slot_data["subrosia_portals"]
         self.shop_rupee_requirements = slot_data["shop_rupee_requirements"]
         self.shop_prices = slot_data["shop_costs"]
 

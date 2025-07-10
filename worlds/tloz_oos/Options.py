@@ -91,6 +91,7 @@ class OracleOfSeasonsDefaultSeasons(Choice):
     option_autumn_singularity = 6
 
     default = 1
+    include_in_slot_data = True
 
 
 class OracleOfSeasonsHoronSeason(DefaultOnToggle):
@@ -307,6 +308,27 @@ class OracleOfSeasonsSmallKeyShuffle(Toggle):
     display_name = "Keysanity (Small Keys)"
 
     include_in_patch = True
+    include_in_slot_data = True
+
+
+class OracleOfSeasonsBossKeyShuffle(Toggle):
+    """
+    If enabled, dungeon Boss Keys can be found anywhere instead of being confined in their dungeon of origin.
+    """
+    display_name = "Keysanity (Boss Keys)"
+
+    include_in_patch = True
+    include_in_slot_data = True
+
+
+class OracleOfSeasonsMapCompassShuffle(Toggle):
+    """
+    If enabled, Dungeon Maps and Compasses can be found anywhere instead of being confined in their dungeon of origin.
+    """
+    display_name = "Maps & Compasses Outside Dungeon"
+
+    include_in_patch = True
+    include_in_slot_data = True
 
 
 class OracleOfSeasonsD0AltEntrance(Toggle):
@@ -331,24 +353,6 @@ class OracleOfSeasonsD2AltEntrance(Toggle):
 
     include_in_patch = True
     include_in_slot_data = True
-
-
-class OracleOfSeasonsBossKeyShuffle(Toggle):
-    """
-    If enabled, dungeon Boss Keys can be found anywhere instead of being confined in their dungeon of origin.
-    """
-    display_name = "Keysanity (Boss Keys)"
-
-    include_in_patch = True
-
-
-class OracleOfSeasonsMapCompassShuffle(Toggle):
-    """
-    If enabled, Dungeon Maps and Compasses can be found anywhere instead of being confined in their dungeon of origin.
-    """
-    display_name = "Maps & Compasses Outside Dungeon"
-
-    include_in_patch = True
 
 
 class OraclesOfSeasonsTreehouseOldManRequirement(Range):
