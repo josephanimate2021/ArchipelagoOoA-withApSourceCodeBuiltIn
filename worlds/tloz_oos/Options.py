@@ -19,6 +19,7 @@ class OracleOfSeasonsGoal(Choice):
 
     default = 0
     include_in_patch = True
+    include_in_slot_data = True
 
 
 class OracleOfSeasonsLogicDifficulty(Choice):
@@ -37,6 +38,7 @@ class OracleOfSeasonsLogicDifficulty(Choice):
     option_hell = 3
 
     default = 0
+    include_in_slot_data = True
 
 
 class OracleOfSeasonsRequiredEssences(Range):
@@ -51,6 +53,7 @@ class OracleOfSeasonsRequiredEssences(Range):
 
     default = 8
     include_in_patch = True
+    include_in_slot_data = True
 
 
 class OracleOfSeasonsPlacedEssences(Range):
@@ -117,6 +120,7 @@ class OracleOfSeasonsAnimalCompanion(Choice):
 
     default = "random"
     include_in_patch = True
+    include_in_slot_data = True
 
 
 class OracleOfSeasonsDefaultSeedType(Choice):
@@ -136,6 +140,7 @@ class OracleOfSeasonsDefaultSeedType(Choice):
 
     default = 0
     include_in_patch = True
+    include_in_slot_data = True
 
 
 class OracleOfSeasonsDuplicateSeedTree(Choice):
@@ -165,6 +170,8 @@ class OracleOfSeasonsDungeonShuffle(Toggle):
     """
     display_name = "Shuffle Dungeons"
 
+    include_in_slot_data = True
+
 
 class OracleOfSeasonsPortalShuffle(Choice):
     """
@@ -180,6 +187,7 @@ class OracleOfSeasonsPortalShuffle(Choice):
     option_shuffle = 2
 
     default = 0
+    include_in_slot_data = True
 
 
 class OracleOfSeasonsOldMenShuffle(Choice):
@@ -203,6 +211,7 @@ class OracleOfSeasonsOldMenShuffle(Choice):
 
     default = 3
     include_in_patch = True
+    include_in_slot_data = True
 
 
 class OracleOfSeasonsBusinessScrubsShuffle(Toggle):
@@ -213,7 +222,9 @@ class OracleOfSeasonsBusinessScrubsShuffle(Toggle):
     Please note that scrubs inside dungeons can hold dungeon items, such as keys.
     """
     display_name = "Shuffle Business Scrubs"
+
     include_in_patch = True
+    include_in_slot_data = True
 
 
 class OracleOfSeasonsGoldenOreSpotsShuffle(Toggle):
@@ -222,7 +233,9 @@ class OracleOfSeasonsGoldenOreSpotsShuffle(Toggle):
     of randomized locations.
     """
     display_name = "Shuffle Golden Ore Spots"
+
     include_in_patch = True
+    include_in_slot_data = True
 
 
 class OracleOfSeasonsEssenceSanity(Toggle):
@@ -231,7 +244,9 @@ class OracleOfSeasonsEssenceSanity(Toggle):
     at the end their respective dungeons.
     """
     display_name = "Shuffle Essences"
+
     include_in_patch = True
+    include_in_slot_data = True
 
 
 class OracleOfSeasonsExcludeDungeonsWithoutEssence(DefaultOnToggle):
@@ -282,6 +297,7 @@ class OracleOfSeasonsMasterKeys(Choice):
 
     default = 0
     include_in_patch = True
+    include_in_slot_data = True
 
 
 class OracleOfSeasonsSmallKeyShuffle(Toggle):
@@ -289,6 +305,7 @@ class OracleOfSeasonsSmallKeyShuffle(Toggle):
     If enabled, dungeon Small Keys can be found anywhere instead of being confined in their dungeon of origin.
     """
     display_name = "Keysanity (Small Keys)"
+
     include_in_patch = True
 
 
@@ -299,7 +316,9 @@ class OracleOfSeasonsD0AltEntrance(Toggle):
     If this option is not set in such a case, you could potentially have two distant entrances leading to the same dungeon.
     """
     display_name = "Remove Hero's Cave Alt. Entrance"
+
     include_in_patch = True
+    include_in_slot_data = True
 
 
 class OracleOfSeasonsD2AltEntrance(Toggle):
@@ -309,7 +328,9 @@ class OracleOfSeasonsD2AltEntrance(Toggle):
     If this option is not set in such a case, you could potentially have two distant entrances leading to the same dungeon.
     """
     display_name = "Remove D2 Alt. Entrance"
+
     include_in_patch = True
+    include_in_slot_data = True
 
 
 class OracleOfSeasonsBossKeyShuffle(Toggle):
@@ -317,6 +338,7 @@ class OracleOfSeasonsBossKeyShuffle(Toggle):
     If enabled, dungeon Boss Keys can be found anywhere instead of being confined in their dungeon of origin.
     """
     display_name = "Keysanity (Boss Keys)"
+
     include_in_patch = True
 
 
@@ -325,6 +347,7 @@ class OracleOfSeasonsMapCompassShuffle(Toggle):
     If enabled, Dungeon Maps and Compasses can be found anywhere instead of being confined in their dungeon of origin.
     """
     display_name = "Maps & Compasses Outside Dungeon"
+
     include_in_patch = True
 
 
@@ -339,6 +362,7 @@ class OraclesOfSeasonsTreehouseOldManRequirement(Range):
 
     default = 5
     include_in_patch = True
+    include_in_slot_data = True
 
 
 class OraclesOfSeasonsTarmGateRequirement(Range):
@@ -352,6 +376,7 @@ class OraclesOfSeasonsTarmGateRequirement(Range):
 
     default = 4
     include_in_patch = True
+    include_in_slot_data = True
 
 
 class OraclesOfSeasonsGoldenBeastsRequirement(Range):
@@ -367,6 +392,7 @@ class OraclesOfSeasonsGoldenBeastsRequirement(Range):
 
     default = 1
     include_in_patch = True
+    include_in_slot_data = True
 
 
 class OracleOfSeasonsSignGuyRequirement(Range):
@@ -393,6 +419,8 @@ class OracleOfSeasonsLostWoodsItemSequence(DefaultOnToggle):
     """
     display_name = "Randomize Lost Woods Item Sequence"
 
+    include_in_slot_data = True
+
 
 class OracleOfSeasonsLostWoodsMainSequence(Toggle):
     """
@@ -402,6 +430,8 @@ class OracleOfSeasonsLostWoodsMainSequence(Toggle):
     like in the vanilla game.
     """
     display_name = "Randomize Lost Woods Main Sequence"
+
+    include_in_slot_data = True
 
 
 class OracleOfSeasonsSamasaGateCode(Toggle):
@@ -440,6 +470,7 @@ class OracleOfSeasonsGashaLocations(Range):
 
     default = 0
     include_in_patch = True
+    include_in_slot_data = True
 
 
 class OracleOfSeasonsRequiredRings(ItemSet):
@@ -492,7 +523,9 @@ class OracleOfSeasonsAdvanceShop(Toggle):
     item pool to compensate for the extra purchases that might be required)
     """
     display_name = "Open Advance Shop"
+
     include_in_patch = True
+    include_in_slot_data = True
 
 
 class OracleOfSeasonsFoolsOre(Choice):
@@ -519,7 +552,9 @@ class OracleOfSeasonsEnforcePotionInShop(Toggle):
     When enabled, you are guaranteed to have a renewable Potion for 300 rupees inside Horon shop
     """
     display_name = "Enforce Potion in Shop"
+
     include_in_patch = True
+    include_in_slot_data = True
 
 
 class OracleOfSeasonsCombatDifficulty(Choice):
@@ -544,6 +579,7 @@ class OracleOfSeasonsQuickFlute(DefaultOnToggle):
     When enabled, playing the flute will immobilize you during a very small amount of time compared to vanilla game.
     """
     display_name = "Quick Flute"
+
     include_in_patch = True
 
 
@@ -552,6 +588,7 @@ class OracleOfSeasonsRosaQuickUnlock(Toggle):
     When enabled, Rosa will instantly unlock all subrosia locks when given the Ribbon
     """
     display_name = "Rosa Quick Unlock"
+
     include_in_patch = True
 
 
@@ -559,10 +596,11 @@ class OracleOfSeasonsStartingMapsCompasses(Toggle):
     """
     When enabled, you will start the game with maps and compasses for every dungeon in the game.
     This makes navigation easier and removes those items for the pool, which are replaced with random filler items.
-    Unlike 'start_inventory_from_pool', this is performed instanatly and silently when starting the game.
     """
     display_name = "Start with Dungeon Maps & Compasses"
+
     include_in_patch = True
+    include_in_slot_data = True
 
 
 class OracleOfSeasonsRandomizeAi(Toggle):
@@ -576,6 +614,7 @@ class OracleOfSeasonsRandomizeAi(Toggle):
     with a golden beast AI that would be counted for the old man
     """
     display_name = "Randomize AI"
+
     include_in_patch = True
     visibility = Visibility.all if (datetime.now().month == 4) else Visibility.none  # Only visible in april
 
@@ -595,7 +634,13 @@ class OracleOfSeasonsIncludeSecretLocations(Toggle):
     When enabled, add the linked game secrets to the list of locations
     """
     display_name = "Secret Locations"
+
     include_in_patch = True
+    include_in_slot_data = True
+
+
+class OracleOfSeasonsDeathLink(DeathLink):
+    include_in_slot_data = True  # This is for the bizhawk clientq
 
 
 class OracleOfSeasonsMoveLink(Toggle):
@@ -607,6 +652,8 @@ class OracleOfSeasonsMoveLink(Toggle):
     """
     display_name = "Randomize AI"
     visibility = Visibility.all if (datetime.now().month == 4) else Visibility.none  # Only visible in april
+
+    include_in_slot_data = True  # This is for the bizhawk client
 
 
 @dataclass
@@ -675,5 +722,5 @@ class OracleOfSeasonsOptions(PerGameCommonOptions):
     randomize_ai: OracleOfSeasonsRandomizeAi
 
     remove_items_from_pool: OracleOfSeasonsRemoveItemsFromPool
-    death_link: DeathLink
+    death_link: OracleOfSeasonsDeathLink
     move_link: OracleOfSeasonsMoveLink

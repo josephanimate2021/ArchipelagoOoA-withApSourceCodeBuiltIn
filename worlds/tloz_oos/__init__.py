@@ -1003,41 +1003,22 @@ class OracleOfSeasonsWorld(World):
         patch.write(rom_path)
 
     def fill_slot_data(self) -> dict:
-        # Put options that are useful to the tracker inside slot data
-        options = ["goal", "death_link", "move_link",
-                   # Logic-impacting options
-                   "logic_difficulty", "normalize_horon_village_season",
-                   "shuffle_dungeons", "shuffle_portals",
-                   "randomize_lost_woods_item_sequence", "randomize_lost_woods_main_sequence",
-                   "duplicate_seed_tree", "default_seed", "master_keys",
-                   "remove_d0_alt_entrance", "remove_d2_alt_entrance",
-                   # Locations
-                   "shuffle_golden_ore_spots", "shuffle_old_men", "advance_shop", "shuffle_essences",
-                   "shuffle_business_scrubs", "secret_locations",
-                   # Requirements
-                   "required_essences", "tarm_gate_required_jewels", "treehouse_old_man_requirement",
-                   "sign_guy_requirement", "golden_beasts_requirement",
-                   # Tracker QoL
-                   "enforce_potion_in_shop", "keysanity_small_keys", "keysanity_boss_keys", "starting_maps_compasses",
-                   "deterministic_gasha_locations", "shop_prices"
-                   ]
-
-        slot_data = self.options.as_dict(*options)
-        slot_data["animal_companion"] = self.options.animal_companion.current_key.title()
-        slot_data["default_seed"] = SEED_ITEMS[self.options.default_seed.value]
-
-        slot_data["default_seasons_option"] = self.options.default_seasons.current_key
-        slot_data["default_seasons"] = {}
-        for region_name, season in self.default_seasons.items():
-            slot_data["default_seasons"][region_name] = season
-
-        slot_data["dungeon_entrances"] = self.dungeon_entrances
-        slot_data["portal_connections"] = self.portal_connections
-        slot_data["shop_order"] = self.shop_order
-        slot_data["shop_rupee_requirements"] = self.shop_rupee_requirements
-        slot_data["shop_costs"] = self.shop_prices
-
-        slot_data["version"] = f"{VERSION[0]}.{VERSION[1]}"
+        slot_data = {
+            "version": f"{VERSION[0]}.{VERSION[1]}",
+            "options": self.options.as_dict(
+                *[option_name for option_name in OracleOfSeasonsOptions.type_hints
+                  if hasattr(OracleOfSeasonsOptions.type_hints[option_name], "include_in_slot_data")]),
+            # "samasa_gate_sequence": ' '.join([str(x) for x in self.samasa_gate_code]),
+            "lost_woods_item_sequence": self.lost_woods_item_sequence,
+            "lost_woods_main_sequence": self.lost_woods_main_sequence,
+            "default_seasons": self.default_seasons,
+            "old_man_rupee_values": self.old_man_rupee_values,
+            "dungeon_entrances": {a.replace(" entrance", ""): b.replace("enter ", "")
+                                  for a, b in self.dungeon_entrances.items()},
+            "subrosia_portals": self.portal_connections,
+            "shop_rupee_requirements": self.shop_rupee_requirements,
+            "shop_costs": self.shop_prices
+        }
 
         return slot_data
 
