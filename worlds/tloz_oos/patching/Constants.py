@@ -571,15 +571,15 @@ SHOW_TEXT_LOW_INDEX = 0x98
 ENABLE_ALL_OBJECTS = 0xb9
 
 DIRECTION_STRINGS = {
-    DIRECTION_UP: [0x15, 0x20],
-    DIRECTION_DOWN: [0x16, 0x20],
-    DIRECTION_LEFT: [0x17, 0x20],
-    DIRECTION_RIGHT: [0x18, 0x20],
+    DIRECTION_UP: "⬆ ",
+    DIRECTION_DOWN: "⬇ ",
+    DIRECTION_LEFT: "⬅ ",
+    DIRECTION_RIGHT: "➡ ",
 }
 
 SEASON_STRINGS = {
-    SEASON_SPRING: [0x02, 0xde],
-    SEASON_SUMMER: ['S'.encode()[0], 0x04, 0xbc],
-    SEASON_AUTUMN: ['A'.encode()[0], 0x05, 0x25],
-    SEASON_WINTER: [0x03, 0x7e]
+    SEASON_SPRING: "Spring",
+    SEASON_SUMMER: "Summer",
+    SEASON_AUTUMN: "Autumn",
+    SEASON_WINTER: "Winter"
 }
