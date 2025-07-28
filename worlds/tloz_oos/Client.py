@@ -100,15 +100,15 @@ class OracleOfSeasonsClient(BizHawkClient):
 
     def on_package(self, ctx, cmd, args):
         if cmd == 'Connected':
-            if 'death_link' in args['slot_data'] and args['slot_data']['death_link']:
+            if args['slot_data']["options"]['death_link']:
                 self.set_deathlink = True
                 self.last_deathlink = time.time()
-            if 'move_link' in args['slot_data'] and args['slot_data']['move_link']:
+            if args['slot_data']["options"]['move_link']:
                 ctx.tags.add("MoveLink")
                 self.move_link = []
                 async_start(ctx.send_msgs([{"cmd": "ConnectUpdate", "tags": ctx.tags}]))
         if cmd == "Bounced":
-            if ctx.slot_data["move_link"] and "tags" in args and args["tags"][0] == "MoveLink":
+            if ctx.slot_data["options"]["move_link"] and "tags" in args and args["tags"][0] == "MoveLink":
                 data = args["data"]
                 if data["slot"] != ctx.slot:
                     data["last_process"] = time.time()
@@ -204,12 +204,12 @@ class OracleOfSeasonsClient(BizHawkClient):
                 continue
             # Do not hint forced shop slot if it is enabled, since it would cause an error on MultiServer's side
             if name == "Horon Village: Shop #3":
-                if ctx.slot_data is None or ctx.slot_data["enforce_potion_in_shop"]:
+                if ctx.slot_data is None or ctx.slot_data["options"]["enforce_potion_in_shop"]:
                     continue
 
             # Do not hint buisiness scrubs if disabled, since it would cause an error on MultiServer's side
             if name.endswith("Business Scrub"):
-                if ctx.slot_data is None or not ctx.slot_data["shuffle_business_scrubs"]:
+                if ctx.slot_data is None or not ctx.slot_data["options"]["shuffle_business_scrubs"]:
                     continue
 
             # Check "scouting_byte" to see if map has been visited for scoutable locations
@@ -243,10 +243,10 @@ class OracleOfSeasonsClient(BizHawkClient):
     async def process_game_completion(self, ctx: "BizHawkClientContext", flag_bytes, current_room: int):
         game_clear = False
         if ctx.slot_data is not None:
-            if ctx.slot_data["goal"] == OracleOfSeasonsGoal.option_beat_onox:
+            if ctx.slot_data["options"]["goal"] == OracleOfSeasonsGoal.option_beat_onox:
                 # Room with Din's descending crystal was reached, it's a win
                 game_clear = (current_room == ROOM_AFTER_DRAGONOX)
-            elif ctx.slot_data["goal"] == OracleOfSeasonsGoal.option_beat_ganon:
+            elif ctx.slot_data["options"]["goal"] == OracleOfSeasonsGoal.option_beat_ganon:
                 # Room with Zelda lying down was reached, and Ganon was beaten
                 ganon_flag_offset = 0xCA9A - RAM_ADDRS["location_flags"][0]
                 ganon_was_beaten = (flag_bytes[ganon_flag_offset] & 0x80 == 0x80)
