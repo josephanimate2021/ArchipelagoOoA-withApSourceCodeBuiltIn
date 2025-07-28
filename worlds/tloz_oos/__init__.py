@@ -723,7 +723,8 @@ class OracleOfSeasonsWorld(World):
         return item_pool_dict
 
     def build_rupee_item_dict(self, rupee_item_count: int, filler_item_count: int) -> Tuple[int, int]:
-        total_cost = max(self.shop_rupee_requirements.values())
+        sorted_shop_values = sorted(self.shop_rupee_requirements.values())
+        total_cost = sorted_shop_values[-1]
 
         # Count the old man's contribution, it's especially important as it may be negative
         # (We ignore dungeons here because we don't want to worry about whether they'll be available)
@@ -733,7 +734,7 @@ class OracleOfSeasonsWorld(World):
             old_man_rupee += self.old_man_rupee_values[name]
 
         target = total_cost / 2 - old_man_rupee
-        total_cost -= old_man_rupee
+        total_cost = max(total_cost - old_man_rupee, sorted_shop_values[-3]) # Ensure it doesn't drop too low due to the old men
         return self.build_currency_item_dict(rupee_item_count, filler_item_count, target, total_cost, "Rupees", VALID_RUPEE_ITEM_VALUES)
 
     def build_ore_item_dict(self, ore_item_count: int, filler_item_count: int) -> Tuple[int, int]:
@@ -744,14 +745,14 @@ class OracleOfSeasonsWorld(World):
 
     def build_currency_item_dict(self, currency_item_count: int, filler_item_count: int, initial_target: int,
                                  total_cost: int, currency_name: str, valid_currency_item_values: list[int]):
-        average_ore_value = total_cost / currency_item_count
-        deviation = average_ore_value / 2.5
+        average_value = total_cost / currency_item_count
+        deviation = average_value / 2.5
         currency_item_dict = {}
         target = initial_target
         for i in range(0, currency_item_count):
-            value = self.random.gauss(average_ore_value, deviation)
+            value = self.random.gauss(average_value, deviation)
             value = min(valid_currency_item_values, key=lambda x: abs(x - value))
-            if value > average_ore_value / 3:
+            if value > average_value / 3:
                 # Put a "!PROG" suffix to force them to be created as progression items (see `create_item`)
                 item_name = f"{currency_name} ({value})!PROG"
                 target -= value
