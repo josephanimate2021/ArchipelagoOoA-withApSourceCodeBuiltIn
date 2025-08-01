@@ -894,7 +894,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         # TARM RUINS ###############################################################################################
 
         ["spool swamp north", "tarm ruins", False, lambda state: oos_has_required_jewels(state, player)],
-        ["tarm ruins", "spool swamp north", False, lambda state: state.multiworld.worlds[player].options.tarm_gate_required_jewels.value == 0],
+        ["tarm ruins", "spool swamp north", False, None],
 
         ["tarm ruins", "lost woods top statue", False, lambda state: all([
             any([
@@ -931,7 +931,24 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ["lost woods stump", "tarm ruins", False, lambda state: all([
             oos_season_in_lost_woods(state, player, SEASON_AUTUMN),
             oos_can_break_mushroom(state, player, False),
-            oos_has_winter(state, player)
+            oos_has_winter(state, player),
+            state.multiworld.worlds[player].options.tarm_gate_required_jewels.value == 0
+        ])],
+        ["lost woods stump", "lost woods top statue", False, lambda state: all([
+            oos_season_in_lost_woods(state, player, SEASON_AUTUMN),
+            oos_has_season(state, player, SEASON_WINTER),
+            any([
+                oos_has_season(state, player, SEASON_SUMMER),
+                all([
+                    oos_has_season(state, player, SEASON_AUTUMN),
+                    oos_option_medium_logic(state, player),
+                    oos_has_magic_boomerang(state, player),
+                    any([
+                        oos_can_jump_1_wide_pit(state, player, False),
+                        oos_option_hard_logic(state, player)
+                    ])
+                ])
+            ])
         ])],
         ["lost woods stump", "lost woods phonograph", False, lambda state: all([
             any([
