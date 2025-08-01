@@ -912,6 +912,7 @@ def oos_can_kill_d2_hardhat(state: CollectionState, player: int):
         oos_can_push_enemy(state, player),
         all([
             oos_option_medium_logic(state, player),
+            oos_has_satchel(state, player, 2),
             any([
                 oos_has_slingshot(state, player),
                 all([
@@ -922,6 +923,7 @@ def oos_can_kill_d2_hardhat(state: CollectionState, player: int):
             any([
                 oos_has_scent_seeds(state, player),
                 oos_has_gale_seeds(state, player),
+                oos_has_mystery_seeds(state, player)
             ])
         ]),
         all([
