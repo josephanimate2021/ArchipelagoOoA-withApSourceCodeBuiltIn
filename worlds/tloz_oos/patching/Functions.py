@@ -719,7 +719,7 @@ def make_text_data(text: dict[str, str], patch_data):
         if location_name not in patch_data["locations"]:
             continue
         # Scrub string asking the player if they want to buy the item
-        item_text = ("\\sfx(0xc6)Greetings!\n"
+        item_text = ("\\sfx(c6)Greetings!\n"
                      + process_item_name_for_shop_text(patch_data["locations"][location_name])
                      + f"for 🟩{patch_data["shop_prices"][symbolic_name]} Rupees⬜\n"
                        "  \\optOK \\optNo thanks")

@@ -1,7 +1,7 @@
 import re
-from functools import lru_cache
 from typing import Union, Optional
-
+from functools import lru_cache
+from typing import List
 from . import char_table, kanji_table, text_offset_split_index, text_offset_1_table_address, text_offset_2_table_address, text_table_eng_address, simple_hex
 from ..RomData import RomData
 from ..z80asm.Assembler import GameboyAddress
@@ -14,21 +14,6 @@ control_sequence_pattern = re.compile(r'''
     num1|opt|stop|heartpiece|num2|slow)
 ''', re.VERBOSE)
 dict_pattern = re.compile(r'DICT(\d+)_([0-9a-f]+)')
-
-
-def next_character(string: str) -> tuple[Union[str, tuple[str, int]], int]:
-    if 0 >= len(string):
-        return '\0', 1
-
-    if string[0] == '\\':
-        # Try to match a control sequence
-        match = control_sequence_pattern.match(string, 0)
-        group_1 = match.group(1)
-        if group_1:
-            return (group_1, int(match.group(2), 16)), len(match.group(0))
-        else:
-            return match.group(3), len(match.group(0))
-    return string[0], 1
 
 
 def add_to_tree(tree: dict[str, list[int]], char: str, keys: [int]):
@@ -81,31 +66,122 @@ def build_encoding_dict() -> dict[str, list[int]]:
     return tree
 
 
-def encode_text(text: str, encoding: dict[str, list[int]], dictionary: dict[str, str]) -> list[int]:
-    @lru_cache
-    def helper(text: str) -> list[int]:
-        if text == "":
-            return [0]
+# --- Trie Data Structure ---
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.code = None
 
-        char, length = next_character(text)
-        if isinstance(char, tuple):
-            encoded = list(encoding[char[0]])
-            encoded[-1] += char[1]
-            if char[0] == "jump":
-                return encoded
-        else:
-            encoded = encoding[char]
 
-        best_encoding = encoded + helper(text[length:])
-        for key in dictionary:
-            if text.startswith(dictionary[key]):
-                choice = [2 + int(key[4]), int(key[6:8], 16)] + helper(text[len(dictionary[key]):])
-                if len(choice) < len(best_encoding):
-                    best_encoding = choice
+# --- Global Caches ---
+encode_current_trie: Optional[TrieNode] = None
+encode_current_encoding: Optional[dict[str, list[int]]] = None
+encode_last_ids = (None, None)
 
-        return best_encoding
+control_keywords = {
+    'link_name', 'child_name', 'w7SecretBuffer1', 'w7SecretBuffer2',
+    'num1', 'opt', 'stop', 'heartpiece', 'num2', 'slow'
+}
 
-    return helper(text)
+control_functions = {
+    'jump', 'cmd', 'col', 'charsfx', 'speed', 'pos', 'wait', 'sfx', 'call'
+}
+
+
+def next_character(text: str, index: int) -> tuple[Union[str, tuple[str, int]], int]:
+    if index >= len(text):
+        return '\0', 1
+
+    if text[index] != '\\':
+        return text[index], 1
+
+    # Try parsing a function-style command: \name(hex)
+    for name in control_functions:
+        if text.startswith(f"\\{name}(", index):
+            start = index + len(name) + 2  # skip past '\name('
+            end = start + 2
+            value = text[start:end]
+            return (name, int(value, 16)), end + 1 - index
+
+    # Try keyword match (e.g. \opt)
+    for name in control_keywords:
+        if text.startswith(f"\\{name}", index):
+            return name, 1 + len(name)
+
+    raise Exception()
+
+
+def build_trie(dictionary: dict[str, str]) -> TrieNode:
+    root = TrieNode()
+    for key, value in dictionary.items():
+        node = root
+        i = 0
+        while i < len(value):
+            token, length = next_character(value, i)
+            node = node.children.setdefault(token, TrieNode())
+            i += length
+        node.code = [2 + int(key[4]), int(key[6:8], 16)]
+    return root
+
+
+# --- Shared Helper ---
+@lru_cache
+def shared_helper(text: str, index: int) -> tuple[int]:
+    if index >= len(text):
+        return (0,)
+
+    # --- Tokenize ---
+    token, length = next_character(text, index)
+
+    # --- Encode token ---
+    if isinstance(token, tuple):
+        encoded = list(encode_current_encoding[token[0]])
+        encoded[-1] += token[1]
+        if token[0] == "jump":
+            return tuple(encoded)
+    else:
+        encoded = encode_current_encoding[token]
+
+    best = list(encoded) + list(shared_helper(text, index + length))
+
+    # --- Optimized Trie Traversal ---
+    if token not in encode_current_trie.children:
+        return tuple(best)
+
+    node = encode_current_trie.children[token]
+    i = index + length
+    depth = 1
+
+    while i < len(text) and depth < 8:
+        # Instead of slice:
+        token2, tlen = next_character(text, i)
+        if token2 not in node.children:
+            break
+        node = node.children[token2]
+        i += tlen
+        depth += 1
+        if node.code:
+            candidate = node.code + list(shared_helper(text, i))
+            if len(candidate) < len(best):
+                best = candidate
+
+    return tuple(best)
+
+
+# --- Main Function ---
+def encode_text(text: str, encoding: dict[str, List[int]], dictionary: dict[str, str]) -> List[int]:
+    global encode_current_trie, encode_current_encoding, encode_last_ids
+    id_dict = id(dictionary)
+    id_enc = id(encoding)
+
+    # Rebuild trie/cache if dictionary/encoding changed
+    if encode_last_ids != (id_dict, id_enc):
+        encode_current_trie = build_trie(dictionary)
+        encode_current_encoding = encoding
+        encode_last_ids = (id_dict, id_enc)
+
+    result = list(shared_helper(text, 0))
+    return result
 
 
 def encode_dict(text_data: dict[str, str], dictionary: Optional[dict[str, str]] = None) -> dict[str, list[int]]:
@@ -116,6 +192,7 @@ def encode_dict(text_data: dict[str, str], dictionary: Optional[dict[str, str]] 
     for key in text_data:
         encoded_text = encode_text(text_data[key], encoding_dict, dictionary)
         encoded_dict[key] = encoded_text
+    shared_helper.cache_clear()
     return encoded_dict
 
 
