@@ -12,3 +12,8 @@
 02/60f8/: |
     ld b,$06
     ld c,$02
+
+# Shorten initial Maku Tree text script when giving Gnarled Key, replacing lots of instructions by ineffective
+# "disableinput" instructions
+0b/716a/: db $bd,$bd,$bd,$bd,$bd,$bd,$bd,$bd,$bd,$bd,$bd,$bd,$bd,$bd,$bd,$bd,$bd,$bd
+# (TX_1700 & TX_1701 are therefore free to use)

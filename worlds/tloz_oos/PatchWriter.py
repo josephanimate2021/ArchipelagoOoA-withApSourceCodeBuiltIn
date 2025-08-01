@@ -49,7 +49,7 @@ def oos_create_ap_procedure_patch(world: "OracleOfSeasonsWorld") -> OoSProcedure
             patch_data["locations"][loc.name] = {
                 "item": loc.item.name,
                 "player": world.multiworld.get_player_name(loc.item.player),
-                "progression": (loc.item.classification & ItemClassification.progression) != 0
+                "progression": loc.item.advancement
             }
 
     start_inventory = defaultdict(int)

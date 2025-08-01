@@ -295,8 +295,8 @@ def define_lost_woods_sequences(assembler: Z80Assembler, texts: dict[str, str], 
     main_bytes, main_text = process_lost_woods_sequence(main_sequence)
     assembler.add_floating_chunk("lostWoodsMainSequence", main_bytes)
     texts["TX_3604"] = ""  # Unused
-    travel_index = texts["TX_4500"].index("travel west")
-    texts["TX_4500"] = texts["TX_4500"][:travel_index] + pedestal_text
+    travel_index = texts["TX_4500"].index("\ntravel west")
+    texts["TX_4500"] = texts["TX_4500"][:travel_index] + "\\stop\n" + main_text
 
 
 def process_lost_woods_sequence(sequence):
@@ -313,8 +313,10 @@ def process_lost_woods_sequence(sequence):
         sequence_bytes.extend(sequence[i])
         text += DIRECTION_STRINGS[direction]
         text += SEASON_STRINGS[season]
+        if i == 1:
+            text += "\\stop"
         if i != 3:
-            text += "\\stop\n"
+            text += "\n"
     return sequence_bytes, text
 
 
@@ -833,13 +835,25 @@ def make_text_data(text: dict[str, str], patch_data):
                        ", or else...")
 
     wife_text_index = text["TX_3101"].index("The place")
+    num_seeds = patch_data["options"]["deterministic_gasha_locations"]
+    if num_seeds == 0:
+        seed_text = ("nuts will not\n"
+                     "contain anything\n"
+                     "useful.")
+    elif num_seeds == 16:
+        seed_text = ("every nut can\n"
+                     "hold something\n"
+                     "useful.")
+    else:
+        seed_text = ("only your first\n"
+                     f"🟩{num_seeds}⬜ nuts can\n"
+                     "contain anything\n"
+                     "useful.")
+
     text["TX_3101"] = (text["TX_3101"][:wife_text_index]
                        + "\\stop\n"
                          "You should know\n"
-                         "only your first\n"
-                         f"🟩{patch_data["options"]["deterministic_gasha_locations"]}⬜ nuts can\n"
-                         "contain anything\n"
-                         "useful.")
+                       + seed_text)
     # Replace the shield selling part of dekus which will never be used
     text["TX_450a"] = ("\\sfx(c6)Greetings!\n"
                        "I can refill\n"
@@ -857,7 +871,7 @@ def make_text_data(text: dict[str, str], patch_data):
         text["TX_1f05"] = ("You did nothing!\n"
                            "Truly, " + golden_beast_reward_text[post_congratulation_index:])
     elif golden_beasts_requirement < 4:
-        number = ["one", "two", "three"][golden_beasts_requirement]
+        number = ["one", "two", "three"][golden_beasts_requirement - 1]
         text["TX_1f04"] = text["TX_1f04"].replace("the four", number)
         text["TX_1f05"] = text["TX_1f05"].replace("all four", number)
         if golden_beasts_requirement == 1:
@@ -882,7 +896,7 @@ def make_text_data(text: dict[str, str], patch_data):
 
     # Tree house old man
     essence_count = patch_data["options"]["required_essences"]
-    text["TX_3601"] = text["TX_3601"].replace("knows many\nessences", f"has 🟥{essence_count} essence{"s" if essence_count != 0 else ""}⬜!")
+    text["TX_3601"] = text["TX_3601"].replace("knows many\n🟥essences⬜...", f"has 🟥{essence_count} essence{"s" if essence_count != 0 else ""}⬜!")
 
     # Change D8 introduction text to “Sword & Shield Dungeon” from “Sword & Shield Maze”,
     # since every other mention of it was using “Dungeon” naming
