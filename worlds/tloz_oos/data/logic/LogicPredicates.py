@@ -610,8 +610,12 @@ def oos_can_use_pegasus_seeds(state: CollectionState, player: int):
 
 def oos_can_use_gale_seeds_offensively(state: CollectionState, player: int):
     return all([
-        oos_has_gale_seeds(state, player),
+        oos_has_satchel(state, player, 2),
         oos_option_medium_logic(state, player),
+        any([
+            oos_has_gale_seeds(state, player),
+            oos_has_mystery_seeds(state, player)
+        ]),
         any([
             oos_has_slingshot(state, player),
             all([
