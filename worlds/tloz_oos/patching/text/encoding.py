@@ -124,16 +124,12 @@ def build_trie(dictionary: dict[str, str]) -> TrieNode:
     return root
 
 
-# --- Shared Helper ---
 @lru_cache
-def shared_helper(text: str, index: int) -> tuple[int]:
+def recursive_encode(text: str, index: int) -> tuple[int]:
     if index >= len(text):
         return (0,)
 
-    # --- Tokenize ---
     token, length = next_character(text, index)
-
-    # --- Encode token ---
     if isinstance(token, tuple):
         encoded = list(encode_current_encoding[token[0]])
         encoded[-1] += token[1]
@@ -142,10 +138,10 @@ def shared_helper(text: str, index: int) -> tuple[int]:
     else:
         encoded = encode_current_encoding[token]
 
-    best = list(encoded) + list(shared_helper(text, index + length))
+    best = list(encoded) + list(recursive_encode(text, index + length))
 
-    # --- Optimized Trie Traversal ---
     if token not in encode_current_trie.children:
+        # No dict entry
         return tuple(best)
 
     node = encode_current_trie.children[token]
@@ -153,7 +149,6 @@ def shared_helper(text: str, index: int) -> tuple[int]:
     depth = 1
 
     while i < len(text) and depth < 8:
-        # Instead of slice:
         token2, tlen = next_character(text, i)
         if token2 not in node.children:
             break
@@ -161,7 +156,7 @@ def shared_helper(text: str, index: int) -> tuple[int]:
         i += tlen
         depth += 1
         if node.code:
-            candidate = node.code + list(shared_helper(text, i))
+            candidate = node.code + list(recursive_encode(text, i))
             if len(candidate) < len(best):
                 best = candidate
 
@@ -180,7 +175,7 @@ def encode_text(text: str, encoding: dict[str, List[int]], dictionary: dict[str,
         encode_current_encoding = encoding
         encode_last_ids = (id_dict, id_enc)
 
-    result = list(shared_helper(text, 0))
+    result = list(recursive_encode(text, 0))
     return result
 
 
@@ -192,7 +187,7 @@ def encode_dict(text_data: dict[str, str], dictionary: Optional[dict[str, str]] 
     for key in text_data:
         encoded_text = encode_text(text_data[key], encoding_dict, dictionary)
         encoded_dict[key] = encoded_text
-    shared_helper.cache_clear()
+    recursive_encode.cache_clear()
     return encoded_dict
 
 
