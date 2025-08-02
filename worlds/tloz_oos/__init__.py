@@ -199,7 +199,7 @@ class OracleOfSeasonsWorld(World):
                 if "essence" in loc_data and loc_data["essence"] is True:
                     self.essences_in_game.remove(loc_data["vanilla_item"])
             if len(self.essences_in_game) < self.options.required_essences:
-                raise ValueError(f"Too many essence pedestal locations were excluded, seed will be unbeatable")
+                raise ValueError("Too many essence pedestal locations were excluded, seed will be unbeatable")
 
         # If we need to remove more essences, pick them randomly
         self.random.shuffle(self.essences_in_game)

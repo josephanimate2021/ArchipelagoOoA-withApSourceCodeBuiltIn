@@ -688,7 +688,7 @@ def make_text_data(text: dict[str, str], patch_data):
             if location_name not in patch_data["locations"]:
                 continue
             item_text = process_item_name_for_shop_text(patch_data["locations"][location_name])
-            item_text += (f" \\num1 Rupees\n"
+            item_text += (" \\num1 Rupees\n"
                           "  \\optOK \\optNo thanks\\cmd(0f)")
             text[tx_indices[symbolic_name]] = item_text
 
@@ -703,9 +703,9 @@ def make_text_data(text: dict[str, str], patch_data):
                           "🟥Star-Shaped Ore⬜.\n"
                           "\\jump(0b)")
         else:
-            item_text += (f"I'll trade for\n"
-                          f"🟥\\num1 Ore Chunks⬜.\n"
-                          f"\\jump(0b)")
+            item_text += ("I'll trade for\n"
+                          "🟥\\num1 Ore Chunks⬜.\n"
+                          "\\jump(0b)")
         text[tx_indices[symbolic_name]] = item_text
 
     BUSINESS_SCRUBS = [

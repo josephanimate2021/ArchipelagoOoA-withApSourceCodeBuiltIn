@@ -3,7 +3,6 @@ from collections import defaultdict
 import yaml
 
 from typing import TYPE_CHECKING
-from BaseClasses import ItemClassification
 from worlds.tloz_oos.patching.ProcedurePatch import OoSProcedurePatch
 from .data.Constants import *
 from . import OracleOfSeasonsOptions

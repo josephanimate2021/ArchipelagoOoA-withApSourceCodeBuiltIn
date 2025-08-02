@@ -5,7 +5,7 @@ from NetUtils import ClientStatus
 import worlds._bizhawk as bizhawk
 from Utils import async_start
 from worlds._bizhawk.client import BizHawkClient
-from worlds.tloz_oos import LOCATIONS_DATA, ITEMS_DATA, OracleOfSeasonsGoal
+from worlds.tloz_oos import LOCATIONS_DATA, OracleOfSeasonsGoal
 from .Util import build_item_id_to_name_dict, build_location_name_to_id_dict
 
 if TYPE_CHECKING:

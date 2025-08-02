@@ -46,7 +46,7 @@ class OoSPatchExtensions(APPatchExtension):
         set_player_start_inventory(assembler, patch_data)
 
         # Parse assembler files, compile them and write the result in the ROM
-        print(f"Compiling ASM files...")
+        print("Compiling ASM files...")
         write_text_data(rom_data, dictionary, texts)
         for file_path in get_asm_files(patch_data):
             data_loaded = yaml.safe_load(pkgutil.get_data(__name__, file_path))
