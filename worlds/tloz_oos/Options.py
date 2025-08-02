@@ -644,7 +644,10 @@ class OracleOfSeasonsIncludeSecretLocations(Toggle):
 
 
 class OracleOfSeasonsDeathLink(DeathLink):
-    include_in_slot_data = True  # This is for the bizhawk clientq
+    """
+    When you die, everyone who enabled death link dies. Of course, the reverse is true too.
+    """
+    include_in_slot_data = True  # This is for the bizhawk client
 
 
 class OracleOfSeasonsMoveLink(Toggle):
