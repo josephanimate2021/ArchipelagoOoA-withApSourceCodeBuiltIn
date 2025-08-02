@@ -1,18 +1,19 @@
 import os
 import random
 from collections import defaultdict
+from pathlib import Path
+
 import Utils
 from settings import get_settings
 from . import RomData
 from .Util import *
 from .text import simple_hex
 from .z80asm.Assembler import Z80Assembler
-from .Constants import *
 from .z80asm.Util import parse_hex_string_to_value
-from ..data.Constants import *
-from .. import LOCATIONS_DATA, OracleOfSeasonsOldMenShuffle, OracleOfSeasonsGoal, OracleOfSeasonsAnimalCompanion, \
+from ..Options import OracleOfSeasonsOldMenShuffle, OracleOfSeasonsGoal, OracleOfSeasonsAnimalCompanion, \
     OracleOfSeasonsMasterKeys, OracleOfSeasonsFoolsOre, OracleOfSeasonsShowDungeonsWithEssence
-from pathlib import Path
+from ..data.Locations import LOCATIONS_DATA
+from ..data.Constants import *
 
 
 def get_asm_files(patch_data):
@@ -1131,7 +1132,7 @@ def define_essence_sparkle_constants(assembler: Z80Assembler, patch_data):
     essence_pedestals = [k for k, v in LOCATIONS_DATA.items() if v.get("essence", False)]
     if show_dungeons_with_essence and not patch_data["options"]["shuffle_essences"]:
         for i, pedestal in enumerate(essence_pedestals):
-            if patch_data["locations"][pedestal]["item"] not in ESSENCES:
+            if patch_data["locations"][pedestal]["item"] not in ITEM_GROUPS["Essences"]:
                 byte_array.extend([0xF0, 0x00])  # Nonexistent room, for padding
                 continue
 

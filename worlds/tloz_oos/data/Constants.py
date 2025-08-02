@@ -59,24 +59,6 @@ DUNGEON_NAMES = [
     "Sword & Shield Dungeon"
 ]
 
-ESSENCES = [
-    "Fertile Soil",
-    "Gift of Time",
-    "Bright Sun",
-    "Soothing Rain",
-    "Nurturing Warmth",
-    "Blowing Wind",
-    "Seed of Life",
-    "Changing Seasons",
-]
-
-JEWELS = [
-    "Square Jewel",
-    "Pyramid Jewel",
-    "Round Jewel",
-    "X-Shaped Jewel"
-]
-
 VALID_RUPEE_PRICE_VALUES = [
     1, 2, 5, 10, 20, 25, 30, 40, 50, 60, 70, 80, 100, 150, 200, 300, 400, 500, 900, 999
 ]
@@ -277,14 +259,20 @@ ITEM_GROUPS = {
         "Master Key (Sword & Shield Dungeon)",
     ],
     "Essences": [
-        "Gnarled Root Dungeon: Essence",
-        "Snake's Remains: Essence",
-        "Poison Moth's Lair: Essence",
-        "Dancing Dragon Dungeon: Essence",
-        "Unicorn's Cave: Essence",
-        "Ancient Ruins: Essence",
-        "Explorer's Crypt: Essence",
-        "Sword & Shield Dungeon: Essence",
+        "Fertile Soil",
+        "Gift of Time",
+        "Bright Sun",
+        "Soothing Rain",
+        "Nurturing Warmth",
+        "Blowing Wind",
+        "Seed of Life",
+        "Changing Seasons",
+    ],
+    "Jewels": [
+        "Square Jewel",
+        "Pyramid Jewel",
+        "Round Jewel",
+        "X-Shaped Jewel"
     ]
 }
 

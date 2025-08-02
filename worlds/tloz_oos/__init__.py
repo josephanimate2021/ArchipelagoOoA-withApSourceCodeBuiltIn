@@ -1,22 +1,20 @@
 import os
-import logging
 from typing import List, Union, ClassVar, Any, Optional, Tuple, Type
+
 import settings
 from BaseClasses import Tutorial, Region, Location, LocationProgressType, Item, ItemClassification, MultiWorld, CollectionState
-from Fill import fill_restrictive, FillError
+from Fill import fill_restrictive
 from Options import Accessibility, OptionError, Option
 from worlds.AutoWorld import WebWorld, World
-
-from .Util import *
-from .Options import *
+from .Client import OracleOfSeasonsClient  # Unused, but required to register with BizHawkClient
 from .Logic import create_connections, apply_self_locking_rules
+from .Options import *
 from .PatchWriter import oos_create_ap_procedure_patch
+from .Util import *
 from .data import LOCATIONS_DATA
 from .data.Constants import *
 from .data.Items import ITEMS_DATA
 from .data.Regions import REGIONS, NATZU_REGIONS, GASHA_REGIONS
-
-from .Client import OracleOfSeasonsClient  # Unused, but required to register with BizHawkClient
 
 
 class OracleOfSeasonsSettings(settings.Group):
@@ -126,7 +124,7 @@ class OracleOfSeasonsWorld(World):
         self.shop_prices: Dict[str, int] = VANILLA_SHOP_PRICES.copy()
         self.shop_order: List[List[str]] = []
         self.shop_rupee_requirements: Dict[str, int] = {}
-        self.essences_in_game: List[str] = ESSENCES.copy()
+        self.essences_in_game: List[str] = ITEM_GROUPS["Essences"].copy()
         self.random_rings_pool: List[str] = []
         self.remaining_progressive_gasha_seeds = 0
 
@@ -534,8 +532,8 @@ class OracleOfSeasonsWorld(World):
 
         # If dungeons without essence need to be excluded, do it if conditions are met
         if self.options.exclude_dungeons_without_essence and not self.options.shuffle_essences:
-            for i, essence_name in enumerate(ESSENCES):
-                if ESSENCES[i] not in self.essences_in_game:
+            for i, essence_name in enumerate(ITEM_GROUPS["Essences"]):
+                if essence_name not in self.essences_in_game:
                     locations_to_exclude.update(self.location_name_groups[f"D{i + 1}"])
 
         if not self.options.shuffle_business_scrubs:
@@ -787,8 +785,8 @@ class OracleOfSeasonsWorld(World):
         confined_dungeon_items = []
         excluded_dungeons = []
         if self.options.exclude_dungeons_without_essence and not self.options.shuffle_essences:
-            for i, essence_name in enumerate(ESSENCES):
-                if ESSENCES[i] not in self.essences_in_game:
+            for i, essence_name in enumerate(ITEM_GROUPS["Essences"]):
+                if essence_name not in self.essences_in_game:
                     excluded_dungeons.append(i + 1)
 
         # Put Small Keys / Master Keys unless keysanity is enabled for those

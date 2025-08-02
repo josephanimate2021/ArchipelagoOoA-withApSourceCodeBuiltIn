@@ -1,7 +1,7 @@
 from BaseClasses import CollectionState
 from Options import Accessibility
 from ..Constants import *
-from ... import OracleOfSeasonsLogicDifficulty
+from ...Options import OracleOfSeasonsLogicDifficulty
 
 
 # Items predicates ############################################################
@@ -10,7 +10,7 @@ def oos_has_sword(state: CollectionState, player: int, accept_biggoron: bool = T
     return any([
         state.has("Progressive Sword", player),
         all([
-            (accept_biggoron),
+            accept_biggoron,
             state.has("Biggoron's Sword", player)
         ])
     ])
@@ -202,7 +202,7 @@ def oos_can_remove_season(state: CollectionState, player: int, season: int):
 
 
 def oos_has_essences(state: CollectionState, player: int, target_count: int):
-    essence_count = [state.has(essence, player) for essence in ESSENCES].count(True)
+    essence_count = [state.has(essence, player) for essence in ITEM_GROUPS["Essences"]].count(True)
     return essence_count >= target_count
 
 
@@ -216,7 +216,7 @@ def oos_has_essences_for_treehouse(state: CollectionState, player: int):
 
 def oos_has_required_jewels(state: CollectionState, player: int):
     target_count = state.multiworld.worlds[player].options.tarm_gate_required_jewels.value
-    count = [state.has(jewel, player) for jewel in JEWELS].count(True)
+    count = [state.has(jewel, player) for jewel in ITEM_GROUPS["Jewels"]].count(True)
     return count >= target_count
 
 

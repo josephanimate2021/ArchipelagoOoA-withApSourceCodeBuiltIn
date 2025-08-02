@@ -3,9 +3,10 @@ from typing import TYPE_CHECKING, Set, Dict, Any
 
 from NetUtils import ClientStatus
 import worlds._bizhawk as bizhawk
-from Utils import async_start
 from worlds._bizhawk.client import BizHawkClient
-from worlds.tloz_oos import LOCATIONS_DATA, OracleOfSeasonsGoal
+from Utils import async_start
+from .data.Locations import LOCATIONS_DATA
+from .Options import OracleOfSeasonsGoal
 from .Util import build_item_id_to_name_dict, build_location_name_to_id_dict
 
 if TYPE_CHECKING:
@@ -127,12 +128,12 @@ class OracleOfSeasonsClient(BizHawkClient):
 
         try:
             read_result = await bizhawk.read(ctx.bizhawk_ctx, [
-                RAM_ADDRS["game_state"],            # Current state of game (is the player actually in-game?)
-                RAM_ADDRS["received_item_index"],   # Number of received items
-                RAM_ADDRS["received_item"],         # Received item still pending?
-                RAM_ADDRS["location_flags"],        # Location flags
-                RAM_ADDRS["current_map_group"],     # Current map group & id where the player is currently located
-                RAM_ADDRS["current_map_id"],        # ^^^
+                RAM_ADDRS["game_state"],  # Current state of game (is the player actually in-game?)
+                RAM_ADDRS["received_item_index"],  # Number of received items
+                RAM_ADDRS["received_item"],  # Received item still pending?
+                RAM_ADDRS["location_flags"],  # Location flags
+                RAM_ADDRS["current_map_group"],  # Current map group & id where the player is currently located
+                RAM_ADDRS["current_map_id"],  # ^^^
                 RAM_ADDRS["is_dead"]
             ])
 
