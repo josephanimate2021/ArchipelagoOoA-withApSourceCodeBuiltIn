@@ -6,14 +6,14 @@ from . import char_table, kanji_table, text_offset_split_index, text_offset_1_ta
 from ..RomData import RomData
 from ..z80asm.Assembler import GameboyAddress
 
-control_sequence_pattern = re.compile(r'''
+control_sequence_pattern = re.compile(r"""
     \\
     (jump|cmd|col|charsfx|speed|pos|wait|sfx|call)
     \(([^)]+)\) |
     \\(link_name|child_name|w7SecretBuffer1|w7SecretBuffer2|
     num1|opt|stop|heartpiece|num2|slow)
-''', re.VERBOSE)
-dict_pattern = re.compile(r'DICT(\d+)_([0-9a-f]+)')
+""", re.VERBOSE)
+dict_pattern = re.compile(r"DICT(\d+)_([0-9a-f]+)")
 
 
 def add_to_tree(tree: dict[str, list[int]], char: str, keys: [int]):
@@ -24,44 +24,44 @@ def build_encoding_dict() -> dict[str, list[int]]:
     tree = {}
     for i in range(len(char_table)):
         char = char_table[i]
-        if char != '🚫' and char != '∅':
+        if char != "🚫" and char != "∅":
             add_to_tree(tree, char, [i])
 
     for i in range(len(kanji_table)):
         char = kanji_table[i]
-        if char != '∅':
+        if char != "∅":
             add_to_tree(tree, char, [0x06, i])
 
-    add_to_tree(tree, 'jump', [0x07, 0x00])
-    add_to_tree(tree, 'cmd', [0x08, 0x00])
+    add_to_tree(tree, "jump", [0x07, 0x00])
+    add_to_tree(tree, "cmd", [0x08, 0x00])
 
-    add_to_tree(tree, '⬜', [0x09, 0x00])
-    add_to_tree(tree, '🟥', [0x09, 0x01])
-    add_to_tree(tree, '🟧', [0x09, 0x02])
-    add_to_tree(tree, '🟦', [0x09, 0x03])
-    add_to_tree(tree, '🟩', [0x09, 0x04])
-    add_to_tree(tree, 'col', [0x09, 0x00])
+    add_to_tree(tree, "⬜", [0x09, 0x00])
+    add_to_tree(tree, "🟥", [0x09, 0x01])
+    add_to_tree(tree, "🟧", [0x09, 0x02])
+    add_to_tree(tree, "🟦", [0x09, 0x03])
+    add_to_tree(tree, "🟩", [0x09, 0x04])
+    add_to_tree(tree, "col", [0x09, 0x00])
 
-    add_to_tree(tree, 'link_name', [0x0a, 0x00])
-    add_to_tree(tree, 'child_name', [0x0a, 0x01])
-    add_to_tree(tree, 'w7SecretBuffer1', [0x0a, 0x02])
-    add_to_tree(tree, 'w7SecretBuffer2', [0x0a, 0x03])
+    add_to_tree(tree, "link_name", [0x0a, 0x00])
+    add_to_tree(tree, "child_name", [0x0a, 0x01])
+    add_to_tree(tree, "w7SecretBuffer1", [0x0a, 0x02])
+    add_to_tree(tree, "w7SecretBuffer2", [0x0a, 0x03])
 
-    add_to_tree(tree, 'speed', [0x0c, 0x00])
-    add_to_tree(tree, 'num1', [0x0c, 0x08])
-    add_to_tree(tree, 'opt', [0x0c, 0x10])
-    add_to_tree(tree, 'stop', [0x0c, 0x18])
-    add_to_tree(tree, 'pos', [0x0c, 0x20])
-    add_to_tree(tree, 'heartpiece', [0x0c, 0x28])
-    add_to_tree(tree, 'num2', [0x0c, 0x30])
-    add_to_tree(tree, 'slow', [0x0c, 0x38])
+    add_to_tree(tree, "speed", [0x0c, 0x00])
+    add_to_tree(tree, "num1", [0x0c, 0x08])
+    add_to_tree(tree, "opt", [0x0c, 0x10])
+    add_to_tree(tree, "stop", [0x0c, 0x18])
+    add_to_tree(tree, "pos", [0x0c, 0x20])
+    add_to_tree(tree, "heartpiece", [0x0c, 0x28])
+    add_to_tree(tree, "num2", [0x0c, 0x30])
+    add_to_tree(tree, "slow", [0x0c, 0x38])
 
-    add_to_tree(tree, 'wait', [0x0d, 0x00])
-    add_to_tree(tree, 'sfx', [0x0e, 0x00])
-    add_to_tree(tree, 'call', [0x0f, 0x00])
+    add_to_tree(tree, "wait", [0x0d, 0x00])
+    add_to_tree(tree, "sfx", [0x0e, 0x00])
+    add_to_tree(tree, "call", [0x0f, 0x00])
 
-    add_to_tree(tree, 'Ⓐ', [0xb8, 0xb9])
-    add_to_tree(tree, 'Ⓑ', [0xba, 0xbb])
+    add_to_tree(tree, "Ⓐ", [0xb8, 0xb9])
+    add_to_tree(tree, "Ⓑ", [0xba, 0xbb])
 
     return tree
 
@@ -79,20 +79,20 @@ encode_current_encoding: Optional[dict[str, list[int]]] = None
 encode_last_ids = (None, None)
 
 control_keywords = {
-    'link_name', 'child_name', 'w7SecretBuffer1', 'w7SecretBuffer2',
-    'num1', 'opt', 'stop', 'heartpiece', 'num2', 'slow'
+    "link_name", "child_name", "w7SecretBuffer1", "w7SecretBuffer2",
+    "num1", "opt", "stop", "heartpiece", "num2", "slow"
 }
 
 control_functions = {
-    'jump', 'cmd', 'col', 'charsfx', 'speed', 'pos', 'wait', 'sfx', 'call'
+    "jump", "cmd", "col", "charsfx", "speed", "pos", "wait", "sfx", "call"
 }
 
 
 def next_character(text: str, index: int) -> tuple[Union[str, tuple[str, int]], int]:
     if index >= len(text):
-        return '\0', 1
+        return "\0", 1
 
-    if text[index] != '\\':
+    if text[index] != "\\":
         return text[index], 1
 
     # Try parsing a function-style command: \name(hex)

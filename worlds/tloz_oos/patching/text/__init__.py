@@ -37,4 +37,4 @@ text_offset_split_index = 0x2c
 
 
 def simple_hex(num: int) -> str:
-    return hex(num)[2:].rjust(2, '0')
+    return hex(num)[2:].rjust(2, "0")

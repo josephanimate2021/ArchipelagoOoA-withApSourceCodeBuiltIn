@@ -62,7 +62,7 @@ def decode_text(rom: RomData, entry_address: int, dictionary: Optional[dict[str,
         character = rom.read_byte(entry_address)
         entry_address += 1
         converted = char_table[character]
-        if converted != '🚫':
+        if converted != "🚫":
             text += converted
         else:
             if character == 0x00:
@@ -80,15 +80,15 @@ def decode_text(rom: RomData, entry_address: int, dictionary: Optional[dict[str,
                 text += f"\\cmd({simple_hex(character2)})"
             elif character == 0x09:
                 if character2 == 0:
-                    text += '⬜'
+                    text += "⬜"
                 elif character2 == 1:
-                    text += '🟥'
+                    text += "🟥"
                 elif character2 == 2:
-                    text += '🟧'
+                    text += "🟧"
                 elif character2 == 3:
-                    text += '🟦'
+                    text += "🟦"
                 elif character2 == 4:
-                    text += '🟩'
+                    text += "🟩"
                 else:
                     text += f"\\col({simple_hex(character2)})"
             elif character == 0x0a:
@@ -135,10 +135,10 @@ def decode_text(rom: RomData, entry_address: int, dictionary: Optional[dict[str,
             elif character == 0xb8:
                 # Two parts A button
                 assert character2 == 0xb9
-                text += 'Ⓐ'
+                text += "Ⓐ"
             elif character == 0xba:
                 assert character2 == 0xbb
-                text += 'Ⓑ'
+                text += "Ⓑ"
     return text
 
 

@@ -99,11 +99,11 @@ class OracleOfSeasonsClient(BizHawkClient):
         pass
 
     def on_package(self, ctx, cmd, args):
-        if cmd == 'Connected':
-            if args['slot_data']["options"]['death_link']:
+        if cmd == "Connected":
+            if args["slot_data"]["options"]["death_link"]:
                 self.set_deathlink = True
                 self.last_deathlink = time.time()
-            if args['slot_data']["options"]['move_link']:
+            if args["slot_data"]["options"]["move_link"]:
                 ctx.tags.add("MoveLink")
                 self.move_link = []
                 async_start(ctx.send_msgs([{"cmd": "ConnectUpdate", "tags": ctx.tags}]))

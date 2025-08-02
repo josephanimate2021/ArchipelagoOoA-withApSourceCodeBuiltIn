@@ -459,7 +459,7 @@ class OracleOfSeasonsWorld(World):
                 continue
 
             is_local = "local" in location_data and location_data["local"] is True
-            self.create_location(location_data['region_id'], location_name, is_local)
+            self.create_location(location_data["region_id"], location_name, is_local)
 
         self.create_events()
         self.exclude_locations_automatically()
@@ -614,7 +614,7 @@ class OracleOfSeasonsWorld(World):
             if "vanilla_item" not in loc_data:
                 continue
 
-            item_name = loc_data['vanilla_item']
+            item_name = loc_data["vanilla_item"]
             if "Ring" in item_name:
                 item_name = "Random Ring"
             if item_name in removed_item_quantities and removed_item_quantities[item_name] > 0:

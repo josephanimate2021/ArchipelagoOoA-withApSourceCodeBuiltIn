@@ -147,7 +147,7 @@ class Z80Assembler:
         if block.label:
             self.add_global_label(block.label, block.addr)
         for label in block.local_labels:
-            if not label.startswith('@'):
+            if not label.startswith("@"):
                 self.add_global_label(label, block.local_labels[label])
 
         self.blocks.append(block)
@@ -281,7 +281,7 @@ class Z80Assembler:
 
         args = [""]
         if len(split) > 1:
-            args = ' '.join(split[1:]).split(",")
+            args = " ".join(split[1:]).split(",")
 
         # Perform includes before resolving names
         if opcode == "/include":

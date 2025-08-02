@@ -43,9 +43,9 @@ def write_chest_contents(rom: RomData, patch_data):
     This puts the item described in the patch data inside each chest in the game.
     """
     for location_name, location_data in LOCATIONS_DATA.items():
-        if location_data.get('collect', COLLECT_TOUCH) != COLLECT_CHEST and not location_data.get('is_chest', False):
+        if location_data.get("collect", COLLECT_TOUCH) != COLLECT_CHEST and not location_data.get("is_chest", False):
             continue
-        chest_addr = rom.get_chest_addr(location_data['room'])
+        chest_addr = rom.get_chest_addr(location_data["room"])
         item = patch_data["locations"][location_name]
         item_id, item_subid = get_item_id_and_subid(item)
         rom.write_byte(chest_addr, item_id)
@@ -590,15 +590,15 @@ def set_fixed_subrosia_seaside_location(rom: RomData, patch_data):
 
 def set_file_select_text(assembler: Z80Assembler, slot_name: str):
     def char_to_tile(c: str) -> int:
-        if '0' <= c <= '9':
+        if "0" <= c <= "9":
             return ord(c) - 0x20
-        if 'A' <= c <= 'Z':
+        if "A" <= c <= "Z":
             return ord(c) + 0xa1
-        if c == '+':
+        if c == "+":
             return 0xfd
-        if c == '-':
+        if c == "-":
             return 0xfe
-        if c == '.':
+        if c == ".":
             return 0xff
         else:
             return 0xfc  # All other chars are blank spaces
@@ -624,7 +624,7 @@ def set_file_select_text(assembler: Z80Assembler, slot_name: str):
 
 def process_item_name_for_shop_text(item: Dict) -> str:
     if "player" in item:
-        player_name = item['player']
+        player_name = item["player"]
         if len(player_name) > 14:
             player_name = player_name[0:13] + "."
         current_line = len(player_name) + 2
@@ -633,7 +633,7 @@ def process_item_name_for_shop_text(item: Dict) -> str:
         current_line = 0
         item_name = "🟥"
 
-    words = item['item'].split(" ")
+    words = item["item"].split(" ")
     for word in words:
         if len(word) > 16:
             word = word[:15] + "."
@@ -814,7 +814,7 @@ def make_text_data(text: dict[str, str], patch_data):
                        "Subrosian Dungeon")
 
     # Default satchel seed
-    seed_name = SEED_ITEMS[patch_data["options"]["default_seed"]].replace(' ', '\n')
+    seed_name = SEED_ITEMS[patch_data["options"]["default_seed"]].replace(" ", "\n")
     text["TX_002d"].replace("Ember\nSeeds", seed_name)
 
     # Misc
@@ -920,7 +920,7 @@ def set_heart_beep_interval_from_settings(rom: RomData):
 
 def set_character_sprite_from_settings(rom: RomData):
     sprite = get_settings()["tloz_oos_options"]["character_sprite"]
-    sprite_dir = Path(Utils.local_path(os.path.join('data', 'sprites', 'oos_ooa')))
+    sprite_dir = Path(Utils.local_path(os.path.join("data", "sprites", "oos_ooa")))
     if sprite == "random":
         sprite_weights = {f: 1 for f in os.listdir(sprite_dir) if sprite_dir.joinpath(f).is_file() and f.endswith(".bin")}
     elif isinstance(sprite, str):

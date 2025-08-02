@@ -6,7 +6,7 @@ from worlds.tloz_oos.patching.RomData import RomData
 from worlds.tloz_oos.patching.text.decoding import parse_dict_seasons, parse_all_texts, decode_text
 from worlds.tloz_oos.patching.text.encoding import write_text_data, encode_dict
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     if not os.path.isdir("output"):
         os.mkdir("output")
     file_name = get_settings()["tloz_oos_options"]["rom_file"]
