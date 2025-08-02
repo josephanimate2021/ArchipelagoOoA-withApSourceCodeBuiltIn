@@ -263,7 +263,7 @@ ITEM_GROUPS = {
         "Dungeon Map (Unicorn's Cave)",
         "Dungeon Map (Ancient Ruins)",
         "Dungeon Map (Explorer's Crypt)",
-        "Dungeon Map (Sword & Shield Dungeon)"
+        "Dungeon Map (Sword & Shield Dungeon)",
     ],
     "Master Keys": [
         "Master Key (Hero's Cave)",
@@ -275,6 +275,16 @@ ITEM_GROUPS = {
         "Master Key (Ancient Ruins)",
         "Master Key (Explorer's Crypt)",
         "Master Key (Sword & Shield Dungeon)",
+    ],
+    "Essences": [
+        "Gnarled Root Dungeon: Essence",
+        "Snake's Remains: Essence",
+        "Poison Moth's Lair: Essence",
+        "Dancing Dragon Dungeon: Essence",
+        "Unicorn's Cave: Essence",
+        "Ancient Ruins: Essence",
+        "Explorer's Crypt: Essence",
+        "Sword & Shield Dungeon: Essence",
     ]
 }
 
@@ -283,7 +293,7 @@ LOCATION_GROUPS = {
         "Hero's Cave: Topmost Chest",
         "Hero's Cave: Final Chest",
         "Hero's Cave: Item in Basement Under Keese Room",
-        "Hero's Cave: Alternative Entrance Chest"
+        "Hero's Cave: Alternative Entrance Chest",
     ],
     'D1': [
         'Gnarled Root Dungeon: Drop in Right Stalfos Room',
@@ -417,7 +427,7 @@ LOCATION_GROUPS = {
         'Mt. Cucco: Chest Behind Talon',
         'Sunken City: Syrup Shop #1',
         'Sunken City: Syrup Shop #2',
-        'Sunken City: Syrup Shop #3'
+        'Sunken City: Syrup Shop #3',
     ]
 }
 
