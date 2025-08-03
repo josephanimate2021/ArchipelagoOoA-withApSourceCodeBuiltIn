@@ -7,6 +7,7 @@ import Utils
 from settings import get_settings
 from . import RomData
 from .Util import *
+from .asm import asm_files
 from .text import simple_hex
 from .z80asm.Assembler import Z80Assembler
 from .z80asm.Util import parse_hex_string_to_value
@@ -17,25 +18,24 @@ from ..data.Constants import *
 
 
 def get_asm_files(patch_data):
-    dir_name = os.path.dirname(__file__) + "/asm"
-    asm_files = [f"asm/{filename}" for filename in os.listdir(dir_name) if filename.endswith(".yaml")]
+    files = list(asm_files["base"])
     if patch_data["options"]["quick_flute"]:
-        asm_files.append("asm/conditional/quick_flute.yaml")
+        files += asm_files["quick_flute"]
     if patch_data["options"]["shuffle_old_men"] == OracleOfSeasonsOldMenShuffle.option_turn_into_locations:
-        asm_files.append("asm/conditional/old_men_as_locations.yaml")
+        files += asm_files["old_men_as_locations"]
     if patch_data["options"]["remove_d0_alt_entrance"]:
-        asm_files.append("asm/conditional/remove_d0_alt_entrance.yaml")
+        files += asm_files["remove_d0_alt_entrance"]
     if patch_data["options"]["remove_d2_alt_entrance"]:
-        asm_files.append("asm/conditional/remove_d2_alt_entrance.yaml")
+        files += asm_files["remove_d2_alt_entrance"]
     if patch_data["options"]["goal"] == OracleOfSeasonsGoal.option_beat_ganon:
-        asm_files.append("asm/conditional/ganon_goal.yaml")
+        files += asm_files["ganon_goal"]
     if patch_data["options"]["rosa_quick_unlock"]:
-        asm_files.append("asm/conditional/instant_rosa.yaml")
+        files += asm_files["instant_rosa"]
     if get_settings()["tloz_oos_options"]["remove_music"]:
-        asm_files.append("asm/conditional/mute_music.yaml")
+        files += asm_files["mute_music"]
     if patch_data["options"]["secret_locations"]:
-        asm_files.append("asm/conditional/secret_locations.yaml")
-    return asm_files
+        files += asm_files["secret_locations"]
+    return files
 
 
 def write_chest_contents(rom: RomData, patch_data):
