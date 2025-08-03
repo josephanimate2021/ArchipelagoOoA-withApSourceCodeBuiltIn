@@ -763,9 +763,16 @@ def make_d7_logic(player: int):
         ])],
 
         ["d7 armos puzzle", "d7 magunesu chest", False, lambda state: all([
-            oos_can_jump_3_wide_pit(state, player),
             oos_can_kill_magunesu(state, player),
-            oos_has_magnet_gloves(state, player)
+            oos_has_magnet_gloves(state, player),
+            any([
+                oos_can_jump_3_wide_pit(state, player),
+                all([
+                    # Really precise bomb jumps to cross the 3-holes
+                    oos_option_hell_logic(state, player),
+                    oos_can_jump_2_wide_liquid(state, player)
+                ])
+            ])
         ])],
 
         # 2 keys
