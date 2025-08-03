@@ -680,7 +680,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
 
         ["north horon", "natzu west", True, None],
 
-        ["moblin keep bridge", "moblin keep", False, lambda state: any([
+        ["moblin keep bridge", "moblin keep", True, lambda state: any([
             oos_has_flippers(state, player),
             oos_can_jump_4_wide_liquid(state, player)
         ])],
