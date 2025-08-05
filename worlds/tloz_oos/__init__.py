@@ -568,7 +568,7 @@ class OracleOfSeasonsWorld(World):
         # amount of progression rupees while keeping them a filler item as default
         if name.endswith("!PROG"):
             name = name.removesuffix("!PROG")
-            classification = ItemClassification.progression_skip_balancing
+            classification = ItemClassification.progression_deprioritized_skip_balancing
         elif name.endswith("!USEFUL"):
             # Same for above but with useful. This is typically used for Required Rings,
             # as we don't want those locked in a barren dungeon
@@ -576,6 +576,9 @@ class OracleOfSeasonsWorld(World):
             classification = ITEMS_DATA[name]["classification"]
             if classification == ItemClassification.filler:
                 classification = ItemClassification.useful
+        elif name.endswith("!FILLER"):
+            name = name.removesuffix("!FILLER")
+            classification = ItemClassification.filler
         else:
             classification = ITEMS_DATA[name]["classification"]
         ap_code = self.item_name_to_id[name]
@@ -587,11 +590,10 @@ class OracleOfSeasonsWorld(World):
         # As many Gasha Seeds become progression as the number of deterministic Gasha Nuts
         if self.remaining_progressive_gasha_seeds > 0 and name == "Gasha Seed":
             self.remaining_progressive_gasha_seeds -= 1
-            classification = ItemClassification.progression
+            classification = ItemClassification.progression_deprioritized
 
         # Players in Medium+ are expected to know the default paths through Lost Woods, Phonograph becomes filler
-        difficulties = ["medium", "hard"]
-        if self.options.logic_difficulty in difficulties and not self.options.randomize_lost_woods_item_sequence and name == "Phonograph":
+        if self.options.logic_difficulty >= OracleOfSeasonsLogicDifficulty.option_medium and not self.options.randomize_lost_woods_item_sequence and name == "Phonograph":
             classification = ItemClassification.filler
 
         # UT doesn't let us know if the item is progression or not, so it is always progression
@@ -601,6 +603,13 @@ class OracleOfSeasonsWorld(World):
         return Item(name, classification, ap_code, self.player)
 
     def build_item_pool_dict(self):
+        excluded_mapass = set()
+        if self.options.exclude_dungeons_without_essence and not self.options.shuffle_essences:
+            for i, essence_name in enumerate(ITEM_GROUPS["Essences"]):
+                if essence_name not in self.essences_in_game:
+                    excluded_mapass.add(f"Dungeon Map ({DUNGEON_NAMES[i]})")
+                    excluded_mapass.add(f"Compass ({DUNGEON_NAMES[i]})")
+
         removed_item_quantities = self.options.remove_items_from_pool.value.copy()
         item_pool_dict = {}
         filler_item_count = 0
@@ -671,6 +680,8 @@ class OracleOfSeasonsWorld(World):
 
             if item_name == "Flute":
                 item_name = self.options.animal_companion.current_key.title() + "'s Flute"
+            elif item_name in excluded_mapass:
+                item_name += "!FILLER"
 
             item_pool_dict[item_name] = item_pool_dict.get(item_name, 0) + 1
 
@@ -811,11 +822,6 @@ class OracleOfSeasonsWorld(World):
         if not self.options.keysanity_maps_compasses:
             confined_dungeon_items.extend([item for item in items if item.name.startswith("Dungeon Map")
                                            or item.name.startswith("Compass")])
-        else:
-            for i in excluded_dungeons:
-                confined_dungeon_items.extend([item for item in items
-                                               if item.name == f"Dungeon Map ({DUNGEON_NAMES[i]})"
-                                               or item.name == f"Compass ({DUNGEON_NAMES[i]})"])
 
         for item in confined_dungeon_items:
             items.remove(item)

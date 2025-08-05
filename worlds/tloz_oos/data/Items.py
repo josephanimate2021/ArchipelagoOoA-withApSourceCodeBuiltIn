@@ -12,7 +12,7 @@ ITEMS_DATA = {
         "id": 0x01
     },
     "Bombs (10)": {
-        "classification": ItemClassification.progression,
+        "classification": ItemClassification.progression_deprioritized,
         "id": 0x03
     },
     "Progressive Sword": {
@@ -52,7 +52,7 @@ ITEMS_DATA = {
         "id": 0x0c
     },
     #   "Bombchus (10)": {
-    #       'classification': ItemClassification.progression,
+    #       'classification': ItemClassification.progression_deprioritized,
     #       'id': 0x0d
     #   },
     "Ricky's Flute": {
@@ -140,17 +140,17 @@ ITEMS_DATA = {
         "subid": 0x04
     },
     "Rupees (50)": {
-        "classification": ItemClassification.progression_skip_balancing,
+        "classification": ItemClassification.filler,
         "id": 0x28,
         "subid": 0x05
     },
     "Rupees (100)": {
-        "classification": ItemClassification.progression_skip_balancing,
+        "classification": ItemClassification.filler,
         "id": 0x28,
         "subid": 0x06
     },
     "Rupees (200)": {
-        "classification": ItemClassification.progression_skip_balancing,
+        "classification": ItemClassification.filler,
         "id": 0x28,
         "subid": 0x08
     },
@@ -193,52 +193,52 @@ ITEMS_DATA = {
     },
 
     "Small Key (Hero's Cave)": {
-        "classification": ItemClassification.progression,
+        "classification": ItemClassification.progression_deprioritized,
         "id": 0x30,
         "subid": 0x00
     },
     "Small Key (Gnarled Root Dungeon)": {
-        "classification": ItemClassification.progression,
+        "classification": ItemClassification.progression_deprioritized,
         "id": 0x30,
         "subid": 0x01
     },
     "Small Key (Snake's Remains)": {
-        "classification": ItemClassification.progression,
+        "classification": ItemClassification.progression_deprioritized,
         "id": 0x30,
         "subid": 0x02
     },
     "Small Key (Poison Moth's Lair)": {
-        "classification": ItemClassification.progression,
+        "classification": ItemClassification.progression_deprioritized,
         "id": 0x30,
         "subid": 0x03
     },
     "Small Key (Dancing Dragon Dungeon)": {
-        "classification": ItemClassification.progression,
+        "classification": ItemClassification.progression_deprioritized,
         "id": 0x30,
         "subid": 0x04
     },
     "Small Key (Unicorn's Cave)": {
-        "classification": ItemClassification.progression,
+        "classification": ItemClassification.progression_deprioritized,
         "id": 0x30,
         "subid": 0x05
     },
     "Small Key (Ancient Ruins)": {
-        "classification": ItemClassification.progression,
+        "classification": ItemClassification.progression_deprioritized,
         "id": 0x30,
         "subid": 0x06
     },
     "Small Key (Explorer's Crypt)": {
-        "classification": ItemClassification.progression,
+        "classification": ItemClassification.progression_deprioritized,
         "id": 0x30,
         "subid": 0x07
     },
     "Small Key (Sword & Shield Dungeon)": {
-        "classification": ItemClassification.progression,
+        "classification": ItemClassification.progression_deprioritized,
         "id": 0x30,
         "subid": 0x08
     },
     "Master Key (Hero's Cave)": {
-        "classification": ItemClassification.progression,
+        "classification": ItemClassification.progression_deprioritized,
         "id": 0x30,
         "subid": 0x80
     },
@@ -420,51 +420,51 @@ ITEMS_DATA = {
     },
 
     "Cuccodex": {
-        "classification": ItemClassification.progression,
+        "classification": ItemClassification.progression_deprioritized,
         "id": 0x55
     },
     "Lon Lon Egg": {
-        "classification": ItemClassification.progression,
+        "classification": ItemClassification.progression_deprioritized,
         "id": 0x56
     },
     "Ghastly Doll": {
-        "classification": ItemClassification.progression,
+        "classification": ItemClassification.progression_deprioritized,
         "id": 0x57
     },
     "Iron Pot": {
-        "classification": ItemClassification.progression,
+        "classification": ItemClassification.progression_deprioritized,
         "id": 0x35
     },
     "Lava Soup": {
-        "classification": ItemClassification.progression,
+        "classification": ItemClassification.progression_deprioritized,
         "id": 0x38
     },
     "Goron Vase": {
-        "classification": ItemClassification.progression,
+        "classification": ItemClassification.progression_deprioritized,
         "id": 0x39
     },
     "Fish": {
-        "classification": ItemClassification.progression,
+        "classification": ItemClassification.progression_deprioritized,
         "id": 0x3a
     },
     "Megaphone": {
-        "classification": ItemClassification.progression,
+        "classification": ItemClassification.progression_deprioritized,
         "id": 0x3b
     },
     "Mushroom": {
-        "classification": ItemClassification.progression,
+        "classification": ItemClassification.progression_deprioritized,
         "id": 0x3c
     },
     "Wooden Bird": {
-        "classification": ItemClassification.progression,
+        "classification": ItemClassification.progression_deprioritized,
         "id": 0x3d
     },
     "Engine Grease": {
-        "classification": ItemClassification.progression,
+        "classification": ItemClassification.progression_deprioritized,
         "id": 0x3e
     },
     "Phonograph": {
-        "classification": ItemClassification.progression,
+        "classification": ItemClassification.progression_deprioritized,
         "id": 0x3f
     },
 
@@ -481,7 +481,7 @@ ITEMS_DATA = {
         "id": 0x44
     },
     "Star Ore": {
-        "classification": ItemClassification.progression,
+        "classification": ItemClassification.progression_deprioritized,
         "id": 0x45
     },
     "Ribbon": {
@@ -498,7 +498,7 @@ ITEMS_DATA = {
     #       'id': 0x48
     #   },
     "Rusty Bell": {
-        "classification": ItemClassification.progression,
+        "classification": ItemClassification.progression_deprioritized,
         "id": 0x4a
     },
     "Pirate's Bell": {
@@ -526,15 +526,15 @@ ITEMS_DATA = {
         "id": 0x4f
     },
     "Red Ore": {
-        "classification": ItemClassification.progression,
+        "classification": ItemClassification.progression_deprioritized,
         "id": 0x50
     },
     "Blue Ore": {
-        "classification": ItemClassification.progression,
+        "classification": ItemClassification.progression_deprioritized,
         "id": 0x51
     },
     "Hard Ore": {
-        "classification": ItemClassification.progression,
+        "classification": ItemClassification.progression_deprioritized,
         "id": 0x52
     },
     "Member's Card": {
@@ -542,7 +542,7 @@ ITEMS_DATA = {
         "id": 0x53
     },
     "Master's Plaque": {
-        "classification": ItemClassification.progression,
+        "classification": ItemClassification.progression_deprioritized,
         "id": 0x54
     },
     #   "Bomb Upgrade": {
