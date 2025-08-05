@@ -1,8 +1,10 @@
 import re
+from collections import defaultdict
 from typing import Union, Optional
 from functools import lru_cache
 from typing import List
-from . import char_table, kanji_table, text_offset_split_index, text_offset_1_table_address, text_offset_2_table_address, text_table_eng_address, simple_hex
+from . import char_table, kanji_table, text_offset_split_index, text_offset_1_table_address, text_offset_2_table_address, text_table_eng_address, simple_hex, \
+    text_addresses_limit
 from ..RomData import RomData
 from ..z80asm.Assembler import GameboyAddress
 
@@ -69,7 +71,7 @@ def build_encoding_dict() -> dict[str, list[int]]:
 # --- Trie Data Structure ---
 class TrieNode:
     def __init__(self):
-        self.children = {}
+        self.children = defaultdict(lambda: TrieNode())
         self.code = None
 
 
@@ -118,7 +120,7 @@ def build_trie(dictionary: dict[str, str]) -> TrieNode:
         i = 0
         while i < len(value):
             token, length = next_character(value, i)
-            node = node.children.setdefault(token, TrieNode())
+            node = node.children[token]
             i += length
         node.code = [2 + int(key[4]), int(key[6:8], 16)]
     return root
@@ -148,7 +150,7 @@ def recursive_encode(text: str, index: int) -> tuple[int]:
     i = index + length
     depth = 1
 
-    while i < len(text) and depth < 8:
+    while i < len(text):
         token2, tlen = next_character(text, i)
         if token2 not in node.children:
             break
@@ -263,12 +265,10 @@ def write_text_data(rom: RomData, dictionary: dict[str, str], texts: dict[str, s
         text_table_current_address += 2
 
     text_offset_2_offset = max(0, text_offset_1_address + text_offset_1_offset + len(compact_table1) - text_offset_2_address)
-    bank_ends2 = [0x4000 - text_offset_2.offset - text_offset_2_offset]
-    for bank in range(text_offset_2.bank + 1, 0x21):
-        bank_ends2.append(bank_ends2[-1] + 0x4000)
-    bank_ends2.append(bank_ends2[-1] + 0x0e04)
-
     compact_table2, compact_offsets2 = build_compact_table(encoded_dict2)
+    assert text_offset_2_address + text_offset_2_offset + len(compact_table2) < text_addresses_limit, \
+        f"Text is too long ({text_offset_2_address + text_offset_2_offset + len(compact_table2) - text_addresses_limit} too many bytes)"
+    print(f"Free text bytes: {text_addresses_limit - text_offset_2_address - text_offset_2_offset - len(compact_table2)}")
     rom.write_bytes(text_offset_2_address + text_offset_2_offset, compact_table2)
 
     for i in range(text_offset_split_index - 4, 0x60):

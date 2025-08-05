@@ -35,6 +35,8 @@ text_offset_2_table_address = text_offset_2_table.address_in_rom()
 
 text_offset_split_index = 0x2c
 
+text_addresses_limit = GameboyAddress(0x21, 0x4f71).address_in_rom()
+
 
 def simple_hex(num: int) -> str:
     return hex(num)[2:].rjust(2, "0")
