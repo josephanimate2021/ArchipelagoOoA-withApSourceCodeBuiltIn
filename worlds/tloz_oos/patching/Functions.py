@@ -722,7 +722,7 @@ def make_text_data(text: dict[str, str], patch_data):
         # Scrub string asking the player if they want to buy the item
         item_text = ("\\sfx(c6)Greetings!\n"
                      + process_item_name_for_shop_text(patch_data["locations"][location_name])
-                     + f"for 🟩{patch_data["shop_prices"][symbolic_name]} Rupees⬜\n"
+                     + f"""for 🟩{patch_data["shop_prices"][symbolic_name]} Rupees⬜\n"""
                        "  \\optOK \\optNo thanks")
         text[tx_indices[symbolic_name]] = item_text
 
@@ -832,7 +832,7 @@ def make_text_data(text: dict[str, str], patch_data):
     text["TX_3e1b"] = ("You've broken\n🟩\\num1 signs⬜!\n"
                        "You'd better not\n"
                        "break more than\n"
-                       f"🟩{patch_data["options"]["sign_guy_requirement"]}⬜"
+                       f"""🟩{patch_data["options"]["sign_guy_requirement"]}⬜"""
                        ", or else...")
 
     wife_text_index = text["TX_3101"].index("The place")
@@ -886,18 +886,18 @@ def make_text_data(text: dict[str, str], patch_data):
 
     # Maku tree sign
     essence_count = patch_data["options"]["required_essences"]
-    text["TX_2e00"] = (f"Find 🟥{essence_count} essence{"s" if essence_count != 0 else ""}⬜\n"
+    text["TX_2e00"] = (f"""Find 🟥{essence_count} essence{"s" if essence_count != 0 else ""}⬜\n"""
                        "to get the seed!")
 
     # Tarm ruins sign
     jewel_count = patch_data["options"]["tarm_gate_required_jewels"]
-    text["TX_2e12"] = (f"Bring 🟩{jewel_count}⬜ jewel{"s" if jewel_count != 0 else ""}\n"
+    text["TX_2e12"] = (f"""Bring 🟩{jewel_count}⬜ jewel{"s" if jewel_count != 0 else ""}\n"""
                        "for the door"
                        "to open.")
 
     # Tree house old man
     essence_count = patch_data["options"]["required_essences"]
-    text["TX_3601"] = text["TX_3601"].replace("knows many\n🟥essences⬜...", f"has 🟥{essence_count} essence{"s" if essence_count != 0 else ""}⬜!")
+    text["TX_3601"] = text["TX_3601"].replace("knows many\n🟥essences⬜...", f"""has 🟥{essence_count} essence{"s" if essence_count != 0 else ""}⬜!""")
 
     # Change D8 introduction text to “Sword & Shield Dungeon” from “Sword & Shield Maze”,
     # since every other mention of it was using “Dungeon” naming

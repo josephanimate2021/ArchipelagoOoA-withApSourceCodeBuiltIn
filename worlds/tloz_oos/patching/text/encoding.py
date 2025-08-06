@@ -1,8 +1,7 @@
 import re
 from collections import defaultdict
-from typing import Union, Optional
 from functools import lru_cache
-from typing import List
+from typing import List, Union, Optional
 from . import char_table, kanji_table, text_offset_split_index, text_offset_1_table_address, text_offset_2_table_address, text_table_eng_address, simple_hex, \
     text_addresses_limit
 from ..RomData import RomData
@@ -138,6 +137,9 @@ def recursive_encode(text: str, index: int) -> tuple[int]:
         if token[0] == "jump":
             return tuple(encoded)
     else:
+        if token not in encode_current_encoding:
+            token = "口"  # Use a white square to denote unknown characters
+            pass
         encoded = encode_current_encoding[token]
 
     best = list(encoded) + list(recursive_encode(text, index + length))
