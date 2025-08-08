@@ -139,7 +139,6 @@ def recursive_encode(text: str, index: int) -> tuple[int]:
     else:
         if token not in encode_current_encoding:
             token = "口"  # Use a white square to denote unknown characters
-            pass
         encoded = encode_current_encoding[token]
 
     best = list(encoded) + list(recursive_encode(text, index + length))
