@@ -783,13 +783,12 @@ class OracleOfSeasonsWorld(World):
                 items.append(self.create_item(item_name))
         self.filter_confined_dungeon_items_from_pool(items)
         self.multiworld.itempool.extend(items)
-        self.pre_fill_items.extend([Item(seed_name, ItemClassification.progression, None, self.player) for seed_name in SEED_ITEMS])
+        self.pre_fill_seeds()
 
     def get_pre_fill_items(self):
         return self.pre_fill_items
 
     def pre_fill(self) -> None:
-        self.pre_fill_seeds()
         self.pre_fill_dungeon_items()
 
     def filter_confined_dungeon_items_from_pool(self, items: List[Item]):
