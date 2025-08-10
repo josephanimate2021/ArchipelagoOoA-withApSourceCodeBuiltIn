@@ -411,6 +411,11 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
                     oos_option_medium_logic(state, player),
                     oos_can_summon_dimitri(state, player),
                     oos_has_bracelet(state, player)
+                ]),
+                all([
+                    # Alternatively, we can use winter to summon Dimitri then reset the season with the portal
+                    oos_can_summon_dimitri(state, player),
+                    oos_has_winter(state, player)
                 ])
             ]),
         ])],
