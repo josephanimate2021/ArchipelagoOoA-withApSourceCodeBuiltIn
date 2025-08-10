@@ -33,7 +33,9 @@ def oos_create_ap_procedure_patch(world: "OracleOfSeasonsWorld") -> OoSProcedure
         "locations": {},
         "subrosia_portals": world.portal_connections,
         "shop_prices": world.shop_prices,
-        "subrosia_seaside_location": world.random.randint(0, 3)
+        "subrosia_seaside_location": world.random.randint(0, 3),
+        "region_hints": world.region_hints,
+        "item_hints": world.item_hints,
     }
 
     for loc in world.multiworld.get_locations(world.player):

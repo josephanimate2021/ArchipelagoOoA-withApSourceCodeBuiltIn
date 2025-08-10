@@ -7,6 +7,7 @@ from Fill import fill_restrictive
 from Options import Accessibility, OptionError, Option
 from worlds.AutoWorld import WebWorld, World
 from .Client import OracleOfSeasonsClient  # Unused, but required to register with BizHawkClient
+from .Hints import create_region_hints, create_item_hints
 from .Logic import create_connections, apply_self_locking_rules
 from .Options import *
 from .PatchWriter import oos_create_ap_procedure_patch
@@ -127,6 +128,9 @@ class OracleOfSeasonsWorld(World):
         self.essences_in_game: List[str] = ITEM_GROUPS["Essences"].copy()
         self.random_rings_pool: List[str] = []
         self.remaining_progressive_gasha_seeds = 0
+
+        self.region_hints = []
+        self.item_hints = []
 
     def generate_early(self):
         if self.interpret_slot_data(None):
@@ -999,6 +1003,10 @@ class OracleOfSeasonsWorld(World):
                     break
             else:
                 break
+
+    def post_fill(self) -> None:
+        self.region_hints = create_region_hints(self)
+        self.item_hints = create_item_hints(self)
 
     def generate_output(self, output_directory: str):
         patch = oos_create_ap_procedure_patch(self)

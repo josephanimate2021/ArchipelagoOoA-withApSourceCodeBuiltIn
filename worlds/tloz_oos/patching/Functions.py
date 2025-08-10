@@ -8,9 +8,10 @@ from settings import get_settings
 from . import RomData
 from .Util import *
 from .asm import asm_files
-from .text import simple_hex
+from .text import simple_hex, normalize_text
 from .z80asm.Assembler import Z80Assembler
 from .z80asm.Util import parse_hex_string_to_value
+from ..Hints import make_hint_texts
 from ..Options import OracleOfSeasonsOldMenShuffle, OracleOfSeasonsGoal, OracleOfSeasonsAnimalCompanion, \
     OracleOfSeasonsMasterKeys, OracleOfSeasonsFoolsOre, OracleOfSeasonsShowDungeonsWithEssence
 from ..data.Locations import LOCATIONS_DATA
@@ -627,25 +628,12 @@ def process_item_name_for_shop_text(item: Dict) -> str:
     if "player" in item:
         player_name = item["player"]
         if len(player_name) > 14:
-            player_name = player_name[0:13] + "."
-        current_line = len(player_name) + 2
-        item_name = f"🟦{player_name}⬜'s🟥"
+            player_name = player_name[:13] + "."
+        item_name = f"🟦{player_name}⬜'s 🟥"
     else:
-        current_line = 0
         item_name = "🟥"
-
-    words = item["item"].split(" ")
-    for word in words:
-        if len(word) > 16:
-            word = word[:15] + "."
-        if current_line != 0 and current_line + len(word) < 16:
-            item_name += " "
-            current_line += 1
-        elif current_line != 0 or current_line + len(word) > 16:
-            item_name += "\n"
-            current_line = 0
-        item_name += word
-        current_line += len(word)
+    item_name += item["item"]
+    item_name = normalize_text(item_name)
     item_name += "⬜\\stop\n"
     return item_name
 
@@ -907,6 +895,8 @@ def make_text_data(text: dict[str, str], patch_data):
     text["TX_1700"] = text["TX_1701"] = ""
 
     text["TX_0602"] = "Unknown Dungeon"
+
+    make_hint_texts(text, patch_data)
 
 
 def set_heart_beep_interval_from_settings(rom: RomData):
