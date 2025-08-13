@@ -813,6 +813,12 @@ def make_text_data(text: dict[str, str], patch_data):
                            "all the doors\n"
                            "here for you.")
 
+    # Reword the natzu deku to omit the secret and the full satchel
+    text["TX_4c43"] = ("\\sfx(c6)Come back\n"
+                       "with all five\n"
+                       "kinds of 🟥seeds⬜!")
+
+    # Remove the mention of 777 ore chunks
     unlucky_text: str = text["TX_3a2f"]
     index_777 = unlucky_text.index(" Get")
     text["TX_3a2f"] = unlucky_text[:index_777]
@@ -823,6 +829,7 @@ def make_text_data(text: dict[str, str], patch_data):
                        f"🟩{patch_data['options']['sign_guy_requirement']}⬜"
                        ", or else...")
 
+    # Inform the player of how many gashas are good
     wife_text_index = text["TX_3101"].index("The place")
     num_seeds = patch_data["options"]["deterministic_gasha_locations"]
     if num_seeds == 0:
@@ -838,16 +845,16 @@ def make_text_data(text: dict[str, str], patch_data):
                      f"🟩{num_seeds}⬜ nuts can\n"
                      "contain anything\n"
                      "useful.")
-
     text["TX_3101"] = (text["TX_3101"][:wife_text_index]
                        + "\\stop\n"
                          "You should know\n"
                        + seed_text)
+
     # Replace the shield selling part of dekus which will never be used
     text["TX_450a"] = ("\\sfx(c6)Greetings!\n"
                        "I can refill\n"
                        "your bag for\n"
-                       "🟩\\num1 Rupees⬜ only.\n"
+                       "🟩30 Rupees⬜ only.\n"
                        "  \\optOK \\optNo thanks")
 
     # Golden beasts

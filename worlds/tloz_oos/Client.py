@@ -193,10 +193,7 @@ class OracleOfSeasonsClient(BizHawkClient):
         # Send locations
         if self.local_checked_locations != local_checked_locations:
             self.local_checked_locations = local_checked_locations
-            await ctx.send_msgs([{
-                "cmd": "LocationChecks",
-                "locations": list(self.local_checked_locations)
-            }])
+            await ctx.check_locations(self.local_checked_locations)
 
     async def process_scouted_locations(self, ctx: "BizHawkClientContext", flag_bytes):
         local_scouted_locations = set(ctx.locations_scouted)
