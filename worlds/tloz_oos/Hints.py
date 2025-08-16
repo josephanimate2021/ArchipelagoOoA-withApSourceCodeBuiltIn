@@ -255,7 +255,7 @@ def create_region_hints(world: "OracleOfSeasonsWorld"):
                 num_locations += 1
                 if location.advancement:
                     num_progression += 1
-            finally:
+            except KeyError:
                 pass
         ratio = num_progression / num_locations
         if ratio == 0:
