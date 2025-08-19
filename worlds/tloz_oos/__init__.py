@@ -87,6 +87,7 @@ class OracleOfSeasonsWeb(WebWorld):
         ["Deoxis"]
     )
     tutorials = [setup_en, setup_fr]
+    option_groups = option_groups
 
 
 class OracleOfSeasonsWorld(World):
@@ -96,9 +97,10 @@ class OracleOfSeasonsWorld(World):
     Gather the Essences of Nature, confront Onox and rescue Din to give nature some rest in Holodrum.
     """
     game = "The Legend of Zelda - Oracle of Seasons"
+    author = ["Dinopony", "Ishigh"]  # Not used by AP but a good way to keep who made that apworld when redistributed
     options_dataclass = OracleOfSeasonsOptions
     options: OracleOfSeasonsOptions
-    required_client_version = (0, 5, 1)
+    # required_client_version = (0, 5, 1)
     web = OracleOfSeasonsWeb()
     topology_present = True
 
@@ -129,8 +131,8 @@ class OracleOfSeasonsWorld(World):
         self.random_rings_pool: List[str] = []
         self.remaining_progressive_gasha_seeds = 0
 
-        self.region_hints = []
-        self.item_hints = []
+        self.region_hints: list[tuple[str, str | int]] = []
+        self.item_hints: list[tuple[str, str, int | None]] = []
 
     def generate_early(self):
         if self.interpret_slot_data(None):
@@ -417,8 +419,6 @@ class OracleOfSeasonsWorld(World):
             return not self.options.enforce_potion_in_shop
         if location_name.startswith("Gasha Nut #"):
             return int(location_name[11:]) <= self.options.deterministic_gasha_locations
-        if location_name in SECRETS:
-            return self.options.secret_locations
         if location_name == "Horon Village: Item Inside Maku Tree (3+ Essences)":
             return len(self.essences_in_game) >= 3
         if location_name == "Horon Village: Item Inside Maku Tree (5+ Essences)":
@@ -747,7 +747,7 @@ class OracleOfSeasonsWorld(World):
             old_man_rupee += self.old_man_rupee_values[name]
 
         target = total_cost / 2 - old_man_rupee
-        total_cost = max(total_cost - old_man_rupee, sorted_shop_values[-3]) # Ensure it doesn't drop too low due to the old men
+        total_cost = max(total_cost - old_man_rupee, sorted_shop_values[-3])  # Ensure it doesn't drop too low due to the old men
         return self.build_currency_item_dict(rupee_item_count, filler_item_count, target, total_cost, "Rupees", VALID_RUPEE_ITEM_VALUES)
 
     def build_ore_item_dict(self, ore_item_count: int, filler_item_count: int) -> Tuple[int, int]:
@@ -1005,8 +1005,11 @@ class OracleOfSeasonsWorld(World):
                 break
 
     def post_fill(self) -> None:
-        self.region_hints = create_region_hints(self)
-        self.item_hints = create_item_hints(self)
+        if self.options.brid_hint.know_it_all():
+            self.region_hints = create_region_hints(self)
+
+        if self.options.brid_hint.owl():
+            self.item_hints = create_item_hints(self)
 
     def generate_output(self, output_directory: str):
         patch = oos_create_ap_procedure_patch(self)
@@ -1029,8 +1032,17 @@ class OracleOfSeasonsWorld(World):
                                   for a, b in self.dungeon_entrances.items()},
             "subrosia_portals": self.portal_connections,
             "shop_rupee_requirements": self.shop_rupee_requirements,
-            "shop_costs": self.shop_prices
+            "shop_costs": self.shop_prices,
         }
+
+        # The structure is made to make it easy to call CreateHints
+        slot_data_item_hints = []
+        for item_hint in self.item_hints:
+            player = item_hint[2]
+            if player is None:
+                player = self.player
+            slot_data_item_hints.append((self.multiworld.get_location(item_hint[1], player).address, player))
+        slot_data["item_hints"] = slot_data_item_hints
 
         return slot_data
 

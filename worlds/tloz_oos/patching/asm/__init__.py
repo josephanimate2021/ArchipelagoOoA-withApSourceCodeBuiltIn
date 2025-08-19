@@ -22,6 +22,7 @@ asm_files = {
         "asm/multi.yaml",
         "asm/new_game.yaml",
         "asm/new_treasures.yaml",
+        "asm/owl.yaml",
         "asm/progressives.yaml",
         "asm/quick_switch.yaml",
         "asm/remove_items_on_use.yaml",

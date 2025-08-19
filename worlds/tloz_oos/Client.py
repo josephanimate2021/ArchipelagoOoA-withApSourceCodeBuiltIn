@@ -1,4 +1,5 @@
 import time
+from collections import defaultdict
 from typing import TYPE_CHECKING, Set, Dict, Any
 
 from NetUtils import ClientStatus
@@ -57,7 +58,7 @@ class OracleOfSeasonsClient(BizHawkClient):
     system = "GBC"
     patch_suffix = ".apoos"
     local_checked_locations: Set[int]
-    local_scouted_locations: Set[int]
+    local_scouted_locations: Dict[int, set[int]]
     local_tracker: Dict[str, Any]
     item_id_to_name: Dict[int, str]
     location_name_to_id: Dict[str, int]
@@ -67,7 +68,7 @@ class OracleOfSeasonsClient(BizHawkClient):
         self.item_id_to_name = build_item_id_to_name_dict()
         self.location_name_to_id = build_location_name_to_id_dict()
         self.local_checked_locations = set()
-        self.local_scouted_locations = set()
+        self.local_scouted_locations = defaultdict(lambda: set())
         self.local_tracker = {}
 
         self.set_deathlink = False
@@ -196,7 +197,8 @@ class OracleOfSeasonsClient(BizHawkClient):
             await ctx.check_locations(self.local_checked_locations)
 
     async def process_scouted_locations(self, ctx: "BizHawkClientContext", flag_bytes):
-        local_scouted_locations = set(ctx.locations_scouted)
+        self.local_scouted_locations[ctx.slot].update(ctx.locations_info)
+        new_scouted_locations = defaultdict(lambda: [])
         for name, location in LOCATIONS_DATA.items():
             if "scouting_byte" not in location:
                 continue
@@ -215,17 +217,23 @@ class OracleOfSeasonsClient(BizHawkClient):
             byte_offset = byte_to_test - RAM_ADDRS["location_flags"][0]
             bit_mask = location["scouting_mask"] if "scouting_mask" in location else 0x10
             if flag_bytes[byte_offset] & bit_mask == bit_mask:
-                # Map has been visited, scout the location if it hasn't been already
-                location_id = self.location_name_to_id[name]
-                local_scouted_locations.add(location_id)
+                if "owl_id" in location:
+                    location_id, player = ctx.slot_data["item_hints"][location["owl_id"]]
+                else:
+                    # Map has been visited, scout the location if it hasn't been already
+                    player = ctx.slot
+                    location_id = self.location_name_to_id[name]
+                if location_id not in self.local_scouted_locations[player]:
+                    new_scouted_locations[player].append(location_id)
+                    self.local_scouted_locations[player].add(location_id)
 
-        if self.local_scouted_locations != local_scouted_locations:
-            self.local_scouted_locations = local_scouted_locations
+        for player in new_scouted_locations:
             await ctx.send_msgs([{
-                "cmd": "LocationScouts",
-                "locations": list(self.local_scouted_locations),
-                "create_as_hint": int(2)
+                "cmd": "CreateHints",
+                "locations": new_scouted_locations[player],
+                "player": player
             }])
+            # We could use _read_hints_{self.ctx.team}_{player} to check if the hint was created
 
     async def process_received_items(self, ctx: "BizHawkClientContext", num_received_items: int):
         # If the game hasn't received all items yet and the received item struct doesn't contain an item, then

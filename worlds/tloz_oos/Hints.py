@@ -219,33 +219,35 @@ def get_region_hint_text(region_name: str, region_category: str) -> str:
 
 def make_hint_texts(texts: dict[str, str], patch_data) -> None:
     region_hints = patch_data["region_hints"]
-    i = 0
-    for region, category in region_hints:
-        texts[know_it_all_birds[i]] = get_region_hint_text(region, category)
-        i += 1
+    if len(region_hints):
+        i = 0
+        for region, category in region_hints:
+            texts[know_it_all_birds[i]] = get_region_hint_text(region, category)
+            i += 1
 
-    # Remove the extra bird text
-    for i in range(0x0a, 0x14):
-        del texts[f"TX_32{simple_hex(i)}"]
+        # Remove the extra bird text
+        for i in range(0x0a, 0x14):
+            del texts[f"TX_32{simple_hex(i)}"]
 
-    for i in range(0x00, 0x1c):
-        texts[f"TX_39{simple_hex(i)}"] = ""
+    item_hints = patch_data["item_hints"]
+    if len(item_hints):
+        for i in range(0x00, 0x1c):
+            texts[f"TX_39{simple_hex(i)}"] = ""
 
-    region_hints = patch_data["item_hints"]
-    i = 0
-    for item, location, player in region_hints:
-        text = f"They say that 🟥{item}⬜ can be found in 🟦"
-        if player:
-            text += f"{player}'s "
-        text += location
+        i = 0
+        for item, location, player in item_hints:
+            text = f"They say that 🟥{item}⬜ can be found in 🟦"
+            if player:
+                text += f"{player}'s "
+            text += location
 
-        texts[owl_statues[i]] = normalize_text(text)
-        i += 1
+            texts[owl_statues[i]] = normalize_text(text)
+            i += 1
 
 
-def create_region_hints(world: "OracleOfSeasonsWorld"):
-    hinted_regions = world.random.sample([*location_by_region], k=len(know_it_all_birds))
-    hint_data = []
+def create_region_hints(world: "OracleOfSeasonsWorld") -> list[tuple[str, str | int]]:
+    hinted_regions: list[str] = world.random.sample([*location_by_region], k=len(know_it_all_birds))
+    hint_data: list[tuple[str, str | int]] = []
     for region in hinted_regions:
         num_locations = 0
         num_progression = 0
@@ -268,11 +270,11 @@ def create_region_hints(world: "OracleOfSeasonsWorld"):
     return hint_data
 
 
-def create_item_hints(world: "OracleOfSeasonsWorld"):
-    hint_data = []
+def create_item_hints(world: "OracleOfSeasonsWorld") -> list[tuple[str, str, int | None]]:
+    hint_data: list[tuple[str, str, int | None]] = []
     hinted_items: list[Item] = world.random.choices([item for item in world.multiworld.get_items()
                                                      if item.player == world.player
-                                                     and item.classification & ItemClassification.deprioritized],
+                                                     and not item.classification & ItemClassification.deprioritized],
                                                     k=len(owl_statues))
     for hinted_item in hinted_items:
         player = hinted_item.location.player

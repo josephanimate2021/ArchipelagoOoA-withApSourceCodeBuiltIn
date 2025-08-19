@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 
 from Options import Choice, DeathLink, DefaultOnToggle, PerGameCommonOptions, Range, Toggle, StartInventoryPool, \
-    ItemDict, ItemsAccessibility, ItemSet, Visibility
+    ItemDict, ItemsAccessibility, ItemSet, Visibility, OptionGroup
 from worlds.tloz_oos.data.Items import ITEMS_DATA
 
 
@@ -663,17 +663,47 @@ class OracleOfSeasonsMoveLink(Toggle):
     include_in_slot_data = True  # This is for the bizhawk client
 
 
+class OracleOfSeasonsBirdHint(Choice):
+    """
+    Disabled: The Owls and Know-it-all brids say their vanilla text when talked to
+    Know-it-all: Enable region hints from the birds in the house next to the advance shop
+    Owl: Enable owls to give hints about items from your world
+    """
+    display_name = "Bird Hint"
+
+    option_disabled = 0b00
+    option_know_it_all = 0b01
+    option_owl = 0b10
+    option_both = 0b11
+
+    default = option_both
+
+    def know_it_all(self) -> bool:
+        return bool(self.value & OracleOfSeasonsBirdHint.option_know_it_all)
+
+    def owl(self) -> bool:
+        return bool(self.value & OracleOfSeasonsBirdHint.option_owl)
+
+
 @dataclass
 class OracleOfSeasonsOptions(PerGameCommonOptions):
     accessibility: ItemsAccessibility
-    start_inventory_from_pool: StartInventoryPool
     goal: OracleOfSeasonsGoal
     logic_difficulty: OracleOfSeasonsLogicDifficulty
+    death_link: OracleOfSeasonsDeathLink
+
+    # Optional locations
+    advance_shop: OracleOfSeasonsAdvanceShop
+    shuffle_old_men: OracleOfSeasonsOldMenShuffle
+    shuffle_business_scrubs: OracleOfSeasonsBusinessScrubsShuffle
+    shuffle_golden_ore_spots: OracleOfSeasonsGoldenOreSpotsShuffle
+    deterministic_gasha_locations: OracleOfSeasonsGashaLocations
+    secret_locations: OracleOfSeasonsIncludeSecretLocations
 
     # Essences
     required_essences: OracleOfSeasonsRequiredEssences
-    placed_essences: OracleOfSeasonsPlacedEssences
     shuffle_essences: OracleOfSeasonsEssenceSanity
+    placed_essences: OracleOfSeasonsPlacedEssences
     exclude_dungeons_without_essence: OracleOfSeasonsExcludeDungeonsWithoutEssence
     show_dungeons_with_essence: OracleOfSeasonsShowDungeonsWithEssence
 
@@ -690,19 +720,12 @@ class OracleOfSeasonsOptions(PerGameCommonOptions):
     default_seed: OracleOfSeasonsDefaultSeedType
     duplicate_seed_tree: OracleOfSeasonsDuplicateSeedTree
 
-    # Optional locations
-    shuffle_old_men: OracleOfSeasonsOldMenShuffle
-    shuffle_business_scrubs: OracleOfSeasonsBusinessScrubsShuffle
-    shuffle_golden_ore_spots: OracleOfSeasonsGoldenOreSpotsShuffle
-    deterministic_gasha_locations: OracleOfSeasonsGashaLocations
-    advance_shop: OracleOfSeasonsAdvanceShop
-    secret_locations: OracleOfSeasonsIncludeSecretLocations
-
     # Dungeon items
     master_keys: OracleOfSeasonsMasterKeys
     keysanity_small_keys: OracleOfSeasonsSmallKeyShuffle
     keysanity_boss_keys: OracleOfSeasonsBossKeyShuffle
     keysanity_maps_compasses: OracleOfSeasonsMapCompassShuffle
+    starting_maps_compasses: OracleOfSeasonsStartingMapsCompasses
 
     # Numeric requirements for some checks / access to regions
     treehouse_old_man_requirement: OraclesOfSeasonsTreehouseOldManRequirement
@@ -716,6 +739,10 @@ class OracleOfSeasonsOptions(PerGameCommonOptions):
     randomize_samasa_gate_code: OracleOfSeasonsSamasaGateCode
     samasa_gate_code_length: OracleOfSeasonsSamasaGateCodeLength
 
+    # QOL
+    quick_flute: OracleOfSeasonsQuickFlute
+    rosa_quick_unlock: OracleOfSeasonsRosaQuickUnlock
+
     # Miscellaneous options
     shop_prices: OracleOfSeasonsShopPrices
     enforce_potion_in_shop: OracleOfSeasonsEnforcePotionInShop
@@ -723,11 +750,82 @@ class OracleOfSeasonsOptions(PerGameCommonOptions):
     excluded_rings: OracleOfSeasonsExcludedRings
     fools_ore: OracleOfSeasonsFoolsOre
     combat_difficulty: OracleOfSeasonsCombatDifficulty
-    quick_flute: OracleOfSeasonsQuickFlute
-    rosa_quick_unlock: OracleOfSeasonsRosaQuickUnlock
-    starting_maps_compasses: OracleOfSeasonsStartingMapsCompasses
+    brid_hint: OracleOfSeasonsBirdHint
     randomize_ai: OracleOfSeasonsRandomizeAi
-
-    remove_items_from_pool: OracleOfSeasonsRemoveItemsFromPool
-    death_link: OracleOfSeasonsDeathLink
     move_link: OracleOfSeasonsMoveLink
+
+    start_inventory_from_pool: StartInventoryPool
+    remove_items_from_pool: OracleOfSeasonsRemoveItemsFromPool
+
+
+option_groups = [
+    OptionGroup("General", [
+        ItemsAccessibility,
+        OracleOfSeasonsGoal,
+        OracleOfSeasonsLogicDifficulty,
+        DeathLink,
+    ]),
+    OptionGroup("Optional Locations", [
+        OracleOfSeasonsAdvanceShop,
+        OracleOfSeasonsOldMenShuffle,
+        OracleOfSeasonsBusinessScrubsShuffle,
+        OracleOfSeasonsGoldenOreSpotsShuffle,
+        OracleOfSeasonsGashaLocations,
+        OracleOfSeasonsIncludeSecretLocations
+    ]),
+    OptionGroup("Essences", [
+        OracleOfSeasonsRequiredEssences,
+        OracleOfSeasonsEssenceSanity,
+        OracleOfSeasonsPlacedEssences,
+        OracleOfSeasonsExcludeDungeonsWithoutEssence,
+        OracleOfSeasonsShowDungeonsWithEssence,
+    ]),
+    OptionGroup("Seasons", [
+        OracleOfSeasonsDefaultSeasons,
+        OracleOfSeasonsHoronSeason,
+    ]),
+    OptionGroup("Overworld Layout Options", [
+        OracleOfSeasonsAnimalCompanion,
+        OracleOfSeasonsPortalShuffle,
+        OracleOfSeasonsDungeonShuffle,
+        OracleOfSeasonsD0AltEntrance,
+        OracleOfSeasonsD2AltEntrance,
+        OracleOfSeasonsDefaultSeedType,
+        OracleOfSeasonsDuplicateSeedTree,
+    ]),
+    OptionGroup("Dungeon Items", [
+        OracleOfSeasonsMasterKeys,
+        OracleOfSeasonsSmallKeyShuffle,
+        OracleOfSeasonsBossKeyShuffle,
+        OracleOfSeasonsMapCompassShuffle,
+        OracleOfSeasonsStartingMapsCompasses
+    ]),
+    OptionGroup("Numeric Requirements", [
+        OraclesOfSeasonsTreehouseOldManRequirement,
+        OraclesOfSeasonsTarmGateRequirement,
+        OraclesOfSeasonsGoldenBeastsRequirement,
+        OracleOfSeasonsSignGuyRequirement,
+    ]),
+    OptionGroup("Randomizable Sequences", [
+        OracleOfSeasonsLostWoodsItemSequence,
+        OracleOfSeasonsLostWoodsMainSequence,
+        OracleOfSeasonsSamasaGateCode,
+        OracleOfSeasonsSamasaGateCodeLength,
+    ]),
+    OptionGroup("QOL", [
+        OracleOfSeasonsQuickFlute,
+        OracleOfSeasonsRosaQuickUnlock,
+    ]),
+    OptionGroup("Others", [
+        OracleOfSeasonsShopPrices,
+        OracleOfSeasonsEnforcePotionInShop,
+        OracleOfSeasonsRequiredRings,
+        OracleOfSeasonsExcludedRings,
+        OracleOfSeasonsFoolsOre,
+        OracleOfSeasonsCombatDifficulty,
+        OracleOfSeasonsBirdHint,
+        OracleOfSeasonsRandomizeAi,
+        OracleOfSeasonsMoveLink,
+        OracleOfSeasonsRemoveItemsFromPool
+    ]),
+]
