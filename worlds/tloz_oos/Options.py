@@ -414,6 +414,20 @@ class OracleOfSeasonsSignGuyRequirement(Range):
     include_in_patch = True
 
 
+class OracleOfSeasonsGashaNutKillRequirement(Range):
+    """
+    This option lets you configure how many kills are required to make a gasha tree grow.
+    Using a gasha ring halves this number.
+    """
+    display_name = "Gasha Nut Requirement"
+
+    range_start = 0
+    range_end = 250
+
+    default = 40
+    include_in_patch = True
+
+
 class OracleOfSeasonsLostWoodsItemSequence(DefaultOnToggle):
     """
     If enabled, the secret sequence leading to the Noble Sword pedestal will be randomized (both directions to
@@ -732,6 +746,7 @@ class OracleOfSeasonsOptions(PerGameCommonOptions):
     tarm_gate_required_jewels: OraclesOfSeasonsTarmGateRequirement
     golden_beasts_requirement: OraclesOfSeasonsGoldenBeastsRequirement
     sign_guy_requirement: OracleOfSeasonsSignGuyRequirement
+    gasha_nut_kill_requirement: OracleOfSeasonsGashaNutKillRequirement
 
     # Other randomizable stuff
     randomize_lost_woods_item_sequence: OracleOfSeasonsLostWoodsItemSequence
@@ -805,6 +820,7 @@ option_groups = [
         OraclesOfSeasonsTarmGateRequirement,
         OraclesOfSeasonsGoldenBeastsRequirement,
         OracleOfSeasonsSignGuyRequirement,
+        OracleOfSeasonsGashaNutKillRequirement,
     ]),
     OptionGroup("Randomizable Sequences", [
         OracleOfSeasonsLostWoodsItemSequence,

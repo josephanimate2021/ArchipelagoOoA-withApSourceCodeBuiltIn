@@ -9,7 +9,7 @@ from . import RomData
 from .Util import *
 from .asm import asm_files
 from .text import simple_hex, normalize_text
-from .z80asm.Assembler import Z80Assembler
+from .z80asm.Assembler import Z80Assembler, GameboyAddress
 from .z80asm.Util import parse_hex_string_to_value
 from ..Hints import make_hint_texts
 from ..Options import OracleOfSeasonsOldMenShuffle, OracleOfSeasonsGoal, OracleOfSeasonsAnimalCompanion, \
@@ -577,6 +577,10 @@ def apply_miscellaneous_options(rom: RomData, patch_data):
     if patch_data["options"]["master_keys"] == OracleOfSeasonsMasterKeys.option_all_dungeon_keys:
         # Remove boss key consumption on boss keydoor opened
         rom.write_word(0x1834f, 0x0000)
+    rom.write_byte(GameboyAddress(0x0a, 0x46ed).address_in_rom(),
+                   patch_data["options"]["gasha_nut_kill_requirement"])
+    rom.write_byte(GameboyAddress(0x04, 0x6a31).address_in_rom(),
+                   patch_data["options"]["gasha_nut_kill_requirement"] // 2)
 
 
 def set_fixed_subrosia_seaside_location(rom: RomData, patch_data):

@@ -198,6 +198,7 @@ DEFINES = {
     "getRoomFlags": "$1963",
     "openMenu": "$1a76",
     "linkInteractWithAButtonSensitiveObjects": "$1b23",
+    "checkLinkCollisionsEnabled": "$1cf0",
     "lookupKey": "$1dc4",
     "lookupCollisionTable": "$1ddd",
     "objectSetVisiblec2": "$1e03",
