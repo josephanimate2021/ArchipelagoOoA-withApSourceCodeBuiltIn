@@ -274,7 +274,9 @@ def create_item_hints(world: "OracleOfSeasonsWorld") -> list[tuple[str, str, int
     hint_data: list[tuple[str, str, int | None]] = []
     hinted_items: list[Item] = world.random.choices([item for item in world.multiworld.get_items()
                                                      if item.player == world.player
-                                                     and not item.classification & ItemClassification.deprioritized],
+                                                     and item.advancement
+                                                     and not item.classification & ItemClassification.deprioritized
+                                                     and not item.is_event],
                                                     k=len(owl_statues))
     for hinted_item in hinted_items:
         player = hinted_item.location.player

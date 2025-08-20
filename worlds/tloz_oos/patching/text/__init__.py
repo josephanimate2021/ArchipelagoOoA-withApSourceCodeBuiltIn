@@ -51,7 +51,8 @@ def normalize_text(text: str) -> str:
     for word in words:
         word_length = sum(1 for c in word if c not in text_colors)
         if word_length > 16:
-            word = word[:15] + "." + [c for c in word[15:] if c in text_colors]
+            word = f"{word[:15]}.{''.join([c for c in word[15:] if c in text_colors])}"
+            pass
         if current_line != 0 and current_line + word_length < 16:
             normalized_text += " "
             current_line += 1
