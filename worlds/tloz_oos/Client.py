@@ -67,7 +67,6 @@ class OracleOfSeasonsClient(BizHawkClient):
         super().__init__()
         self.item_id_to_name = build_item_id_to_name_dict()
         self.location_name_to_id = build_location_name_to_id_dict()
-        self.local_checked_locations = set()
         self.local_scouted_locations = defaultdict(lambda: set())
         self.local_tracker = {}
 
@@ -171,7 +170,7 @@ class OracleOfSeasonsClient(BizHawkClient):
             pass
 
     async def process_checked_locations(self, ctx: "BizHawkClientContext", flag_bytes):
-        local_checked_locations = set(ctx.locations_checked)
+        checked_locations = set()
         for name, location in LOCATIONS_DATA.items():
             if "flag_byte" not in location:
                 continue
@@ -181,7 +180,7 @@ class OracleOfSeasonsClient(BizHawkClient):
             bit_mask = location["bit_mask"] if "bit_mask" in location else 0x20
             if flag_bytes[byte_offset] & bit_mask == bit_mask:
                 location_id = self.location_name_to_id[name]
-                local_checked_locations.add(location_id)
+                checked_locations.add(location_id)
 
         # Check how many deterministic Gasha Nuts have been opened, and mark their matching locations as checked
         byte_offset = 0xC649 - RAM_ADDRS["location_flags"][0]
@@ -189,12 +188,10 @@ class OracleOfSeasonsClient(BizHawkClient):
         for i in range(gasha_counter):
             name = f"Gasha Nut #{i + 1}"
             location_id = self.location_name_to_id[name]
-            local_checked_locations.add(location_id)
+            checked_locations.add(location_id)
 
         # Send locations
-        if self.local_checked_locations != local_checked_locations:
-            self.local_checked_locations = local_checked_locations
-            await ctx.check_locations(self.local_checked_locations)
+        await ctx.check_locations(checked_locations)
 
     async def process_scouted_locations(self, ctx: "BizHawkClientContext", flag_bytes):
         self.local_scouted_locations[ctx.slot].update(ctx.locations_info)
