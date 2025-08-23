@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 
 from Options import Choice, DeathLink, DefaultOnToggle, PerGameCommonOptions, Range, Toggle, StartInventoryPool, \
-    ItemDict, ItemsAccessibility, ItemSet, Visibility, OptionGroup
+    ItemDict, ItemsAccessibility, ItemSet, Visibility, OptionGroup, NamedRange
 from worlds.tloz_oos.data.Items import ITEMS_DATA
 
 
@@ -399,7 +399,7 @@ class OraclesOfSeasonsGoldenBeastsRequirement(Range):
     include_in_slot_data = True
 
 
-class OracleOfSeasonsSignGuyRequirement(Range):
+class OracleOfSeasonsSignGuyRequirement(NamedRange):
     """
     In Subrosia, a NPC will "punish" you if you break more than 100 signs in the vanilla game by giving you an item.
     This option lets you configure how many signs are required to obtain that item, since breaking 100 signs is not
@@ -411,10 +411,13 @@ class OracleOfSeasonsSignGuyRequirement(Range):
     range_end = 250
 
     default = 10
+    special_range_names = {
+        "vanilla": 100
+    }
     include_in_patch = True
 
 
-class OracleOfSeasonsGashaNutKillRequirement(Range):
+class OracleOfSeasonsGashaNutKillRequirement(NamedRange):
     """
     This option lets you configure how many kills are required to make a gasha tree grow.
     Using a gasha ring halves this number.
@@ -424,7 +427,10 @@ class OracleOfSeasonsGashaNutKillRequirement(Range):
     range_start = 0
     range_end = 250
 
-    default = 40
+    default = 20
+    special_range_names = {
+        "vanilla": 40
+    }
     include_in_patch = True
 
 
