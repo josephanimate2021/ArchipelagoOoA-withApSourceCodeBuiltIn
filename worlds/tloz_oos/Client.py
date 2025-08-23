@@ -118,7 +118,7 @@ class OracleOfSeasonsClient(BizHawkClient):
         super().on_package(ctx, cmd, args)
 
     async def game_watcher(self, ctx: "BizHawkClientContext") -> None:
-        if not ctx.server or not ctx.server.socket.open or ctx.server.socket.closed:
+        if not ctx.server or not ctx.server.socket.open or ctx.server.socket.closed or ctx.slot_data is None:
             return
 
         # Enable "DeathLink" tag if option was enabled
@@ -201,12 +201,12 @@ class OracleOfSeasonsClient(BizHawkClient):
                 continue
             # Do not hint forced shop slot if it is enabled, since it would cause an error on MultiServer's side
             if name == "Horon Village: Shop #3":
-                if ctx.slot_data is None or ctx.slot_data["options"]["enforce_potion_in_shop"]:
+                if ctx.slot_data["options"]["enforce_potion_in_shop"]:
                     continue
 
             # Do not hint buisiness scrubs if disabled, since it would cause an error on MultiServer's side
             if name.endswith("Business Scrub"):
-                if ctx.slot_data is None or not ctx.slot_data["options"]["shuffle_business_scrubs"]:
+                if not ctx.slot_data["options"]["shuffle_business_scrubs"]:
                     continue
 
             # Check "scouting_byte" to see if map has been visited for scoutable locations
@@ -245,15 +245,14 @@ class OracleOfSeasonsClient(BizHawkClient):
 
     async def process_game_completion(self, ctx: "BizHawkClientContext", flag_bytes, current_room: int):
         game_clear = False
-        if ctx.slot_data is not None:
-            if ctx.slot_data["options"]["goal"] == OracleOfSeasonsGoal.option_beat_onox:
-                # Room with Din's descending crystal was reached, it's a win
-                game_clear = (current_room == ROOM_AFTER_DRAGONOX)
-            elif ctx.slot_data["options"]["goal"] == OracleOfSeasonsGoal.option_beat_ganon:
-                # Room with Zelda lying down was reached, and Ganon was beaten
-                ganon_flag_offset = 0xCA9A - RAM_ADDRS["location_flags"][0]
-                ganon_was_beaten = (flag_bytes[ganon_flag_offset] & 0x80 == 0x80)
-                game_clear = (current_room == ROOM_ZELDA_ENDING) and ganon_was_beaten
+        if ctx.slot_data["options"]["goal"] == OracleOfSeasonsGoal.option_beat_onox:
+            # Room with Din's descending crystal was reached, it's a win
+            game_clear = (current_room == ROOM_AFTER_DRAGONOX)
+        elif ctx.slot_data["options"]["goal"] == OracleOfSeasonsGoal.option_beat_ganon:
+            # Room with Zelda lying down was reached, and Ganon was beaten
+            ganon_flag_offset = 0xCA9A - RAM_ADDRS["location_flags"][0]
+            ganon_was_beaten = (flag_bytes[ganon_flag_offset] & 0x80 == 0x80)
+            game_clear = (current_room == ROOM_ZELDA_ENDING) and ganon_was_beaten
 
         if game_clear:
             await ctx.send_msgs([{
