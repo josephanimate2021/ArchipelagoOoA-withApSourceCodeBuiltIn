@@ -907,6 +907,10 @@ def make_text_data(text: dict[str, str], patch_data):
 
     text["TX_0602"] = "Unknown Dungeon"
 
+    # With quick rosa, the escort code is disabled
+    if patch_data["options"]["rosa_quick_unlock"]:
+        text["TX_2906"] = normalize_text("Not me. Maybe ask someone else?")
+
     make_hint_texts(text, patch_data)
 
 
