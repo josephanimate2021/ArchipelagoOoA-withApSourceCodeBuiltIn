@@ -771,7 +771,7 @@ class OracleOfSeasonsOptions(PerGameCommonOptions):
     excluded_rings: OracleOfSeasonsExcludedRings
     fools_ore: OracleOfSeasonsFoolsOre
     combat_difficulty: OracleOfSeasonsCombatDifficulty
-    brid_hint: OracleOfSeasonsBirdHint
+    bird_hint: OracleOfSeasonsBirdHint
     randomize_ai: OracleOfSeasonsRandomizeAi
     move_link: OracleOfSeasonsMoveLink
 

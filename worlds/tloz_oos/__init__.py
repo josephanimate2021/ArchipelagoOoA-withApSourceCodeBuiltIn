@@ -1005,10 +1005,10 @@ class OracleOfSeasonsWorld(World):
                 break
 
     def post_fill(self) -> None:
-        if self.options.brid_hint.know_it_all():
+        if self.options.bird_hint.know_it_all():
             self.region_hints = create_region_hints(self)
 
-        if self.options.brid_hint.owl():
+        if self.options.bird_hint.owl():
             self.item_hints = create_item_hints(self)
 
     def generate_output(self, output_directory: str):

@@ -282,7 +282,5 @@ def create_item_hints(world: "OracleOfSeasonsWorld") -> list[tuple[str, str, int
         player = hinted_item.location.player
         if player == world.player:
             player = None
-        else:
-            player = world.multiworld.get_player_name(player)
         hint_data.append([hinted_item.name, hinted_item.location.name, player])
     return hint_data
