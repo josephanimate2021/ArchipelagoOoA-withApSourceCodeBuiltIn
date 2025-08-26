@@ -685,7 +685,7 @@ class OracleOfSeasonsMoveLink(Toggle):
 
 class OracleOfSeasonsBirdHint(Choice):
     """
-    Disabled: The Owls and Know-it-all brids say their vanilla text when talked to
+    Disabled: The Owls and Know-it-all birds say their vanilla text when talked to
     Know-it-all: Enable region hints from the birds in the house next to the advance shop
     Owl: Enable owls to give hints about items from your world
     """
