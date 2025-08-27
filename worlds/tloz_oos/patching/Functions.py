@@ -375,6 +375,7 @@ def set_treasure_data(rom: RomData,
 
 
 def set_player_start_inventory(assembler: Z80Assembler, patch_data):
+    obtained_treasures_address = parse_hex_string_to_value(DEFINES["wObtainedTreasureFlags"])
     start_inventory_changes = defaultdict(int)
 
     # ###### Base changes ##############################################
@@ -435,7 +436,6 @@ def set_player_start_inventory(assembler: Z80Assembler, patch_data):
         start_inventory_data[SEED_ITEMS[patch_data["options"]["default_seed"]]] = 1  # Add seeds to the start inventory
 
     # Inventory obtained flags
-    obtained_treasures_address = parse_hex_string_to_value(DEFINES["wObtainedTreasureFlags"])
     current_inventory_index = parse_hex_string_to_value(DEFINES["wInventoryB"])
     for item in start_inventory_data:
         item_id = ITEMS_DATA[item]["id"]
@@ -498,6 +498,8 @@ def set_player_start_inventory(assembler: Z80Assembler, patch_data):
         hex_ore_count = parse_hex_string_to_value(f"${start_inventory_changes[0xc6a7]}")
         start_inventory_changes[0xc6a7] = hex_ore_count % 0x100
         start_inventory_changes[0xc6a8] = hex_ore_count // 0x100
+    if obtained_treasures_address in start_inventory_changes:
+        start_inventory_changes[obtained_treasures_address] |= 1 << 2 # Add treasure punch flag
 
     heart_pieces = (start_inventory_data.get("Piece of Heart", 0) + start_inventory_data.get("Rare Peach Stone", 0))
     additional_hearts = (start_inventory_data.get("Heart Container", 0) + heart_pieces // 4)
