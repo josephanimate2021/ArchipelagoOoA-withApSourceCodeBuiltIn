@@ -595,6 +595,7 @@ class OracleOfSeasonsIncludeCrossItems(DefaultOnToggle):
     When enabled, add the cane of somaria to the item pool (requires the OoA rom)
     """
     display_name = "Cross Items"
+    include_in_patch = True
 
 
 class OracleOfSeasonsIncludeSecretLocations(Toggle):

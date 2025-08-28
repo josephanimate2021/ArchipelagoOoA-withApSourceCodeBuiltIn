@@ -1,41 +1,60 @@
-47/0a22/itemTransferKnockbackToLink: |
-  ld e,$07
-  ld hl,$4a0a
-  jp interBankCall
+47/498c/loadAttributesAndGraphicsAndIncState: /copy s,$07,$0974,$07
 
-47/098c/loadAttributesAndGraphicsAndIncState: /copy s,$07,$0974,$07
-
-47/0993/itemLoadAttributesAndGraphics: |
+47/4993/itemLoadAttributesAndGraphics: |
   ld e,$07
   ld hl,$497b
   jp interBankCall
 
-47/09e2/itemSetAnimation: |
-  ld e,$07
-  ld hl,$49ca
-  jp safeInterBankCall
-
-47/0a4f/itemMergeZPositionIfSidescrollingArea: |
-  ld e,$07
-  ld hl,$4a37
-  jp interBankCall
-
-47/09d9/itemAnimate: |
-  ld e,$07
-  ld hl,$49c1
-  jp interBankCall
-
-47/09c8/itemUpdateDamageToApply: |
+47/49c8/itemUpdateDamageToApply: |
   ld e,$07
   ld hl,$49b0
   jp safeInterBankCall
 
-47/239c/bombUpdateThrowingLaterally: |
+47/49d9/itemAnimate: |
   ld e,$07
-  ld hl,$613a
+  ld hl,$49c1
   jp interBankCall
 
-47/0b3c/itemUpdateThrowingVerticallyAndCheckHazards: |
+47/49e2/itemSetAnimation: |
+  ld e,$07
+  ld hl,$49ca
+  jp safeInterBankCall
+
+47/4a22/itemTransferKnockbackToLink: |
+  ld e,$07
+  ld hl,$4a0a
+  jp interBankCall
+
+47/4a36/applyOffsetTableHL: /copy a,$07,$4a36,$19
+
+47/4a4f/itemMergeZPositionIfSidescrollingArea: |
+  ld e,$07
+  ld hl,$4a37
+  jp interBankCall
+
+47/4b3c/itemUpdateThrowingVerticallyAndCheckHazards: |
   ld e,$07
   ld hl,$4b24
   jp safeInterBankCall
+
+47/4b86/cpRelatedObject1ID: |
+  ld e,$07
+  ld hl,$4b24
+  jp safeInterBankCall
+
+47/4b95/itemCheckCanPassSolidTile: |
+  ld e,$07
+  ld hl,$4b7d
+  jp safeInterBankCall
+
+47/577e/itemCheckWithinRangeOfLink: /copy a,$07,$577e,$13
+
+47/628e/itemMimicBgTile: |
+  ld e,$07
+  ld hl,$6010
+  jp interBankCall
+
+47/639c/bombUpdateThrowingLaterally: |
+  ld e,$07
+  ld hl,$613a
+  jp interBankCall

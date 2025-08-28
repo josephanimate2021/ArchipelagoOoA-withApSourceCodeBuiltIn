@@ -2,11 +2,28 @@
 01//uncmpGfxHeader38: | # Somaria cane
   db $5a
   /copy a,$01,$28df,$05
-01/26d0/: |
+01//uncmpGfxHeader39: | # Switch hook
+  db $5a
+  /copy a,$01,$28eb,$05
+01/66d0/: |
   dw uncmpGfxHeader01
   dw uncmpGfxHeader01
-01/2740/: |
+01/6740/: |
   dw uncmpGfxHeader38
-  ; 2 spaces left
+  dw uncmpGfxHeader39
+  ; 1 space (2 bytes) left
 
-5a/3000/spr_cane_of_somaria: /copy a,$1a,$3000,$a0
+5a/7000/spr_cane_of_somaria: /copy a,$1a,$3000,$a0
+5a/70a0/spr_switch_hook: /copy a,$1a,$30a0,$c0
+
+# treasureDisplayData1
+3f/6d84/: |
+  db TREASURE_SWITCH_HOOK,<wSwitchHookLevel,$0b
+  db $00,$00,$00
+
+# Free space from 3f:6d8a to 3da0
+
+# treasureDisplayData2
+3f//treasureDisplayData2: |
+  /copy s,$3f,$2d87,$1a
+  dw treasureDisplayData_switch_hook - 7

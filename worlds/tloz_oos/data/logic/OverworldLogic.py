@@ -754,15 +754,6 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
             ])
         ])],
 
-        ["sunken city", "diver secret", False, lambda state: all([
-            oos_has_flippers(state, player),
-            any([
-                oos_option_medium_logic(state, player),
-                oos_has_sword(state, player),
-                oos_has_fools_ore(state, player),
-            ])
-        ])],
-
         ["mount cucco", "sunken city", False, lambda state: oos_has_flippers(state, player)],
         ["sunken city", "mount cucco", False, lambda state: all([
             oos_has_flippers(state, player),

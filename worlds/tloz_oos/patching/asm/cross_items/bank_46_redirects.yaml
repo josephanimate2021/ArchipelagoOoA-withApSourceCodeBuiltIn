@@ -1,0 +1,29 @@
+46/5378/parentItemLoadAnimationAndIncState: |
+  ld e,$06
+  ld hl,$52e2
+  jp interBankCall
+
+46/53dd/itemCreateChild: |
+  ld e,$06
+  ld hl,$532f
+  jp interBankCall
+
+46/441e/specialObjectAnimate_optimized: |
+  ld e,$06
+  ld hl,$4414
+  jp interBankCall
+
+46/4a42/clearParentItem: |
+  ld e,$06
+  ld hl,$49e7
+  jp interBankCall
+
+46/54d8/isLinkInHole: |
+  ld e,$06
+  ld hl,$5422
+  jp safeInterBankCall
+
+# Currently makes it so that Link uses items with a standing animation
+46/isLinkUnderwater : |
+  xor a
+  ret

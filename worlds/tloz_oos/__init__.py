@@ -669,31 +669,22 @@ class OracleOfSeasonsWorld(World):
 
             item_pool_dict[item_name] = item_pool_dict.get(item_name, 0) + 1
 
+        extra_items = 0
         if self.options.cross_items:
-            item_pool_dict["Gasha Seed"] -= 1
             item_pool_dict["Cane of Somaria"] = 1
-
-            bombchus = 10
-            quantity = min(bombchus, filler_item_count)
-            filler_item_count -= quantity
-            bombchus -= quantity
-
-            quantity2 = min(bombchus, rupee_item_count)
-            rupee_item_count -= quantity2
-            bombchus -= quantity2
             item_pool_dict["Bombchus (10)"] = 10
-            assert (quantity + quantity2 == 10)  # If not enough, we might have to remove something else
+            extra_items += 11
 
         # If Master Keys are enabled, put one for every dungeon
         if self.options.master_keys != OracleOfSeasonsMasterKeys.option_disabled:
             for small_key_name in ITEM_GROUPS["Master Keys"]:
                 item_pool_dict[small_key_name] = 1
-                filler_item_count -= 1
+                extra_items += 1
 
         # Add the required gasha seeds to the pool
         required_gasha_seeds = self.options.deterministic_gasha_locations.value
         item_pool_dict["Gasha Seed"] = required_gasha_seeds
-        filler_item_count -= required_gasha_seeds
+        extra_items += required_gasha_seeds
 
         if rupee_item_count > 0:
             rupee_item_pool, filler_item_count = self.build_rupee_item_dict(rupee_item_count, filler_item_count)
@@ -715,6 +706,9 @@ class OracleOfSeasonsWorld(World):
             else:
                 # Take from filler after
                 filler_item_count -= 1
+
+        assert filler_item_count >= extra_items
+        filler_item_count -= extra_items
 
         # Add as many filler items as required
         for _ in range(filler_item_count):

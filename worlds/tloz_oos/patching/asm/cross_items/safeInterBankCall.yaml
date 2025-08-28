@@ -7,7 +7,7 @@
   ldh (hRomBank),a
   ld ($2222),a
   ld a,($c018)
-  call $00a0
+  call $00a0 ; jpHl
   ld ($c018),a ; use a sound buffer to keep the value
   pop hl
   ld a,h

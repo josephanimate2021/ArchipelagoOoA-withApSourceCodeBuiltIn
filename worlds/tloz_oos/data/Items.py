@@ -51,6 +51,10 @@ ITEMS_DATA = {
         'classification': ItemClassification.progression,
         'id': 0x08
     },
+    "Switch Hook": {
+        'classification': ItemClassification.progression,
+        'id': 0x0a
+    },
     "Biggoron's Sword": {
         'classification': ItemClassification.progression,
         'id': 0x0c
@@ -74,6 +78,10 @@ ITEMS_DATA = {
         'id': 0x0e,
         'subid': 0x02
     },
+    "Progressive Harp": {
+        'classification': ItemClassification.progression,
+        'id': 0x11
+    },
     "Progressive Slingshot": {
         'classification': ItemClassification.progression,
         'id': 0x13
@@ -83,6 +91,10 @@ ITEMS_DATA = {
         'id': 0x15
     },
     "Power Bracelet": {
+        'classification': ItemClassification.progression,
+        'id': 0x16
+    },
+    "Progressive Bracelet": {
         'classification': ItemClassification.progression,
         'id': 0x16
     },

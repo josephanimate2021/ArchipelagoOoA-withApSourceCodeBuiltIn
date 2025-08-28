@@ -94,6 +94,8 @@ DEFINES = {
     "wDungeonMaps": "$c67e",
     "wSeedSatchelLevel": "$c680",  # Moved from c6ae
     "<wSeedSatchelLevel": "$80",
+    "wSwitchHookLevel": "$c681",
+    "<wSwitchHookLevel": "$81",
     "wObtainedTreasureFlags": "$c692",
     "wNetCountIn": "$c6a0",
     "wLinkMaxHealth": "$c6a3",
@@ -130,6 +132,7 @@ DEFINES = {
     "wRingMenu_mode": "$cbd3",
     "wStatusBarNeedsRefresh": "$cbea",
     "wNetTreasureIn": "$cbfb",  # Custom address
+    "wSwitchHookState": "$cbfc",  # Custom address
     "wFrameCounter": "$cc00",
     "wIsLinkedGame": "$cc01",
     "wMenuDisabled": "$cc02",
@@ -255,6 +258,7 @@ DEFINES = {
     "TREASURE_BOOMERANG": "$06",
     "TREASURE_ROD_OF_SEASONS": "$07",
     "TREASURE_MAGNET_GLOVES": "$08",
+    "TREASURE_SWITCH_HOOK": "$0a",
     "TREASURE_BOMBCHUS": "$0d",
     "TREASURE_FLUTE": "$0e",
     "TREASURE_SLINGSHOT": "$13",

@@ -1,8 +1,8 @@
 # This part is too long to fit in the vanilla code but is not fully there to save rom space
 15//rosa_full_unlock_end: |
-    ld l,$F9 ; room 4F9 flags
+    ld l,$f9 ; room 4F9 flags
     set 2,(hl)
-    ld a,$0B
+    ld a,$0b
     jp $30d3 ; unsetGlobalFlag
 
 # Override rosa_startDate to immediately open all 3 locks
@@ -21,5 +21,5 @@
 # nice, I unlocked
 # all the doors
 # here for you.
-1f/49E7/: |
-    db $20,$49,$20,$75,$6E,$6C,$04,$BE,$01,$05,$81,$02,$AC,$05,$A7,$73,$01,$02,$F4,$05,$DE,$03,$19,$00
+1f/49e7/: |
+    db $20,$49,$20,$75,$6e,$6c,$04,$be,$01,$05,$81,$02,$ac,$05,$a7,$73,$01,$02,$f4,$05,$de,$03,$19,$00
