@@ -173,6 +173,7 @@ location_by_region = {
         "Subrosia: Tower of Summer",
         "Subrosia: Tower of Autumn",
         "Subrosia: Temple of Seasons",
+        "Subrosia: Temple Secret",
         "Subrosia: Temple of Seasons Digging Spot",
     ],
     "Subrosian Market": [
