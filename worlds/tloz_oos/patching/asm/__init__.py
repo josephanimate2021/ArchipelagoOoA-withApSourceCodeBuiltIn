@@ -64,5 +64,15 @@ asm_files = {
     ],
     "secret_locations": [
         "asm/conditional/secret_locations.yaml"
+    ],
+    "cross_items": [
+        "asm/cross_items/bank_46_redirects.yaml",
+        "asm/cross_items/bank_47_redirects.yaml",
+        "asm/cross_items/bigger_inventory.yaml",
+        "asm/cross_items/bombchus.yaml",
+        "asm/cross_items/cane_of_somaria.yaml",
+        "asm/cross_items/safeInterBankCall.yaml",
+        "asm/cross_items/switch_hook.yaml",
+        "asm/cross_items/uncmp_gfx.yaml"
     ]
 }

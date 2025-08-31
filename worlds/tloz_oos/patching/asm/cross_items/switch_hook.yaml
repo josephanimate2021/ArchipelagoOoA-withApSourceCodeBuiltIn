@@ -101,7 +101,7 @@
 47/59b2/: call $2122 ; objectGetRelatedObject2Var
 47/59c1/: call $23aa ; itemIncSubstate
 47/59f8/: call $2059 ; getShortPositionFromDE
-47/5a09/: call addAtoBc
+47/5a09/: call addAToBc
 47/5a18/: call $2077 ; setShortPosition_paramC
 47/5a22/: call $0462 ; copyMemory
 47/5a2c/: call $23aa ; itemIncSubstate
@@ -145,5 +145,12 @@
 3f/6c49/: db <wSwitchHookLevel,$08
 
 # replacing the standard dummy datas of sword and boomerang
-3f/6dc4/treasureDisplayData_switch_hook: |
-# TODO
+3f/6dc4/treasureDisplayData_switchHook: /copy a,$3f,$313e,$0e
+
+3f/6dca/: db text.hook1.treasure
+3f/6dd1/: db text.hook2.treasure
+
+# treasureObjectData
+15/5151/: |
+  db $80
+  dw treasureObjectData_switchHook

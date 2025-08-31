@@ -10,7 +10,7 @@
     
     ; Noble Sword
     db TREASURE_SWORD,$01,TREASURE_SWORD
-    dw $52dd 
+    dw $52dd
     ; Master Sword
     db TREASURE_SWORD,$02,TREASURE_SWORD
     dw $52e1
@@ -21,7 +21,7 @@
     
     ; Hyper Slingshot
     db TREASURE_SLINGSHOT,$01,TREASURE_SLINGSHOT
-    dw 5329
+    dw $5329
     
     ; Roc's Cape
     db TREASURE_FEATHER,$01,TREASURE_FEATHER
@@ -32,6 +32,10 @@
     dw $52b9
     db TREASURE_SEED_SATCHEL,$02,TREASURE_SEED_SATCHEL 
     dw $52b9
+  
+    ; Switch Hook
+    db TREASURE_SWITCH_HOOK,$01,TREASURE_SWITCH_HOOK
+    dw treasureObjectData_switchHook+4
     
     db $ff
 
@@ -189,3 +193,8 @@
     xor a
     ret
 0a/7b93/: call giveTreasureCustom
+
+# We have to have this cross item data there to be used in progressiveUpgrades
+15//treasureObjectData_switchHook: |
+  db $38,$01,text.hook1.inventory,$7f
+  db $38,$02,text.hook2.inventory,$7f

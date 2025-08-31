@@ -421,6 +421,9 @@ def set_player_start_inventory(assembler: Z80Assembler, patch_data):
     if "Progressive Feather" in start_inventory_data:
         start_inventory_changes[parse_hex_string_to_value(DEFINES["wFeatherLevel"])] \
             = start_inventory_data["Progressive Feather"]
+    if "Switch Hook" in start_inventory_data:
+        start_inventory_changes[parse_hex_string_to_value(DEFINES["wswitchHookLevel"])] \
+                = start_inventory_data["Switch Hook"]
     seed_amount = 0
     if "Progressive Slingshot" in start_inventory_data:
         start_inventory_changes[0xc6b3] = start_inventory_data["Progressive Slingshot"]  # Slingshot level
@@ -647,7 +650,7 @@ def process_item_name_for_shop_text(item: Dict) -> str:
     return item_name
 
 
-def make_text_data(text: dict[str, str], patch_data):
+def make_text_data(assembler: Z80Assembler, text: dict[str, str], patch_data):
     # Process shops
     OVERWORLD_SHOPS = [
         "Horon Village: Shop",
@@ -775,6 +778,75 @@ def make_text_data(text: dict[str, str], patch_data):
     text["TX_0065"] = ("You got a\n"
                        "\\col(84)📻🟥 Phonograph⬜!\n"
                        "What a tune!")
+
+    # Cross items
+    text["TX_003b"] = ("You got the\n"
+                       "🟥Switch Hook⬜!\n"
+                       "Shoot at an\n"
+                       "object to switch\n"
+                       "places with it.\n")  # Strange flute
+    assembler.define_byte("text.hook1.treasure", 0x3b)
+
+    text["TX_0051"] = ("You got the 🟥Long\n"
+                       "Switch⬜! Switch\n"
+                       "places with\n"
+                       "objects from a\n"
+                       "distance.")  # Warrior child heart
+    assembler.define_byte("text.hook2.treasure", 0x51)
+    if patch_data["options"]["cross_items"]:
+        # Obtain text
+        text["TX_0001"] = ("You got the\n"
+                           "🟥Cane of Somaria⬜!\n"
+                           "Use it to create\n"
+                           "blocks.")  # Warrior child rupee
+        assembler.define_byte("text.cane.treasure", 0x01)
+
+        text["TX_0053"] = ("You got the\n"
+                           "🟥Power Glove⬜!\n"
+                           "You can now lift\n"
+                           "heavy objects.")  # Warrior child heart refill
+        assembler.define_byte("text.bracelet2.treasure", 0x53)
+
+        text["TX_0054"] = ("You got the\n"
+                           "🟥Seed Shooter⬜!\n"
+                           "Pick your 🟥seeds⬜,\n"
+                           "fire, then watch\n"
+                           "them ricochet.")  # Unappraised ring
+        assembler.define_byte("text.shooter.treasure", 0x54)
+
+        text["TX_0059"] = ("You got a\n"
+                           "🟥Mermaid Suit⬜!\n"
+                           "Press Ⓑ to dive\n"
+                           "and Ⓐ to use\n"
+                           "items.")  # L-3 ring box
+        assembler.define_byte("text.mermaid.treasure", 0x59)
+
+        # Inventory text
+        text["TX_091d"] = ("Cane of Somaria\n"
+                           "Used to create\n"
+                           "blocks.")  # Replaces ring box 1
+        assembler.define_byte("text.cane.inventory", 0x1d)
+        text["TX_091e"] = ("Switch Hook\n"
+                           "User and target\n"
+                           "trade places.")  # Replaces ring box 2
+        assembler.define_byte("text.hook1.inventory", 0x1e)
+        text["TX_0917"] = ("Long Hook\n"
+                           "Switches places\n"
+                           "from a distance.")  # Replaces unappraised ring
+        assembler.define_byte("text.hook2.inventory", 0x1e)
+        text["TX_0938"] = ("Power Gloves\n"
+                           "Used to lift\n"
+                           "large objects.")  # Replaces unused scent text ?
+        assembler.define_byte("text.bracelet2.inventory", 0x38)
+        text["TX_092e"] = ("Seed Shooter\n"
+                           "Used to bounce\n"
+                           "seeds around.")  # Replaces strange flute
+        assembler.define_byte("text.shooter.inventory", 0x2e)
+        text["TX_0937"] = ("Mermaid Suit\n"
+                           "The skin of the\n"
+                           "mythical beast.")  # Replaces unused ember text ?
+        assembler.define_byte("text.mermaid.inventory", 0x37)
+        # Note: 3 other seemingly unused seeds follow
 
     # Appraisal text
     text["TX_301c"] = ("You got the\n"

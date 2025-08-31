@@ -465,16 +465,10 @@
 3f/6dbe/: db $a5
 # Add the gfx entry to the interactionData
 3f/67f6/: db $61,$0a,$20 ; GFX_5e
-# Replace the L-1 and L-2 ring box inventory text
-1d/72b0/TX_091e: |
-  db $43,$61,$6e,$65,$03,$e3,$53,$6f
-  db $6d,$61,$72,$69,$61,$01,$55,$73
-  db $65,$64,$03,$b0,$63,$04,$09,$65
-  db $01,$62,$05,$a6,$73,$2e,$00
 # TreasureDisplayData
-3f/6dc3/: db $1d
+3f/6dc3/: db text.cane.inventory
 # treasureObjectData
-15/513b/: db $b2,$5e
+15/513b/: db text.cane.treasure,$5e
 
 # Remove the grass effect on the somaria block indoors
 00/0f39/: |

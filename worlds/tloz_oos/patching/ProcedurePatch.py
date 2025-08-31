@@ -47,7 +47,7 @@ class OoSPatchExtensions(APPatchExtension):
         # to "random" always generate the same for successive patchings for a given slot
         random.seed(patch_data["seed"] + caller.player)
 
-        assembler = Z80Assembler(EOB_ADDR, DEFINES, rom, ages_rom)
+        assembler = Z80Assembler(CAVE_DATA, DEFINES, rom, ages_rom)
         dictionary = parse_dict_seasons(rom_data)
         texts = parse_all_texts(rom_data, dictionary)
 
@@ -55,7 +55,7 @@ class OoSPatchExtensions(APPatchExtension):
         define_location_constants(assembler, patch_data)
         define_option_constants(assembler, patch_data)
         define_season_constants(assembler, patch_data)
-        make_text_data(texts, patch_data)
+        make_text_data(assembler, texts, patch_data)
         define_compass_rooms_table(assembler, patch_data)
         define_collect_properties_table(assembler, patch_data)
         define_additional_tile_replacements(assembler, patch_data)

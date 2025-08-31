@@ -24,6 +24,6 @@
   jp safeInterBankCall
 
 # Currently makes it so that Link uses items with a standing animation
-46/isLinkUnderwater : |
+46/54d2/isLinkUnderwater : |
   xor a
   ret
