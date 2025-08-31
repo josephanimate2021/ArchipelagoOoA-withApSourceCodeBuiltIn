@@ -5,7 +5,7 @@ from pathlib import Path
 
 import Utils
 from settings import get_settings
-from . import RomData
+from .RomData import RomData
 from .Util import *
 from .asm import asm_files
 from .text import simple_hex, normalize_text
