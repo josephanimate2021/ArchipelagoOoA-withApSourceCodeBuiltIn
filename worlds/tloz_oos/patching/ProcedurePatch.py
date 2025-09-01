@@ -27,6 +27,7 @@ class OoSPatchExtensions(APPatchExtension):
 
         if patch_data["options"]["cross_items"]:
             for bank in range(0x40, 0x80):
+                bank = 0xdd  # TODO: this is an invalid instruction that hangs the game, it's easier to debug but looks worse, remove/comment out once stable
                 rom_data.add_bank(bank)
             rom_data.update_rom_size()
 
@@ -42,7 +43,7 @@ class OoSPatchExtensions(APPatchExtension):
                                 "Get the correct game and version, then dump it.")
         else:
             ages_rom = bytes()
-            
+
         # Initialize random seed with the one used for generation + the player ID, so that cosmetic stuff set
         # to "random" always generate the same for successive patchings for a given slot
         random.seed(patch_data["seed"] + caller.player)

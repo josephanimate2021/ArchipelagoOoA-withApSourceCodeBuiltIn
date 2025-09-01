@@ -223,7 +223,7 @@ class Z80Assembler:
             block.local_labels[opcode[:-1]] = current_addr
             return 0
 
-        args = line[len(opcode)+1:].split(",")
+        args = line[len(opcode) + 1:].split(",")
         if len(args) == 0:
             args = [""]
 
@@ -255,7 +255,7 @@ class Z80Assembler:
                         generic_arg = f"({generic_arg})"
                     if generic_arg in mnemonic_tree:
                         arg = generic_arg
-                        extra_size = int(size/8)
+                        extra_size = int(size / 8)
                         break
                 if extra_size == 0:
                     raise UnknownMnemonicError(arg, line)
@@ -304,7 +304,10 @@ class Z80Assembler:
             # Declare word big endian (reversed)
             return [b for arg in args for b in reversed(parse_hex_word(arg))]
         if opcode == "/copy":
-            address = 0x4000 * parse_hex_string_to_value(args[1]) + parse_hex_string_to_value(args[2])
+            offset = parse_hex_string_to_value(args[2])
+            if offset > 0x4000:
+                offset -= 0x4000
+            address = 0x4000 * parse_hex_string_to_value(args[1]) + offset
             if args[0] == "s":
                 return self.seasons_rom[address:address + parse_hex_string_to_value(args[3])]
             else:

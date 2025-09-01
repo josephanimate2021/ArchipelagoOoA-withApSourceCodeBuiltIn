@@ -1,6 +1,5 @@
 # Note: in ages, INTERAC_DOOR_CONTROLLER checks the switch hook state to not close during switches,
 # this is not yet implemented (does it even impact the game?)
-# TODO: Implement wSwitchHookLevel
 # TODO: Graphics are corrupted when switching with a flower
 
 46/4b16/parentItemCode_switchHook_46: |
@@ -61,7 +60,7 @@
 47/5807/: ld ($ccac),a ; (wcc92)
 47/5816/: ld a,$39; UNCMP_GFXH_AGES_1f > $39
 47/5818/: call $165b ; loadWeaponGfx
-47/5821/: jp $1e27 ; objectSetVisible82
+47/5821/: call $1e27 ; objectSetVisible82
 47/582a/: ld a,(wSwitchHookLevel)
 47/583e/: call $2c37 ; itemUpdateAngle
 47/5864/: jp nz,$2c29 ; itemDelete
@@ -69,10 +68,11 @@
 47/586c/: call $215d ; objectCheckWithinRoomBoundary
 47/5871/: call $14b5 ; objectCheckTileCollision_allowHoles
 47/5882/: call $2c40 ; getFreeItemSlot
-47/5893/: call $1fdb ; objectApplySpeed
+47/5893/: jp $1fdb ; objectApplySpeed
 47/589b/: call $2b36 ; itemTryToBreakTile
+47/58a7/: call $29c5 ; itemSetState
 47/58b5/: ld (wSwitchHookState),a
-47/58b8/: call $2af0 ; resetLinkInvincibility
+47/58b8/: jp $2af0 ; resetLinkInvincibility
 47/58bf/: ld (wSwitchHookState),a
 47/58c9/: jp $29c5 ; itemSetState
 47/58d2/: call $2391 ; itemDecCounter1
@@ -84,7 +84,7 @@
 47/58ff/: jp z,$2c29 ; itemDelete
 47/590b/: call $2122 ; objectGetRelatedObject2Var
 47/5914/: ld (wSwitchHookState),a
-47/5917/: jp z,$2c29 ; itemDelete
+47/5917/: jp $2c29 ; itemDelete
 47/593e/: call $2b36 ; itemTryToBreakTile
 47/5959/: call $2081 ; objectSetShortPosition
 47/595c/: call $1e03 ; objectSetVisiblec2
@@ -97,9 +97,9 @@
 47/598f/: call playSound
 47/5992/: call $23aa ; itemIncSubstate
 47/59aa/: call $222f ; objectCopyPosition
-47/59ad/: call $2af0 ; resetLinkInvincibility
+47/59ad/: jp $2af0 ; resetLinkInvincibility
 47/59b2/: call $2122 ; objectGetRelatedObject2Var
-47/59c1/: call $23aa ; itemIncSubstate
+47/59c1/: call c,$23aa ; itemIncSubstate
 47/59f8/: call $2059 ; getShortPositionFromDE
 47/5a09/: call addAToBc
 47/5a18/: call $2077 ; setShortPosition_paramC
@@ -107,7 +107,7 @@
 47/5a2c/: call $23aa ; itemIncSubstate
 47/5a41/: call nz,$222f ; objectCopyPosition
 47/5a53/: call $045b ; copyMemoryReverse
-47/5a69/: call $objectGetTileCollisions
+47/5a69/: call $149b ; objectGetTileCollisions
 # Skip the diamond tile handling
 47/5a71/: db $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
 47/5a7e/: ld hl,$47bb ; itemMakeInteractionForBreakableTile

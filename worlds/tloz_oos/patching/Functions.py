@@ -422,7 +422,7 @@ def set_player_start_inventory(assembler: Z80Assembler, patch_data):
         start_inventory_changes[parse_hex_string_to_value(DEFINES["wFeatherLevel"])] \
             = start_inventory_data["Progressive Feather"]
     if "Switch Hook" in start_inventory_data:
-        start_inventory_changes[parse_hex_string_to_value(DEFINES["wswitchHookLevel"])] \
+        start_inventory_changes[parse_hex_string_to_value(DEFINES["wSwitchHookLevel"])] \
                 = start_inventory_data["Switch Hook"]
     seed_amount = 0
     if "Progressive Slingshot" in start_inventory_data:

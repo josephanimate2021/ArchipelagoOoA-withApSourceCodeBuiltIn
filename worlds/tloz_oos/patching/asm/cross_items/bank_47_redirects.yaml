@@ -37,9 +37,13 @@
   ld hl,$4b24
   jp safeInterBankCall
 
+47/4b81/objectCreateClinkInteraction: |
+  ld b,$07 ; INTERAC_CLINK
+  jp $24af ; objectCreateInteractionWithSubid00
+
 47/4b86/cpRelatedObject1ID: |
   ld e,$07
-  ld hl,$4b24
+  ld hl,$4b6e
   jp safeInterBankCall
 
 47/4b95/itemCheckCanPassSolidTile: |
