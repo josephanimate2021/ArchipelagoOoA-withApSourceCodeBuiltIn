@@ -78,6 +78,7 @@
 47/58d2/: call $2391 ; itemDecCounter1
 47/58d8/: call $1e5a ; objectGetAngleTowardLink
 47/58de/: call $1fdb ; objectApplySpeed
+47/58e8/: call $23aa ; itemIncSubstate
 47/58f2/: call objectSetInvisible
 47/58f8/: call $222f ; objectTakePosition
 47/58fb/: call $2391 ; itemDecCounter1
@@ -96,7 +97,7 @@
 47/598a/: ld (wSwitchHookState),a
 47/598f/: call playSound
 47/5992/: call $23aa ; itemIncSubstate
-47/59aa/: call $222f ; objectCopyPosition
+47/59aa/: call objectCopyPosition
 47/59ad/: jp $2af0 ; resetLinkInvincibility
 47/59b2/: call $2122 ; objectGetRelatedObject2Var
 47/59c1/: call c,$23aa ; itemIncSubstate
@@ -105,7 +106,7 @@
 47/5a18/: call $2077 ; setShortPosition_paramC
 47/5a22/: call $0462 ; copyMemory
 47/5a2c/: call $23aa ; itemIncSubstate
-47/5a41/: call nz,$222f ; objectCopyPosition
+47/5a41/: call nz,objectCopyPosition
 47/5a53/: call $045b ; copyMemoryReverse
 47/5a69/: call $149b ; objectGetTileCollisions
 # Skip the diamond tile handling
@@ -154,3 +155,6 @@
 15/5151/: |
   db $80
   dw treasureObjectData_switchHook
+
+# Change itemAttribute to move collision type from harmless to $0e (unused/now switch hook)
+04/6379/: db $8e
