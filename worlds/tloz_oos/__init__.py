@@ -132,7 +132,7 @@ class OracleOfSeasonsWorld(World):
         self.remaining_progressive_gasha_seeds = 0
 
         self.region_hints: list[tuple[str, str | int]] = []
-        self.item_hints: list[tuple[str, str, int | None] | None] = []
+        self.item_hints: list[Item | None] = []
 
     def generate_early(self):
         if self.interpret_slot_data(None):
@@ -1042,10 +1042,8 @@ class OracleOfSeasonsWorld(World):
                 # Joke hint
                 slot_data_item_hints.append(None)
                 continue
-            player = item_hint[2]
-            if player is None:
-                player = self.player
-            slot_data_item_hints.append((self.multiworld.get_location(item_hint[1], player).address, player))
+            location = item_hint.location
+            slot_data_item_hints.append((location.address, location.player))
         slot_data["item_hints"] = slot_data_item_hints
 
         return slot_data

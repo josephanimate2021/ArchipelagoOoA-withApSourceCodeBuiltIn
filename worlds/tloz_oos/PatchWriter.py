@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 from worlds.tloz_oos.patching.ProcedurePatch import OoSProcedurePatch
 from .data.Constants import *
 from . import OracleOfSeasonsOptions
+from ..oot.Cosmetics import patch_music
 
 if TYPE_CHECKING:
     from . import OracleOfSeasonsWorld
@@ -35,7 +36,6 @@ def oos_create_ap_procedure_patch(world: "OracleOfSeasonsWorld") -> OoSProcedure
         "shop_prices": world.shop_prices,
         "subrosia_seaside_location": world.random.randint(0, 3),
         "region_hints": world.region_hints,
-        "item_hints": world.item_hints,
     }
 
     for loc in world.multiworld.get_locations(world.player):
@@ -52,6 +52,21 @@ def oos_create_ap_procedure_patch(world: "OracleOfSeasonsWorld") -> OoSProcedure
                 "player": world.multiworld.get_player_name(loc.item.player),
                 "progression": loc.item.advancement
             }
+
+    patch_data_item_hints = []
+    for item_hint in world.item_hints:
+        if item_hint is None:
+            # Joke hint
+            patch_data_item_hints.append(None)
+            continue
+        location = item_hint.location
+        player = location.player
+        if player == world.player:
+            player = None
+        else:
+            player = world.multiworld.get_player_name(player)
+        patch_data_item_hints.append((item_hint.name, location.name, player))
+    patch_data["item_hints"] = patch_data_item_hints
 
     start_inventory = defaultdict(int)
     for item in world.multiworld.precollected_items[world.player]:
