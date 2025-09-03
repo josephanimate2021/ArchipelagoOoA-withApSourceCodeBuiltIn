@@ -237,94 +237,296 @@
 # copy ENEMYCOLLISION_PEAHAT 0x55 (seasons) from ENEMYCOLLISION_PEAHAT 0x58 (ages)
 07/753e/: /copy a,$07,$7817,$01
 
-
-
-# edit enemyActiveCollisions (using Stewmat's enemy active collision table)
-07/6746/: db $f8
-07/674a/: db $78
-07/674e/: db $78
-07/6752/: db $78
-07/6756/: db $78
-07/675a/: db $f8
-07/6762/: db $f8
-07/6766/: db $f8
-07/676a/: db $f8
-07/676e/: db $f8
-07/6772/: db $f8
-07/6776/: db $f8
-07/677a/: db $78
-07/677e/: db $78
-07/6782/: db $f8
-07/678a/: db $f8
-07/678e/: db $78
-07/6792/: db $f8
-07/6796/: db $78
-07/679e/: db $f8
-07/67a2/: db $f8
-07/67a6/: db $78
-07/67aa/: db $f8
-07/67ae/: db $f8
-07/67b2/: db $f8
-07/67b6/: db $f8
-07/67ba/: db $f8
-07/67c2/: db $f8
-07/67c6/: db $f8
-07/67ca/: db $f8
-07/67ce/: db $f8
-07/67d2/: db $f8
-07/67d6/: db $f8
-07/67e2/: db $f8
-07/67ea/: db $78
-07/67f2/: db $f8
-07/67fa/: db $78
-07/67fe/: db $78
-07/6802/: db $f8
-07/6806/: db $f8
-07/680a/: db $f8
-07/6812/: db $f8
-07/6816/: db $f8
-07/681a/: db $f8
-07/6826/: db $f8
-07/682a/: db $f8
-07/682e/: db $f8
-07/6832/: db $78
-07/6836/: db $f8
-07/683a/: db $f8
-07/6846/: db $f8
-07/684e/: db $f8
-07/6856/: db $f8
-07/685a/: db $f8
-07/685e/: db $f8
-07/6862/: db $f8
-07/6866/: db $f8
-07/686a/: db $f8
-07/686e/: db $f8
-07/6872/: db $f8
-07/6876/: db $f8
-07/687a/: db $f8
-07/687e/: db $f8
-07/6886/: db $f8
-07/688a/: db $f8
-07/6896/: db $78
-07/689a/: db $f8
-07/68ba/: db $f8
-07/6902/: db $f8
-07/690a/: db $f8
-07/690e/: db $f8
-07/6912/: db $f8
-07/6916/: db $f8
-07/691a/: db $f8
-07/691e/: db $78
-07/6922/: db $f8
-07/6926/: db $78
-07/692a/: db $f8
-07/692e/: db $78
-07/6932/: db $78
-07/6936/: db $f8
-07/693a/: db $f8
-07/693e/: db $78
-
-# edit partActiveCollisions (using Stewmat's part active collision table)
-07/69ea/: db $78
-07/6a7e/: db $f8
-07/6a82/: db $08
+# edit the active collision data (using Stewmat's active collision tables)
+# enemyActiveCollisions
+# 0x01
+07/6745/: db %11110010 # Replaces vanilla %11110000
+07/6746/: db %00011111 # Replaces vanilla %00001111
+# 0x02
+07/6749/: db %11000010 # Replaces vanilla %11000000
+07/674a/: db %00011110 # Replaces vanilla %00001110
+# 0x03
+07/674d/: db %01000010 # Replaces vanilla %01000000
+07/674e/: db %00011110 # Replaces vanilla %00001110
+# 0x04
+07/6751/: db %11000010 # Replaces vanilla %11000000
+07/6752/: db %00011110 # Replaces vanilla %00001110
+# 0x05
+07/6755/: db %11000010 # Replaces vanilla %11000000
+07/6756/: db %00011110 # Replaces vanilla %00001110
+# 0x06
+07/6759/: db %11110010 # Replaces vanilla %11110000
+07/675a/: db %00011111 # Replaces vanilla %00001111
+# 0x08
+07/6761/: db %11110011 # Replaces vanilla %11110001
+07/6762/: db %00011111 # Replaces vanilla %00001111
+# 0x09
+07/6765/: db %11111111 # Replaces vanilla %11111101
+07/6766/: db %00011111 # Replaces vanilla %00001111
+# 0x0a
+07/6769/: db %11111111 # Replaces vanilla %11111101
+07/676a/: db %00011111 # Replaces vanilla %00001111
+# 0x0b
+07/676d/: db %11111111 # Replaces vanilla %11111101
+07/676e/: db %00011111 # Replaces vanilla %00001111
+# 0x0c
+07/6771/: db %11111111 # Replaces vanilla %11111101
+07/6772/: db %00011111 # Replaces vanilla %00001111
+# 0x0d
+07/6775/: db %11110011 # Replaces vanilla %11110001
+07/6776/: db %00011111 # Replaces vanilla %00001111
+# 0x0e
+07/6779/: db %11001110 # Replaces vanilla %11001100
+07/677a/: db %00011110 # Replaces vanilla %00001110
+# 0x0f
+07/677d/: db %11001110 # Replaces vanilla %11001100
+07/677e/: db %00011110 # Replaces vanilla %00001110
+# 0x10
+07/6781/: db %11111111 # Replaces vanilla %11111101
+07/6782/: db %00011111 # Replaces vanilla %00001111
+# 0x11
+07/6785/: db %11010011 # Replaces vanilla %11010001
+# 0x12
+07/6789/: db %11111011 # Replaces vanilla %11111001
+07/678a/: db %00011111 # Replaces vanilla %00001111
+# 0x13
+07/678d/: db %01000010 # Replaces vanilla %01000000
+07/678e/: db %00011110 # Replaces vanilla %00001110
+# 0x14
+07/6791/: db %11000111 # Replaces vanilla %11000101
+07/6792/: db %00011111 # Replaces vanilla %00001111
+# 0x15
+07/6795/: db %00000010 # Replaces vanilla %00000000
+07/6796/: db %00011110 # Replaces vanilla %00001110
+# 0x17
+07/679d/: db %11111010 # Replaces vanilla %11111000
+07/679e/: db %00011111 # Replaces vanilla %00001111
+# 0x18
+07/67a1/: db %11010111 # Replaces vanilla %11010101
+07/67a2/: db %00011111 # Replaces vanilla %00001111
+# 0x19
+07/67a5/: db %01000010 # Replaces vanilla %01000000
+07/67a6/: db %00011110 # Replaces vanilla %00001110
+# 0x1a
+07/67a9/: db %11111111 # Replaces vanilla %11111101
+07/67aa/: db %00011111 # Replaces vanilla %00001111
+# 0x1b
+07/67ad/: db %11111111 # Replaces vanilla %11111101
+07/67ae/: db %00011111 # Replaces vanilla %00001111
+# 0x1c
+07/67b1/: db %11111111 # Replaces vanilla %11111101
+07/67b2/: db %00011111 # Replaces vanilla %00001111
+# 0x1d
+07/67b5/: db %11001111 # Replaces vanilla %11001101
+07/67b6/: db %00011111 # Replaces vanilla %00001111
+# 0x1e
+07/67b9/: db %11111011 # Replaces vanilla %11111001
+07/67ba/: db %00011111 # Replaces vanilla %00001111
+# 0x1f
+07/67bd/: db %00000010 # Replaces vanilla %00000000
+# 0x20
+07/67c1/: db %11111111 # Replaces vanilla %11111101
+07/67c2/: db %00011111 # Replaces vanilla %00001111
+# 0x21
+07/67c5/: db %11111111 # Replaces vanilla %11111101
+07/67c6/: db %00011111 # Replaces vanilla %00001111
+# 0x22
+07/67c9/: db %11111111 # Replaces vanilla %11111101
+07/67ca/: db %00011111 # Replaces vanilla %00001111
+# 0x23
+07/67cd/: db %11111111 # Replaces vanilla %11111101
+07/67ce/: db %00011111 # Replaces vanilla %00001111
+# 0x24
+07/67d1/: db %11111111 # Replaces vanilla %11111101
+07/67d2/: db %00011111 # Replaces vanilla %00001111
+# 0x25
+07/67d5/: db %11010011 # Replaces vanilla %11010001
+07/67d6/: db %00011111 # Replaces vanilla %00001111
+# 0x28
+07/67e1/: db %11111111 # Replaces vanilla %11111101
+07/67e2/: db %00011111 # Replaces vanilla %00001111
+# 0x2a
+07/67e9/: db %01001110 # Replaces vanilla %01001100
+07/67ea/: db %00011110 # Replaces vanilla %00001110
+# 0x2c
+07/67f1/: db %11111111 # Replaces vanilla %11111101
+07/67f2/: db %00011111 # Replaces vanilla %00001111
+# 0x2d
+07/67f5/: db %11000010 # Replaces vanilla %11000000
+# 0x2e
+07/67f9/: db %11001110 # Replaces vanilla %11001100
+07/67fa/: db %00011110 # Replaces vanilla %00001110
+# 0x2f
+07/67fd/: db %11001110 # Replaces vanilla %11001100
+07/67fe/: db %00011110 # Replaces vanilla %00001110
+# 0x30
+07/6801/: db %11111111 # Replaces vanilla %11111101
+07/6802/: db %00011111 # Replaces vanilla %00001111
+# 0x31
+07/6805/: db %11111111 # Replaces vanilla %11111101
+07/6806/: db %00011111 # Replaces vanilla %00001111
+# 0x32
+07/6809/: db %11111111 # Replaces vanilla %11111101
+07/680a/: db %00011111 # Replaces vanilla %00001111
+# 0x34
+07/6811/: db %11110011 # Replaces vanilla %11110001
+07/6812/: db %00011111 # Replaces vanilla %00001111
+# 0x35
+07/6815/: db %11111111 # Replaces vanilla %11111101
+07/6816/: db %00011111 # Replaces vanilla %00001111
+# 0x36
+07/6819/: db %11110011 # Replaces vanilla %11110001
+07/681a/: db %00011111 # Replaces vanilla %00001111
+# 0x39
+07/6825/: db %11011011 # Replaces vanilla %11011001
+07/6826/: db %00011111 # Replaces vanilla %00001111
+# 0x3a
+07/6829/: db %11111111 # Replaces vanilla %11111101
+07/682a/: db %00011111 # Replaces vanilla %00001111
+# 0x3b
+07/682d/: db %11110010 # Replaces vanilla %11110000
+07/682e/: db %00011111 # Replaces vanilla %00001111
+# 0x3c
+07/6831/: db %11110011 # Replaces vanilla %11110001
+07/6832/: db %00011110 # Replaces vanilla %00001110
+# 0x3d
+07/6835/: db %11111111 # Replaces vanilla %11111101
+07/6836/: db %00011111 # Replaces vanilla %00001111
+# 0x3e
+07/6839/: db %11110011 # Replaces vanilla %11110001
+07/683a/: db %00011111 # Replaces vanilla %00001111
+# 0x40
+07/6841/: db %11111111 # Replaces vanilla %11111101
+# 0x41
+07/6845/: db %11110011 # Replaces vanilla %11110001
+07/6846/: db %00011111 # Replaces vanilla %00001111
+# 0x43
+07/684d/: db %11110111 # Replaces vanilla %11110101
+07/684e/: db %00011111 # Replaces vanilla %00001111
+# 0x45
+07/6855/: db %11110011 # Replaces vanilla %11110001
+07/6856/: db %00011111 # Replaces vanilla %00001111
+# 0x46
+07/6859/: db %11110111 # Replaces vanilla %11110101
+07/685a/: db %00011111 # Replaces vanilla %00001111
+# 0x47
+07/685d/: db %11111111 # Replaces vanilla %11111101
+07/685e/: db %00011111 # Replaces vanilla %00001111
+# 0x48
+07/6861/: db %11111111 # Replaces vanilla %11111101
+07/6862/: db %00011111 # Replaces vanilla %00001111
+# 0x49
+07/6865/: db %11111111 # Replaces vanilla %11111101
+07/6866/: db %00011111 # Replaces vanilla %00001111
+# 0x4a
+07/6869/: db %11111111 # Replaces vanilla %11111101
+07/686a/: db %00011111 # Replaces vanilla %00001111
+# 0x4b
+07/686d/: db %11011111 # Replaces vanilla %11011101
+07/686e/: db %00011111 # Replaces vanilla %00001111
+# 0x4c
+07/6871/: db %11110011 # Replaces vanilla %11110001
+07/6872/: db %00011111 # Replaces vanilla %00001111
+# 0x4d
+07/6875/: db %11001111 # Replaces vanilla %11001101
+07/6876/: db %00011111 # Replaces vanilla %00001111
+# 0x4e
+07/6879/: db %11111111 # Replaces vanilla %11111101
+07/687a/: db %00011111 # Replaces vanilla %00001111
+# 0x4f
+07/687d/: db %11110111 # Replaces vanilla %11110101
+07/687e/: db %00011111 # Replaces vanilla %00001111
+# 0x51
+07/6885/: db %11111111 # Replaces vanilla %11111101
+07/6886/: db %00011111 # Replaces vanilla %00001111
+# 0x52
+07/6889/: db %11111110 # Replaces vanilla %11111100
+07/688a/: db %00011111 # Replaces vanilla %00001111
+# 0x55
+07/6895/: db %11000010 # Replaces vanilla %11000000
+07/6896/: db %00011110 # Replaces vanilla %00001110
+# 0x56
+07/6899/: db %11001010 # Replaces vanilla %11001000
+07/689a/: db %00011111 # Replaces vanilla %00001111
+# 0x57
+07/689d/: db %11110010 # Replaces vanilla %11110000
+# 0x58
+07/68a1/: db %10000010 # Replaces vanilla %10000000
+# 0x5a
+07/68a9/: db %11111010 # Replaces vanilla %11111000
+# 0x5d
+07/68b5/: db %10000010 # Replaces vanilla %10000000
+# 0x5e
+07/68b9/: db %11000010 # Replaces vanilla %11000000
+07/68ba/: db %00011111 # Replaces vanilla %00001111
+# 0x70
+07/6901/: db %11111110 # Replaces vanilla %11111100
+07/6902/: db %00011111 # Replaces vanilla %00001111
+# 0x72
+07/6909/: db %11110010 # Replaces vanilla %11110000
+07/690a/: db %00011111 # Replaces vanilla %00001111
+# 0x73
+07/690d/: db %11110010 # Replaces vanilla %11110000
+07/690e/: db %00011111 # Replaces vanilla %00001111
+# 0x74
+07/6911/: db %11110010 # Replaces vanilla %11110000
+07/6912/: db %00011111 # Replaces vanilla %00001111
+# 0x75
+07/6915/: db %11010010 # Replaces vanilla %11010000
+07/6916/: db %00011111 # Replaces vanilla %00001111
+# 0x76
+07/6919/: db %11111010 # Replaces vanilla %11111000
+07/691a/: db %00011111 # Replaces vanilla %00001111
+# 0x77
+07/691d/: db %01000010 # Replaces vanilla %01000000
+07/691e/: db %00011110 # Replaces vanilla %00001110
+# 0x78
+07/6921/: db %11110010 # Replaces vanilla %11110000
+07/6922/: db %00011111 # Replaces vanilla %00001111
+# 0x79
+07/6925/: db %11000010 # Replaces vanilla %11000000
+07/6926/: db %00011110 # Replaces vanilla %00001110
+# 0x7a
+07/6929/: db %11110010 # Replaces vanilla %11110000
+07/692a/: db %00011111 # Replaces vanilla %00001111
+# 0x7b
+07/692d/: db %11001010 # Replaces vanilla %11001000
+07/692e/: db %00011110 # Replaces vanilla %00001110
+# 0x7c
+07/6931/: db %01000010 # Replaces vanilla %01000000
+07/6932/: db %00011110 # Replaces vanilla %00001110
+# 0x7d
+07/6935/: db %11010010 # Replaces vanilla %11010000
+07/6936/: db %00011111 # Replaces vanilla %00001111
+# 0x7e
+07/6939/: db %10111010 # Replaces vanilla %10111000
+07/693a/: db %00011111 # Replaces vanilla %00001111
+# 0x7f
+07/693d/: db %11000010 # Replaces vanilla %11000000
+07/693e/: db %00011110 # Replaces vanilla %00001110
+# partActiveCollisions
+# 0x01
+07/6945/: db %11111110 # Replaces vanilla %11111100
+# 0x03
+07/694d/: db %11111110 # Replaces vanilla %11111100
+# 0x05
+07/6955/: db %11111110 # Replaces vanilla %11111100
+# 0x0b
+07/696d/: db %11111110 # Replaces vanilla %11111100
+# 0x10
+07/6981/: db %11111110 # Replaces vanilla %11111100
+# 0x14
+07/6991/: db %11111110 # Replaces vanilla %11111100
+# 0x15
+07/6995/: db %11111110 # Replaces vanilla %11111100
+# 0x28
+07/69e1/: db %11111110 # Replaces vanilla %11111100
+# 0x2a
+07/69ea/: db %00011110 # Replaces vanilla %00001110
+# 0x32
+07/6a09/: db %11111011 # Replaces vanilla %11111001
+# 0x4f
+07/6a7d/: db %11111110 # Replaces vanilla %11111100
+07/6a7e/: db %00011111 # Replaces vanilla %00001111
+# 0x50
+07/6a82/: db %00010000 # Replaces vanilla %00000000

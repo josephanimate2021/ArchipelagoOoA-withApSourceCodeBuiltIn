@@ -56,7 +56,7 @@
 47/628e/itemMimicBgTile: |
   ld e,$07
   ld hl,$6010
-  jp interBankCall
+  jp safeInterBankCall
 
 47/639c/bombUpdateThrowingLaterally: |
   ld e,$07

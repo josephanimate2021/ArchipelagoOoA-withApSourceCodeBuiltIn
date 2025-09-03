@@ -18,13 +18,13 @@
 
 # treasureDisplayData1
 3f/6d84/: |
-  db TREASURE_SWITCH_HOOK,<wSwitchHookLevel,$0b
+  db TREASURE_SWITCH_HOOK,<wSwitchHookLevel,$0c
   db $00,$00,$00
 
 # Free space from 3f:6d8a to 3da0
 # treasureDisplayData2
 3f//treasureDisplayData2: |
-  /copy s,$3f,$2d87,$1a
+  /copy s,$3f,$2d87,$18
   dw treasureDisplayData_switchHook-7
 
 3f/4718/: dw treasureDisplayData2
