@@ -296,7 +296,7 @@ class Z80Assembler:
         # First try matching a specific keyword
         if opcode == "db":
             # Declare byte
-            return [parse_hex_byte(arg) for arg in args]
+            return [parse_byte(arg) for arg in args]
         if opcode == "dw":
             # Declare word
             return [b for arg in args for b in parse_hex_word(arg)]

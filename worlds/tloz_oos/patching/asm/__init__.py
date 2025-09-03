@@ -71,6 +71,7 @@ asm_files = {
         "asm/cross_items/bigger_inventory.yaml",
         "asm/cross_items/bombchus.yaml",
         "asm/cross_items/cane_of_somaria.yaml",
+        "asm/cross_items/enemy_collision.yaml",
         "asm/cross_items/safeInterBankCall.yaml",
         "asm/cross_items/switch_hook.yaml",
         "asm/cross_items/uncmp_gfx.yaml"

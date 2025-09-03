@@ -36,9 +36,9 @@ def parse_hex_string_to_value(string: str) -> int:
 
 def parse_bin_string_to_value(string: str) -> int:
     """
-    Parse a binary string into a numeric value, no operator is supported
+    Parse a binary string into a numeric value as small endian, no operator is supported
     """
-    return int(string[1:], 2)
+    return int(string[:0:-1], 2)
 
 
 def value_to_byte_array(value: int, expected_size: int):
@@ -58,7 +58,14 @@ def value_to_byte_array(value: int, expected_size: int):
     return output
 
 
-def parse_hex_byte(string: str):
+def parse_byte(string: str) -> int:
+    if string.startswith("$"):
+        return parse_hex_byte(string)
+    else:
+        return parse_bin_string_to_value(string)
+
+
+def parse_hex_byte(string: str) -> int:
     """
     Converts a byte literal hexadecimal string into a byte value
     (e.g. "$4F" => 0x4f)
