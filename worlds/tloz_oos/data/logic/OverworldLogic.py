@@ -73,9 +73,9 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
 
         ["horon village", "horon village tree", False, lambda state: oos_can_harvest_tree(state, player, True)],
 
-        ["horon village", "horon shop", False, lambda state: \
+        ["horon village", "horon shop", False, lambda state:
             oos_has_rupees_for_shop(state, player, "horonShop")],
-        ["horon village", "advance shop", False, lambda state: \
+        ["horon village", "advance shop", False, lambda state:
             oos_has_rupees_for_shop(state, player, "advanceShop")],
         ["horon village", "member's shop", False, lambda state: all([
             state.has("Member's Card", player),
@@ -107,10 +107,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
                 oos_can_use_ember_seeds(state, player, True),
             ]),
             oos_can_use_mystery_seeds(state, player),
-            any([
-                oos_can_kill_armored_enemy(state, player),
-                oos_has_bombchus(state, player, 2)
-            ]),
+            oos_can_kill_moldorm(state, player)
         ])],
 
         ["western coast", "d0 entrance", True, None],
@@ -199,7 +196,8 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ["suburbs", "suburbs fairy fountain", True, lambda state: all([
             any([
                 oos_can_swim(state, player, True),
-                oos_can_jump_1_wide_liquid(state, player, True)
+                oos_can_jump_1_wide_liquid(state, player, True),
+                oos_has_switch_hook(state, player)
             ]),
             oos_not_season_in_eastern_suburbs(state, player, SEASON_WINTER)
         ])],
@@ -260,6 +258,10 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ["suburbs fairy fountain", "central woods of winter", False, None],
         ["suburbs fairy fountain (winter)", "central woods of winter", False, lambda state: any([
             oos_can_jump_1_wide_pit(state, player, True),
+            all([
+                oos_option_medium_logic(state, player),
+                oos_has_switch_hook(state, player)
+            ]),
             oos_can_remove_snow(state, player, True)
         ])],
 
@@ -486,7 +488,11 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ])],
         ["north horon", "underwater item below natzu bridge", False, lambda state: oos_can_swim(state, player, False)],
 
-        ["north horon", "temple remains lower stump", True, lambda state: oos_can_jump_3_wide_pit(state, player)],
+        ["north horon", "temple remains lower stump", False, lambda state: oos_can_jump_3_wide_pit(state, player)],
+        ["temple remains lower stump", "north horon", False, lambda state: any([
+            oos_can_jump_3_wide_pit(state, player),
+            oos_has_switch_hook(state, player)
+        ])],
 
         ["ghastly stump", "maple encounter", False, lambda state: oos_can_meet_maple(state, player)],
 
@@ -905,6 +911,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ["goron mountain entrance", "goron mountain", True, lambda state: any([
             oos_has_flippers(state, player),
             oos_can_jump_4_wide_liquid(state, player),
+            oos_has_tight_switch_hook(state, player)
         ])],
 
         ["goron mountain entrance", "temple remains lower stump", True, lambda state: \
@@ -1171,7 +1178,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
 
         ["north horon", "d9 entrance", False, lambda state: state.has("Maku Seed", player)],
         ["d9 entrance", "onox beaten", False, lambda state: all([
-            oos_can_kill_armored_enemy(state, player),
+            oos_can_kill_armored_enemy(state, player, True, True),
             any([
                 oos_has_bombs(state, player),
                 oos_has_bombchus(state, player, 2)

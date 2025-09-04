@@ -72,6 +72,20 @@ def oos_has_flippers(state: CollectionState, player: int):
     return state.has("Flippers", player)
 
 
+def oos_has_switch_hook(state: CollectionState, player: int, level: int = 1):
+    return state.has("Switch Hook", player, level)
+
+
+def oos_has_tight_switch_hook(state: CollectionState, player: int):
+    return any([
+        oos_has_switch_hook(state, player, 2),
+        all([
+            oos_option_medium_logic(state, player),
+            oos_has_switch_hook(state, player)
+        ])
+    ])
+
+
 def oos_has_season(state: CollectionState, player: int, season: int):
     return state.has(SEASON_ITEMS[season], player)
 
@@ -369,13 +383,14 @@ def oos_can_farm_ore_chunks(state: CollectionState, player: int):
             oos_option_medium_logic(state, player),
             any([
                 oos_has_magic_boomerang(state, player),
-                oos_has_sword(state, player),
-                oos_has_bracelet(state, player)
+                oos_has_sword(state, player)
             ])
         ]),
         all([
             oos_option_hard_logic(state, player),
-            state.has("_reached_subrosian_dance_hall", player)
+            state.has("_reached_subrosian_dance_hall", player),
+            oos_has_bracelet(state, player),
+            oos_has_switch_hook(state, player)
         ])
     ])
 
@@ -392,7 +407,8 @@ def oos_can_trigger_far_switch(state: CollectionState, player: int):
         oos_has_boomerang(state, player),
         oos_has_bombs(state, player),
         oos_has_slingshot(state, player),
-        oos_use_energy_ring(state, player)
+        oos_use_energy_ring(state, player),
+        oos_has_switch_hook(state, player)
     ])
 
 
@@ -649,7 +665,8 @@ def oos_can_use_mystery_seeds(state: CollectionState, player: int):
 def oos_can_break_bush(state: CollectionState, player: int, can_summon_companion: bool = False, allow_bombchus: bool = False):
     return any([
         oos_can_break_flowers(state, player, can_summon_companion, allow_bombchus),
-        oos_has_bracelet(state, player)
+        oos_has_bracelet(state, player),
+        oos_has_switch_hook(state, player)
     ])
 
 
@@ -681,7 +698,8 @@ def oos_can_break_pot(state: CollectionState, player: int):
     return any([
         oos_has_bracelet(state, player),
         oos_has_noble_sword(state, player),
-        state.has("Biggoron's Sword", player)
+        state.has("Biggoron's Sword", player),
+        oos_has_bracelet(state, player)
     ])
 
 
@@ -689,6 +707,7 @@ def oos_can_break_flowers(state: CollectionState, player: int, can_summon_compan
     return any([
         oos_has_sword(state, player),
         oos_has_magic_boomerang(state, player),
+        oos_has_switch_hook(state, player),
         all([
             can_summon_companion,
             oos_has_flute(state, player)
@@ -705,8 +724,8 @@ def oos_can_break_flowers(state: CollectionState, player: int, can_summon_compan
                     oos_has_gale_seeds(state, player)
                 ]),
                 all([
-allow_bombchus,
- oos_has_bombchus(state, player, 5)
+                    allow_bombchus,
+                    oos_has_bombchus(state, player, 5)
                 ])
             ])
         ]),
@@ -735,7 +754,8 @@ def oos_can_break_sign(state: CollectionState, player: int):
         state.has("Biggoron's Sword", player),
         oos_has_bracelet(state, player),
         oos_can_use_ember_seeds(state, player, False),
-        oos_has_magic_boomerang(state, player)
+        oos_has_magic_boomerang(state, player),
+        oos_has_switch_hook(state, player)
     ])
 
 
@@ -783,14 +803,13 @@ def oos_can_push_enemy(state: CollectionState, player: int):
 def oos_can_kill_normal_enemy(state: CollectionState, player: int, pit_available: bool = False,
                               allow_gale_seeds: bool = True):
     return any([
-        oos_can_kill_normal_enemy_no_cane(state, player, pit_available),
+        oos_can_kill_normal_enemy_no_cane(state, player, pit_available, allow_gale_seeds),
         (oos_option_medium_logic(state, player) and oos_has_cane(state, player))
     ])
 
 
 def oos_can_kill_normal_enemy_no_cane(state: CollectionState, player: int, pit_available: bool = False,
-                              allow_gale_seeds: bool = True):
-
+                                      allow_gale_seeds: bool = True):
     return any([
         all([
             # If a pit is avaiable nearby, it can be used to put the enemies inside using
@@ -865,13 +884,17 @@ def oos_can_kill_normal_using_slingshot(state: CollectionState, player: int, all
     ])
 
 
-def oos_can_kill_armored_enemy(state: CollectionState, player: int):
+def oos_can_kill_armored_enemy(state: CollectionState, player: int, allow_cane: bool, allow_bombchus: bool):
     return any([
         oos_has_sword(state, player),
         oos_has_fools_ore(state, player),
         all([
             oos_option_medium_logic(state, player),
             oos_has_bombs(state, player, 4)
+        ]),
+        all([
+            allow_bombchus,
+            oos_has_bombchus(state, player, 2)
         ]),
         all([
             oos_has_satchel(state, player, 2),  # Expect a 50+ seeds satchel to be able to chain rooms in dungeons
@@ -881,7 +904,11 @@ def oos_can_kill_armored_enemy(state: CollectionState, player: int):
                 oos_option_medium_logic(state, player)
             ])
         ]),
-        (oos_option_medium_logic(state, player) and oos_has_cane(state, player)),
+        all([
+            allow_cane,
+            oos_option_medium_logic(state, player),
+            oos_has_cane(state, player)
+        ]),
         oos_can_punch(state, player)
     ])
 
@@ -892,6 +919,23 @@ def oos_can_kill_stalfos(state: CollectionState, player: int):
         all([
             oos_option_medium_logic(state, player),
             oos_has_rod(state, player)
+        ])
+    ])
+
+
+def oos_can_kill_moldorm(state: CollectionState, player: int, pit_available: bool = False):
+    return any([
+        oos_can_kill_armored_enemy(state, player, True, True),
+        oos_has_switch_hook(state, player),
+        all([
+            pit_available,
+            any([
+                oos_has_shield(state, player),
+                all([
+                    oos_option_medium_logic(state, player),
+                    oos_has_shovel(state, player)
+                ])
+            ])
         ])
     ])
 
@@ -909,6 +953,7 @@ def oos_can_punch(state: CollectionState, player: int):
 def oos_can_trigger_lever(state: CollectionState, player: int):
     return any([
         oos_can_trigger_lever_from_minecart(state, player),
+        oos_has_switch_hook(state, player),
         all([
             oos_option_medium_logic(state, player),
             oos_has_shovel(state, player)
@@ -937,6 +982,7 @@ def oos_can_kill_d2_hardhat(state: CollectionState, player: int):
         oos_has_fools_ore(state, player),
         oos_has_boomerang(state, player),
         oos_can_push_enemy(state, player),
+        oos_has_switch_hook(state, player),  # Also push the hardhat
         all([
             oos_option_medium_logic(state, player),
             oos_has_satchel(state, player, 2),
@@ -969,14 +1015,22 @@ def oos_can_kill_d2_far_moblin(state: CollectionState, player: int):
 
         oos_can_kill_normal_using_slingshot(state, player),
         all([
-            oos_has_feather(state, player),
-            oos_can_push_enemy(state, player),
+            any([
+                oos_has_feather(state, player),
+                all([
+                    # Switch with a moblin, kill the other, jump in the pit, kill the first
+                    oos_option_medium_logic(state, player),
+                    oos_has_switch_hook(state, player)
+                ])
+            ]),
+            oos_can_kill_normal_enemy(state, player, True),
         ]),
         all([
             oos_option_hard_logic(state, player),
             any([
                 oos_can_use_ember_seeds(state, player, False),
-                oos_can_punch(state, player)
+                oos_can_punch(state, player),
+                oos_has_cane(state, player)
             ])
         ])
     ])
@@ -1000,7 +1054,8 @@ def oos_can_kill_spiked_beetle(state: CollectionState, player: int):
                 oos_has_sword(state, player),
                 oos_has_fools_ore(state, player),
                 oos_can_kill_normal_using_satchel(state, player),
-                oos_can_kill_normal_using_slingshot(state, player)
+                oos_can_kill_normal_using_slingshot(state, player),
+                oos_has_switch_hook(state, player)
             ])
         ]),
         # Instant kill using Gale Seeds
