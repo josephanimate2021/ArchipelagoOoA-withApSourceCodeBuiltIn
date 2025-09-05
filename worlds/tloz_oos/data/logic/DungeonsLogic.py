@@ -224,7 +224,10 @@ def make_d3_logic(player: int):
             oos_can_kill_armored_enemy(state, player, False, False)
         ])],
         ["d3 omuai stairs", "d3 quicksand terrace", False, None],
-        ["d3 omuai stairs", "d3 giant blade room", False, None],
+        ["d3 omuai stairs", "d3 giant blade room", False, lambda state: any([
+            oos_has_feather(state, player),
+            oos_option_hard_logic(state, player)
+        ])],
         ["d3 omuai stairs", "d3 boss", False, lambda state: oos_has_boss_key(state, player, 3)],
     ]
 
@@ -908,6 +911,7 @@ def make_d7_logic(player: int):
         ["d7 water stairs", "d7 past darknut bridge", False, lambda state: any([
             # Just jump to the other side directly
             oos_can_jump_4_wide_pit(state, player),
+            oos_has_tight_switch_hook(state, player),  # or hook to the other side
 
             all([
                 oos_has_slingshot(state, player),
@@ -915,19 +919,13 @@ def make_d7_logic(player: int):
             ]),
             all([
                 # Kill one darknut then pull the others
-                any([
-                    oos_has_magnet_gloves(state, player),
-                    oos_has_tight_switch_hook(state, player)
-                ]),
+                oos_has_magnet_gloves(state, player),
                 any([
                     oos_can_kill_armored_enemy(state, player, True, True),
                     oos_has_shield(state, player),  # To push the darknut, the rod not really working
+                    # Pull the right darknut by just going and stalling in the hole
+                    oos_option_medium_logic(state, player),
                 ])
-            ]),
-            all([
-                # Pull the right darknut by just going and stalling in the hole
-                oos_option_medium_logic(state, player),
-                oos_has_magnet_gloves(state, player)
             ]),
             oos_use_energy_ring(state, player)
         ])],

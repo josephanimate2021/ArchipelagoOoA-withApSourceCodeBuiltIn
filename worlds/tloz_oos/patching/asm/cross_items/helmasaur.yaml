@@ -1,0 +1,16 @@
+0c/6c8a/: dw ironMask_state_switchHook
+
+0c//ironMask_state_switchHook: |
+  ld e,$4d
+  ld hl,ironMask_state_switchHook_4d
+  jp interBankCall
+
+4d/6b53/ironMask_state_switchHook_4d: |
+  ld e,$85
+  /copy a,$0d,$6b55,$5b
+
+4d/6b68/: cp $50 ; ENEMYCOLLISION_UNMASKED_IRON_MASK
+4d/6b7d/: call objectCopyPosition
+4d/6b82/: call $2772 ; enemySetAnimation
+4d/6b87/: call playSound
+4d/6ba1/: cp $1c ; ENEMYCOLLISION_IRON_MASK

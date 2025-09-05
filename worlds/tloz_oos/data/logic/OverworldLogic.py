@@ -908,10 +908,20 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ["goron mountain", "old man in goron mountain", False, lambda state: \
             oos_can_use_ember_seeds(state, player, False)],
 
-        ["goron mountain entrance", "goron mountain", True, lambda state: any([
+        ["goron mountain entrance", "goron mountain", False, lambda state: any([
             oos_has_flippers(state, player),
             oos_can_jump_4_wide_liquid(state, player),
             oos_has_tight_switch_hook(state, player)
+        ])],
+
+        ["goron mountain", "goron mountain entrance", False, lambda state: any([
+            oos_has_flippers(state, player),
+            oos_can_jump_4_wide_liquid(state, player),
+            all([
+                # You can't see the other side from this point
+                oos_option_medium_logic(state, player),
+                oos_has_switch_hook(state, player)
+            ])
         ])],
 
         ["goron mountain entrance", "temple remains lower stump", True, lambda state: \
