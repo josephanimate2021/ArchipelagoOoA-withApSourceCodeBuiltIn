@@ -94,10 +94,6 @@ ITEMS_DATA = {
         "classification": ItemClassification.progression,
         "id": 0x16
     },
-    "Progressive Bracelet": {
-        'classification': ItemClassification.progression,
-        'id': 0x16
-    },
     "Progressive Feather": {
         "classification": ItemClassification.progression,
         "id": 0x17
