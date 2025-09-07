@@ -996,7 +996,7 @@ def make_d7_logic(player: int):
         ])],
 
         # 5 keys
-        ["d7 entrance", "d7 stalfos chest", False, lambda state: all([
+        ["enter d7", "d7 stalfos chest", False, lambda state: all([
             oos_has_small_keys(state, player, 7, 4),
             oos_self_locking_small_key(state, player, "d7 stalfos chest", 7),
             any([
