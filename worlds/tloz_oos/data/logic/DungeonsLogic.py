@@ -549,9 +549,9 @@ def make_d5_logic(player: int):
             oos_can_kill_armored_enemy(state, player, False, False)
         ])],
 
-        ["d5 entrance", "d5 magnet ball chest", False, lambda state: \
+        ["enter d5", "d5 magnet ball chest", False, lambda state: \
             oos_self_locking_small_key(state, player, "d5 magnet ball chest", 5)],
-        ["d5 entrance", "d5 basement", False, lambda state: all([
+        ["enter d5", "d5 basement", False, lambda state: all([
             oos_self_locking_small_key(state, player, "d5 basement", 5),
             state.has("_dropped_d5_magnet_ball", player),
             oos_has_small_keys(state, player, 5, 3),
