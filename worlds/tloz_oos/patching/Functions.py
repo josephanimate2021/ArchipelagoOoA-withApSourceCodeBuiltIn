@@ -8,7 +8,7 @@ from settings import get_settings
 from .RomData import RomData
 from .Util import *
 from .asm import asm_files
-from .text import simple_hex, normalize_text
+from .text import normalize_text
 from .z80asm.Assembler import Z80Assembler, GameboyAddress
 from .z80asm.Util import parse_hex_string_to_value
 from ..Hints import make_hint_texts

@@ -1,7 +1,8 @@
 import random
 
 from BaseClasses import ItemClassification, Item
-from .patching.text import normalize_text, simple_hex
+from .patching.Util import simple_hex
+from .patching.text import normalize_text
 
 know_it_all_birds = [
     "TX_3200",  # "Know-It-All Bird #1",

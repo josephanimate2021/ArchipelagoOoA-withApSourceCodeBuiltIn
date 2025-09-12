@@ -9,6 +9,8 @@
   ldh (hRomBank),a
   ld ($2222),a
   
+  di ; apparently GBC can break if it decides to interrupt during an sp manipulation
+
   ; sp -> hRomBank
   inc sp
   inc sp
@@ -24,7 +26,11 @@
   dec sp
   ; sp -> hRomBank
   
+  ei
+  
   call $00a0 ; jpHl
+  
+  di
   
   ; sp -> hRomBank
   inc sp
@@ -40,6 +46,8 @@
   dec sp
   dec sp
   ; sp -> hRomBank
+  
+  ei
   
   pop af
   ldh (hRomBank),a

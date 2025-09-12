@@ -1,12 +1,3 @@
-4d/436d/ecom_spawnUncountedEnemyWithSubid01_but_actually_not_for_helmasaur: |
-  ld e,$0c
-  ld hl,$436d
-  call safeInterBankCall
-  ret nz
-  
-  ld (hl),a ; set back to subid 0
-  ret
-
 4d/4005/ecom_incSubstate: |
   ld e,$0c
   ld hl,$4005
