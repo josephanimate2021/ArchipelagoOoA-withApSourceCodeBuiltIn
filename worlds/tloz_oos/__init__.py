@@ -836,6 +836,18 @@ class OracleOfSeasonsWorld(World):
         # This usually ends up with generator not having anywhere to place a few small keys, making the seed unbeatable.
         # To circumvent this, we perform a restricted pre-fill here, placing only those dungeon items
         # before anything else.
+        base_all_state = self.multiworld.get_all_state(False, collect_pre_fill_items=False, perform_sweep=False)
+        # Collect all pre_fill_items except our own and then sweep. This gives more accurate results in cases of item
+        # plando being used to remove items from the item pool and placing them into locations locked behind pre_fill
+        # items.
+        for player in self.multiworld.player_ids:
+            if player == self.player:
+                continue
+            subworld = self.multiworld.worlds[player]
+            for item in subworld.get_pre_fill_items():
+                subworld.collect(base_all_state, item)
+        base_all_state.sweep_for_advancements()
+
         for i in range(0, 9):
             # Build a list of locations in this dungeon
             dungeon_location_names = [name for name, loc in LOCATIONS_DATA.items()
@@ -853,7 +865,14 @@ class OracleOfSeasonsWorld(World):
             # Remove from the all_state the items we're about to place
             for item in confined_dungeon_items:
                 self.pre_fill_items.remove(item)
-            collection_state = self.multiworld.get_all_state(False)
+            collection_state = base_all_state.copy()
+            # Collect our remaining pre_fill_items into the state.
+            for item in self.get_pre_fill_items():
+                collection_state.collect(item, True)
+            # Sweep the copied state across the entire multiworld to again account for unusual item plando. It is also
+            # beneficial to pass as maximal a state as possible to fill_restrictive to reduce how much sweeping
+            # fill_restrictive must do.
+            collection_state.sweep_for_advancements()
             # Perform a prefill to place confined items inside locations of this dungeon
             self.random.shuffle(dungeon_locations)
             fill_restrictive(self.multiworld, collection_state, dungeon_locations, confined_dungeon_items,
