@@ -1,4 +1,5 @@
 import os
+from threading import Event
 from typing import List, Union, ClassVar, Any, Optional, Tuple, Type
 
 import settings
@@ -131,6 +132,7 @@ class OracleOfSeasonsWorld(World):
         self.random_rings_pool: List[str] = []
         self.remaining_progressive_gasha_seeds = 0
 
+        self.made_hints = Event()
         self.region_hints: list[tuple[str, str | int]] = []
         self.item_hints: list[tuple[str, str, int | None] | None] = []
 
@@ -1011,14 +1013,13 @@ class OracleOfSeasonsWorld(World):
             else:
                 break
 
-    def post_fill(self) -> None:
+    def generate_output(self, output_directory: str):
         if self.options.bird_hint.know_it_all():
             self.region_hints = create_region_hints(self)
 
         if self.options.bird_hint.owl():
             self.item_hints = create_item_hints(self)
-
-    def generate_output(self, output_directory: str):
+        self.made_hints.set()
         patch = oos_create_ap_procedure_patch(self)
         rom_path = os.path.join(output_directory, f"{self.multiworld.get_out_file_name_base(self.player)}"
                                                   f"{patch.patch_file_ending}")
@@ -1042,6 +1043,7 @@ class OracleOfSeasonsWorld(World):
             "shop_costs": self.shop_prices,
         }
 
+        self.made_hints.wait()
         # The structure is made to make it easy to call CreateHints
         slot_data_item_hints = []
         for item_hint in self.item_hints:
