@@ -78,10 +78,14 @@ ITEMS_DATA = {
         "id": 0x0e,
         "subid": 0x02
     },
-    "Progressive Harp": {
+    "Seed Shooter": {
         'classification': ItemClassification.progression,
-        'id': 0x11
+        'id': 0x0f
     },
+    # "Progressive Harp": {
+    #     'classification': ItemClassification.progression,
+    #     'id': 0x11
+    # },
     "Progressive Slingshot": {
         "classification": ItemClassification.progression,
         "id": 0x13

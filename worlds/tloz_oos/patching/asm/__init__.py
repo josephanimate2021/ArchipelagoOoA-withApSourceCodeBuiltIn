@@ -74,7 +74,8 @@ asm_files = {
         "asm/cross_items/cane_of_somaria.yaml",
         "asm/cross_items/enemy_collision.yaml",
         "asm/cross_items/helmasaur.yaml",
-        "asm/cross_items/safeInterBankCall.yaml",
+        "asm/cross_items/safe_inter_bank_call.yaml",
+        "asm/cross_items/seed_shooter.yaml",
         "asm/cross_items/switch_hook.yaml",
         "asm/cross_items/uncmp_gfx.yaml"
     ]

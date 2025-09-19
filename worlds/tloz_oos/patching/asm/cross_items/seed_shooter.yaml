@@ -1,0 +1,32 @@
+46/4e66/parentItemCode_shooter_46: /copy a,$06,$4e66,$c7
+
+47/5b51/itemCode0f_47: /copy a,$07,$5b51,$19
+
+47/62a1/itemCode0fPost_47: /copy a,$07,$62a1,$22
+
+# Replace calls in parentItemCode_shooter_46
+47/4e75/: call $2aab ; updateLinkDirectionFromAngle
+
+
+# Update item usage table
+06/5526/: db $43
+
+06/49c5/: dw parentItemCode_shooter
+07/48c8/: dw itemCode0f
+07/493a/: dw itemCode0fPost
+
+06//parentItemCode_shooter: |
+  ld hl,parentItemCode_shooter_46
+  jr call_bank_46
+
+07//itemCode0f: |
+  ld hl,itemCode0f_47
+  jr call_bank_47
+
+07//itemCode0fPost: |
+  ld hl,itemCode0fPost_47
+  jr call_bank_47
+
+# overwrite initial max health (since they are overwritten by another function anyway) to set
+# the initial seed selection instead. first byte is low c6xx address, second is index.
+07/4190/shooterInitialSelection: db $bd, option.defaultSeedType - $20

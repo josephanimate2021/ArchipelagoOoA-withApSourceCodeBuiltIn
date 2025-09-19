@@ -1,3 +1,18 @@
+46/441e/specialObjectAnimate_optimized: |
+  ld e,$06
+  ld hl,$4414
+  jp interBankCall
+
+46/4a42/clearParentItem_46: |
+  ld e,$06
+  ld hl,$49e7
+  jp interBankCall
+
+46/4f82/clearSelfIfNoSeeds: |
+  ld hl,wShooterSelectedSeeds
+  /copy s,$06,$4db8,$0d
+  jp clearParentItem_46
+
 46/5378/parentItemLoadAnimationAndIncState: |
   ld e,$06
   ld hl,$52e2
@@ -6,16 +21,6 @@
 46/53dd/itemCreateChild: |
   ld e,$06
   ld hl,$532f
-  jp interBankCall
-
-46/441e/specialObjectAnimate_optimized: |
-  ld e,$06
-  ld hl,$4414
-  jp interBankCall
-
-46/4a42/clearParentItem: |
-  ld e,$06
-  ld hl,$49e7
   jp interBankCall
 
 46/54d8/isLinkInHole: |

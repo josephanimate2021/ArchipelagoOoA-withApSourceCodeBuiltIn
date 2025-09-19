@@ -125,6 +125,7 @@ DEFINES = {
     "wFeatherLevel": "$c6b4",
     "wNumEmberSeeds": "$c6b5",
     "wEssencesObtained": "$c6bb",
+    "wShooterSelectedSeeds": "$c6bd",  # Replaces wPirateBellState
     "wSatchelSelectedSeeds": "$c6be",
     "wActiveRing": "$c6c5",
     "wRingBoxLevel": "$c6c6",
