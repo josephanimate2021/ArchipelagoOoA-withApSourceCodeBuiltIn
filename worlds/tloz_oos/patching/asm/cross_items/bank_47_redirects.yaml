@@ -53,6 +53,8 @@
 
 47/577e/itemCheckWithinRangeOfLink: /copy a,$07,$577e,$13
 
+47/60d6/itemInitializeFromLinkPosition: /copy s,$07,$5e5a,$1f
+
 47/628e/itemMimicBgTile: |
   ld e,$07
   ld hl,$6010
