@@ -1,14 +1,13 @@
 import random
 
+from typing_extensions import TYPE_CHECKING
+
 from BaseClasses import ItemClassification, Item
 from .patching.Util import simple_hex
 from .patching.text import normalize_text
-from typing_extensions import TYPE_CHECKING
-from BaseClasses import ItemClassification, Item, Location
-from .patching.text import normalize_text, simple_hex
 
 if TYPE_CHECKING:
-    from . import OracleOfSeasonsWorld
+    pass
 
 know_it_all_birds = [
     "TX_3200",  # "Know-It-All Bird #1",
