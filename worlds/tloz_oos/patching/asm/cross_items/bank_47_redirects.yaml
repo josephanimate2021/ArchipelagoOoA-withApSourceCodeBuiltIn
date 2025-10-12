@@ -51,6 +51,18 @@
   ld hl,$4b7d
   jp safeInterBankCall
 
+47/4bbf/checkTileIsPassableFromDirection: |
+  ld hl,$4ba7
+  
+  safeInterBankCall_47:
+  push af
+  ldh a,(hRomBank)
+  push af
+  ld a,$07
+  jp safeInterBankCallReady
+
+47/510f/seedItemClearKnockback: /copy a,$07,$510f,$05
+
 47/577e/itemCheckWithinRangeOfLink: /copy a,$07,$577e,$13
 
 47/60d6/itemInitializeFromLinkPosition: /copy s,$07,$5e5a,$1f

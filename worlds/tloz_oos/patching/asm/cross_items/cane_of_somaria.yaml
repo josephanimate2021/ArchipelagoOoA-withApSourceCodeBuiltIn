@@ -240,13 +240,17 @@
   /copy a,$00,$19bc,$05
   jr nz,@notSomariaBlock
   /copy a,$00,$19c3,$0a
-  jp $199b
+  ret
   @notSomariaBlock:
   /copy a,$00,$19cf,$03
+  call $044b ; clearMemory
   ret
 
-00/1995/:
+00/1995/: |
   call clearSomariaBlock
+  nop
+  nop
+  nop
 
 # Make somaria cane not cut grass
 # To do that, only cut grass when it's a sword instead of not cutting it when it's the rod

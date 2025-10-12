@@ -72,8 +72,28 @@
   jp $4ce8 ; @satchel
   
   @shooter:
-  ld e,$47
+  ld l,$34 ; Item.var34
+  ld (hl),$03
   ld hl,$4d37
+  ld e,$47
   jp interBankCall
 
 47/4d37/item_seed@shooter: /copy a,$07,$4d37,$4e
+
+07/4d47/seedItemState@slingshotUpdate: call seedItemState@nonSatchelUpdate
+
+07//seedItemState@nonSatchelUpdate: |
+  cp $63
+  jp nz,$4fdf
+  ld hl,seedItemUpdateBouncing
+  jr call_bank_47
+
+47/5035/seedItemUpdateBouncing: /copy a,$07,$5035,$64
+47/5035/: call $1435 ; getTileAtPosition
+47/503b/: call $1de7 ; findByteInCollisionTable
+47/5057/: call $14b5 ; objectCheckTileCollision_allowHoles
+
+47/5099/seedItemCheckDiagonalCollision: /copy a,$07,$5099,$5b
+47/50b5/: call $14b5 ; checkTileCollisionAt_allowHoles
+47/50ba/: call $1435 ; getTileAtPosition
+47/50c0/: call $1de7 ; findByteInCollisionTable

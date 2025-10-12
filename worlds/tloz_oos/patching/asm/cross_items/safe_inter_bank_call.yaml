@@ -6,6 +6,7 @@
   push af
   
   ld a,e
+  safeInterBankCallReady:
   ldh (hRomBank),a
   ld ($2222),a
   
