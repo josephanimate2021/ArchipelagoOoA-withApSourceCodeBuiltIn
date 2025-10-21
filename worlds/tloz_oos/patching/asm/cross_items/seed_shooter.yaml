@@ -86,7 +86,7 @@
   cp $63
   jp nz,$4fdf
   ld hl,seedItemUpdateBouncing
-  jr call_bank_47
+  jp safeInterBankCall_47
 
 47/5035/seedItemUpdateBouncing: /copy a,$07,$5035,$64
 47/5035/: call $1435 ; getTileAtPosition
