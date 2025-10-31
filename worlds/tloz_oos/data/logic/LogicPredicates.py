@@ -56,10 +56,6 @@ def oos_has_magic_boomerang(state: CollectionState, player: int):
     return state.has("Progressive Boomerang", player, 2)
 
 
-def oos_has_cane(state: CollectionState, player: int):
-    return state.has("Cane of Somaria", player)
-
-
 def oos_has_bracelet(state: CollectionState, player: int):
     return state.has("Power Bracelet", player)
 
@@ -70,6 +66,11 @@ def oos_has_shovel(state: CollectionState, player: int):
 
 def oos_has_flippers(state: CollectionState, player: int):
     return state.has("Flippers", player)
+
+
+# Cross items
+def oos_has_cane(state: CollectionState, player: int):
+    return state.has("Cane of Somaria", player)
 
 
 def oos_has_switch_hook(state: CollectionState, player: int, level: int = 1):
@@ -83,6 +84,17 @@ def oos_has_tight_switch_hook(state: CollectionState, player: int):
             oos_option_medium_logic(state, player),
             oos_has_switch_hook(state, player)
         ])
+    ])
+
+
+def oos_has_shooter(state: CollectionState, player: int):
+    return state.has("Seed Shooter", player)
+
+
+def oos_has_seed_thrower(state: CollectionState, player: int):
+    return any([
+        oos_has_slingshot(state, player),
+        oos_has_shooter(state, player),
     ])
 
 
@@ -406,7 +418,7 @@ def oos_can_trigger_far_switch(state: CollectionState, player: int):
     return any([
         oos_has_boomerang(state, player),
         oos_has_bombs(state, player),
-        oos_has_slingshot(state, player),
+        oos_has_seed_thrower(state, player),
         oos_use_energy_ring(state, player),
         oos_has_switch_hook(state, player)
     ])
@@ -597,6 +609,7 @@ def oos_can_jump_6_wide_pit(state: CollectionState, player: int):
 def oos_can_use_seeds(state: CollectionState, player: int):
     return any([
         oos_has_slingshot(state, player),
+        oos_has_shooter(state, player),
         oos_has_satchel(state, player)
     ])
 
@@ -641,7 +654,7 @@ def oos_can_use_gale_seeds_offensively(state: CollectionState, player: int):
             oos_has_mystery_seeds(state, player)
         ]),
         any([
-            oos_has_slingshot(state, player),
+            oos_has_seed_thrower(state, player),
             all([
                 oos_has_satchel(state, player),
                 any([
@@ -720,7 +733,7 @@ def oos_can_break_flowers(state: CollectionState, player: int, can_summon_compan
                 oos_has_bombs(state, player, 2),
                 oos_can_use_ember_seeds(state, player, False),
                 all([
-                    oos_has_slingshot(state, player),
+                    oos_has_seed_thrower(state, player),
                     oos_has_gale_seeds(state, player)
                 ]),
                 all([
@@ -866,7 +879,7 @@ def oos_can_kill_normal_using_slingshot(state: CollectionState, player: int, all
         return False
 
     return all([
-        oos_has_slingshot(state, player),
+        oos_has_seed_thrower(state, player),
         any([
             oos_has_ember_seeds(state, player),
             oos_has_scent_seeds(state, player),
@@ -900,7 +913,7 @@ def oos_can_kill_armored_enemy(state: CollectionState, player: int, allow_cane: 
             oos_has_satchel(state, player, 2),  # Expect a 50+ seeds satchel to be able to chain rooms in dungeons
             oos_has_scent_seeds(state, player),
             any([
-                oos_has_slingshot(state, player),
+                oos_has_seed_thrower(state, player),
                 oos_option_medium_logic(state, player)
             ])
         ]),
@@ -972,7 +985,7 @@ def oos_can_trigger_lever_from_minecart(state: CollectionState, player: int):
         oos_can_use_scent_seeds(state, player),
         oos_can_use_mystery_seeds(state, player),
         oos_can_use_ember_seeds(state, player, False),
-        oos_has_slingshot(state, player),  # any seed works using slingshot
+        oos_has_seed_thrower(state, player),  # any seed works using slingshot
     ])
 
 
@@ -987,7 +1000,7 @@ def oos_can_kill_d2_hardhat(state: CollectionState, player: int):
             oos_option_medium_logic(state, player),
             oos_has_satchel(state, player, 2),
             any([
-                oos_has_slingshot(state, player),
+                oos_has_seed_thrower(state, player),
                 all([
                     oos_option_hard_logic(state, player),
                     oos_has_satchel(state, player),

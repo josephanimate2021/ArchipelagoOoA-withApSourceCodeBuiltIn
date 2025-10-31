@@ -54,7 +54,7 @@
 47/4bbf/checkTileIsPassableFromDirection: |
   ld hl,$4ba7
   
-  safeInterBankCall_47:
+  safeInterBankCall_07:
   push af
   ldh a,(hRomBank)
   push af

@@ -168,3 +168,6 @@
 1b/7ae0/: /copy a,$19,$03e0,$20
 # Apply the sprite to the inventory item by changing the treasureDisplayData
 3f/6dc5/: db $a6
+
+# Add the gfx entry to the interactionData
+3f/67f9/: db $61,$0c,$40

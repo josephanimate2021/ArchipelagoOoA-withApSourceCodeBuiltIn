@@ -338,7 +338,7 @@ def make_d4_logic(player: int):
         ["d4 terrace", "d4 scrub", False, lambda state: oos_has_rupees_for_shop(state, player, "d4Scrub")],
 
         ["d4 stalfos stairs", "d4 torch chest", False, lambda state: all([
-            oos_has_slingshot(state, player),
+            oos_has_seed_thrower(state, player),
             oos_has_ember_seeds(state, player)
         ])],
 
@@ -361,7 +361,7 @@ def make_d4_logic(player: int):
                 all([
                     any([  # hit distant levers
                         oos_has_magic_boomerang(state, player),
-                        oos_has_slingshot(state, player)
+                        oos_has_seed_thrower(state, player)
                     ]),
                     # In medium, switch is also valid, but a feather is required to get there anyway
                     oos_can_jump_2_wide_pit(state, player),
@@ -378,7 +378,7 @@ def make_d4_logic(player: int):
             oos_has_small_keys(state, player, 4, 5),
             any([
                 oos_has_boomerang(state, player),
-                oos_has_slingshot(state, player),
+                oos_has_seed_thrower(state, player),
                 oos_has_switch_hook(state, player),
                 oos_option_hard_logic(state, player)
             ])
@@ -390,7 +390,7 @@ def make_d4_logic(player: int):
             oos_has_boss_key(state, player, 4),
             any([
                 all([
-                    oos_has_slingshot(state, player),
+                    oos_has_seed_thrower(state, player),
                     oos_can_use_ember_seeds(state, player, True)
                 ]),
                 oos_can_jump_3_wide_pit(state, player),
@@ -407,7 +407,7 @@ def make_d4_logic(player: int):
                 # Kill Gohma without breaking its pincer
                 oos_option_medium_logic(state, player),
                 any([
-                    oos_has_slingshot(state, player),
+                    oos_has_seed_thrower(state, player),
                     oos_option_hard_logic(state, player)  # You can kill Gohma with the satchel. Yup...
                 ]),
                 any([
@@ -672,7 +672,7 @@ def make_d6_logic(player: int):
             any([
                 # In easy, logic expects slingshot, but medium+ can expect satchel
                 # as well since the distance between platforms & torches is a half-tile
-                oos_has_slingshot(state, player),
+                oos_has_seed_thrower(state, player),
                 oos_option_medium_logic(state, player)
             ]),
             oos_can_use_ember_seeds(state, player, False)
@@ -778,7 +778,7 @@ def make_d6_logic(player: int):
                     oos_option_medium_logic(state, player),
                     oos_has_gale_seeds(state, player),
                     any([
-                        oos_has_slingshot(state, player),
+                        oos_has_seed_thrower(state, player),
                         all([
                             oos_option_hard_logic(state, player),
                             oos_has_satchel(state, player)
@@ -797,7 +797,7 @@ def make_d6_logic(player: int):
             any([
                 oos_has_sword(state, player),
                 oos_has_fools_ore(state, player),
-                oos_has_slingshot(state, player),
+                oos_has_seed_thrower(state, player),
                 # state.has("expert's ring", player)
             ])
         ])],
@@ -815,7 +815,7 @@ def make_d7_logic(player: int):
         # 1 key
         ["enter d7", "enter poe A", False, lambda state: all([
             oos_has_small_keys(state, player, 7, 1),
-            oos_has_slingshot(state, player),
+            oos_has_seed_thrower(state, player),
             oos_can_use_ember_seeds(state, player, True)
         ])],
 
@@ -914,7 +914,7 @@ def make_d7_logic(player: int):
             oos_has_tight_switch_hook(state, player),  # or hook to the other side
 
             all([
-                oos_has_slingshot(state, player),
+                oos_has_seed_thrower(state, player),
                 oos_has_scent_seeds(state, player)
             ]),
             all([
@@ -1050,7 +1050,7 @@ def make_d8_logic(player: int):
         ["enter d8", "d8 eye drop", False, lambda state: all([
             oos_can_break_pot(state, player),
             any([
-                oos_has_slingshot(state, player),
+                oos_has_seed_thrower(state, player),
                 all([
                     oos_option_medium_logic(state, player),
                     oos_has_feather(state, player),
@@ -1069,6 +1069,10 @@ def make_d8_logic(player: int):
                 oos_has_hyper_slingshot(state, player),
                 all([
                     oos_option_hell_logic(state, player),
+                    any([
+                        oos_has_satchel(state, player),
+                        oos_has_slingshot(state, player),
+                    ]),
                     any([
                         oos_can_use_ember_seeds(state, player, False),
                         oos_can_use_scent_seeds(state, player),
@@ -1122,6 +1126,10 @@ def make_d8_logic(player: int):
                 oos_has_hyper_slingshot(state, player),
                 all([
                     oos_option_hell_logic(state, player),
+                    any([
+                        oos_has_satchel(state, player),
+                        oos_has_slingshot(state, player),
+                    ]),
                     any([
                         oos_can_use_ember_seeds(state, player, False),
                         oos_can_use_scent_seeds(state, player),

@@ -25,12 +25,14 @@
 # treasureDisplayData1
 3f/6d84/: |
   db TREASURE_SWITCH_HOOK,<wSwitchHookLevel,$0c
+  db TREASURE_SHOOTER,<wShooterSelectedSeeds,$0d
   db $00,$00,$00
 
-# Free space from 3f:6d8a to 3da0
+# Free space from 3f:6d8d to 3da0
 # treasureDisplayData2
 3f//treasureDisplayData2: |
   /copy s,$3f,$2d87,$18
   dw treasureDisplayData_switchHook-7
+  dw treasureDisplayData_shooter
 
 3f/4718/: dw treasureDisplayData2

@@ -129,6 +129,7 @@ DEFINES = {
     "wNumEmberSeeds": "$c6b5",
     "wEssencesObtained": "$c6bb",
     "wShooterSelectedSeeds": "$c6bd",  # Replaces wPirateBellState
+    "<wShooterSelectedSeeds": "$bd",
     "wSatchelSelectedSeeds": "$c6be",
     "wActiveRing": "$c6c5",
     "wRingBoxLevel": "$c6c6",
@@ -283,6 +284,7 @@ DEFINES = {
     "TREASURE_SWITCH_HOOK": "$0a",
     "TREASURE_BOMBCHUS": "$0d",
     "TREASURE_FLUTE": "$0e",
+    "TREASURE_SHOOTER": "$0f",
     "TREASURE_SLINGSHOT": "$13",
     "TREASURE_BRACELET": "$16",
     "TREASURE_FEATHER": "$17",

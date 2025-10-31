@@ -258,17 +258,6 @@
   cp $05
   db $20 ; replaces jr z by jr nz
 
-# gfx
-1b/7ac0/: /copy a,$19,$02e0,$20
-# Apply the sprite to the inventory item by changing the treasureDisplayData
-3f/6dbe/: db $a5
-# Add the gfx entry to the interactionData
-3f/67f6/: db $61,$0a,$20 ; GFX_5e
-# TreasureDisplayData
-3f/6dc3/: db text.cane.inventory
-# treasureObjectData
-15/513b/: db text.cane.treasure,$5e
-
 # Remove the grass effect on the somaria block indoors
 00/0f39/: |
   call checkSomariaGrass
@@ -280,9 +269,21 @@
   cp $02
   ccf
   ret c
-  
+
   @end:
   and a ; sets c to 0
   bit 2,h
   ld a,($cc52) ; wGrassAnimationModifier
   ret
+
+# gfx
+# inv icon
+1b/7ac0/: /copy a,$19,$42e0,$20
+# Apply the sprite to the inventory item by changing the treasureDisplayData
+3f/6dbe/: db $a5
+# Add the gfx entry to the interactionData
+3f/67f6/: db $61,$0a,$20 ; GFX_5e
+# TreasureDisplayData
+3f/6dc3/: db text.cane.inventory
+# treasureObjectData
+15/513b/: db text.cane.treasure,$5e

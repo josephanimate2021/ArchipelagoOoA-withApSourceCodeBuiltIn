@@ -65,11 +65,14 @@
 # make all seeds grow in all seasons.
 0d/68b5/: cp a
 
-# allow harvesting seeds from trees with either slingshot or satchel.
+# allow harvesting seeds from trees with either slingshot or satchel or shooter.
 10//checkCanHarvestSeeds: |
     call checkTreasureObtained
     ret c
     ld a,TREASURE_SLINGSHOT
+    call checkTreasureObtained
+    ret c
+    ld a,TREASURE_SHOOTER
     jp checkTreasureObtained
 10/4b1a/: call checkCanHarvestSeeds
 

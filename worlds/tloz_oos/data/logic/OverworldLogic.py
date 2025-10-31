@@ -103,7 +103,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ["western coast", "maple encounter", False, lambda state: oos_can_meet_maple(state, player)],
         ["western coast", "black beast's chest", False, lambda state: all([
             all([
-                oos_has_slingshot(state, player),
+                oos_has_seed_thrower(state, player),
                 oos_can_use_ember_seeds(state, player, True),
             ]),
             oos_can_use_mystery_seeds(state, player),
@@ -588,7 +588,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
                         any([
                             oos_has_sword(state, player),
                             all([
-                                oos_has_slingshot(state, player),
+                                oos_has_seed_thrower(state, player),
                                 oos_can_use_ember_seeds(state, player, False),
                             ]),
                             all([
@@ -1205,7 +1205,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
             all([
                 # casual rules
                 oos_has_noble_sword(state, player),
-                oos_has_slingshot(state, player),
+                oos_has_seed_thrower(state, player),
                 oos_can_use_ember_seeds(state, player, False),
                 oos_can_use_mystery_seeds(state, player)
             ]),
@@ -1214,7 +1214,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
                 oos_has_sword(state, player, False),
                 any([
                     # all seeds damage Twinrova phase 2
-                    oos_has_slingshot(state, player),
+                    oos_has_seed_thrower(state, player),
                     all([
                         oos_option_hard_logic(state, player),
                         oos_can_use_seeds(state, player),
