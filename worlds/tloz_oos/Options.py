@@ -653,7 +653,7 @@ class OracleOfSeasonsRemoveItemsFromPool(ItemDict):
     verify_item_name = False
 
 
-class OracleOfSeasonsIncludeCrossItems(DefaultOnToggle):
+class OracleOfSeasonsIncludeCrossItems(Toggle):
     """
     When enabled, add the cane of somaria to the item pool (requires the OoA rom)
     """
