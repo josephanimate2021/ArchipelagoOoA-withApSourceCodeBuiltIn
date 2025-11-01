@@ -1,4 +1,3 @@
-import hashlib
 import pkgutil
 
 import yaml
@@ -27,21 +26,16 @@ class OoSPatchExtensions(APPatchExtension):
                             f"you are currently using v{VERSION[0]},{VERSION[1]}")
 
         if patch_data["options"]["cross_items"]:
+            file_name = get_settings().tloz_oos_options.ages_rom_file
+            file_path = Utils.user_path(file_name)
+            rom_file = open(file_path, "rb")
+            ages_rom = bytes(rom_file.read())
+            rom_file.close()
+
             for bank in range(0x40, 0x80):
                 bank = 0xdd  # TODO: this is an invalid instruction that hangs the game, it's easier to debug but looks worse, remove/comment out once stable
                 rom_data.add_bank(bank)
             rom_data.update_rom_size()
-
-            file_name = get_settings()["tloz_ooa_options"]["rom_file"]
-            if not os.path.exists(file_name):
-                file_name = Utils.user_path(file_name)
-            ages_rom = bytes(open(file_name, "rb").read())
-            ages_hash = "c4639cc61c049e5a085526bb6cac03bb"
-            basemd5 = hashlib.md5()
-            basemd5.update(ages_rom)
-            if ages_hash != basemd5.hexdigest():
-                raise Exception("Supplied ROM does not match known MD5 for Oracle of Ages US version."
-                                "Get the correct game and version, then dump it.")
         else:
             ages_rom = bytes()
 
@@ -117,16 +111,12 @@ class OoSProcedurePatch(APProcedurePatch, APTokenMixin):
     def get_source_data(cls) -> bytes:
         base_rom_bytes = getattr(cls, "base_rom_bytes", None)
         if not base_rom_bytes:
-            file_name = get_settings()["tloz_oos_options"]["rom_file"]
-            if not os.path.exists(file_name):
-                file_name = Utils.user_path(file_name)
+            file_name = get_settings().tloz_oos_options.rom_file
+            file_name = Utils.user_path(file_name)
 
-            base_rom_bytes = bytes(open(file_name, "rb").read())
+            rom_file = open(file_name, "rb")
+            base_rom_bytes = bytes(rom_file.read())
+            rom_file.close()
 
-            basemd5 = hashlib.md5()
-            basemd5.update(base_rom_bytes)
-            if ROM_HASH != basemd5.hexdigest():
-                raise Exception("Supplied ROM does not match known MD5 for Oracle of Seasons US version."
-                                "Get the correct game and version, then dump it.")
             setattr(cls, "base_rom_bytes", base_rom_bytes)
         return base_rom_bytes

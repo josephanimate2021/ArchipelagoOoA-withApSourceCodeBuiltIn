@@ -26,6 +26,12 @@ class OracleOfSeasonsSettings(settings.Group):
         description = "OoS ROM File"
         md5s = [ROM_HASH]
 
+    class AgesRomFile(settings.UserFilePath):
+        """File name of the Oracle of Ages US ROM (only needed for cross items)"""
+        copy_to = "Legend of Zelda, The - Oracle of Ages (USA).gbc"
+        description = "OoA ROM File"
+        md5s = [AGES_ROM_HASH]
+
     class OoSCharacterSprite(str):
         """
         The name of the sprite file to use (from "data/sprites/oos_ooa/").
@@ -60,6 +66,7 @@ class OracleOfSeasonsSettings(settings.Group):
         """
 
     rom_file: RomFile = RomFile(RomFile.copy_to)
+    ages_rom_file: AgesRomFile = AgesRomFile(AgesRomFile.copy_to)
     rom_start: bool = True
     character_sprite: Union[OoSCharacterSprite, str] = "link"
     character_palette: Union[OoSCharacterPalette, str] = "green"
