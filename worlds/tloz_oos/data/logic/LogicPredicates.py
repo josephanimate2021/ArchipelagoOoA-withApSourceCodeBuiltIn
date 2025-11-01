@@ -714,7 +714,7 @@ def oos_can_break_pot(state: CollectionState, player: int):
         oos_has_bracelet(state, player),
         oos_has_noble_sword(state, player),
         state.has("Biggoron's Sword", player),
-        oos_has_bracelet(state, player)
+        oos_has_switch_hook(state, player)
     ])
 
 
