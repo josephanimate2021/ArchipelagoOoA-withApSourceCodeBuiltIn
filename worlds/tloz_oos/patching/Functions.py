@@ -429,6 +429,8 @@ def set_player_start_inventory(assembler: Z80Assembler, patch_data):
     if "Progressive Slingshot" in start_inventory_data:
         start_inventory_changes[0xc6b3] = start_inventory_data["Progressive Slingshot"]  # Slingshot level
         seed_amount = 0x20
+    if "Seed Shooter" in start_inventory_data:
+        seed_amount = 0x20
     if "Seed Satchel" in start_inventory_data:
         satchel_level = start_inventory_data["Seed Satchel"]
         start_inventory_changes[parse_hex_string_to_value(DEFINES["wSeedSatchelLevel"])] = satchel_level
@@ -438,8 +440,6 @@ def set_player_start_inventory(assembler: Z80Assembler, patch_data):
             seed_amount = 0x50
         else:
             seed_amount = 0x99
-    if "Seed Shooter" in start_inventory_data:
-        seed_amount = 0x20
     if seed_amount:
         start_inventory_data[SEED_ITEMS[patch_data["options"]["default_seed"]]] = 1  # Add seeds to the start inventory
 
