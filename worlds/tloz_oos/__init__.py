@@ -98,7 +98,6 @@ class OracleOfSeasonsWorld(World):
     Gather the Essences of Nature, confront Onox and rescue Din to give nature some rest in Holodrum.
     """
     game = "The Legend of Zelda - Oracle of Seasons"
-    author = ["Dinopony", "Ishigh"]  # Not used by AP but a good way to keep who made that apworld when redistributed
     options_dataclass = OracleOfSeasonsOptions
     options: OracleOfSeasonsOptions
     # required_client_version = (0, 5, 1)
