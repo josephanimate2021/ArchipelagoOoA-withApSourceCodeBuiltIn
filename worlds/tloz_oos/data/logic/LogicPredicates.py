@@ -400,9 +400,11 @@ def oos_can_farm_ore_chunks(state: CollectionState, player: int):
         ]),
         all([
             oos_option_hard_logic(state, player),
-            state.has("_reached_subrosian_dance_hall", player),
-            oos_has_bracelet(state, player),
-            oos_has_switch_hook(state, player)
+            any([
+                state.has("_reached_subrosian_dance_hall", player),
+                oos_has_bracelet(state, player),
+                oos_has_switch_hook(state, player)
+            ])
         ])
     ])
 
