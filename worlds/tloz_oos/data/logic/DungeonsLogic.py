@@ -464,11 +464,9 @@ def make_d5_logic(player: int):
         ["enter d5", "d5 terrace chest", False, lambda state: oos_has_magnet_gloves(state, player)],
 
         ["d5 terrace chest", "armos knights owl", False, lambda state: oos_can_use_mystery_seeds(state, player)],
-        ["d5 terrace chest", "d5 armos chest", False, lambda state: any([
-            all([
-                oos_can_kill_moldorm(state, player),
-                oos_can_kill_normal_enemy(state, player)
-            ]),
+        ["d5 terrace chest", "d5 armos chest", False, lambda state: all([
+            oos_can_kill_moldorm(state, player),
+            oos_can_kill_normal_enemy(state, player)
         ])],
 
         ["enter d5", "d5 cart bay", False, lambda state: any([
