@@ -664,7 +664,21 @@ def make_d6_logic(player: int):
         ["d6 1F terrace", "d6 crystal trap room", False, None],
         ["d6 1F terrace", "d6 U-room", False, lambda state: all([
             oos_can_break_crystal(state, player),
-            oos_has_magic_boomerang(state, player)
+            any([
+                oos_has_magic_boomerang(state, player),
+                all([
+                    # Clip into the right statues for the first orb,
+                    # then manipulate the position to clip into the bottom right of the opening for the second one
+                    oos_option_hell_logic(state, player),
+                    oos_has_shooter(state, player),
+                ]),
+                all([
+                    # Just do the first one in hard, then use bombchus to kill the keese then hit the orb
+                    oos_option_hard_logic(state, player),
+                    oos_has_shooter(state, player),
+                    oos_has_bombchus(state, player, 2),
+                ])
+            ])
         ])],
         ["d6 U-room", "d6 torch stairs", False, lambda state: all([
             any([
@@ -1069,11 +1083,30 @@ def make_d8_logic(player: int):
                     oos_option_hell_logic(state, player),
                     any([
                         oos_has_satchel(state, player),
-                        oos_has_slingshot(state, player),
                     ]),
                     any([
                         oos_can_use_ember_seeds(state, player, False),
                         oos_can_use_scent_seeds(state, player),
+                        oos_can_use_mystery_seeds(state, player),
+                    ])
+                ]),
+                all([
+                    oos_option_hell_logic(state, player),
+                    oos_has_slingshot(state, player),
+                    any([
+                        oos_can_use_ember_seeds(state, player, False),
+                        oos_can_use_scent_seeds(state, player),
+                        oos_can_use_pegasus_seeds(state, player),
+                        oos_can_use_mystery_seeds(state, player),
+                    ])
+                ]),
+                all([
+                    oos_option_hell_logic(state, player),
+                    oos_has_shooter(state, player),
+                    any([
+                        oos_can_use_ember_seeds(state, player, False),
+                        oos_can_use_scent_seeds(state, player),
+                        oos_can_use_pegasus_seeds(state, player),
                         oos_can_use_mystery_seeds(state, player),
                     ])
                 ])
@@ -1126,11 +1159,32 @@ def make_d8_logic(player: int):
                     oos_option_hell_logic(state, player),
                     any([
                         oos_has_satchel(state, player),
-                        oos_has_slingshot(state, player),
                     ]),
                     any([
                         oos_can_use_ember_seeds(state, player, False),
                         oos_can_use_scent_seeds(state, player),
+                        oos_can_use_mystery_seeds(state, player),
+                    ])
+                ]),
+                all([
+                    oos_option_hell_logic(state, player),
+                    oos_has_slingshot(state, player),
+                    any([
+                        oos_can_use_ember_seeds(state, player, False),
+                        oos_can_use_scent_seeds(state, player),
+                        oos_can_use_pegasus_seeds(state, player),
+                        oos_can_use_mystery_seeds(state, player),
+                    ])
+                ]),
+                all([
+                    # This one is way easier to time by just bouncing on the left
+                    # then going down as the seed spawns in the eye
+                    oos_option_hard_logic(state, player),
+                    oos_has_shooter(state, player),
+                    any([
+                        oos_can_use_ember_seeds(state, player, False),
+                        oos_can_use_scent_seeds(state, player),
+                        oos_can_use_pegasus_seeds(state, player),
                         oos_can_use_mystery_seeds(state, player),
                     ])
                 ])
