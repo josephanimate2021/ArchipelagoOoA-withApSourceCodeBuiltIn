@@ -10,7 +10,6 @@ from .RomData import RomData
 from .text.decoding import parse_all_texts, parse_dict_seasons
 from .text.encoding import write_text_data
 from .z80asm.Assembler import Z80Assembler, Z80Block
-from ..tool.sym import make_sym
 
 
 class OoSPatchExtensions(APPatchExtension):
@@ -93,8 +92,6 @@ class OoSPatchExtensions(APPatchExtension):
 
         rom_data.update_header_checksum()
         rom_data.update_checksum(0x14e)
-        print("Ping Ishigh because they forgot to remove the build of the sym file")
-        make_sym(assembler)
         return rom_data.output()
 
 
