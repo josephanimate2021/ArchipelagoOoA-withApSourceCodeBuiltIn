@@ -2,6 +2,7 @@ asm_files = {
     "base": [
         "asm/animals.yaml",
         "asm/any_item_on_essence_pedestal.yaml",
+        "asm/bigger_inventory.yaml",
         "asm/boss_items.yaml",
         "asm/business_scrubs.yaml",
         "asm/collect.yaml",
@@ -19,7 +20,6 @@ asm_files = {
         "asm/maku_tree.yaml",
         "asm/map_menu.yaml",
         "asm/misc.yaml",
-        "asm/move_inventory.yaml",
         "asm/multi.yaml",
         "asm/new_game.yaml",
         "asm/new_treasures.yaml",
@@ -70,7 +70,6 @@ asm_files = {
         "asm/cross_items/bank_46_redirects.yaml",
         "asm/cross_items/bank_47_redirects.yaml",
         "asm/cross_items/bank_4d_redirects.yaml",
-        "asm/cross_items/bigger_inventory.yaml",
         "asm/cross_items/bombchus.yaml",
         "asm/cross_items/cane_of_somaria.yaml",
         "asm/cross_items/enemy_collision.yaml",
