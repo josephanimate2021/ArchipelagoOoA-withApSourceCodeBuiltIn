@@ -61,7 +61,7 @@
 
 # overwrite initial max health (since they are overwritten by another function anyway) to set
 # the initial seed selection instead. first byte is low c6xx address, second is index.
-07/4190/shooterInitialSelection: db $bd, option.defaultSeedType - $20
+07/4190/shooterInitialSelection: db <wShooterSelectedSeeds, option.defaultSeedType - $20
 
 # Seed item code
 07/4ce2/: |
@@ -125,7 +125,10 @@
   call clearSeed
 07//clearSeed: |
   jr z,@shooter
-  res 0,(hl)
+  ld a,$03
+  and (hl)
+  ret z
+  dec (hl)
   ret
   @shooter:
   res 7,(hl)
