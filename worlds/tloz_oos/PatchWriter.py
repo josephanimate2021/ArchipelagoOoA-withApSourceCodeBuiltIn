@@ -1,12 +1,10 @@
+import json
 from collections import defaultdict
-
-import yaml
 
 from typing import TYPE_CHECKING
 from worlds.tloz_oos.patching.ProcedurePatch import OoSProcedurePatch
 from .data.Constants import *
 from . import OracleOfSeasonsOptions
-from ..oot.Cosmetics import patch_music
 
 if TYPE_CHECKING:
     from . import OracleOfSeasonsWorld
@@ -73,5 +71,5 @@ def oos_create_ap_procedure_patch(world: "OracleOfSeasonsWorld") -> OoSProcedure
         start_inventory[item.name] += 1
     patch_data["start_inventory"] = dict(start_inventory)
 
-    patch.write_file("patch.dat", yaml.dump(patch_data).encode("utf-8"))
+    patch.write_file("patch.dat", json.dumps(patch_data).encode("utf-8"))
     return patch

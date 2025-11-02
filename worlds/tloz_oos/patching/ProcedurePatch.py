@@ -1,3 +1,4 @@
+import json
 import pkgutil
 
 import yaml
@@ -18,7 +19,7 @@ class OoSPatchExtensions(APPatchExtension):
     @staticmethod
     def apply_patches(caller: APProcedurePatch, rom: bytes, patch_file: str) -> bytes:
         rom_data = RomData(rom)
-        patch_data = yaml.safe_load(caller.get_file(patch_file).decode("utf-8"))
+        patch_data = json.loads(caller.get_file(patch_file).decode("utf-8"))
 
         version = patch_data["version"].split(".")
         if int(version[0]) != VERSION[0] or int(version[1]) > VERSION[1]:
