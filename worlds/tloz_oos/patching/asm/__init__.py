@@ -19,6 +19,7 @@ asm_files = {
         "asm/maku_tree.yaml",
         "asm/map_menu.yaml",
         "asm/misc.yaml",
+        "asm/move_inventory.yaml",
         "asm/multi.yaml",
         "asm/new_game.yaml",
         "asm/new_treasures.yaml",
