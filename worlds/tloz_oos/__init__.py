@@ -1,3 +1,4 @@
+import logging
 import os
 from threading import Event
 from typing import List, Union, ClassVar, Any, Optional, Tuple, Type
@@ -620,7 +621,6 @@ class OracleOfSeasonsWorld(World):
                     excluded_mapass.add(f"Dungeon Map ({DUNGEON_NAMES[i]})")
                     excluded_mapass.add(f"Compass ({DUNGEON_NAMES[i]})")
 
-        removed_item_quantities = self.options.remove_items_from_pool.value.copy()
         item_pool_dict = {}
         filler_item_count = 0
         rupee_item_count = 0
@@ -634,11 +634,6 @@ class OracleOfSeasonsWorld(World):
             item_name = loc_data["vanilla_item"]
             if "Ring" in item_name:
                 item_name = "Random Ring"
-            if item_name in removed_item_quantities and removed_item_quantities[item_name] > 0:
-                # If item was put in the "remove_items_from_pool" option, replace it with a random filler item
-                removed_item_quantities[item_name] -= 1
-                filler_item_count += 1
-                continue
             if item_name == "Filler Item":
                 filler_item_count += 1
                 continue
@@ -721,6 +716,20 @@ class OracleOfSeasonsWorld(World):
         if ore_item_count > 0:
             ore_item_pool, filler_item_count = self.build_ore_item_dict(ore_item_count, filler_item_count)
             item_pool_dict.update(ore_item_pool)
+
+        # Remove items from pool
+        for item, removed_amount in self.options.remove_items_from_pool.items():
+            if item in item_pool_dict:
+                current_amount = item_pool_dict[item]
+            else:
+                current_amount = 0
+            new_amount = current_amount - removed_amount
+            if new_amount < 0:
+                logging.warning(f"Not enough {item} to satisfy {self.player_name}'s remove_items_from_pool: "
+                                f"{-new_amount} missing")
+                new_amount = 0
+            item_pool_dict[item] = new_amount
+            filler_item_count += current_amount - new_amount
 
         # Add the required rings
         ring_copy = sorted(self.options.required_rings.value.copy())
