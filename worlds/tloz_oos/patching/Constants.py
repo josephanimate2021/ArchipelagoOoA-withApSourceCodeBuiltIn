@@ -4,7 +4,7 @@ CAVE_DATA = [
     0x3ec8,  # 00
     0x3e89,  # 01
     [  # 02
-        [0x027d, 0x02e3],  # fileSelectMode5
+        [0x023d, 0x02a3],  # fileSelectMode5
         0x35bb  # End of bank
     ],
     0x3dd7,  # 03
