@@ -690,13 +690,13 @@ class OracleOfSeasonsWorld(World):
 
             item_pool_dict[item_name] = item_pool_dict.get(item_name, 0) + 1
 
-        extra_items = 0
+        item_pool_dict["Bombchus (10)"] = 10
+        extra_items = 10
         if self.options.cross_items:
             item_pool_dict["Cane of Somaria"] = 1
             item_pool_dict["Switch Hook"] = 2
             item_pool_dict["Seed Shooter"] = 1
-            item_pool_dict["Bombchus (10)"] = 10
-            extra_items += 14
+            extra_items += 4
 
         # If Master Keys are enabled, put one for every dungeon
         if self.options.master_keys != OracleOfSeasonsMasterKeys.option_disabled:
