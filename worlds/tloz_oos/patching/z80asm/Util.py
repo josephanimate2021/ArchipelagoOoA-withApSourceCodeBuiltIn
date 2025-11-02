@@ -61,8 +61,10 @@ def value_to_byte_array(value: int, expected_size: int):
 def parse_byte(string: str) -> int:
     if string.startswith("$"):
         return parse_hex_byte(string)
-    else:
+    elif string.startswith("%"):
         return parse_bin_string_to_value(string)
+    else:
+        raise Exception(f"Invalid byte string : {string}")
 
 
 def parse_hex_byte(string: str) -> int:

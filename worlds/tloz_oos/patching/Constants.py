@@ -361,7 +361,7 @@ DEFINES = {
     "jumpifc6xxset": "$b3",
     "writec6xx": "$b4",
     "setglobalflag": "$b6",
-    "script_nop": "b7",
+    "script_nop": "$b7",
     "setdisabledobjectsto00": "$b9",
     "setdisabledobjectsto11": "$ba",
     "disableinput": "$bd",
