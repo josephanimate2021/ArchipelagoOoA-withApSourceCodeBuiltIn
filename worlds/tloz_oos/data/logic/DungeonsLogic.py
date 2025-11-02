@@ -129,7 +129,10 @@ def make_d2_logic(player: int):
         # 2 keys
         ["d2 roller chest", "d2 spinner", False, lambda state: all([
             oos_has_small_keys(state, player, 2, 2),
-            oos_has_bombs(state, player)
+            any([
+                oos_has_bombs(state, player),
+                oos_has_bombchus(state, player)
+            ])
         ])],
         # terrace self-locking rules
         ["d2 arrow room", "d2 terrace chest", False, lambda state: all([
