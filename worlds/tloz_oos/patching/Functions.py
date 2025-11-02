@@ -798,17 +798,17 @@ def make_text_data(assembler: Z80Assembler, text: dict[str, str], patch_data):
     assembler.define_byte("text.hook2.treasure", 0x51)
     if patch_data["options"]["cross_items"]:
         # Obtain text
-        text["TX_0001"] = ("You got the\n"
+        text["TX_0053"] = ("You got the\n"
                            "🟥Cane of Somaria⬜!\n"
                            "Use it to create\n"
-                           "blocks.")  # Warrior child rupee
-        assembler.define_byte("text.cane.treasure", 0x01)
+                           "blocks.")  # Warrior child heart refill
+        assembler.define_byte("text.cane.treasure", 0x53)
 
-        # text["TX_0053"] = ("You got the\n"
+        # text[] = ("You got the\n"
         #                    "🟥Power Glove⬜!\n"
         #                    "You can now lift\n"
-        #                    "heavy objects.")  # Warrior child heart refill
-        # assembler.define_byte("text.bracelet2.treasure", 0x53)
+        #                    "heavy objects.")
+        # assembler.define_byte("text.bracelet2.treasure", )
 
         text["TX_0054"] = ("You got the\n"
                            "🟥Seed Shooter⬜!\n"
