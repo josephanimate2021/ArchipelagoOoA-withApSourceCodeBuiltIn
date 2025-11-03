@@ -170,4 +170,4 @@
 3f/6dc5/: db $a6
 
 # Add the gfx entry to the interactionData
-3f/67f9/: db $61,$0c,$40
+3f/6814/: db $61,$0c,$40 ; GFX_68

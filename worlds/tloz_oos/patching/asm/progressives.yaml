@@ -196,5 +196,5 @@
 
 # We have to have this cross item data there to be used in progressiveUpgrades
 15//treasureObjectData_switchHook: |
-  db $38,$01,text.hook1.treasure,$5f
-  db $38,$02,text.hook2.treasure,$5f
+  db $38,$01,text.hook1.treasure,$68
+  db $38,$02,text.hook2.treasure,$68

@@ -209,7 +209,7 @@
 # TODO: If read/write of compressed sprites is implemented, this should be replaced
 1b/7b00/: db $ff,$ff,$b9,$c7,$7e,$7e,$52,$6e,$34,$2C,$34,$2c,$3c,$3c,$4e,$7e,$b7,$cf,$b7,$cf,$cf,$ff,$ff,$ff,$7e,$7e,$52,$6e,$3c,$3c,$00,$00
 # Add the gfx entry to the interactionData
-3f/67fc/: db $61,$0e,$50 ; GFX_60
+3f/6817/: db $61,$0e,$50 ; GFX_69
 # TODO: If read/write of compressed sprites is implemented, a7 should be back to 86
 3f//treasureDisplayData_shooter: |
   ; ember
@@ -258,4 +258,4 @@
   ret
 
 # treasureObjectData
-15/5167/: db text.shooter.treasure,$60
+15/5167/: db text.shooter.treasure,$69
