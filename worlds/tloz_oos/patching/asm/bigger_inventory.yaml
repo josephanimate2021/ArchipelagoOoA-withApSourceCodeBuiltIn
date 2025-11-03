@@ -37,7 +37,7 @@
 02/5668/: ld a,(wInventoryB)
 02/566e/: ld a,(wInventoryA)
 02/5674/: ld l,<wInventoryB
-02/567e/: ld l,<wInventoryStorage
+02/567d/: ld l,<wInventoryStorage
 
 # inventorySubscreen0_drawStoredItems
 02/5ae3/: ld a,INVENTORY_CAPACITY
