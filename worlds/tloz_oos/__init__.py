@@ -1020,6 +1020,8 @@ class OracleOfSeasonsWorld(World):
             if world.options.default_seed == "ember":
                 possible_items.append(["Seed Satchel"])
                 possible_items.append(["Progressive Slingshot"])
+                if world.options.cross_items:
+                    possible_items.append(["Seed Shooter"])
 
             if world.options.animal_companion == "dimitri":
                 possible_items.append(["Dimitri's Flute"])
@@ -1040,6 +1042,11 @@ class OracleOfSeasonsWorld(World):
                     bush_breakers.append(["Bombs (10)", "Bombs (10)"])
                 if world.options.default_seed == "gale":
                     bush_breakers.append(["Progressive Slingshot"])
+                    if world.options.cross_items:
+                        bush_breakers.append(["Seed Shooter"])
+
+            if world.options.cross_items:
+                bush_breakers.append(["Switch Hook"])
 
             items = multiworld.random.choice(possible_items)
             if "Bush Breaker" in items:
