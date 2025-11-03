@@ -17,13 +17,15 @@ class OoSPatchExtensions(APPatchExtension):
 
     @staticmethod
     def apply_patches(caller: APProcedurePatch, rom: bytes, patch_file: str) -> bytes:
+        from .. import OracleOfSeasonsWorld
         rom_data = RomData(rom)
         patch_data = json.loads(caller.get_file(patch_file).decode("utf-8"))
 
         version = patch_data["version"].split(".")
-        if int(version[0]) != VERSION[0] or int(version[1]) > VERSION[1]:
+        world_version = OracleOfSeasonsWorld.world_version
+        if int(version[0]) != world_version.major or int(version[1]) > world_version.minor:
             raise Exception(f"Invalid version: this patch was generated on v{patch_data['version']}, "
-                            f"you are currently using v{VERSION[0]},{VERSION[1]}")
+                            f"you are currently using v{world_version.as_simple_string()}")
 
         if patch_data["options"]["cross_items"]:
             file_name = get_settings().tloz_oos_options.ages_rom_file

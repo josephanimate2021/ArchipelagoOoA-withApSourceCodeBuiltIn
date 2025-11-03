@@ -1084,7 +1084,7 @@ class OracleOfSeasonsWorld(World):
 
     def fill_slot_data(self) -> dict:
         slot_data = {
-            "version": f"{VERSION[0]}.{VERSION[1]}",
+            "version": f"{self.world_version.as_simple_string()}",
             "options": self.options.as_dict(
                 *[option_name for option_name in OracleOfSeasonsOptions.type_hints
                   if hasattr(OracleOfSeasonsOptions.type_hints[option_name], "include_in_slot_data")]),

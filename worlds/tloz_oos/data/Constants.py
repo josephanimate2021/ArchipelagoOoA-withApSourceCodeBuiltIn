@@ -1,4 +1,3 @@
-VERSION = (12, 4)
 ROM_HASH = "f2dc6c4e093e4f8c6cbea80e8dbd62cb"
 AGES_ROM_HASH = "c4639cc61c049e5a085526bb6cac03bb"
 
