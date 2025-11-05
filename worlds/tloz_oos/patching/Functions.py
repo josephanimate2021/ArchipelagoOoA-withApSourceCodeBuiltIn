@@ -964,7 +964,7 @@ def make_text_data(assembler: Z80Assembler, text: dict[str, str], patch_data):
                        "to open.")
 
     # Tree house old man
-    essence_count = patch_data["options"]["required_essences"]
+    essence_count = patch_data["options"]["treehouse_old_man_requirement"]
     text["TX_3601"] = text["TX_3601"].replace("knows many\n🟥essences⬜...", f"has 🟥{essence_count} essence{'s' if essence_count != 0 else ''}⬜!")
 
     # Change D8 introduction text to “Sword & Shield Dungeon” from “Sword & Shield Maze”,
