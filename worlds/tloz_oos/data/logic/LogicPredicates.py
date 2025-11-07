@@ -680,8 +680,7 @@ def oos_can_use_mystery_seeds(state: CollectionState, player: int):
 def oos_can_break_bush(state: CollectionState, player: int, can_summon_companion: bool = False, allow_bombchus: bool = False):
     return any([
         oos_can_break_flowers(state, player, can_summon_companion, allow_bombchus),
-        oos_has_bracelet(state, player),
-        oos_has_switch_hook(state, player)
+        oos_has_bracelet(state, player)
     ])
 
 
@@ -952,6 +951,13 @@ def oos_can_kill_moldorm(state: CollectionState, player: int, pit_available: boo
                 ])
             ])
         ])
+    ])
+
+
+def oos_can_kill_facade(state: CollectionState, player: int):
+    return any([
+        oos_has_bombs(state, player),
+        oos_has_bombchus(state, player, 2)
     ])
 
 

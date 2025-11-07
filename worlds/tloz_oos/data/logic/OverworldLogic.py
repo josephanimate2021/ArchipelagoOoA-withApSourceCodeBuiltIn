@@ -1189,10 +1189,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ["north horon", "d9 entrance", False, lambda state: state.has("Maku Seed", player)],
         ["d9 entrance", "onox beaten", False, lambda state: all([
             oos_can_kill_armored_enemy(state, player, True, True),
-            any([
-                oos_has_bombs(state, player),
-                oos_has_bombchus(state, player, 2)
-            ]),
+            oos_can_kill_facade(state, player),
             oos_has_sword(state, player, False),
             oos_has_feather(state, player),
             any([

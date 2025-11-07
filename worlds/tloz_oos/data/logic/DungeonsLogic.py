@@ -129,10 +129,7 @@ def make_d2_logic(player: int):
         # 2 keys
         ["d2 roller chest", "d2 spinner", False, lambda state: all([
             oos_has_small_keys(state, player, 2, 2),
-            any([
-                oos_has_bombs(state, player),
-                oos_has_bombchus(state, player)
-            ])
+            oos_can_kill_facade(state, player)
         ])],
         # terrace self-locking rules
         ["d2 arrow room", "d2 terrace chest", False, lambda state: all([
@@ -955,7 +952,7 @@ def make_d7_logic(player: int):
                     oos_has_fools_ore(state, player),
                     oos_has_rod(state, player),
                     oos_has_bombs(state, player),
-                    oos_has_bombchus(state, player)
+                    oos_has_bombchus(state, player, 5)
                 ]),
                 # Reach trampolines using the magnet gloves
                 oos_has_feather(state, player),
