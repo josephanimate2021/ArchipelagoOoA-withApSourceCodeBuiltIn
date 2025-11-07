@@ -171,3 +171,24 @@
 
 # Add the gfx entry to the interactionData
 3f/6814/: db $61,$0c,$40 ; GFX_68
+
+07/6010/: call getMimicData
+07//getMimicData: |
+  call $3a25 ; getTileMappingData
+  ld a,c
+  cp $80
+  ret nc ; good graphic
+
+  ld c,$5e ; where we're loading the flower data
+  push bc
+  push de
+  cp $26 ; normal flower
+  ld a,$3b ; flower sprite
+  jr @end
+  inc a ; stone flower instead
+  
+  @end:
+  call $05b6 ; loadUncompressedGfxHeader
+  pop de
+  pop bc
+  ret
