@@ -421,16 +421,23 @@ def oos_can_trigger_far_switch(state: CollectionState, player: int):
         oos_has_boomerang(state, player),
         oos_has_bombs(state, player),
         oos_has_seed_thrower(state, player),
-        oos_use_energy_ring(state, player),
+        oos_shoot_beams(state, player),
         oos_has_switch_hook(state, player)
     ])
 
 
-def oos_use_energy_ring(state: CollectionState, player: int):
+def oos_shoot_beams(state: CollectionState, player: int):
     return all([
         oos_option_medium_logic(state, player),
         oos_has_sword(state, player, False),
-        state.has("Energy Ring", player)
+        any([
+            state.has("Energy Ring", player),
+            state.has("Heart Ring L-2", player),
+            all([
+                oos_option_hard_logic(state, player),
+                state.has("Heart Ring L-1", player),
+            ])
+        ])
     ])
 
 

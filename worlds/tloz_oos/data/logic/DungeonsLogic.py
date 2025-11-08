@@ -420,7 +420,7 @@ def make_d4_logic(player: int):
                 oos_option_medium_logic(state, player),
                 any([
                     oos_has_noble_sword(state, player),
-                    oos_use_energy_ring(state, player)
+                    oos_shoot_beams(state, player)
                 ])
             ]),
             all([
@@ -939,7 +939,7 @@ def make_d7_logic(player: int):
                     oos_option_medium_logic(state, player),
                 ])
             ]),
-            oos_use_energy_ring(state, player)
+            oos_shoot_beams(state, player)
         ])],
         ["d7 past darknut bridge", "d7 darknut bridge trampolines", False, lambda state: any([
             # Reach trampolines directly
