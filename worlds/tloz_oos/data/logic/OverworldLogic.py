@@ -439,6 +439,8 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
             all([
                 oos_is_default_season(state, player, "EYEGLASS_LAKE", SEASON_AUTUMN),
                 oos_can_break_mushroom(state, player, False)
+                # TODO: Maybe change that by removing the anti-softlock mechanism that also adds an anti-ricky protection
+                # Alternatively, move the rock up to prevent ricky from jumping while preserving the anti-softlock
             ])
         ])],
 
