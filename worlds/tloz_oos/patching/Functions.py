@@ -954,18 +954,18 @@ def make_text_data(assembler: Z80Assembler, text: dict[str, str], patch_data):
 
     # Maku tree sign
     essence_count = patch_data["options"]["required_essences"]
-    text["TX_2e00"] = (f"Find 🟥{essence_count} essence{'s' if essence_count != 0 else ''}⬜\n"
+    text["TX_2e00"] = (f"Find 🟥{essence_count} essence{'s' if essence_count != 1 else ''}⬜\n"
                        "to get the seed!")
 
     # Tarm ruins sign
     jewel_count = patch_data["options"]["tarm_gate_required_jewels"]
-    text["TX_2e12"] = (f"Bring 🟩{jewel_count}⬜ jewel{'s' if jewel_count != 0 else ''}\n"
+    text["TX_2e12"] = (f"Bring 🟩{jewel_count}⬜ jewel{'s' if jewel_count != 1 else ''}\n"
                        "for the door\n"
                        "to open.")
 
     # Tree house old man
     essence_count = patch_data["options"]["treehouse_old_man_requirement"]
-    text["TX_3601"] = text["TX_3601"].replace("knows many\n🟥essences⬜...", f"has 🟥{essence_count} essence{'s' if essence_count != 0 else ''}⬜!")
+    text["TX_3601"] = text["TX_3601"].replace("knows many\n🟥essences⬜...", f"has 🟥{essence_count} essence{'s' if essence_count != 1 else ''}⬜!")
 
     # Change D8 introduction text to “Sword & Shield Dungeon” from “Sword & Shield Maze”,
     # since every other mention of it was using “Dungeon” naming
