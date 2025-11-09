@@ -528,6 +528,8 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ["north horon", "goron mountain entrance", True, lambda state: oos_can_swim(state, player, True)],
         ["goron mountain entrance", "natzu region, across water", True, lambda state: oos_can_swim(state, player, True)],
         ["ghastly stump", "d1 island", True, lambda state: all([
+            # Technically, Ricky and Moosh don't work to go from the ghastly stump bank to the stump,
+            # but both can go through north horon and jump the holes
             oos_can_break_bush(state, player, True),
             oos_can_swim(state, player, True)
         ])],
