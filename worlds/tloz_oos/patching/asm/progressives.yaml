@@ -58,7 +58,15 @@
   call checkTreasureObtained
   ld c,a
   ld a,b
-  ret nc
+  jr c,@shieldDone
+  
+  ; Shield might have been eaten, so check if we got any previously
+  cp TREASURE_SHIELD
+  ret nz
+  ld a,(wShieldLevel)
+  ld c,a
+  ld a,b
+  @shieldDone:
 
   ; cp TREASURE_TUNE_OF_ECHOES
   ; jr nz,@harpDone
