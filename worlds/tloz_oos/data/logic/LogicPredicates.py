@@ -427,15 +427,21 @@ def oos_can_trigger_far_switch(state: CollectionState, player: int):
 
 
 def oos_shoot_beams(state: CollectionState, player: int):
-    return all([
-        oos_option_medium_logic(state, player),
-        oos_has_sword(state, player, False),
-        any([
+    return any([
+        all([
+            oos_option_medium_logic(state, player),
+            oos_has_sword(state, player, False),
             state.has("Energy Ring", player),
-            state.has("Heart Ring L-2", player),
-            all([
-                oos_option_hard_logic(state, player),
-                state.has("Heart Ring L-1", player),
+        ]),
+        all([
+            oos_option_medium_logic(state, player),
+            oos_has_noble_sword(state, player),
+            any([
+                state.has("Heart Ring L-2", player),
+                all([
+                    oos_option_hard_logic(state, player),
+                    state.has("Heart Ring L-1", player),
+                ])
             ])
         ])
     ])
