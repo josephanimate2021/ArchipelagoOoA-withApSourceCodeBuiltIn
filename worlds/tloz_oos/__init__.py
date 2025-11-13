@@ -685,6 +685,11 @@ class OracleOfSeasonsWorld(World):
                 filler_item_count += 1
                 continue
 
+            if item_name.startswith("Bombs (") or item_name.startswith("Bombchus ("):
+                # Not enough bombs in the pool, erase everything to redistribute them
+                filler_item_count += 1
+                continue
+
             if item_name == "Flute":
                 item_name = self.options.animal_companion.current_key.title() + "'s Flute"
             elif item_name in excluded_mapass:
@@ -692,8 +697,15 @@ class OracleOfSeasonsWorld(World):
 
             item_pool_dict[item_name] = item_pool_dict.get(item_name, 0) + 1
 
-        item_pool_dict["Bombchus (10)"] = 10
-        extra_items = 10
+        if self.options.exclude_dungeons_without_essence and len(self.essences_in_game) < 4:
+            # Compact the bomb items for smaller seeds to not clog the pool
+            item_pool_dict["Bombchus (20)"] = 5
+            item_pool_dict["Bombs (20)"] = 5
+            extra_items = 10
+        else:
+            item_pool_dict["Bombchus (10)"] = 10
+            item_pool_dict["Bombs (10)"] = 10
+            extra_items = 20
         if self.options.cross_items:
             item_pool_dict["Cane of Somaria"] = 1
             item_pool_dict["Switch Hook"] = 2
@@ -1153,8 +1165,20 @@ class OracleOfSeasonsWorld(World):
 
     def collect(self, state: CollectionState, item: Item) -> bool:
         change = super().collect(state, item)
-        if not change or self.options.logic_difficulty < OracleOfSeasonsLogicDifficulty.option_hell:
-            return change
+        if not change:
+            return False
+
+        if item.name == "Bombs (10)":
+            state.prog_items[self.player]["Bombs"] += 1
+        elif item.name == "Bombs (20)":
+            state.prog_items[self.player]["Bombs"] += 2
+        elif item.name == "Bombchus (10)":
+            state.prog_items[self.player]["Bombchus"] += 1
+        elif item.name == "Bombchus (20)":
+            state.prog_items[self.player]["Bombchus"] += 2
+
+        if self.options.logic_difficulty < OracleOfSeasonsLogicDifficulty.option_hell:
+            return True
         if item.code is None or item.code >= 0x2100 and item.code != 0x2e00:  # Not usable item nor ember nor flippers
             return True
         state.tloz_oos_available_cuccos[self.player] = None
@@ -1162,8 +1186,20 @@ class OracleOfSeasonsWorld(World):
 
     def remove(self, state: CollectionState, item: Item) -> bool:
         change = super().remove(state, item)
-        if not change or self.options.logic_difficulty < OracleOfSeasonsLogicDifficulty.option_hell:
-            return change
+        if not change:
+            return False
+
+        if item.name == "Bombs (10)":
+            state.prog_items[self.player]["Bombs"] -= 1
+        elif item.name == "Bombs (20)":
+            state.prog_items[self.player]["Bombs"] -= 2
+        elif item.name == "Bombchus (10)":
+            state.prog_items[self.player]["Bombchus"] -= 1
+        elif item.name == "Bombchus (20)":
+            state.prog_items[self.player]["Bombchus"] -= 2
+
+        if self.options.logic_difficulty < OracleOfSeasonsLogicDifficulty.option_hell:
+            return True
         if item.code is None or item.code >= 0x2100 and item.code != 0x2e00:  # Not usable item nor ember nor flippers
             return True
         state.tloz_oos_available_cuccos[self.player] = None

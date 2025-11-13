@@ -2,21 +2,21 @@
 # If it does, also increase next byte (max quantity for bombs,
 # which is the only item which uses mode D)
 3f//extendedModeD: |
-  ; If max bombs == 0, increase max bombs even if it is a wild bomb drop (like the one in D2)
   ld h,d
   ld l,e
   inc l
   ld a,(hl)
+
+  ; Always increase max bombs if quantity has bit 7 set (only for "treasure" bombs, not drops)
+  bit 7,c
+  jr nz,@increaseMaxQuantity
+
+  ; If max bombs == 0, increase max bombs even if it is a wild bomb drop (like the one in D2)
   or a
-  jr nz,@normalCase
+  jr nz,@done
   ld a,$10
   ldd (hl),a
   jr @done
-
-  ; Otherwise, only increase max bombs if quantity has bit 7 set (only for "treasure" bombs, not drops)
-  @normalCase:
-  bit 7,c
-  jr z,@done
   
   @increaseMaxQuantity:
   res 7,c

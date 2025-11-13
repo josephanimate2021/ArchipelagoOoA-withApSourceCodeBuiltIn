@@ -458,7 +458,7 @@ def oos_has_rod(state: CollectionState, player: int):
 
 def oos_has_bombs(state: CollectionState, player: int, amount: int = 1):
     return any([
-        state.has("Bombs (10)", player, amount),
+        state.has("Bombs", player, amount),
         all([
             # With medium logic, player is expected to know they can get free bombs
             # from D2 moblin room even if they never had bombs before
@@ -471,7 +471,7 @@ def oos_has_bombs(state: CollectionState, player: int, amount: int = 1):
 
 
 def oos_has_bombchus(state: CollectionState, player: int, amount: int = 1):
-    return state.has("Bombchus (10)", player, amount)
+    return state.has("Bombchus", player, amount)
 
 
 def oos_has_flute(state: CollectionState, player: int):

@@ -400,10 +400,15 @@ def set_player_start_inventory(assembler: Z80Assembler, patch_data):
     if "Progressive Shield" in start_inventory_data:
         start_inventory_changes[parse_hex_string_to_value(DEFINES["wShieldLevel"])] \
             = start_inventory_data["Progressive Shield"]
+    bombs = 0
     if "Bombs (10)" in start_inventory_data:
+        bombs += start_inventory_data["Bombs (10)"] * 0x10
+    if "Bombs (20)" in start_inventory_data:
+        bombs += start_inventory_data["Bombs (20)"] * 0x20
+    if bombs > 0:
         start_inventory_changes[parse_hex_string_to_value(DEFINES["wCurrentBombs"])] \
             = start_inventory_changes[parse_hex_string_to_value(DEFINES["wMaxBombs"])] \
-            = min(start_inventory_data["Bombs (10)"] * 0x10, 0x99)
+            = min(bombs, 0x99)
         # The bomb amounts are stored in decimal
     if "Progressive Sword" in start_inventory_data:
         start_inventory_changes[0xc6ac] = start_inventory_data["Progressive Sword"]
@@ -424,6 +429,16 @@ def set_player_start_inventory(assembler: Z80Assembler, patch_data):
     if "Switch Hook" in start_inventory_data:
         start_inventory_changes[parse_hex_string_to_value(DEFINES["wSwitchHookLevel"])] \
             = start_inventory_data["Switch Hook"]
+    bombchus = 0
+    if "Bombchus (10)" in start_inventory_data:
+        bombchus += start_inventory_data["Bombchus (10)"] * 0x10
+    if "Bombchus (20)" in start_inventory_data:
+        bombchus += start_inventory_data["Bombchus (20)"] * 0x20
+    if bombchus > 0:
+        start_inventory_changes[parse_hex_string_to_value(DEFINES["wNumBombchus"])] \
+            = start_inventory_changes[parse_hex_string_to_value(DEFINES["wMaxBombchus"])] \
+            = min(bombchus, 0x99)
+        # The bombchus amounts are stored in decimal
 
     seed_amount = 0
     if "Progressive Slingshot" in start_inventory_data:
@@ -546,7 +561,9 @@ def alter_treasure_types(rom: RomData):
     # Make bombs increase max carriable quantity when obtained from treasures,
     # not drops (see asm/seasons/bomb_bag_behavior)
     set_treasure_data(rom, "Bombs (10)", None, None, 0x90)
+    set_treasure_data(rom, "Bombs (20)", 0x94, None, 0xa0)
     set_treasure_data(rom, "Bombchus (10)", None, None, 0x90)
+    set_treasure_data(rom, "Bombchus (20)", None, None, 0xa0)
 
     # Colored Rod of Seasons to make them recognizable
     set_treasure_data(rom, "Rod of Seasons (Spring)", None, 0x4f)
@@ -746,6 +763,9 @@ def make_text_data(assembler: Z80Assembler, text: dict[str, str], patch_data):
     # Replace ring box 2 unused text
     text["TX_0058"] = ("You got 🟥25\n"
                        "Ore Chunks⬜!")
+
+    # Brand-new texts, for 20 bombs
+    text["TX_0094"] = text["TX_004d"].replace("ten", "twenty")
 
     # Trade items
     # Cuccodex is fine
