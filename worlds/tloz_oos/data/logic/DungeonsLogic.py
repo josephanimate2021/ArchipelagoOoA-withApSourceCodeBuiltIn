@@ -81,7 +81,7 @@ def make_d1_logic(player: int):
             all([
                 oos_can_remove_rockslide(state, player, False),
                 oos_has_small_keys(state, player, 1, 2),
-                oos_can_kill_armored_enemy(state, player, False, False)
+                oos_can_kill_armored_enemy(state, player, False, True)
             ])
         ])],
     ]
