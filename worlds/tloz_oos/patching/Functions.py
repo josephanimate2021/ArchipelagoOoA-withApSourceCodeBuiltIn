@@ -639,7 +639,7 @@ def set_file_select_text(assembler: Z80Assembler, slot_name: str):
             return 0xfc  # All other chars are blank spaces
 
     row_1 = [char_to_tile(c) for c in
-             f"ARCHIPELAGO {OracleOfSeasonsWorld.world_version.major}.{OracleOfSeasonsWorld.world_version.minor}"
+             f"ARCHIPELAGO {OracleOfSeasonsWorld.version()}"
              .ljust(16, " ")]
     row_2 = [char_to_tile(c) for c in slot_name.replace("-", " ").upper()]
     row_2_left_padding = int((16 - len(row_2)) / 2)
@@ -749,151 +749,14 @@ def make_text_data(assembler: Z80Assembler, text: dict[str, str], patch_data):
                        "  \\optOK \\optNo thanks")
         text[tx_indices[symbolic_name]] = item_text
 
-    # New items
-    # Replace ring box 1
-    text["TX_0034"] = ("You got 🟥Ember\n"
-                       "Seeds⬜! Open\n"
-                       "your 🟥Seed\n"
-                       "Satchel⬜ to use\n"
-                       "them.")
-    # Replace ring box 1 unused text
-    text["TX_0057"] = ("You found an\n"
-                       "item for another\n"
-                       "world!")
-    # Replace ring box 2 unused text
-    text["TX_0058"] = ("You got 🟥25\n"
-                       "Ore Chunks⬜!")
-
-    # Brand-new texts, for 20 bombs
-    text["TX_0094"] = text["TX_004d"].replace("ten", "twenty")
-
-    # Trade items
-    # Cuccodex is fine
-    text["TX_005b"] = ("You got a\n"
-                       "\\col(84)🥚🟥 Lon Lon Egg⬜!\n"
-                       "It's a\n"
-                       "beauty aid?!?")
-    text["TX_005c"] = ("You got a\n"
-                       "\\col(84)🎎🟥 Ghastly Doll⬜!\n"
-                       "Looking at it\n"
-                       "gives you\n"
-                       "chills!")
-    text["TX_005d"] = ("You got an\n"
-                       "\\col(84)⚗🟥 Iron Pot⬜.\n"
-                       "It looks...\n"
-                       "well-seasoned.")
-    # Soup is fine
-    text["TX_005f"] = ("You got the\n"
-                       "\\col(84)🏺🟥 Goron Vase⬜!\n"
-                       "It's a very\n"
-                       "nice vase...")
-    text["TX_0060"] = ("You got a\n"
-                       "\\col(84)🐟🟥 Fish⬜! It's\n"
-                       "market fresh!")
-    text["TX_0061"] = ("You got a\n"
-                       "\\col(84)📢🟥 Megaphone⬜!\n"
-                       "Give a shout!")
-    text["TX_0062"] = ("You got a\n"
-                       "\\col(84)🍄🟥 Mushroom⬜!\n"
-                       "It smells weird.")
-    text["TX_0063"] = ("You got a\n"
-                       "\\col(84)🐦🟥 Wooden Bird⬜!\n"
-                       "It looks real!")
-    text["TX_0064"] = ("You got\n"
-                       "\\col(84)🛢🟥 Engine Grease⬜.")
-    text["TX_0065"] = ("You got a\n"
-                       "\\col(84)📻🟥 Phonograph⬜!\n"
-                       "What a tune!")
-
     # Cross items
-    text["TX_003b"] = ("You got the\n"
-                       "🟥Switch Hook⬜!\n"
-                       "Shoot at an\n"
-                       "object to switch\n"
-                       "places with it.\n")  # Strange flute
     assembler.define_byte("text.hook1.treasure", 0x3b)
-
-    text["TX_0051"] = ("You got the 🟥Long\n"
-                       "Switch⬜! Switch\n"
-                       "places with\n"
-                       "objects from a\n"
-                       "distance.")  # Warrior child heart
     assembler.define_byte("text.hook2.treasure", 0x51)
-    if patch_data["options"]["cross_items"]:
-        # Obtain text
-        text["TX_0053"] = ("You got the\n"
-                           "🟥Cane of Somaria⬜!\n"
-                           "Use it to create\n"
-                           "blocks.")  # Warrior child heart refill
-        assembler.define_byte("text.cane.treasure", 0x53)
-
-        # text[] = ("You got the\n"
-        #                    "🟥Power Glove⬜!\n"
-        #                    "You can now lift\n"
-        #                    "heavy objects.")
-        # assembler.define_byte("text.bracelet2.treasure", )
-
-        text["TX_0054"] = ("You got the\n"
-                           "🟥Seed Shooter⬜!\n"
-                           "Pick your 🟥seeds⬜,\n"
-                           "fire, then watch\n"
-                           "them ricochet.")  # Unappraised ring
-        assembler.define_byte("text.shooter.treasure", 0x54)
-
-        # text["TX_0059"] = ("You got a\n"
-        #                    "🟥Mermaid Suit⬜!\n"
-        #                    "Press Ⓑ to dive\n"
-        #                    "and Ⓐ to use\n"
-        #                    "items.")  # L-3 ring box
-        # assembler.define_byte("text.mermaid.treasure", 0x59)
-
-        # Inventory text
-        text["TX_091d"] = ("Cane of Somaria\n"
-                           "Used to create\n"
-                           "blocks.")  # Replaces ring box 1
-        assembler.define_byte("text.cane.inventory", 0x1d)
-        text["TX_091e"] = ("Switch Hook\n"
-                           "User and target\n"
-                           "trade places.")  # Replaces ring box 2
-        assembler.define_byte("text.hook1.inventory", 0x1e)
-        text["TX_0917"] = ("Long Hook\n"
-                           "Switches places\n"
-                           "from a distance.")  # Replaces unappraised ring
-        assembler.define_byte("text.hook2.inventory", 0x1e)
-        # text["TX_0938"] = ("Power Gloves\n"
-        #                    "Used to lift\n"
-        #                    "large objects.")  # Replaces unused scent text ?
-        # assembler.define_byte("text.bracelet2.inventory", 0x38)
-        text["TX_092e"] = ("Seed Shooter\n"
-                           "Used to bounce\n"
-                           "seeds around.")  # Replaces strange flute
-        assembler.define_byte("text.shooter.inventory", 0x2e)
-        # text["TX_0937"] = ("Mermaid Suit\n"
-        #                    "The skin of the\n"
-        #                    "mythical beast.")  # Replaces unused ember text ?
-        # assembler.define_byte("text.mermaid.inventory", 0x37)
-        # Note: 3 other seemingly unused seeds follow
-
-    # Appraisal text
-    text["TX_301c"] = ("You got the\n"
-                       "\\call(fd)!")
-
-    # Map stuff, replaces the group 05 since it's all linked game dialogues
-    text["TX_0500"] = "Unknown Portal"
-    text["TX_0501"] = normalize_text("Portal to Eastern Suburbs")
-    text["TX_0502"] = normalize_text("Portal to Spool Swamp")
-    text["TX_0503"] = normalize_text("Portal to Mt. Cucco")
-    text["TX_0504"] = normalize_text("Portal to Eyeglass Lake")
-    text["TX_0505"] = normalize_text("Portal to Horon Village")
-    text["TX_0506"] = normalize_text("Portal to Temple Remains")
-    text["TX_0507"] = normalize_text("Portal to Temple Summit")
-    text["TX_0508"] = normalize_text("Portal to Subrosian Village")
-    text["TX_0509"] = normalize_text("Portal to Subrosian Market")
-    text["TX_050a"] = normalize_text("Portal to Subrosian Wilds")
-    text["TX_050b"] = normalize_text("Portal to Great Furnace")
-    text["TX_050c"] = normalize_text("Portal to House of Pirates")
-    text["TX_050d"] = normalize_text("Portal to Subrosian Volcanoes")
-    text["TX_050e"] = normalize_text("Portal to Subrosian Dungeon")
+    assembler.define_byte("text.cane.treasure", 0x53)
+    assembler.define_byte("text.shooter.treasure", 0x54)
+    assembler.define_byte("text.hook1.inventory", 0x1e)
+    assembler.define_byte("text.hook2.inventory", 0x1e)
+    assembler.define_byte("text.shooter.inventory", 0x2e)
 
     # Default satchel seed
     seed_name = SEED_ITEMS[patch_data["options"]["default_seed"]].replace(" ", "\n")
@@ -905,16 +768,6 @@ def make_text_data(assembler: Z80Assembler, text: dict[str, str], patch_data):
                            "nice, I unlocked\n"
                            "all the doors\n"
                            "here for you.")
-
-    # Reword the natzu deku to omit the secret and the full satchel
-    text["TX_4c43"] = ("\\sfx(c6)Come back\n"
-                       "with all five\n"
-                       "kinds of 🟥seeds⬜!")
-
-    # Remove the mention of 777 ore chunks
-    unlucky_text: str = text["TX_3a2f"]
-    index_777 = unlucky_text.index(" Get")
-    text["TX_3a2f"] = unlucky_text[:index_777]
 
     text["TX_3e1b"] = ("You've broken\n🟩\\num1 signs⬜!\n"
                        "You'd better not\n"
@@ -943,13 +796,6 @@ def make_text_data(assembler: Z80Assembler, text: dict[str, str], patch_data):
                          "You should know\n"
                        + seed_text)
 
-    # Replace the shield selling part of dekus which will never be used
-    text["TX_450a"] = ("\\sfx(c6)Greetings!\n"
-                       "I can refill\n"
-                       "your bag for\n"
-                       "🟩30 Rupees⬜ only.\n"
-                       "  \\optOK \\optNo thanks")
-
     # Golden beasts
     golden_beasts_requirement = patch_data["options"]["golden_beasts_requirement"]
     if golden_beasts_requirement == 0:
@@ -967,11 +813,6 @@ def make_text_data(assembler: Z80Assembler, text: dict[str, str], patch_data):
             text["TX_1f04"] = text["TX_1f04"].replace("beasts", "beast")
             text["TX_1f05"] = text["TX_1f05"].replace("beasts", "beast")
 
-    # Impa refills
-    text["TX_2503"] = ("Come see me if\n"
-                       "you need a\n"
-                       "refill!")
-
     # Maku tree sign
     essence_count = patch_data["options"]["required_essences"]
     text["TX_2e00"] = (f"Find 🟥{essence_count} essence{'s' if essence_count != 1 else ''}⬜\n"
@@ -986,15 +827,6 @@ def make_text_data(assembler: Z80Assembler, text: dict[str, str], patch_data):
     # Tree house old man
     essence_count = patch_data["options"]["treehouse_old_man_requirement"]
     text["TX_3601"] = text["TX_3601"].replace("knows many\n🟥essences⬜...", f"has 🟥{essence_count} essence{'s' if essence_count != 1 else ''}⬜!")
-
-    # Change D8 introduction text to “Sword & Shield Dungeon” from “Sword & Shield Maze”,
-    # since every other mention of it was using “Dungeon” naming
-    text["TX_0208"] = text["TX_0208"].replace("Maze", "Dungeon")
-
-    # Now unused text from Maku talking
-    text["TX_1700"] = text["TX_1701"] = ""
-
-    text["TX_0602"] = "Unknown Dungeon"
 
     # With quick rosa, the escort code is disabled
     if patch_data["options"]["rosa_quick_unlock"]:
