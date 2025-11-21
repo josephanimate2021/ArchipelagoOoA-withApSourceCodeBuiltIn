@@ -10,7 +10,7 @@ from ..Util import hex_str
 class GameboyAddress:
     def __init__(self, bank: int, offset: int):
         self.bank = bank
-        self.offset = offset - 0x4000 if 0x8000 > offset > 0x4000 else offset
+        self.offset = offset - 0x4000 if 0x8000 > offset >= 0x4000 else offset
 
     def address_in_rom(self):
         return (self.bank * 0x4000) + self.offset
