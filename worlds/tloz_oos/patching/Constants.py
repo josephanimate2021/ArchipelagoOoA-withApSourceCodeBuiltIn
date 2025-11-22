@@ -1,5 +1,7 @@
 from ..data.Constants import *
 
+# [x, y] = everything between x and y (included) is free
+# int = end of bank
 CAVE_DATA = [
     0x3ec8,  # 00
     0x3e89,  # 01
@@ -19,8 +21,14 @@ CAVE_DATA = [
         [0x2395, 0x26fd],  # Bipin & Blossom child mechanic
         0x3fc0  # End of bank
     ],
-    0x3f4e,  # 09
-    0x3bf9,  # 0a
+    [
+        [0x2e6d, 0x2eae],  # Ricky giving his flute
+        0x3f4e,  # 09
+    ],
+    [  # 0a
+        [0x3bba, 0x3bd0],  # Blank from removing the spin upon obtaining the sword in d0
+        0x3be9,
+    ],
     [  # 0b
         [0x34ac, 0x34ee],  # Impa intro script
         [0x39b4, 0x39e9],  # Twinrova cutscene 1
@@ -140,6 +148,7 @@ DEFINES = {
     "<wInventoryB": "$e8",
     "<wInventoryA": "$e9",
     "<wInventoryStorage": "$ea",
+    "wOverworldRoomFlags": "$c700",
     "wTextIndexL": "$cba2",
     "wTextIndexH": "$cba3",
     "wTextNumberSubstitution": "$cba8",

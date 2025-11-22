@@ -325,10 +325,7 @@
 ##### HERO'S CAVE CHEST ############################################
 
 # stop hero's cave chest from giving a second sword that causes a spin slash.
-0a/7bb9/: |
-    db $00,$00,$00,$00,$00,$00,$00
-    db $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-    db $00
+0a/7bb8/: jr $17
 
 
 ##### SUBROSIAN HIDE AND SEEK ############################################

@@ -55,6 +55,12 @@ asm_files = {
     "old_men_as_locations": [
         "asm/conditional/old_men_as_locations.yaml"
     ],
+    "prevent_drowning_d0_warp": [
+        "asm/conditional/prevent_drowning_d0_warp.yaml"
+    ],
+    "prevent_drowning_d2_warp": [
+        "asm/conditional/prevent_drowning_d2_warp.yaml"
+    ],
     "quick_flute": [
         "asm/conditional/quick_flute.yaml"
     ],
