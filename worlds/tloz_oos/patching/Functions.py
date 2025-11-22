@@ -28,6 +28,10 @@ def get_asm_files(patch_data):
         files += asm_files["remove_d0_alt_entrance"]
     if patch_data["options"]["remove_d2_alt_entrance"]:
         files += asm_files["remove_d2_alt_entrance"]
+    if patch_data["dungeon_entrances"]["d3"] == "d0":
+        files += asm_files["prevent_drowning_d0_warp"]
+    elif patch_data["dungeon_entrances"]["d3"] == "d2":
+        files += asm_files["prevent_drowning_d2_warp"]
     if patch_data["options"]["goal"] == OracleOfSeasonsGoal.option_beat_ganon:
         files += asm_files["ganon_goal"]
     if patch_data["options"]["rosa_quick_unlock"]:
@@ -281,6 +285,14 @@ def define_option_constants(assembler: Z80Assembler, patch_data):
     assembler.define_byte("var.samasaCaveScrubSubid", 0x04 if scrubs_all_refill else 0x01)
     assembler.define_byte("var.d2ScrubSubid", 0x04 if scrubs_all_refill else 0x02)
     assembler.define_byte("var.d4ScrubSubid", 0x04 if scrubs_all_refill else 0x03)
+
+    # This adds water tiles in d3 inside as long as the floodgate isn't open
+    if patch_data["dungeon_entrances"]["d3"] == "d0":
+        assembler.define_byte("d3Entrance", 0x04)
+    elif patch_data["dungeon_entrances"]["d3"] == "d2":
+        assembler.define_byte("d3Entrance", 0x39)
+    else:
+        assembler.define_byte("d3Entrance", 0x00)
 
 
 def define_season_constants(assembler: Z80Assembler, patch_data):

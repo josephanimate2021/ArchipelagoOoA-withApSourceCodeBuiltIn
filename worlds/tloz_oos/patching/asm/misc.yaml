@@ -118,3 +118,33 @@
 # Skip the screen to select link, secret or new game and skip to new game
 02/41cf/: db $02
 # 02/427d/ up to 02/42e3/ (included) => FREE SPACE
+
+# Remove the original reference to the exterior of Bipin & Blossom house map function
+04/614e/: db $00
+# Attach the modified function above to Farore's room by extending the group4 tile changer table
+04//roomTileChangerCodeGroup4DataExt: |
+  db $61,$2e
+  db $78,$02
+  db $2e,$04
+  db $64,$05
+  db $89,$06
+  db $bb,$07
+  db $e8,$08 ; Remove access to stairs behind Farore on 2 essences (static_items.yaml), replacing bipin&blossom sign
+  db d3Entrance,$03 ; Add water tiles to the entrance of the dungeon, replacing the shop minigame
+  ; Note: d3Entrance could be 0, preventing any replacement placed there from happening, prefer placing things above
+  db $00
+04/611c/: dw roomTileChangerCodeGroup4DataExt
+
+04/6230/: |
+  ; Check if floodgate is open
+  ld a,(wOverworldRoomFlags+$81)
+  rlca
+  ret c
+
+  ; Add water to the entrance
+  ld h,$cf
+  ld l,$a7
+  ld (hl),$fd ; water
+  ld l,$97
+  ld (hl),$fa ; shallow water
+  ret

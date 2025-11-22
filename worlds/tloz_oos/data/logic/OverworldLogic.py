@@ -573,6 +573,9 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ["floodgate keyhole", "spool stump", False, lambda state: state.has("Floodgate Key", player)],
 
         ["spool stump", "d3 entrance", False, lambda state: oos_season_in_spool_swamp(state, player, SEASON_SUMMER)],
+        ["d3 entrance", "spool swamp north", False, lambda state: \
+            # Coming from alt d0/d2
+            oos_can_swim(state, player, False)],
 
         ["spool stump", "spool swamp middle", False, lambda state: any([
             not oos_is_default_season(state, player, "SPOOL_SWAMP", SEASON_SPRING),
