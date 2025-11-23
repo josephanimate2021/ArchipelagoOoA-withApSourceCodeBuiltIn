@@ -6,7 +6,7 @@ import yaml
 from worlds.Files import APProcedurePatch, APTokenMixin, APPatchExtension
 from .Functions import *
 from .RomData import RomData
-from .data_manager.text import get_seasons_text_data, get_ages_text_data, apply_ages_edits
+from .data_manager.text import get_seasons_text_data, apply_ages_edits
 from .text.encoding import write_text_data
 from .z80asm.Assembler import Z80Assembler, Z80Block
 
