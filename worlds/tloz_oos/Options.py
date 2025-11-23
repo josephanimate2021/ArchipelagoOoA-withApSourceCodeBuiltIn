@@ -789,7 +789,7 @@ class OracleOfSeasonsOptions(PerGameCommonOptions):
     remove_items_from_pool: OracleOfSeasonsRemoveItemsFromPool
 
 
-option_groups = [
+oos_option_groups = [
     OptionGroup("General", [
         ItemsAccessibility,
         OracleOfSeasonsGoal,

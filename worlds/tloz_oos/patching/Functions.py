@@ -11,11 +11,12 @@ from .asm import asm_files
 from .text import normalize_text
 from .z80asm.Assembler import Z80Assembler, GameboyAddress
 from .z80asm.Util import parse_hex_string_to_value
-from ..Hints import make_hint_texts
 from ..Options import OracleOfSeasonsOldMenShuffle, OracleOfSeasonsGoal, OracleOfSeasonsAnimalCompanion, \
     OracleOfSeasonsMasterKeys, OracleOfSeasonsFoolsOre, OracleOfSeasonsShowDungeonsWithEssence
+from ..World import OracleOfSeasonsWorld
 from ..data.Locations import LOCATIONS_DATA
 from ..data.Constants import *
+from ..generation.Hints import make_hint_texts
 
 
 def get_asm_files(patch_data):
@@ -635,7 +636,6 @@ def set_fixed_subrosia_seaside_location(rom: RomData, patch_data):
 
 
 def set_file_select_text(assembler: Z80Assembler, slot_name: str):
-    from .. import OracleOfSeasonsWorld
     def char_to_tile(c: str) -> int:
         if "0" <= c <= "9":
             return ord(c) - 0x20

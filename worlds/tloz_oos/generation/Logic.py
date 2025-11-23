@@ -1,19 +1,35 @@
-from BaseClasses import MultiWorld, Item
+from BaseClasses import MultiWorld, Item, EntranceType
 from worlds.AutoWorld import LogicMixin
-from worlds.tloz_oos.data.logic.DungeonsLogic import *
-from worlds.tloz_oos.data.logic.OverworldLogic import make_holodrum_logic
-from worlds.tloz_oos.data.logic.SubrosiaLogic import make_subrosia_logic
+from ..World import OracleOfSeasonsWorld
+from ..data.logic.DungeonsLogic import *
+from ..data.logic.OverworldLogic import make_holodrum_logic
+from ..data.logic.SubrosiaLogic import make_subrosia_logic
 
 
-def create_connections(multiworld: MultiWorld, player: int, origin_name: str, options):
-    dungeon_entrances = []
-    for reg1, reg2 in multiworld.worlds[player].dungeon_entrances.items():
-        dungeon_entrances.append([reg1, reg2, True, None])
+def create_randomizable_connections(world: OracleOfSeasonsWorld, prefix: str,
+                                    vanilla_connections: dict[str, str], outer_group: int, inner_group: int):
+    for reg1, reg2 in vanilla_connections.items():
+        region_1 = world.get_region(reg1)
+        region_2 = world.get_region(reg2)
 
-    portal_connections = []
-    for reg1, reg2 in multiworld.worlds[player].portal_connections.items():
-        portal_connections.append([reg1, reg2, True, None])
+        entrance = region_1.create_exit(f"{prefix}{reg1}")
+        entrance.randomization_group = outer_group
+        entrance.randomization_type = EntranceType.TWO_WAY
 
+        entrance = region_1.create_er_target(f"{prefix}{reg1}")
+        entrance.randomization_group = outer_group
+        entrance.randomization_type = EntranceType.TWO_WAY
+
+        entrance = region_2.create_exit(f"{prefix}{reg2}")
+        entrance.randomization_group = inner_group
+        entrance.randomization_type = EntranceType.TWO_WAY
+
+        entrance = region_2.create_er_target(f"{prefix}{reg2}")
+        entrance.randomization_group = inner_group
+        entrance.randomization_type = EntranceType.TWO_WAY
+
+
+def create_connections(world: OracleOfSeasonsWorld, player: int, origin_name: str, options):
     all_logic = [
         make_holodrum_logic(player, origin_name, options),
         make_subrosia_logic(player),
@@ -25,16 +41,34 @@ def create_connections(multiworld: MultiWorld, player: int, origin_name: str, op
         make_d5_logic(player),
         make_d6_logic(player),
         make_d7_logic(player),
-        make_d8_logic(player),
-        dungeon_entrances,
-        portal_connections,
+        make_d8_logic(player)
     ]
+
+    if world.options.shuffle_dungeons:
+        create_randomizable_connections(world, "", DUNGEON_CONNECTIONS,
+                                        OracleOfSeasonsConnectionType.CONNECT_DUNGEON_OVERWORLD,
+                                        OracleOfSeasonsConnectionType.CONNECT_DUNGEON_INSIDE)
+    else:
+        dungeon_entrances = []
+        for reg1, reg2 in world.dungeon_entrances.items():
+            dungeon_entrances.append([reg1, reg2, True, None])
+        all_logic.append(dungeon_entrances)
+
+    if world.options.shuffle_portals:
+        create_randomizable_connections(world, "enter ", PORTAL_CONNECTIONS,
+                                        OracleOfSeasonsConnectionType.CONNECT_PORTAL_OVERWORLD,
+                                        OracleOfSeasonsConnectionType.CONNECT_PORTAL_SUBROSIA)
+    else:
+        portal_connections = []
+        for reg1, reg2 in PORTAL_CONNECTIONS.items():
+            portal_connections.append([reg1, reg2, True, None])
+        all_logic.append(portal_connections)
 
     # Create connections
     for logic_array in all_logic:
         for entrance_desc in logic_array:
-            region_1 = multiworld.get_region(entrance_desc[0], player)
-            region_2 = multiworld.get_region(entrance_desc[1], player)
+            region_1 = world.get_region(entrance_desc[0])
+            region_2 = world.get_region(entrance_desc[1])
             is_two_way = entrance_desc[2]
             rule = entrance_desc[3]
 

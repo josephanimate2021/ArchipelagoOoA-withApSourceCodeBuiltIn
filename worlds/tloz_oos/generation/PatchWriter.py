@@ -1,16 +1,12 @@
 import json
 from collections import defaultdict
 
-from typing import TYPE_CHECKING
-from worlds.tloz_oos.patching.ProcedurePatch import OoSProcedurePatch
-from .data.Constants import *
-from . import OracleOfSeasonsOptions
-
-if TYPE_CHECKING:
-    from . import OracleOfSeasonsWorld
+from ..Options import OracleOfSeasonsOptions
+from ..World import OracleOfSeasonsWorld
+from ..patching.ProcedurePatch import OoSProcedurePatch
 
 
-def oos_create_ap_procedure_patch(world: "OracleOfSeasonsWorld") -> OoSProcedurePatch:
+def oos_create_ap_procedure_patch(world: OracleOfSeasonsWorld) -> OoSProcedurePatch:
     patch = OoSProcedurePatch()
 
     patch.player = world.player
