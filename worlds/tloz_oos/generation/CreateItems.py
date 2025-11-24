@@ -133,7 +133,7 @@ def build_item_pool_dict(world: OracleOfSeasonsWorld) -> dict[str, int]:
             continue
 
         if item_name.startswith("Bombs (") or item_name.startswith("Bombchus ("):
-            # Not enough bombs in the pool, erase everything to redistribute them
+            # We're changing the bomb distribution
             filler_item_count += 1
             continue
 
@@ -146,13 +146,13 @@ def build_item_pool_dict(world: OracleOfSeasonsWorld) -> dict[str, int]:
 
     if world.options.exclude_dungeons_without_essence and len(world.essences_in_game) < 4:
         # Compact the bomb items for smaller seeds to not clog the pool
-        item_pool_dict["Bombchus (20)"] = 5
-        item_pool_dict["Bombs (20)"] = 5
-        extra_items = 10
+        item_pool_dict["Bombchus (20)"] = 2
+        item_pool_dict["Bombs (20)"] = 2
+        extra_items = 4
     else:
-        item_pool_dict["Bombchus (10)"] = 10
-        item_pool_dict["Bombs (10)"] = 10
-        extra_items = 20
+        item_pool_dict["Bombchus (10)"] = 5
+        item_pool_dict["Bombs (10)"] = 5
+        extra_items = 10
     if world.options.cross_items:
         item_pool_dict["Cane of Somaria"] = 1
         item_pool_dict["Switch Hook"] = 2

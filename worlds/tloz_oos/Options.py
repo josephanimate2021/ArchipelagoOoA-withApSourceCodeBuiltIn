@@ -794,8 +794,10 @@ oos_option_groups = [
         ItemsAccessibility,
         OracleOfSeasonsGoal,
         OracleOfSeasonsLogicDifficulty,
-        OracleOfSeasonsIncludeCrossItems,
         OracleOfSeasonsDeathLink,
+    ]),
+    OptionGroup("Items", [
+        OracleOfSeasonsIncludeCrossItems,
     ]),
     OptionGroup("Optional Locations", [
         OracleOfSeasonsAdvanceShop,
