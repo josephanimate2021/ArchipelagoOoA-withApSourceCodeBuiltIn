@@ -907,7 +907,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
                 oos_has_bombs(state, player),
                 all([  # Bombchu can only destroy the second block, so we need to use cape to jump around the first
                     oos_option_medium_logic(state, player),
-                    oos_has_bombchus(state, player, 5),
+                    oos_has_bombchus(state, player, 4),
                     oos_can_use_pegasus_seeds(state, player)
                 ]),
             ])

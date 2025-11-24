@@ -752,7 +752,7 @@ def oos_can_break_flowers(state: CollectionState, player: int, can_summon_compan
                 ]),
                 all([
                     allow_bombchus,
-                    oos_has_bombchus(state, player, 5)
+                    oos_has_bombchus(state, player, 4)
                 ])
             ])
         ]),
@@ -770,7 +770,7 @@ def oos_can_break_crystal(state: CollectionState, player: int):
         ]),
         all([
             oos_option_medium_logic(state, player),
-            oos_has_bombchus(state, player, 5)
+            oos_has_bombchus(state, player, 4)
         ]),
     ])
 
@@ -1132,7 +1132,7 @@ def oos_can_remove_rockslide(state: CollectionState, player: int, can_summon_com
         oos_has_bombs(state, player),
         all([
             oos_option_medium_logic(state, player),
-            oos_has_bombchus(state, player, 5)
+            oos_has_bombchus(state, player, 4)
         ]),
         all([
             can_summon_companion,

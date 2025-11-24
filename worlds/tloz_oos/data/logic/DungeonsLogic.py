@@ -120,7 +120,7 @@ def make_d2_logic(player: int):
                     # It's tight but doable
                     oos_option_medium_logic(state, player),
                     oos_can_use_pegasus_seeds(state, player),
-                    oos_has_bombchus(state, player, 5)
+                    oos_has_bombchus(state, player, 4)
                 ])
             ])
         ])],
@@ -952,7 +952,7 @@ def make_d7_logic(player: int):
                     oos_has_fools_ore(state, player),
                     oos_has_rod(state, player),
                     oos_has_bombs(state, player),
-                    oos_has_bombchus(state, player, 5)
+                    oos_has_bombchus(state, player, 4)
                 ]),
                 # Reach trampolines using the magnet gloves
                 oos_has_feather(state, player),
