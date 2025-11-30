@@ -2,3 +2,4 @@
 from .World import OracleOfSeasonsWorld
 from .Client import OracleOfSeasonsClient
 from .patching.ProcedurePatch import OoSPatchExtensions
+from .spriter.ui import component

@@ -1,0 +1,16 @@
+bw_palette = [
+    0x00, 0x00, 0x00, 0xff,
+    0x55, 0x55, 0x55, 0xff,
+    0xaa, 0xaa, 0xaa, 0xff,
+    0xff, 0xff, 0xff, 0xff,
+    0xff, 0x00, 0xff, 0xff  # Dead tile
+]
+
+# It corresponds to the vivid palette, may be subject to change
+link_palette = [
+    0, 0, 0, 0,
+    0, 0, 0, 255,
+    16, 173, 66, 255,
+    255, 214, 140, 255,
+    255, 0, 255, 255  # Dead tile
+]
