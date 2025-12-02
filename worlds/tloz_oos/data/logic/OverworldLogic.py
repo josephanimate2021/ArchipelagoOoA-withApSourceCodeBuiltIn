@@ -1,4 +1,4 @@
-from worlds.tloz_oos.Options import OracleOfSeasonsOptions
+from ...Options import OracleOfSeasonsOptions
 from .LogicPredicates import *
 
 

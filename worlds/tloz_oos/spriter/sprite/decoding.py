@@ -1,7 +1,7 @@
 from PIL.Image import Image
 from PIL.Image import new as new_image
 
-from worlds.tloz_oos.patching.RomData import RomData
+from ...patching.RomData import RomData
 
 
 def draw_tile(img: Image, sprite_data: bytes, x: int, y: int, address: int) -> None:

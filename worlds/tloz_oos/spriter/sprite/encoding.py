@@ -49,10 +49,10 @@ def encode_sprite(image: Image) -> bytes:
 
 
 def remap_sprite(image: Image) -> Image:
-    if len(image.getpalette("RGB")) > 15:
+    img_palette = image.getpalette("RGB")
+    if img_palette is None or len(img_palette) > 15:
         image = image.convert("RGBA")
         image = image.quantize(5)
-        image.save("output/link_g3.png")
     img_palette = image.getpalette("RGBA")
     mapping = list(range(5))
 

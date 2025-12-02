@@ -1,12 +1,12 @@
 from typing_extensions import Any
 
 from BaseClasses import Item, ItemClassification, Location, Region, LocationProgressType
-from worlds.tloz_oos import OracleOfSeasonsWorld
-from worlds.tloz_oos.Options import OracleOfSeasonsGoal, OracleOfSeasonsOldMenShuffle, OracleOfSeasonsLogicDifficulty
-from worlds.tloz_oos.data import LOCATIONS_DATA
-from worlds.tloz_oos.data.Constants import GASHA_SPOT_REGIONS, ITEM_GROUPS, SCRUB_LOCATIONS, SUBROSIA_HIDDEN_DIGGING_SPOTS_LOCATIONS, RUPEE_OLD_MAN_LOCATIONS, \
+from ..World import OracleOfSeasonsWorld
+from ..Options import OracleOfSeasonsGoal, OracleOfSeasonsOldMenShuffle, OracleOfSeasonsLogicDifficulty
+from ..data import LOCATIONS_DATA
+from ..data.Constants import GASHA_SPOT_REGIONS, ITEM_GROUPS, SCRUB_LOCATIONS, SUBROSIA_HIDDEN_DIGGING_SPOTS_LOCATIONS, RUPEE_OLD_MAN_LOCATIONS, \
     SECRETS
-from worlds.tloz_oos.data.Regions import REGIONS, NATZU_REGIONS, GASHA_REGIONS
+from ..data.Regions import REGIONS, NATZU_REGIONS, GASHA_REGIONS
 
 
 def location_is_active(world: OracleOfSeasonsWorld, location_name: str, location_data: dict[str, Any]) -> bool:

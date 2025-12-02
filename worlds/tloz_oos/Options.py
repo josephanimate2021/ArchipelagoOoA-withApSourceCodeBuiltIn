@@ -3,7 +3,7 @@ from datetime import datetime
 
 from Options import Choice, DeathLink, DefaultOnToggle, PerGameCommonOptions, Range, Toggle, StartInventoryPool, \
     ItemDict, ItemsAccessibility, ItemSet, Visibility, OptionGroup, NamedRange
-from worlds.tloz_oos.data.Items import ITEMS_DATA
+from .data.Items import ITEMS_DATA
 
 
 class OracleOfSeasonsGoal(Choice):
