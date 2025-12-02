@@ -32,10 +32,9 @@ class ImageApp(MDApp):
 
         layout = BoxLayout(orientation="vertical")
 
-        # This looks like absolute shit, but I can't manage to make it look nice
         self.img = Image(
             source="",
-            fit_mode="scale-down"
+            fit_mode="contain"
         )
         layout.add_widget(self.img)
 
@@ -95,6 +94,8 @@ class ImageApp(MDApp):
 
         self.img.source = file_name
         self.img.reload()
+        self.img.texture.mag_filter = 'nearest'   # prevents blur when scaling up
+        self.img.texture.min_filter = 'nearest'   # prevents blur when scaling down
 
     def load_sprite(self, *_) -> None:
         file_name = Utils.open_filename("Select sprite file", (
@@ -116,6 +117,8 @@ class ImageApp(MDApp):
             image.save(new_file_name)
         self.img.source = new_file_name
         self.img.reload()
+        self.img.texture.mag_filter = 'nearest'   # prevents blur when scaling up
+        self.img.texture.min_filter = 'nearest'   # prevents blur when scaling down
 
     def switch_palette(self, *_) -> None:
         if self.img.source == "":
@@ -130,6 +133,8 @@ class ImageApp(MDApp):
             image.putpalette(bw_palette, "RGBA")
             image.save(self.img.source)
         self.img.reload()
+        self.img.texture.mag_filter = 'nearest'   # prevents blur when scaling up
+        self.img.texture.min_filter = 'nearest'   # prevents blur when scaling down
 
     def switch_separator(self, *_) -> None:
         if self.img.source == "":
@@ -147,6 +152,8 @@ class ImageApp(MDApp):
         image.putpalette(palette, "RGBA")
         image.save(self.img.source)
         self.img.reload()
+        self.img.texture.mag_filter = 'nearest'   # prevents blur when scaling up
+        self.img.texture.min_filter = 'nearest'   # prevents blur when scaling down
 
     def export_image(self, *_) -> None:
         if self.img.source == "":
