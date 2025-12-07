@@ -20,7 +20,7 @@ control_sequence_pattern = re.compile(r"""
 dict_pattern = re.compile(r"DICT(\d+)_([0-9a-f]+)")
 
 
-def add_to_tree(tree: dict[str, list[int]], char: str, keys: [int]):
+def add_to_tree(tree: dict[str, list[int]], char: str, keys: list[int]):
     tree[char] = keys
 
 
