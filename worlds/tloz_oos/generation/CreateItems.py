@@ -265,8 +265,8 @@ def build_currency_item_dict(world: OracleOfSeasonsWorld, currency_item_count: i
         currency_item_dict[item_name] = currency_item_dict.get(item_name, 0) + 1
     # If the target is positive, it means there aren't enough rupees, so we'll steal a filler from the pool and reroll
     if target > 0:
-        return world.build_currency_item_dict(currency_item_count + 1, filler_item_count - 1, initial_target,
-                                              total_cost, currency_name, valid_currency_item_values)
+        return build_currency_item_dict(world, currency_item_count + 1, filler_item_count - 1, initial_target,
+                                        total_cost, currency_name, valid_currency_item_values)
     return currency_item_dict, filler_item_count
 
 
