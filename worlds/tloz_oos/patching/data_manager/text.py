@@ -197,7 +197,7 @@ def apply_ages_edits(seasons_texts: dict[str, str], ages_rom: RomData) -> None:
     # Cross items
     # Obtain text
     seasons_texts["TX_0053"] = ages_texts["TX_0073"]  # Cane
-    seasons_texts["TX_003b"] = ages_texts["TX_0020"]  # Hook 1
+    seasons_texts["TX_003b"] = ages_texts["TX_0030"]  # Hook 1
     seasons_texts["TX_0051"] = ages_texts["TX_0028"]  # Hook 2
     seasons_texts["TX_0054"] = ages_texts["TX_002e"]  # Shooter
     # Inventory text

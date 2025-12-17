@@ -768,7 +768,7 @@ def make_text_data(assembler: Z80Assembler, text: dict[str, str], patch_data):
     assembler.define_byte("text.shooter.treasure", 0x54)
 
     assembler.define_byte("text.hook1.inventory", 0x1e)
-    assembler.define_byte("text.hook2.inventory", 0x1e)
+    assembler.define_byte("text.hook2.inventory", 0x17)
     assembler.define_byte("text.cane.inventory", 0x1d)
     assembler.define_byte("text.shooter.inventory", 0x2e)
 
