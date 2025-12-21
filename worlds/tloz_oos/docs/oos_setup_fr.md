@@ -6,6 +6,10 @@
 - [Bizhawk 2.10 (x64)](https://tasvideos.org/BizHawk/ReleaseHistory)
 - Votre ROM Oracle of Seasons US obtenue légalement
 
+## Autre guides importants
+- [Guide d'installation d'Archipelago (en)](../../generic/docs/setup_en.md#installing-the-archipelago-software), requis pour installer l'apworld
+- [FAQ pour Oracle of Seasons](fr_The%20Legend%20of%20Zelda%20-%20Oracle%20of%20Seasons.md#foire-aux-questions)
+
 ## Instructions d'installation
 
 1. Mettez votre **ROM US d'Oracle of Seasons** dans le dossier où Archipelago est installé (nommée "Legend of Zelda, The - Oracle of Seasons (USA).gbc")
