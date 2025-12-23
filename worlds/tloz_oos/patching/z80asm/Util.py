@@ -2,7 +2,7 @@ import collections
 import re
 from typing import List
 
-from worlds.tloz_oos.patching.z80asm.Errors import ArgumentOverflowError
+from ...patching.z80asm.Errors import ArgumentOverflowError
 
 
 def strip_line(line: str) -> str:

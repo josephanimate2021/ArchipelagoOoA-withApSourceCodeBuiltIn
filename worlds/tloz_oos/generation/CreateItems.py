@@ -1,12 +1,12 @@
 import logging
 
 from BaseClasses import Item, ItemClassification
-from worlds.tloz_oos import OracleOfSeasonsWorld
-from worlds.tloz_oos.Options import OracleOfSeasonsShopPrices, OracleOfSeasonsMasterKeys, OracleOfSeasonsFoolsOre, OracleOfSeasonsDuplicateSeedTree, \
+from ..World import OracleOfSeasonsWorld
+from ..Options import OracleOfSeasonsShopPrices, OracleOfSeasonsMasterKeys, OracleOfSeasonsFoolsOre, OracleOfSeasonsDuplicateSeedTree, \
     OracleOfSeasonsLogicDifficulty
-from worlds.tloz_oos.data import LOCATIONS_DATA, ITEMS_DATA
-from worlds.tloz_oos.data.Constants import ITEM_GROUPS, DUNGEON_NAMES, MARKET_LOCATIONS, VALID_RUPEE_ITEM_VALUES, VALID_ORE_ITEM_VALUES, SEED_ITEMS
-from worlds.tloz_oos.generation.CreateRegions import location_is_active
+from ..data import LOCATIONS_DATA, ITEMS_DATA
+from ..data.Constants import ITEM_GROUPS, DUNGEON_NAMES, MARKET_LOCATIONS, VALID_RUPEE_ITEM_VALUES, VALID_ORE_ITEM_VALUES, SEED_ITEMS
+from ..generation.CreateRegions import location_is_active
 
 
 def create_item(world: OracleOfSeasonsWorld, name: str) -> Item:

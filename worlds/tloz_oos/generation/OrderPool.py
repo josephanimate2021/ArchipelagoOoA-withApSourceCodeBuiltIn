@@ -1,6 +1,6 @@
 from BaseClasses import MultiWorld, Item
-from worlds.tloz_oos import OracleOfSeasonsWorld
-from worlds.tloz_oos.data.Constants import SEASON_WINTER
+from ..World import OracleOfSeasonsWorld
+from ..data.Constants import SEASON_WINTER
 
 
 def order_pool(multiworld: MultiWorld, progitempool: list[Item]):

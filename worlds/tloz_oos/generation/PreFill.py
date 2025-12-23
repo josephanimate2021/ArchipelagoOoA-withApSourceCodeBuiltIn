@@ -1,8 +1,8 @@
 from BaseClasses import MultiWorld
 from Fill import fill_restrictive
-from worlds.tloz_oos import OracleOfSeasonsWorld
-from worlds.tloz_oos.data import LOCATIONS_DATA
-from worlds.tloz_oos.data.Constants import DUNGEON_NAMES
+from ..World import OracleOfSeasonsWorld
+from ..data import LOCATIONS_DATA
+from ..data.Constants import DUNGEON_NAMES
 
 
 def stage_pre_fill_dungeon_items(multiworld: MultiWorld):

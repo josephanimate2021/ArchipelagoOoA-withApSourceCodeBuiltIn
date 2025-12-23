@@ -4,13 +4,13 @@ from pathlib import Path
 from typing_extensions import Any
 
 import Utils
-from worlds.tloz_oos.patching.RomData import RomData
-from worlds.tloz_oos.patching.text import normalize_text
-from worlds.tloz_oos.patching.text.decoding import parse_text_dict, parse_all_texts
+from ...patching.RomData import RomData
+from ...patching.text import normalize_text
+from ...patching.text.decoding import parse_text_dict, parse_all_texts
 
 
 def load_modded_seasons_text_data() -> None | tuple[dict[str, str], dict[str, str]]:
-    from worlds.tloz_oos import OracleOfSeasonsWorld
+    from ...World import OracleOfSeasonsWorld
     text_dir = Path(Utils.cache_path("oos_ooa/text"))
     dict_file = text_dir.joinpath(f"seasons_dict.json")
     if not dict_file.is_file():
@@ -58,7 +58,7 @@ def save_vanilla_text_data(dictionary: dict[str, str],
 
 
 def save_seasons_edited_text_data(texts: dict[str, str]) -> None:
-    from worlds.tloz_oos import OracleOfSeasonsWorld
+    from ...World import OracleOfSeasonsWorld
     texts["version"] = OracleOfSeasonsWorld.version()
 
     text_dir = Path(Utils.cache_path("oos_ooa/text"))
