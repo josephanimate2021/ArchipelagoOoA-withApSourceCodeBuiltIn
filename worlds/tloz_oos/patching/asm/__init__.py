@@ -84,5 +84,8 @@ asm_files = {
         "asm/cross_items/seed_shooter.yaml",
         "asm/cross_items/switch_hook.yaml",
         "asm/cross_items/uncmp_gfx.yaml"
+    ],
+    "d0_in_samasa": [
+        "asm/d0_in_samasa/samasa_entrance.yaml"
     ]
 }

@@ -43,6 +43,8 @@ def get_asm_files(patch_data):
         files += asm_files["cross_items"]
     if patch_data["options"]["secret_locations"]:
         files += asm_files["secret_locations"]
+    if patch_data["options"]["linked_heros_cave"] == 1:
+        files += asm_files["d0_in_samasa"]
     return files
 
 

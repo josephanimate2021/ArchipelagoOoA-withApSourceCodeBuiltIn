@@ -672,6 +672,20 @@ class OracleOfSeasonsIncludeSecretLocations(Toggle):
     include_in_slot_data = True
 
 
+class OracleOfSeasonsLinkedHerosCave(Choice):
+    """
+    Sets whether and how the link version of the hero's cave is placed in the world.
+    - Samasa: an entrance is placed in the Samasa desert, below the oasis
+    """
+    display_name = "Linked Hero's Cave"
+
+    option_disabled = 0
+    option_samasa = 1
+
+    include_in_patch = True
+    include_in_slot_data = True
+
+
 class OracleOfSeasonsDeathLink(DeathLink):
     """
     When you die, everyone who enabled death link dies. Of course, the reverse is true too.
@@ -728,6 +742,7 @@ class OracleOfSeasonsOptions(PerGameCommonOptions):
     shuffle_golden_ore_spots: OracleOfSeasonsGoldenOreSpotsShuffle
     deterministic_gasha_locations: OracleOfSeasonsGashaLocations
     secret_locations: OracleOfSeasonsIncludeSecretLocations
+    linked_heros_cave: OracleOfSeasonsLinkedHerosCave
 
     # Essences
     required_essences: OracleOfSeasonsRequiredEssences
@@ -805,7 +820,8 @@ oos_option_groups = [
         OracleOfSeasonsBusinessScrubsShuffle,
         OracleOfSeasonsGoldenOreSpotsShuffle,
         OracleOfSeasonsGashaLocations,
-        OracleOfSeasonsIncludeSecretLocations
+        OracleOfSeasonsIncludeSecretLocations,
+        OracleOfSeasonsLinkedHerosCave
     ]),
     OptionGroup("Essences", [
         OracleOfSeasonsRequiredEssences,
