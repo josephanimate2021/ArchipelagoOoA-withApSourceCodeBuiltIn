@@ -271,7 +271,7 @@ def make_d4_logic(player: int):
                     oos_has_bracelet(state, player),
                 ]),
                 all([  # pushing enemies in the water
-                    oos_has_rod(state, player),
+                    oos_can_push_enemy(state, player),
                     any([
                         oos_has_boomerang(state, player),
                         oos_has_switch_hook(state, player)
@@ -304,6 +304,10 @@ def make_d4_logic(player: int):
                 all([
                     oos_option_medium_logic(state, player),
                     oos_has_bracelet(state, player)
+                ]),
+                all([
+                    oos_can_push_enemy(state, player),
+                    oos_has_switch_hook(state, player)
                 ])
             ]),
             any([
