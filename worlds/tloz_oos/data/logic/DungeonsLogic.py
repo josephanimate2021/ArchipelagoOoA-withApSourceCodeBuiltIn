@@ -994,7 +994,8 @@ def make_d7_logic(player: int):
                 all([
                     # Switch hook from above with the pot next to the button then jump in the hole
                     oos_option_medium_logic(state, player),
-                    oos_has_switch_hook(state, player)
+                    oos_has_switch_hook(state, player),
+                    oos_can_jump_3_wide_pit(state, player)  # To pass the flying tiles room
                 ])
                 # Casual could switch 2 from the left, but they'd have to jump in the hole to move out
                 # which is against casual logic's spirit
