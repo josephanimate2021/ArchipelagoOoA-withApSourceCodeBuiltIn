@@ -1,3 +1,4 @@
+from .z80asm.Assembler import GameboyAddress
 from ..data.Constants import *
 
 # [x, y] = everything between x and y (included) is free
@@ -423,69 +424,70 @@ RUPEE_VALUES = {
 }
 
 DUNGEON_ENTRANCES = {
+    # "addr": Address of the pointer to the warp dest aka start of the line + 2
     "d0": {
-        "addr": 0x13651,
+        "addr": GameboyAddress(0x04, 0x7651).address_in_rom(),
         "map_tile": 0xd4,
         "room": 0xd4,
         "group": 0x00,
         "position": 0x54
     },
     "d1": {
-        "addr": 0x1346d,
+        "addr": GameboyAddress(0x04, 0x746d).address_in_rom(),
         "map_tile": 0x96,
         "room": 0x96,
         "group": 0x00,
         "position": 0x44
     },
     "d2": {
-        "addr": 0x13659,
+        "addr": GameboyAddress(0x04, 0x7659).address_in_rom(),
         "map_tile": 0x8d,
         "room": 0x8d,
         "group": 0x00,
         "position": 0x24
     },
     "d3": {
-        "addr": 0x13671,
+        "addr": GameboyAddress(0x04, 0x7671).address_in_rom(),
         "map_tile": 0x60,
         "room": 0x60,
         "group": 0x00,
         "position": 0x25
     },
     "d4": {
-        "addr": 0x13479,
+        "addr": GameboyAddress(0x04, 0x7479).address_in_rom(),
         "map_tile": 0x1d,
         "room": 0x1d,
         "group": 0x00,
         "position": 0x13
     },
     "d5": {
-        "addr": 0x1347d,
+        "addr": GameboyAddress(0x04, 0x747d).address_in_rom(),
         "map_tile": 0x8a,
         "room": 0x8a,
         "group": 0x00,
         "position": 0x25
     },
     "d6": {
-        "addr": 0x13481,
+        "addr": GameboyAddress(0x04, 0x7481).address_in_rom(),
         "map_tile": 0x00,
         "room": 0x00,
         "group": 0x00,
         "position": 0x34
     },
     "d7": {
-        "addr": 0x13485,
+        "addr": GameboyAddress(0x04, 0x7485).address_in_rom(),
         "map_tile": 0xd0,
         "room": 0xd0,
         "group": 0x00,
         "position": 0x34
     },
     "d8": {
-        "addr": 0x1369d,
+        "addr": GameboyAddress(0x04, 0x769d).address_in_rom(),
         "map_tile": 0x04,
         "room": 0x00,
         "group": 0x01,
         "position": 0x23
-    },
+    }
 }
 
 DUNGEON_EXITS = {

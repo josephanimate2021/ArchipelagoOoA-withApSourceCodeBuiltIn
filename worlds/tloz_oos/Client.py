@@ -172,7 +172,7 @@ class OracleOfSeasonsClient(BizHawkClient):
     async def process_checked_locations(self, ctx: "BizHawkClientContext", flag_bytes):
         checked_locations = set()
         for name, location in LOCATIONS_DATA.items():
-            if "flag_byte" not in location:
+            if location["flag_byte"] is None:
                 continue
 
             byte_addr = location["flag_byte"]
