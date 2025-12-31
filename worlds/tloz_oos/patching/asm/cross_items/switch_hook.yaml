@@ -181,7 +181,7 @@
   push de
   cp $26 ; normal flower
   ld a,$3b ; flower sprite
-  jr @end
+  jr nz,@end
   inc a ; stone flower instead
   
   @end:
