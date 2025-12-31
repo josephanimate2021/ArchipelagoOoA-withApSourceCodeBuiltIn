@@ -279,6 +279,7 @@ class OracleOfSeasonsShowDungeonsWithEssence(Choice):
 
     default = 1
     include_in_patch = True
+    include_in_slot_data = True
 
 
 class OracleOfSeasonsMasterKeys(Choice):

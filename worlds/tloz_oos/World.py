@@ -204,6 +204,7 @@ class OracleOfSeasonsWorld(World):
             "old_man_rupee_values": self.old_man_rupee_values,
             "dungeon_entrances": {a.replace(" entrance", ""): b.replace("enter ", "")
                                   for a, b in self.dungeon_entrances.items()},
+            "essences_in_game": self.essences_in_game,
             "subrosia_portals": self.portal_connections,
             "shop_rupee_requirements": self.shop_rupee_requirements,
             "shop_costs": self.shop_prices,
