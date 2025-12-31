@@ -16,7 +16,7 @@ CAVE_DATA = [
     ],
     0x3e2d,  # 05
     0x3864,  # 06 - 128 bytes reserved for sprite expansion w/ web patcher
-    0x3900,  # 07
+    0x3910,  # 07
     [  # 08
         [0x2395, 0x26fd],  # Bipin & Blossom child mechanic
         0x3fc0  # End of bank
