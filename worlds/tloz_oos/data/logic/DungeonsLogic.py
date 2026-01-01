@@ -1,4 +1,5 @@
 from .LogicPredicates import *
+from ...Options import OracleOfSeasonsOptions, OracleOfSeasonsLinkedHerosCave
 
 
 def make_d0_logic(player: int):
@@ -6,8 +7,8 @@ def make_d0_logic(player: int):
         # 0 keys
         ["enter d0", "d0 key chest", False, None],
         ["enter d0", "d0 rupee chest", False, lambda state:
-            # If hole is removed, stairs are added inside dungeon to make the chest reachable
-            oos_option_no_d0_alt_entrance(state, player)
+        # If hole is removed, stairs are added inside dungeon to make the chest reachable
+        oos_option_no_d0_alt_entrance(state, player)
          ],
         ["d0 rupee chest", "enter d0", False, None],
         ["enter d0", "d0 hidden 2d section", False, lambda state: any([
@@ -1280,3 +1281,70 @@ def make_d8_logic(player: int):
             ])
         ])],
     ]
+
+
+def make_d11_logic(player: int, options: OracleOfSeasonsOptions):
+    if options.linked_heros_cave.value == OracleOfSeasonsLinkedHerosCave.option_disabled:
+        return []
+    logic = [
+        ["enter d11", "d11 floor 1 chest", False, lambda state: oos_has_bracelet(state, player)],
+        ["d11 floor 1 chest", "d11 floor 2 keydrop", False, lambda state: oos_can_jump_2_wide_pit(state, player)],
+        ["d11 floor 2 keydrop", "d11 floor 2 chest", False, lambda state: oos_has_small_keys(state, player, 11)],
+        ["d11 floor 2 chest", "d11 floor 3 torch keydrop", False, lambda state: all([
+            any([
+                oos_can_swim(state, player, False),
+                all([
+                    # Jump and break the pot
+                    oos_option_hell_logic(state, player),
+                    oos_can_jump_5_wide_liquid(state, player),
+                    any([
+                        oos_has_noble_sword(state, player),
+                        state.has("Biggoron's Sword", player),
+                    ])
+                ])
+            ]),
+            oos_can_use_ember_seeds(state, player, True),
+        ])],
+        ["d11 floor 2 chest", "d11 floor 3 flooded room", False, lambda state: all([
+            oos_can_swim(state, player, False),
+            oos_has_small_keys(state, player, 11, 2),
+            oos_can_use_ember_seeds(state, player, True),
+            oos_has_seed_thrower(state, player)
+        ])],
+        ["d11 floor 3 flooded room", "d11 floor 3 flooded keydrop", False, lambda state: any([
+            oos_can_kill_normal_enemy(state, player),
+            oos_has_switch_hook(state, player)
+        ])],
+        ["d11 floor 3 flooded room", "d11 floor 3 chest", False, lambda state: \
+            oos_can_remove_rockslide(state, player, False)],
+        ["d11 floor 3 chest", "d11 floor 4 chest", False, lambda state: oos_has_magnet_gloves(state, player)],
+        ["d11 floor 4 chest", "d11 floor 5 gauntlet", False, lambda state: all([
+            oos_can_jump_3_wide_pit(state, player),
+            any([
+                oos_has_flute(state, player),
+                oos_has_bombs(state, player, 4),
+                oos_has_bombchus(state, player, 2)
+            ]),
+            oos_can_kill_magunesu(state, player),
+            oos_can_kill_spiked_beetle(state, player)
+        ])],
+        ["d11 floor 4 chest", "d11 floor 5 boomerang maze", False, lambda state: all([
+            oos_can_jump_3_wide_pit(state, player),
+            oos_has_small_keys(state, player, 11, 3),
+            any([
+                oos_has_magic_boomerang(state, player),
+                oos_has_bombchus(state, player, 2)
+            ])
+        ])],
+        ["d11 floor 4 chest", "d11 final chest", False, lambda state: all([
+            oos_can_jump_3_wide_pit(state, player),
+            oos_has_small_keys(state, player, 11, 4),
+            oos_has_rupees(state, player, 80),
+            oos_can_complete_d11_puzzle(state, player)
+        ])]
+    ]
+    if options.linked_heros_cave.value & OracleOfSeasonsLinkedHerosCave.no_alt_entrance:
+        logic.append(["enter d11", "d11 alt entrance", False, None])
+    else:
+        logic.append(["d11 alt entrance", "enter d11", False, None])
+    return logic
