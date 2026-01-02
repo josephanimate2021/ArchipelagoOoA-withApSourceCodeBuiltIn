@@ -676,7 +676,7 @@ def make_d6_logic(player: int):
                     # then manipulate the position to clip into the bottom right of the opening for the second one
                     oos_option_hell_logic(state, player),
                     oos_has_shooter(state, player),
-                    oos_has_sword(state, player),
+                    oos_has_sword(state, player, False),
                     oos_can_use_pegasus_seeds(state, player)
                 ]),
                 all([
