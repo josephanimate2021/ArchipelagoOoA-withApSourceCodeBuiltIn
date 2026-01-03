@@ -1072,7 +1072,7 @@ def define_dungeon_items_text_constants(texts: dict[str, str], patch_data):
         texts[f"TX_00{simple_hex(base_id + i)}"] = small_key_text
 
         # Hero's Cave only has Small Keys, so skip other texts
-        if i == 0:
+        if i == 0 or i == 9:
             continue
 
         # ###### Boss keys ##############################################
@@ -1080,7 +1080,7 @@ def define_dungeon_items_text_constants(texts: dict[str, str], patch_data):
         if patch_data["options"]["keysanity_boss_keys"]:
             boss_key_text += dungeon_precision
         boss_key_text += "⬜!"
-        texts[f"TX_00{simple_hex(base_id + i + 8)}"] = boss_key_text
+        texts[f"TX_00{simple_hex(base_id + i + 9)}"] = boss_key_text
 
         # ###### Dungeon maps ##############################################
         dungeon_map_text = "You found the\n🟥"
@@ -1090,14 +1090,14 @@ def define_dungeon_items_text_constants(texts: dict[str, str], patch_data):
         else:
             dungeon_map_text += "Dungeon Map"
         dungeon_map_text += "⬜!"
-        texts[f"TX_00{simple_hex(base_id + i + 16)}"] = dungeon_map_text
+        texts[f"TX_00{simple_hex(base_id + i + 17)}"] = dungeon_map_text
 
         # ###### Compasses ##############################################
         compasses_text = "You found the\n🟥Compass"
         if patch_data["options"]["keysanity_maps_compasses"]:
             compasses_text += dungeon_precision
         compasses_text += "⬜!"
-        texts[f"TX_00{simple_hex(base_id + i + 24)}"] = compasses_text
+        texts[f"TX_00{simple_hex(base_id + i + 25)}"] = compasses_text
 
 
 def define_essence_sparkle_constants(assembler: Z80Assembler, patch_data: dict[str, Any], dungeon_entrances: dict[str, Any]):
