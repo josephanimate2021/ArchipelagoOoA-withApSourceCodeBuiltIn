@@ -12,11 +12,11 @@ ITEMS_DATA = {
         "id": 0x01
     },
     "Bombs (10)": {
-        "classification": ItemClassification.progression_deprioritized,
+        "classification": ItemClassification.progression,
         "id": 0x03
     },
     "Bombs (20)": {
-        "classification": ItemClassification.progression_deprioritized,
+        "classification": ItemClassification.progression,
         "id": 0x03,
         "subid": 0x03  # Just to make sure we're not erasing anything important, this goes over a 30 bombs drop
     },
