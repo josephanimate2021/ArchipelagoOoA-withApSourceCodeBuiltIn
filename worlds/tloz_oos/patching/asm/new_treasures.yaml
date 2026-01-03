@@ -53,6 +53,9 @@
     db $00,$06,$79,option.smallKeySprite    ; D6
     db $00,$07,$7a,option.smallKeySprite    ; D7
     db $00,$08,$7b,option.smallKeySprite    ; D8
+    db $00,$09,$7c,option.smallKeySprite    ; D9 (doesn't exist)
+    db $00,$0a,$7d,option.smallKeySprite    ; D10 (doesn't exist)
+    db $00,$0b,$7e,option.smallKeySprite    ; D11 (Linked Hero's Cave)
 15/51ea/: dw smallKeyObjectsTable
 
 15//bossKeyObjectsTable: |

@@ -2344,7 +2344,7 @@ LOCATIONS_DATA = {
         "vanilla_item": "Gasha Seed",
         "conditional": True,
         "dungeon": 11,
-        "room": 0x053f,
+        "room": 0x052f,
         "collect": COLLECT_CHEST,
     },
     "Linked Hero's Cave: Torch Chest": {

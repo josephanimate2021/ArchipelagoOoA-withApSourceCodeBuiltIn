@@ -2,6 +2,7 @@ import os
 import random
 from collections import defaultdict
 from pathlib import Path
+from typing import Any
 
 import Utils
 from settings import get_settings
@@ -971,23 +972,10 @@ def inject_slot_name(rom: RomData, slot_name: str):
     rom.write_bytes(0xfffc0, slot_name_as_bytes)
 
 
-def set_dungeon_warps(rom: RomData, assembler: Z80Assembler, patch_data):
+def set_dungeon_warps(rom: RomData, patch_data: dict[str, Any], dungeon_entrances: dict[str, Any], dungeon_exits: dict[str, Any]):
     warp_matchings = patch_data["dungeon_entrances"]
-    enter_values = {name: rom.read_word(dungeon["addr"]) for name, dungeon in DUNGEON_ENTRANCES.items()}
-    exit_values = {name: rom.read_word(addr) for name, addr in DUNGEON_EXITS.items()}
-    dungeon_entrances = dict(DUNGEON_ENTRANCES)
-    dungeon_exits = dict(DUNGEON_EXITS)
-
-    if patch_data["options"]["linked_heros_cave"] & OracleOfSeasonsLinkedHerosCave.samasa:
-        dungeon_entrances["d11"] = {
-            "addr": assembler.global_labels["warpSourceDesert"],
-            "map_tile": 0xcf,
-            "room": 0xcf,
-            "group": 0x00,
-            "position": 0x54
-        }
-        dungeon_exits["d11"] = GameboyAddress(0x04, 0x7b35).address_in_rom()
-
+    enter_values = {name: rom.read_word(dungeon["addr"]) for name, dungeon in dungeon_entrances.items()}
+    exit_values = {name: rom.read_word(addr) for name, addr in dungeon_exits.items()}
 
     # Apply warp matchings expressed in the patch
     for from_name, to_name in warp_matchings.items():
@@ -1064,7 +1052,7 @@ def set_portal_warps(rom: RomData, patch_data):
 
 def define_dungeon_items_text_constants(texts: dict[str, str], patch_data):
     base_id = 0x73
-    for i in range(110):
+    for i in range(10):
         if i == 0:
             dungeon_precision = " for\nHero's Cave"
         elif i == 11:
@@ -1112,7 +1100,7 @@ def define_dungeon_items_text_constants(texts: dict[str, str], patch_data):
         texts[f"TX_00{simple_hex(base_id + i + 24)}"] = compasses_text
 
 
-def define_essence_sparkle_constants(assembler: Z80Assembler, patch_data):
+def define_essence_sparkle_constants(assembler: Z80Assembler, patch_data: dict[str, Any], dungeon_entrances: dict[str, Any]):
     byte_array = []
     show_dungeons_with_essence = patch_data["options"]["show_dungeons_with_essence"]
 
@@ -1126,7 +1114,7 @@ def define_essence_sparkle_constants(assembler: Z80Assembler, patch_data):
             # Find where dungeon entrance is located, and place the sparkle hint there
             dungeon = f"d{i + 1}"
             dungeon_entrance = [k for k, v in patch_data["dungeon_entrances"].items() if v == dungeon][0]
-            entrance_data = DUNGEON_ENTRANCES[dungeon_entrance]
+            entrance_data = dungeon_entrances[dungeon_entrance]
             byte_array.extend([entrance_data["group"], entrance_data["room"]])
     assembler.add_floating_chunk("essenceLocationsTable", byte_array)
 
