@@ -167,6 +167,12 @@ def make_d3_logic(player: int):
         ["enter d3", "d3 center", False, lambda state: any([
             oos_can_kill_spiked_beetle(state, player),
             all([
+                # Break pots to refill mysteries, and use them on the beetles to gale them away
+                oos_option_medium_logic(state, player),
+                oos_can_use_mystery_seeds(state, player),
+                oos_can_break_pot(state, player)
+            ]),
+            all([
                 oos_option_medium_logic(state, player),
                 oos_can_flip_spiked_beetle(state, player),
                 oos_has_bracelet(state, player)
