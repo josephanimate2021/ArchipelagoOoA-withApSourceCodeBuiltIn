@@ -132,40 +132,31 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ["western coast after ship", "old man near western coast house", False, lambda state: \
             oos_can_use_ember_seeds(state, player, False)],
 
-        ["western coast after ship", "graveyard (winter)", False, lambda state: all([
+        ["western coast after ship", "d7 entrance", False, lambda state: all([
+            any([
+                oos_can_jump_3_wide_pit(state, player),
+                oos_season_in_western_coast(state, player, SEASON_SUMMER)
+            ]),
+            any([
+                oos_has_shovel(state, player),
+                not oos_is_default_season(state, player, "WESTERN_COAST", SEASON_WINTER),
+                all([
+                    state.has("_reached_coast_stump", player),
+                    oos_can_remove_season(state, player, SEASON_WINTER)
+                ])
+            ])
+        ])],
+        ["western coast after ship", "graveyard heart piece", False, lambda state: all([
+            oos_season_in_western_coast(state, player, SEASON_AUTUMN),
             oos_can_jump_3_wide_pit(state, player),
-            oos_season_in_western_coast(state, player, SEASON_WINTER)
+            oos_can_break_mushroom(state, player, False)
         ])],
-        ["graveyard (winter)", "western coast after ship", False, None],
-
-        ["western coast after ship", "graveyard (autumn)", False, lambda state: all([
-            oos_can_jump_3_wide_pit(state, player),
-            oos_season_in_western_coast(state, player, SEASON_AUTUMN)
+        ["d7 entrance", "graveyard heart piece", False, lambda state: all([
+            oos_is_default_season(state, player, "WESTERN_COAST", SEASON_AUTUMN),
+            oos_can_break_mushroom(state, player, False)
         ])],
-        ["graveyard (autumn)", "western coast after ship", False, None],
-
-        ["western coast after ship", "graveyard (summer or spring)", False, lambda state: any([
-            oos_can_jump_3_wide_pit(state, player),
-            oos_season_in_western_coast(state, player, SEASON_SUMMER)
-        ])],
-        ["graveyard (summer or spring)", "western coast after ship", False, None],
-
-        ["graveyard (winter)", "d7 entrance", False, lambda state: oos_can_remove_snow(state, player, False)],
-        ["graveyard (autumn)", "d7 entrance", False, None],
-        ["graveyard (summer or spring)", "d7 entrance", False, None],
-
-        ["d7 entrance", "graveyard (winter)", False, lambda state: \
-            oos_is_default_season(state, player, "WESTERN_COAST", SEASON_WINTER)],
-        ["d7 entrance", "graveyard (autumn)", False, lambda state: \
-            oos_is_default_season(state, player, "WESTERN_COAST", SEASON_AUTUMN)],
-        ["d7 entrance", "graveyard (summer or spring)", False, lambda state: any([
-            oos_is_default_season(state, player, "WESTERN_COAST", SEASON_SUMMER),
-            oos_is_default_season(state, player, "WESTERN_COAST", SEASON_SPRING)
-        ])],
-
-        ["graveyard (autumn)", "graveyard heart piece", False, lambda state: oos_can_break_mushroom(state, player, False)],
-
         ["d7 entrance", "graveyard secret", False, lambda state: oos_has_shovel(state, player)],
+        ["d7 entrance", "western coast after ship", False, None],
 
         # EASTERN SUBURBS #############################################################################################
 
