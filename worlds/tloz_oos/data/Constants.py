@@ -58,7 +58,10 @@ DUNGEON_NAMES = [
     "Unicorn's Cave",
     "Ancient Ruins",
     "Explorer's Crypt",
-    "Sword & Shield Dungeon"
+    "Sword & Shield Dungeon",
+    "",
+    "",
+    "Linked Hero's Cave"
 ]
 
 VALID_RUPEE_PRICE_VALUES = [
@@ -218,6 +221,7 @@ ITEM_GROUPS = {
         "Small Key (Ancient Ruins)",
         "Small Key (Explorer's Crypt)",
         "Small Key (Sword & Shield Dungeon)",
+        "Small Key (Linked Hero's Cave)",
     ],
     "Boss Keys": [
         "Boss Key (Gnarled Root Dungeon)",
@@ -259,6 +263,7 @@ ITEM_GROUPS = {
         "Master Key (Ancient Ruins)",
         "Master Key (Explorer's Crypt)",
         "Master Key (Sword & Shield Dungeon)",
+        "Master Key (Linked Hero's Cave)",
     ],
     "Essences": [
         "Fertile Soil",
@@ -400,6 +405,19 @@ LOCATION_GROUPS = {
         "Sword & Shield Dungeon (1F): Chest in Sparks & Pots Room",
         "Sword & Shield Dungeon (B1F): Boss Reward",
         "Sword & Shield Dungeon: Essence",
+    ],
+    "D11": [
+        "Linked Hero's Cave: Alternate Entrance Chest",
+        "Linked Hero's Cave: First Reward",
+        "Linked Hero's Cave: Checkerboard Drop",
+        "Linked Hero's Cave: Second Reward",
+        "Linked Hero's Cave: Torch Chest",
+        "Linked Hero's Cave: Flooded Room Drop",
+        "Linked Hero's Cave: Third Reward",
+        "Linked Hero's Cave: Fourth Reward",
+        "Linked Hero's Cave: Gauntlet",
+        "Linked Hero's Cave: Boomerang Maze",
+        "Linked Hero's Cave: Final Reward"
     ],
     "Trade Sequence": [
         "Horon Village: Dr. Left Reward",

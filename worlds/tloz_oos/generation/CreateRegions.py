@@ -5,8 +5,8 @@ from ..World import OracleOfSeasonsWorld
 from ..Options import OracleOfSeasonsGoal, OracleOfSeasonsOldMenShuffle, OracleOfSeasonsLogicDifficulty
 from ..data import LOCATIONS_DATA
 from ..data.Constants import GASHA_SPOT_REGIONS, ITEM_GROUPS, SCRUB_LOCATIONS, SUBROSIA_HIDDEN_DIGGING_SPOTS_LOCATIONS, RUPEE_OLD_MAN_LOCATIONS, \
-    SECRETS
-from ..data.Regions import REGIONS, NATZU_REGIONS, GASHA_REGIONS
+    SECRETS, LOCATION_GROUPS
+from ..data.Regions import REGIONS, NATZU_REGIONS, GASHA_REGIONS, D11_REGIONS
 
 
 def location_is_active(world: OracleOfSeasonsWorld, location_name: str, location_data: dict[str, Any]) -> bool:
@@ -34,6 +34,8 @@ def location_is_active(world: OracleOfSeasonsWorld, location_name: str, location
         return len(world.essences_in_game) >= 7
     if location_name in SECRETS:
         return world.options.secret_locations
+    if location_name in LOCATION_GROUPS["D11"]:
+        return world.options.linked_heros_cave
     return False
 
 
@@ -64,6 +66,10 @@ def create_regions(world: OracleOfSeasonsWorld) -> None:
             region = Region(GASHA_REGIONS[i], world.player, world.multiworld)
             world.multiworld.regions.append(region)
 
+    if world.options.linked_heros_cave:
+        for region_name in D11_REGIONS:
+            world.multiworld.regions.append(Region(region_name, world.player, world.multiworld))
+
     # Create locations
     for location_name, location_data in LOCATIONS_DATA.items():
         if not location_is_active(world, location_name, location_data):
@@ -71,7 +77,6 @@ def create_regions(world: OracleOfSeasonsWorld) -> None:
 
         is_local = "local" in location_data and location_data["local"] is True
         create_location(world, location_data["region_id"], location_name, is_local)
-
     create_events(world)
     exclude_locations_automatically(world)
 

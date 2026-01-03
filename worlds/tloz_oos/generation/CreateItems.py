@@ -162,8 +162,9 @@ def build_item_pool_dict(world: OracleOfSeasonsWorld) -> dict[str, int]:
     # If Master Keys are enabled, put one for every dungeon
     if world.options.master_keys != OracleOfSeasonsMasterKeys.option_disabled:
         for small_key_name in ITEM_GROUPS["Master Keys"]:
-            item_pool_dict[small_key_name] = 1
-            extra_items += 1
+            if world.options.linked_heros_cave or small_key_name != "Master Key (Linked Hero's Cave)":
+                item_pool_dict[small_key_name] = 1
+                extra_items += 1
 
     # Add the required gasha seeds to the pool
     required_gasha_seeds = world.options.deterministic_gasha_locations.value

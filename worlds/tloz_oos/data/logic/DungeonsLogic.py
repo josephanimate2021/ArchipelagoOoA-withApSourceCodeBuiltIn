@@ -1292,7 +1292,7 @@ def make_d8_logic(player: int):
 
 
 def make_d11_logic(player: int, options: OracleOfSeasonsOptions):
-    if options.linked_heros_cave.value == OracleOfSeasonsLinkedHerosCave.option_disabled:
+    if not options.linked_heros_cave.value:
         return []
     logic = [
         ["enter d11", "d11 floor 1 chest", False, lambda state: oos_has_bracelet(state, player)],

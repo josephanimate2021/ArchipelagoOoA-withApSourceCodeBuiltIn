@@ -13,7 +13,7 @@ from .text import normalize_text
 from .z80asm.Assembler import Z80Assembler, GameboyAddress
 from .z80asm.Util import parse_hex_string_to_value
 from ..Options import OracleOfSeasonsOldMenShuffle, OracleOfSeasonsGoal, OracleOfSeasonsAnimalCompanion, \
-    OracleOfSeasonsMasterKeys, OracleOfSeasonsFoolsOre, OracleOfSeasonsShowDungeonsWithEssence
+    OracleOfSeasonsMasterKeys, OracleOfSeasonsFoolsOre, OracleOfSeasonsShowDungeonsWithEssence, OracleOfSeasonsLinkedHerosCave
 from ..World import OracleOfSeasonsWorld
 from ..data.Locations import LOCATIONS_DATA
 from ..data.Constants import *
@@ -44,8 +44,10 @@ def get_asm_files(patch_data):
         files += asm_files["cross_items"]
     if patch_data["options"]["secret_locations"]:
         files += asm_files["secret_locations"]
-    if patch_data["options"]["linked_heros_cave"] == 1:
-        files += asm_files["d0_in_samasa"]
+    if patch_data["options"]["linked_heros_cave"]:
+        files += asm_files["d11"]
+        if patch_data["options"]["linked_heros_cave"] & OracleOfSeasonsLinkedHerosCave.samasa:
+            files += asm_files["d11_in_samasa"]
     return files
 
 
@@ -54,11 +56,12 @@ def write_chest_contents(rom: RomData, patch_data):
     Chest locations are packed inside several big tables in the ROM, unlike other more specific locations.
     This puts the item described in the patch data inside each chest in the game.
     """
+    locations_data = patch_data["locations"]
     for location_name, location_data in LOCATIONS_DATA.items():
-        if location_data.get("collect", COLLECT_TOUCH) != COLLECT_CHEST and not location_data.get("is_chest", False):
+        if location_data.get("collect", COLLECT_TOUCH) != COLLECT_CHEST and not location_data.get("is_chest", False) or location_name not in locations_data:
             continue
         chest_addr = rom.get_chest_addr(location_data["room"])
-        item = patch_data["locations"][location_name]
+        item = locations_data[location_name]
         item_id, item_subid = get_item_id_and_subid(item)
         rom.write_byte(chest_addr, item_id)
         rom.write_byte(chest_addr + 1, item_subid)
@@ -297,6 +300,33 @@ def define_option_constants(assembler: Z80Assembler, patch_data):
         assembler.define_byte("d3Entrance", 0x39)
     else:
         assembler.define_byte("d3Entrance", 0x00)
+
+    if patch_data["options"]["linked_heros_cave"] & OracleOfSeasonsLinkedHerosCave.samasa:
+        if patch_data["options"]["linked_heros_cave"] & OracleOfSeasonsLinkedHerosCave.no_alt_entrance:
+            assembler.define_byte("bush_d11_alt_entrance", 0x04)
+            assembler.define_byte("chimney_d11_alt_entrance", 0xaf)
+        else:
+            assembler.define_byte("bush_d11_alt_entrance", 0xc4)
+            assembler.define_byte("chimney_d11_alt_entrance", 0xeb)
+
+        chest_dict = {
+            "d0": 0x75,
+            "d1": 0x66,
+            "d2": 0x5b,
+            "d3": 0x43,
+            "d4": 0x3b,
+            "d5": 0x59,
+            "d6": 0x23,
+            "d7": 0x73,
+            "d8": 0x35,
+            "d11": 0x7b,
+        }
+        dungeons_in_order_for_d11_puzzle = []
+        for i in range(1, 9):
+            dungeons_in_order_for_d11_puzzle.append(chest_dict[patch_data["dungeon_entrances"][f"d{i}"]])
+        assembler.add_floating_chunk("dungeonsInOrderForD11Puzzle", list(dungeons_in_order_for_d11_puzzle))
+        dungeons_in_order_for_d11_puzzle.sort()
+        assembler.add_floating_chunk("dungeonsForD11Puzzle", dungeons_in_order_for_d11_puzzle)
 
 
 def define_season_constants(assembler: Z80Assembler, patch_data):
@@ -941,15 +971,28 @@ def inject_slot_name(rom: RomData, slot_name: str):
     rom.write_bytes(0xfffc0, slot_name_as_bytes)
 
 
-def set_dungeon_warps(rom: RomData, patch_data):
+def set_dungeon_warps(rom: RomData, assembler: Z80Assembler, patch_data):
     warp_matchings = patch_data["dungeon_entrances"]
     enter_values = {name: rom.read_word(dungeon["addr"]) for name, dungeon in DUNGEON_ENTRANCES.items()}
     exit_values = {name: rom.read_word(addr) for name, addr in DUNGEON_EXITS.items()}
+    dungeon_entrances = dict(DUNGEON_ENTRANCES)
+    dungeon_exits = dict(DUNGEON_EXITS)
+
+    if patch_data["options"]["linked_heros_cave"] & OracleOfSeasonsLinkedHerosCave.samasa:
+        dungeon_entrances["d11"] = {
+            "addr": assembler.global_labels["warpSourceDesert"],
+            "map_tile": 0xcf,
+            "room": 0xcf,
+            "group": 0x00,
+            "position": 0x54
+        }
+        dungeon_exits["d11"] = GameboyAddress(0x04, 0x7b35).address_in_rom()
+
 
     # Apply warp matchings expressed in the patch
     for from_name, to_name in warp_matchings.items():
-        entrance_addr = DUNGEON_ENTRANCES[from_name]["addr"]
-        exit_addr = DUNGEON_EXITS[to_name]
+        entrance_addr = dungeon_entrances[from_name]["addr"]
+        exit_addr = dungeon_exits[to_name]
         rom.write_word(entrance_addr, enter_values[to_name])
         rom.write_word(exit_addr, exit_values[from_name])
 
@@ -957,7 +1000,7 @@ def set_dungeon_warps(rom: RomData, patch_data):
     entrance_map = dict((v, k) for k, v in warp_matchings.items())
 
     # D0 Chest Warp (hardcoded warp using a specific format)
-    d0_new_entrance = DUNGEON_ENTRANCES[entrance_map["d0"]]
+    d0_new_entrance = dungeon_entrances[entrance_map["d0"]]
     rom.write_bytes(0x2bbe4, [
         d0_new_entrance["group"] | 0x80,
         d0_new_entrance["room"],
@@ -967,7 +1010,7 @@ def set_dungeon_warps(rom: RomData, patch_data):
 
     # D1-D8 Essence Warps (hardcoded in one array using a unified format)
     for i in range(8):
-        entrance = DUNGEON_ENTRANCES[entrance_map[f"d{i + 1}"]]
+        entrance = dungeon_entrances[entrance_map[f"d{i + 1}"]]
         rom.write_bytes(0x24b59 + (i * 4), [
             entrance["group"] | 0x80,
             entrance["room"],
@@ -978,11 +1021,18 @@ def set_dungeon_warps(rom: RomData, patch_data):
     for i in range(8):
         entrance_name = f"d{i}"
         dungeon_index = int(warp_matchings[entrance_name][1:])
-        map_tile = DUNGEON_ENTRANCES[entrance_name]["map_tile"]
+        map_tile = dungeon_entrances[entrance_name]["map_tile"]
         rom.write_byte(0xaa19 + map_tile, 0x81 | (dungeon_index << 3))
     # Dungeon 8 specific case (since it's in Subrosia)
     dungeon_index = int(warp_matchings["d8"][1:])
     rom.write_byte(0xab19, 0x81 | (dungeon_index << 3))
+
+    if patch_data["options"]["linked_heros_cave"]:
+        # Change Minimap popups
+        entrance_name = "d11"
+        dungeon_index = int(warp_matchings[entrance_name][1:])
+        map_tile = dungeon_entrances[entrance_name]["map_tile"]
+        rom.write_byte(0xaa19 + map_tile, 0x81 | (dungeon_index << 3))
 
 
 def set_portal_warps(rom: RomData, patch_data):
@@ -1014,22 +1064,19 @@ def set_portal_warps(rom: RomData, patch_data):
 
 def define_dungeon_items_text_constants(texts: dict[str, str], patch_data):
     base_id = 0x73
-    for i in range(9):
+    for i in range(110):
         if i == 0:
-            # " for\nHero's Cave"
             dungeon_precision = " for\nHero's Cave"
+        elif i == 11:
+            dungeon_precision = " for\nLinked Hero's\nCave"
         else:
-            # " for\nDungeon X"
             dungeon_precision = f" for\nDungeon {i}"
 
         # ###### Small keys ##############################################
-        # "You found a\n\color(RED)"
         small_key_text = "You found a\n🟥"
         if patch_data["options"]["master_keys"]:
-            # "Master Key"
             small_key_text += "Master Key"
         else:
-            # "Small Key"
             small_key_text += "Small Key"
         if patch_data["options"]["keysanity_small_keys"]:
             small_key_text += dungeon_precision
@@ -1041,7 +1088,6 @@ def define_dungeon_items_text_constants(texts: dict[str, str], patch_data):
             continue
 
         # ###### Boss keys ##############################################
-        # "You found the\n\color(RED)Boss Key"
         boss_key_text = "You found the\n🟥Boss Key"
         if patch_data["options"]["keysanity_boss_keys"]:
             boss_key_text += dungeon_precision
@@ -1049,7 +1095,6 @@ def define_dungeon_items_text_constants(texts: dict[str, str], patch_data):
         texts[f"TX_00{simple_hex(base_id + i + 8)}"] = boss_key_text
 
         # ###### Dungeon maps ##############################################
-        # "You found the\n\color(RED)"
         dungeon_map_text = "You found the\n🟥"
         if patch_data["options"]["keysanity_maps_compasses"]:
             dungeon_map_text += "Map"
@@ -1060,7 +1105,6 @@ def define_dungeon_items_text_constants(texts: dict[str, str], patch_data):
         texts[f"TX_00{simple_hex(base_id + i + 16)}"] = dungeon_map_text
 
         # ###### Compasses ##############################################
-        # "You found the\n\color(RED)Compass"
         compasses_text = "You found the\n🟥Compass"
         if patch_data["options"]["keysanity_maps_compasses"]:
             compasses_text += dungeon_precision

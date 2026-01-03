@@ -42,7 +42,9 @@ def stage_pre_fill_dungeon_items(multiworld: MultiWorld):
         filling_world = multiworld.worlds[filling_player]
 
         # Fill each of this world's dungeons.
-        for i in range(0, 9):
+        for i in range(0, 10):
+            if i == 9:
+                i = 11
             # Build a list of locations in this dungeon
             dungeon_location_names = [name for name, loc in LOCATIONS_DATA.items()
                                       if "dungeon" in loc and loc["dungeon"] == i]
@@ -71,3 +73,5 @@ def stage_pre_fill_dungeon_items(multiworld: MultiWorld):
             filling_world.random.shuffle(dungeon_locations)
             fill_restrictive(multiworld, collection_state, dungeon_locations, confined_dungeon_items,
                              single_player_placement=True, lock=True, allow_excluded=True)
+            for item in confined_dungeon_items:
+                assert item.location is not None

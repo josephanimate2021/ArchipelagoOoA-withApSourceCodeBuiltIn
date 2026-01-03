@@ -53,6 +53,9 @@ def generate_early(world: OracleOfSeasonsWorld) -> None:
 
     create_random_rings_pool(world)
 
+    if world.options.linked_heros_cave.value:
+        world.dungeon_entrances["d11 entrance"] = "enter d11"
+
 
 def pick_essences_in_game(world: OracleOfSeasonsWorld) -> None:
     # If the value for "Placed Essences" is lower than "Required Essences" (which can happen when using random

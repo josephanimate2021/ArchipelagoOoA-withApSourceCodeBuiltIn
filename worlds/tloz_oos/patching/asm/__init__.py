@@ -43,6 +43,12 @@ asm_files = {
         "asm/vars.yaml",
         "asm/warp_to_start.yaml"
     ],
+    "d11": [
+        "asm/conditional/d11.yaml"
+    ],
+    "d11_in_samasa": [
+        "asm/conditional/d11_in_samasa.yaml"
+    ],
     "ganon_goal": [
         "asm/conditional/ganon_goal.yaml"
     ],
@@ -84,8 +90,5 @@ asm_files = {
         "asm/cross_items/seed_shooter.yaml",
         "asm/cross_items/switch_hook.yaml",
         "asm/cross_items/uncmp_gfx.yaml"
-    ],
-    "d0_in_samasa": [
-        "asm/d0_in_samasa/samasa_entrance.yaml"
     ]
 }

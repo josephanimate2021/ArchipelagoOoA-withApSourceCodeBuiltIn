@@ -491,15 +491,15 @@ DUNGEON_ENTRANCES = {
 }
 
 DUNGEON_EXITS = {
-    "d0": 0x13909,
-    "d1": 0x1390d,
-    "d2": 0x13911,
-    "d3": 0x13915,
-    "d4": 0x13919,
-    "d5": 0x1391d,
-    "d6": 0x13921,
-    "d7": 0x13a89,
-    "d8": 0x13a8d,
+    "d0": GameboyAddress(0x04, 0x7909).address_in_rom(),
+    "d1": GameboyAddress(0x04, 0x790d).address_in_rom(),
+    "d2": GameboyAddress(0x04, 0x7911).address_in_rom(),
+    "d3": GameboyAddress(0x04, 0x7915).address_in_rom(),
+    "d4": GameboyAddress(0x04, 0x7919).address_in_rom(),
+    "d5": GameboyAddress(0x04, 0x791d).address_in_rom(),
+    "d6": GameboyAddress(0x04, 0x7921).address_in_rom(),
+    "d7": GameboyAddress(0x04, 0x7a89).address_in_rom(),
+    "d8": GameboyAddress(0x04, 0x7a8d).address_in_rom(),
 }
 
 PORTAL_WARPS = {

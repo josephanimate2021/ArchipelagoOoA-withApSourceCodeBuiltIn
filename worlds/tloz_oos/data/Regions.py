@@ -30,6 +30,22 @@ GASHA_REGIONS = [
     "gasha tree 15",
     "gasha tree 16"
 ]
+D11_REGIONS = [
+    "d11 entrance",
+    "d11 alt entrance",
+    "enter d11",
+    "d11 floor 1 chest",
+    "d11 floor 2 keydrop",
+    "d11 floor 2 chest",
+    "d11 floor 3 torch keydrop",
+    "d11 floor 3 flooded room",
+    "d11 floor 3 flooded keydrop",
+    "d11 floor 3 chest",
+    "d11 floor 4 chest",
+    "d11 floor 5 gauntlet",
+    "d11 floor 5 boomerang maze",
+    "d11 final chest"
+]
 
 REGIONS = [
     "impa's house",
@@ -68,9 +84,6 @@ REGIONS = [
     "d0 entrance",
     "western coast after ship",
     "coast stump",
-    "graveyard (winter)",
-    "graveyard (autumn)",
-    "graveyard (summer or spring)",
     "graveyard heart piece",
     "d7 entrance",
     "suburbs",

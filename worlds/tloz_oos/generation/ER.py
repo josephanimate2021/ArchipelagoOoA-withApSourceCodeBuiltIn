@@ -36,4 +36,4 @@ def oos_randomize_entrances(world: OracleOfSeasonsWorld) -> None:
     if world.options.shuffle_portals:
         world.portal_connections = list_entrances_for_patch(world, "enter ", PORTAL_CONNECTIONS)
     if world.options.shuffle_dungeons:
-        world.dungeon_entrances = list_entrances_for_patch(world, "", DUNGEON_CONNECTIONS)
+        world.dungeon_entrances = list_entrances_for_patch(world, "", world.dungeon_entrances)

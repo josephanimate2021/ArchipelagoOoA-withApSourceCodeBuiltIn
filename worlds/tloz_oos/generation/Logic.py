@@ -2,8 +2,8 @@ from BaseClasses import MultiWorld, Item, EntranceType
 from worlds.AutoWorld import LogicMixin
 from ..World import OracleOfSeasonsWorld
 from ..data.logic.DungeonsLogic import *
-from ..data.logic.OverworldLogic import make_holodrum_logic
-from ..data.logic.SubrosiaLogic import make_subrosia_logic
+from ..data.logic.OverworldLogic import *
+from ..data.logic.SubrosiaLogic import *
 
 
 def create_randomizable_connections(world: OracleOfSeasonsWorld, prefix: str,
@@ -41,11 +41,14 @@ def create_connections(world: OracleOfSeasonsWorld, player: int, origin_name: st
         make_d5_logic(player),
         make_d6_logic(player),
         make_d7_logic(player),
-        make_d8_logic(player)
+        make_d8_logic(player),
+
+        make_samasa_d11_logic(player, options),
+        make_d11_logic(player, options)
     ]
 
     if world.options.shuffle_dungeons:
-        create_randomizable_connections(world, "", DUNGEON_CONNECTIONS,
+        create_randomizable_connections(world, "", world.dungeon_entrances,
                                         OracleOfSeasonsConnectionType.CONNECT_DUNGEON_OVERWORLD,
                                         OracleOfSeasonsConnectionType.CONNECT_DUNGEON_INSIDE)
     else:

@@ -1,4 +1,4 @@
-from ...Options import OracleOfSeasonsOptions
+from ...Options import OracleOfSeasonsOptions, OracleOfSeasonsLinkedHerosCave
 from .LogicPredicates import *
 
 
@@ -74,9 +74,9 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ["horon village", "horon village tree", False, lambda state: oos_can_harvest_tree(state, player, True)],
 
         ["horon village", "horon shop", False, lambda state:
-            oos_has_rupees_for_shop(state, player, "horonShop")],
+        oos_has_rupees_for_shop(state, player, "horonShop")],
         ["horon village", "advance shop", False, lambda state:
-            oos_has_rupees_for_shop(state, player, "advanceShop")],
+        oos_has_rupees_for_shop(state, player, "advanceShop")],
         ["horon village", "member's shop", False, lambda state: all([
             state.has("Member's Card", player),
             oos_has_rupees_for_shop(state, player, "memberShop")
@@ -566,7 +566,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ["spool stump", "d3 entrance", False, lambda state: oos_season_in_spool_swamp(state, player, SEASON_SUMMER)],
         ["d3 entrance", "spool swamp north", False, lambda state: \
             # Coming from alt d0/d2
-            oos_can_swim(state, player, False)],
+        oos_can_swim(state, player, False)],
 
         ["spool stump", "spool swamp middle", False, lambda state: any([
             not oos_is_default_season(state, player, "SPOOL_SWAMP", SEASON_SPRING),
@@ -1507,3 +1507,16 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         holodrum_logic.append(gasha_connections[i])
 
     return holodrum_logic
+
+
+def make_samasa_d11_logic(player: int, options: OracleOfSeasonsOptions):
+    if not (options.linked_heros_cave.value & OracleOfSeasonsLinkedHerosCave.samasa):
+        return []
+    logic = [
+        ["samasa desert", "d11 entrance", True, None]
+    ]
+    if not (options.linked_heros_cave.value & OracleOfSeasonsLinkedHerosCave.no_alt_entrance):
+        logic.append(
+            ["samasa desert", "d11 alt entrance", False, lambda state: oos_can_break_bush(state, player)]
+        )
+    return logic

@@ -88,6 +88,10 @@ class OracleOfSeasonsWorld(World):
         self.multiworld.register_indirect_condition(self.get_region("lost woods deku"), self.get_entrance("lost woods -> d6 sector"))
         self.multiworld.register_indirect_condition(self.get_region("lost woods deku"), self.get_entrance("lost woods stump -> d6 sector"))
 
+        if self.options.linked_heros_cave:
+            for i in range(1, 9):
+                self.multiworld.register_indirect_condition(self.get_region(f"enter d{i}"), self.get_entrance("d11 floor 4 chest -> d11 final chest"))
+
         if self.options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_hell:
             cucco_region = self.get_region("rooster adventure")
             # This saves using an event which is slightly more efficient

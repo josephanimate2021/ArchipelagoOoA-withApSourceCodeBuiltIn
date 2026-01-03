@@ -679,9 +679,12 @@ class OracleOfSeasonsLinkedHerosCave(Choice):
     - Samasa: an entrance is placed in the Samasa desert, below the oasis
     """
     display_name = "Linked Hero's Cave"
+    samasa = 0b01
+    no_alt_entrance = 0b10
 
-    option_disabled = 0
-    option_samasa = 1
+    option_disabled = 0b00
+    option_samasa = 0b01
+    option_samasa_without_alt_entrance = 0b11
 
     include_in_patch = True
     include_in_slot_data = True
