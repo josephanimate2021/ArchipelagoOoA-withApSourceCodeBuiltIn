@@ -299,8 +299,8 @@ def define_option_constants(assembler: Z80Assembler, patch_data):
         assembler.define_byte("d3Entrance", 0x04)
     elif patch_data["dungeon_entrances"]["d3"] == "d2":
         assembler.define_byte("d3Entrance", 0x39)
-    else:
-        assembler.define_byte("d3Entrance", 0x00)
+    elif patch_data["dungeon_entrances"]["d3"] == "d11":
+        assembler.define_byte("d11Drowning", 0x01)
 
     if patch_data["options"]["linked_heros_cave"] & OracleOfSeasonsLinkedHerosCave.samasa:
         assembler.define_byte("d11", 0x01)

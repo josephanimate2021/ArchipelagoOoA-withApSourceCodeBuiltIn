@@ -130,10 +130,17 @@
   db $89,$06
   db $bb,$07
   db $e8,$08 ; Remove access to stairs behind Farore on 2 essences (static_items.yaml), replacing bipin&blossom sign
+  /ifdef d3Entrance
   db d3Entrance,$03 ; Add water tiles to the entrance of the dungeon, replacing the shop minigame
-  ; Note: d3Entrance could be 0, preventing any replacement placed there from happening, prefer placing things above
+  /endif
   db $00
 04/611c/: dw roomTileChangerCodeGroup4DataExt
+04/611e/: |
+  /ifdef d11Drowning
+  dw $616c
+  /endif
+
+04/616c/: db $30,$03 ; Adds water tiles to the entrance of D11, but is only read if the above redirect is triggered
 
 04/6230/: |
   ; Check if floodgate is open
