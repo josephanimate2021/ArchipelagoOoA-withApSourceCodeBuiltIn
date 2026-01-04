@@ -214,7 +214,38 @@
   ret nz
   jp $611a    ; @checkDungeonEntered
 # Replace the unique call to @checkDungeonEntered by a call to above extension
-02/60f3/: call extendedCheckForDungeonDisplay
+02/60f3/: |
+  /ifdef showDungeonWithMap
+  call extendedCheckForDungeonDisplay
+  /endif
+
+02/655d/: jp alwaysShowDungeonTileContent
+
+02//alwaysShowDungeonTileContent: |
+  ld a,($cbb6) ; (wMapMenu.cursorIndex)
+  ld c,a
+  ld hl,$6b71 ; presentMinimapPopups
+  ld a,($cbb3) ; (wMapMenu.mode)
+  rrca
+  jr nc,@overworld
+  ld hl,$6c10 ; pastMinimapPopups
+  @overworld:
+  @loop:
+  ldi a,(hl)
+  cp $ff
+  jr z,@noIcon
+  cp c
+  ldi a,(hl)
+  jr nz,@loop
+  
+  and $0f
+  cp $08
+  jr nz,@noIcon
+  or a
+  ret
+  
+  @noIcon:
+  jp $6560 ; mapMenu_checkRoomVisited
 
 # ========== PORTAL TEXT HANDLING
 
@@ -222,8 +253,14 @@
 # This way, we can reuse the "@specialCode0" to handle dynamic names for Subrosian Portals
 02/6ae2/: db $17
 
-# Remove the portal icon from room $aa because... it doesn't have one?
-02/6bdf/: db $9a
+02/6bdf/: |
+  /ifdef d11InSamasa
+  ; Use that bad entry to register d11
+  db $cf,$88
+  /else
+  ; Remove the portal icon from room $aa because... it doesn't have one?
+  db $9a
+  /endif
 
 # Stop calling func_6e06 to set portal bit when it is spawned
 15/6dfb/: |

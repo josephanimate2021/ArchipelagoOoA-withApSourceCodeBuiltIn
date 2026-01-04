@@ -189,6 +189,7 @@ def apply_text_edits(texts: dict[str, str]) -> None:
     # Now unused text from Maku talking
     texts["TX_1700"] = texts["TX_1701"] = ""
 
+    texts["TX_020b"] = "Linked\nHero's Cave"
     texts["TX_0602"] = "Unknown Dungeon"
 
 

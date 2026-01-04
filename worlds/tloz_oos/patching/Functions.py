@@ -304,6 +304,7 @@ def define_option_constants(assembler: Z80Assembler, patch_data):
 
     if patch_data["options"]["linked_heros_cave"] & OracleOfSeasonsLinkedHerosCave.samasa:
         assembler.define_byte("d11", 0x01)
+        assembler.define_byte("d11InSamasa", 0x01)
         if patch_data["options"]["linked_heros_cave"] & OracleOfSeasonsLinkedHerosCave.no_alt_entrance:
             assembler.define_byte("d11_no_alt_entrance", 0x01)
 
@@ -325,6 +326,9 @@ def define_option_constants(assembler: Z80Assembler, patch_data):
         assembler.add_floating_chunk("dungeonsInOrderForD11Puzzle", list(dungeons_in_order_for_d11_puzzle))
         dungeons_in_order_for_d11_puzzle.sort()
         assembler.add_floating_chunk("dungeonsForD11Puzzle", dungeons_in_order_for_d11_puzzle)
+
+    if patch_data["options"]["show_dungeons_with_map"]:
+        assembler.define_byte("showDungeonWithMap", 0x01)
 
 
 def define_season_constants(assembler: Z80Assembler, patch_data):

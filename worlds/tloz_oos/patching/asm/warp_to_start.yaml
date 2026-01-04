@@ -1,6 +1,6 @@
 02//checkTreeVisited: |
     cp STARTING_TREE_MAP_INDEX
-    jp nz,$6560     ; _mapMenu_checkRoomVisited
+    jp nz,alwaysShowDungeonTileContent+3
     or a
     ret
 02/5ec8/: call checkTreeVisited

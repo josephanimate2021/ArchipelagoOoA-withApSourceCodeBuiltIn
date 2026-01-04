@@ -260,6 +260,16 @@ class OracleOfSeasonsExcludeDungeonsWithoutEssence(DefaultOnToggle):
     display_name = "Exclude Dungeons Without Essence"
 
 
+class OracleOfSeasonsShowDungeonsWithMap(DefaultOnToggle):
+    """
+    If enabled, dungeons will indicate where they are once their corresponding map is obtained
+    """
+    display_name = "Show Dungeons With Map"
+
+    include_in_patch = True
+    include_in_slot_data = True
+
+
 class OracleOfSeasonsShowDungeonsWithEssence(Choice):
     """
     Determines the condition required to highlight dungeons having an essence on their end pedestal
@@ -753,6 +763,7 @@ class OracleOfSeasonsOptions(PerGameCommonOptions):
     shuffle_essences: OracleOfSeasonsEssenceSanity
     placed_essences: OracleOfSeasonsPlacedEssences
     exclude_dungeons_without_essence: OracleOfSeasonsExcludeDungeonsWithoutEssence
+    show_dungeons_with_map: OracleOfSeasonsShowDungeonsWithMap
     show_dungeons_with_essence: OracleOfSeasonsShowDungeonsWithEssence
 
     # Seasons
@@ -832,6 +843,7 @@ oos_option_groups = [
         OracleOfSeasonsEssenceSanity,
         OracleOfSeasonsPlacedEssences,
         OracleOfSeasonsExcludeDungeonsWithoutEssence,
+        OracleOfSeasonsShowDungeonsWithMap,
         OracleOfSeasonsShowDungeonsWithEssence,
     ]),
     OptionGroup("Seasons", [
