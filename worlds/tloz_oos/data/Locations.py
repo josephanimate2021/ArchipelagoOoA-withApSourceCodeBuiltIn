@@ -2338,6 +2338,7 @@ LOCATIONS_DATA = {
         "dungeon": 11,
         "room": 0x0532,
         "collect": COLLECT_DROP,
+        "symbolic_name": "d11CheckerboardDrop",
     },
     "Linked Hero's Cave: Second Reward": {
         "region_id": "d11 floor 2 chest",
@@ -2362,6 +2363,7 @@ LOCATIONS_DATA = {
         "dungeon": 11,
         "room": 0x052a,
         "collect": COLLECT_DROP,
+        "symbolic_name": "d11FloodedDrop",
     },
     "Linked Hero's Cave: Third Reward": {
         "region_id": "d11 floor 3 chest",
@@ -2386,6 +2388,7 @@ LOCATIONS_DATA = {
         "dungeon": 11,
         "room": 0x0522,
         "collect": COLLECT_DROP,
+        "symbolic_name": "d11GauntletDrop",
     },
     "Linked Hero's Cave: Boomerang Maze": {
         "region_id": "d11 floor 5 boomerang maze",
@@ -2394,6 +2397,7 @@ LOCATIONS_DATA = {
         "dungeon": 11,
         "room": 0x0523,
         "collect": COLLECT_DROP,
+        "symbolic_name": "d11BoomerangDrop",
     },
     "Linked Hero's Cave: Final Reward": {
         "region_id": "d11 final chest",
