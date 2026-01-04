@@ -77,6 +77,7 @@ class Z80Assembler:
         self.blocks = []
         self.seasons_rom = seasons_rom
         self.ages_rom = ages_rom
+        self.active = True
 
     def define(self, key: str, replacement_string: str):
         if key in self.defines:
@@ -203,6 +204,7 @@ class Z80Assembler:
         for line in block.content_lines:
             addr = GameboyAddress(block.addr.bank, block.addr.offset + current_offset)
             current_offset += self._evaluate_line_size(line, addr, block)
+        assert self.active
         block.precompiled_size = current_offset
 
     def _compile_block(self, block: Z80Block):
@@ -226,6 +228,20 @@ class Z80Assembler:
         args = line[len(opcode) + 1:].split(",")
         if len(args) == 0:
             args = [""]
+
+        # Switch between modes with /ifdef, /else, /endif
+        if opcode == "/ifdef":
+            if args[0] not in self.defines:
+                self.active = False
+            return 0
+        elif opcode == "/else":
+            self.active = not self.active
+            return 0
+        elif opcode == "/endif":
+            self.active = True
+            return 0
+        elif not self.active:
+            return 0
 
         if opcode == "/include":
             if args[0] not in self.floating_chunks:
@@ -283,6 +299,20 @@ class Z80Assembler:
         args = [""]
         if len(split) > 1:
             args = " ".join(split[1:]).split(",")
+
+        # Switch between modes with /ifdef, /else, /endif
+        if opcode == "/ifdef":
+            if args[0] not in self.defines:
+                self.active = False
+            return []
+        elif opcode == "/else":
+            self.active = not self.active
+            return []
+        elif opcode == "/endif":
+            self.active = True
+            return []
+        elif not self.active:
+            return []
 
         # Perform includes before resolving names
         if opcode == "/include":

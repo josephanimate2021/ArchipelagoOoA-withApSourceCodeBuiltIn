@@ -303,12 +303,9 @@ def define_option_constants(assembler: Z80Assembler, patch_data):
         assembler.define_byte("d3Entrance", 0x00)
 
     if patch_data["options"]["linked_heros_cave"] & OracleOfSeasonsLinkedHerosCave.samasa:
+        assembler.define_byte("d11", 0x01)
         if patch_data["options"]["linked_heros_cave"] & OracleOfSeasonsLinkedHerosCave.no_alt_entrance:
-            assembler.define_byte("bush_d11_alt_entrance", 0x04)
-            assembler.define_byte("chimney_d11_alt_entrance", 0xaf)
-        else:
-            assembler.define_byte("bush_d11_alt_entrance", 0xc4)
-            assembler.define_byte("chimney_d11_alt_entrance", 0xeb)
+            assembler.define_byte("d11_no_alt_entrance", 0x01)
 
         chest_dict = {
             "d0": 0x75,
