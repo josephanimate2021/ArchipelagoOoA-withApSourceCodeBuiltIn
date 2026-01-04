@@ -1296,7 +1296,14 @@ def make_d11_logic(player: int, options: OracleOfSeasonsOptions):
         return []
     logic = [
         ["enter d11", "d11 floor 1 chest", False, lambda state: oos_has_bracelet(state, player)],
-        ["d11 floor 1 chest", "d11 floor 2 keydrop", False, lambda state: oos_can_jump_2_wide_pit(state, player)],
+        ["d11 floor 1 chest", "d11 floor 2 keydrop", False, lambda state: any([
+            oos_can_jump_2_wide_pit(state, player),
+            all([
+                # Shrouded stalfos can spawn around the portal if coming from the warp
+                oos_option_medium_logic(state, player),
+                oos_has_switch_hook(state, player)
+            ])
+        ])],
         ["d11 floor 2 keydrop", "d11 floor 2 chest", False, lambda state: oos_has_small_keys(state, player, 11)],
         ["d11 floor 2 chest", "d11 floor 3 torch keydrop", False, lambda state: all([
             any([
