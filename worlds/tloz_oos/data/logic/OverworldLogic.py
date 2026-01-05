@@ -1070,6 +1070,7 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ["samasa desert", "samasa desert chest", False, lambda state: oos_has_flippers(state, player)],
         ["samasa desert", "samasa desert scrub", False, lambda state: \
             oos_has_rupees_for_shop(state, player, "samasaCaveScrub")],
+        ["samasa desert", "subrosia pirates sector", False, None],
 
         # TEMPLE REMAINS ####################################################################################
 
