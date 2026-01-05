@@ -59,7 +59,7 @@ class OoSPatchExtensions(APPatchExtension):
                 "map_tile": 0xcf,
                 "room": 0xcf,
                 "group": 0x00,
-                "position": 0x54
+                "position": 0x55
             }
             dungeon_exits["d11"] = GameboyAddress(0x04, 0x7b35).address_in_rom()
 
