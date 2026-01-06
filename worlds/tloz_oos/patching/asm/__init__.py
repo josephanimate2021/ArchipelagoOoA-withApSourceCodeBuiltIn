@@ -25,6 +25,7 @@ asm_files = {
         "asm/new_game.yaml",
         "asm/new_treasures.yaml",
         "asm/owl.yaml",
+        "asm/permanent_subrosia_pirate_ship.yaml",
         "asm/progressives.yaml",
         "asm/quick_switch.yaml",
         "asm/remove_items_on_use.yaml",
