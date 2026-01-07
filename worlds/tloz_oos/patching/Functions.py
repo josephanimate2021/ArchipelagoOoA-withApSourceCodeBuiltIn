@@ -166,6 +166,8 @@ def define_collect_properties_table(assembler: Z80Assembler, patch_data):
     table.extend([0x04, 0xc5, TREASURE_SPAWN_POOF | TREASURE_GRAB_INSTANT | TREASURE_SET_ITEM_ROOM_FLAG])
     # Maku Tree gate opening cutscene
     table.extend([0x00, 0xd9, TREASURE_SPAWN_INSTANT | TREASURE_GRAB_SPIN_SLASH])
+    # End of d11
+    table.extend([0x05, 0x27, TREASURE_SPAWN_CHEST])
 
     table.append(0xff)
     assembler.add_floating_chunk("collectPropertiesTable", table)
