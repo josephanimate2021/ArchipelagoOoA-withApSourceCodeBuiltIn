@@ -1323,8 +1323,10 @@ def make_d11_logic(player: int, options: OracleOfSeasonsOptions):
             oos_can_kill_normal_enemy(state, player),
             oos_has_switch_hook(state, player)
         ])],
-        ["d11 floor 3 flooded room", "d11 floor 3 chest", False, lambda state: \
-            oos_can_remove_rockslide(state, player, False)],
+        ["d11 floor 3 flooded room", "d11 floor 3 chest", False, lambda state: all([
+            oos_can_remove_rockslide(state, player, False),
+            oos_has_small_keys(state, player, 11, 3)
+        ])],
         ["d11 floor 3 chest", "d11 floor 4 chest", False, lambda state: oos_has_magnet_gloves(state, player)],
         ["d11 floor 4 chest", "d11 floor 5 gauntlet", False, lambda state: all([
             oos_can_jump_3_wide_pit(state, player),
@@ -1371,7 +1373,7 @@ def make_d11_logic(player: int, options: OracleOfSeasonsOptions):
         ])],
         ["d11 floor 4 chest", "d11 floor 5 boomerang maze", False, lambda state: all([
             oos_can_jump_3_wide_pit(state, player),
-            oos_has_small_keys(state, player, 11, 3),
+            oos_has_small_keys(state, player, 11, 4),
             any([
                 oos_has_magic_boomerang(state, player),
                 oos_has_bombchus(state, player, 2),
@@ -1383,7 +1385,7 @@ def make_d11_logic(player: int, options: OracleOfSeasonsOptions):
         ])],
         ["d11 floor 4 chest", "d11 final chest", False, lambda state: all([
             oos_can_jump_3_wide_pit(state, player),
-            oos_has_small_keys(state, player, 11, 4),
+            oos_has_small_keys(state, player, 11, 5),
             oos_has_rupees(state, player, 80),
             oos_can_complete_d11_puzzle(state, player)
         ])]
