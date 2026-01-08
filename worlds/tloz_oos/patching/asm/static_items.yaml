@@ -41,7 +41,6 @@
   dwbe $0532, locations.d11CheckerboardDrop
   dwbe $052a, locations.d11FloodedDrop
   dwbe $0522, locations.d11GauntletDrop
-  dwbe $0523, locations.d11BoomerangDrop
   /endif
   db $ff
 

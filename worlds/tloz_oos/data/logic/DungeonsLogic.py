@@ -1374,7 +1374,11 @@ def make_d11_logic(player: int, options: OracleOfSeasonsOptions):
             oos_has_small_keys(state, player, 11, 3),
             any([
                 oos_has_magic_boomerang(state, player),
-                oos_has_bombchus(state, player, 2)
+                oos_has_bombchus(state, player, 2),
+                all([
+                    oos_option_medium_logic(state, player),
+                    oos_has_sword(state, player, True),
+                ])
             ])
         ])],
         ["d11 floor 4 chest", "d11 final chest", False, lambda state: all([
