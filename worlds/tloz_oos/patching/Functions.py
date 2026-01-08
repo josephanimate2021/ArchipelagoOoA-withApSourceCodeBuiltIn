@@ -1058,7 +1058,7 @@ def define_dungeon_items_text_constants(texts: dict[str, str], patch_data):
     for i in range(10):
         if i == 0:
             dungeon_precision = " for\nHero's Cave"
-        elif i == 11:
+        elif i == 9:
             dungeon_precision = " for\nLinked Hero's\nCave"
         else:
             dungeon_precision = f" for\nDungeon {i}"
