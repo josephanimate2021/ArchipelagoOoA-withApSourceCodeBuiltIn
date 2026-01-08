@@ -1329,12 +1329,45 @@ def make_d11_logic(player: int, options: OracleOfSeasonsOptions):
         ["d11 floor 4 chest", "d11 floor 5 gauntlet", False, lambda state: all([
             oos_can_jump_3_wide_pit(state, player),
             any([
-                oos_has_flute(state, player),
-                oos_has_bombs(state, player, 4),
-                oos_has_bombchus(state, player, 2)
-            ]),
-            oos_can_kill_magunesu(state, player),
-            oos_can_kill_spiked_beetle(state, player)
+                all([
+                    any([
+                        oos_has_flute(state, player),
+                        oos_has_bombs(state, player, 4),
+                        oos_has_bombchus(state, player, 2)
+                    ]),
+                    oos_can_kill_magunesu(state, player),
+                    oos_can_kill_spiked_beetle(state, player)
+                ]),
+                all([
+                    # Use the cane press a button at the same time Link is on the button to skip the lowest wave
+                    # Counting starts at the top and goes clockwise, waves are:
+                    # 0- Spiked Beetle
+                    # 1- Gibdo
+                    # 2- Arrow Darknut
+                    # 3- Magunesu
+                    # 4- Lynel
+                    # 5- Iron Mask
+                    # 6- Pol's Voice
+                    # 7- Stalfos
+
+                    # We need to fight at least 5 of these 8 waves, minimal requirement is oos_can_kill_normal_enemy_no_cane
+                    # Waves 1, 5 and 7 can be beaten by it
+                    # oos_can_kill_armored_enemy can clear waves 2 and 4, skipping 0, 3 and 6
+                    # Otherwise, since we know we have embers already, we can also beat 4, but we need more seeds
+                    # (only the seeds aren't in oos_can_kill_armored_enemy)
+                    # Skip waves 0, 3 and 6 while finishing the waves 1, 5 and 7 with embers
+                    # Now there are two waves left, 4 and 2, which can be beaten by cane
+                    # A route can be wave 4 -> wave 5 (skip 3) -> wave 7 (skip 6) -> wave 1 (skip 0) -> wave 2
+                    # (With enough bombs left, it's probably easier to switch wave 6 and wave 4 as lynels hurt a lot)
+
+                    oos_option_hard_logic(state, player),
+                    oos_has_cane(state, player),
+                    any([
+                        oos_can_kill_armored_enemy(state, player, False, True),
+                        oos_has_satchel(state, player, 2)
+                    ])
+                ])
+            ])
         ])],
         ["d11 floor 4 chest", "d11 floor 5 boomerang maze", False, lambda state: all([
             oos_can_jump_3_wide_pit(state, player),
