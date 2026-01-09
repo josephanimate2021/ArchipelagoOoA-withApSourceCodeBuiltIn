@@ -1,5 +1,5 @@
 from copy import copy
-from typing import Dict
+from typing import Dict, Optional
 
 from .Errors import *
 from .MnemonicsTree import MNEMONICS
@@ -10,7 +10,7 @@ from ..Util import hex_str
 class GameboyAddress:
     def __init__(self, bank: int, offset: int):
         self.bank = bank
-        self.offset = offset
+        self.offset = offset - 0x4000 if 0x8000 > offset >= 0x4000 else offset
 
     def address_in_rom(self):
         return (self.bank * 0x4000) + self.offset
@@ -19,7 +19,7 @@ class GameboyAddress:
         mapped_offset = self.offset
         if self.bank > 0:
             mapped_offset += 0x4000
-        return f"${hex_str(mapped_offset,2)}"
+        return f"${hex_str(mapped_offset, 2)}"
 
 
 class Z80Block:
@@ -32,10 +32,14 @@ class Z80Block:
         if split_metalabel[1] == "":
             split_metalabel[1] = "ffff"  # <-- means that it needs to be injected in some code cave
 
+        bank = int(split_metalabel[0], 16)
         offset = int(split_metalabel[1], 16)
-        if offset >= 0x4000 and offset != 0xffff:
-            raise InvalidAddressError(offset)
-        self.addr = GameboyAddress(int(split_metalabel[0], 16), offset)
+        if offset != 0xffff:
+            if bank > 0:
+                offset -= 0x4000
+            if offset < 0x0000 or offset >= 0x4000:
+                raise InvalidAddressError(split_metalabel[1])
+        self.addr = GameboyAddress(bank, offset)
 
         self.label = split_metalabel[2]
 
@@ -61,17 +65,18 @@ class Z80Block:
 
 
 class Z80Assembler:
-    def __init__(self, end_of_banks: List[int], defines: Dict[str, str], seasons_rom: bytes):
+    def __init__(self, bank_caves: List[int], defines: Dict[str, str], seasons_rom: bytes, ages_rom: Optional[bytes]):
         self.defines = {}
         for key, value in defines.items():
             self.define(key, value)
 
-        self.end_of_banks = copy(end_of_banks)
+        self.bank_caves = copy(bank_caves)
 
         self.floating_chunks = {}
         self.global_labels = {}
         self.blocks = []
         self.seasons_rom = seasons_rom
+        self.ages_rom = ages_rom
 
     def define(self, key: str, replacement_string: str):
         if key in self.defines:
@@ -111,19 +116,41 @@ class Z80Assembler:
         self._precompile_block(block)
 
         if block.requires_injection():
-            injection_offset = self.end_of_banks[block.addr.bank]
-            # If block is meant to be loaded in the graphics memory, it needs to be aligned particularly
-            if block.label.startswith("dma_") and injection_offset % 0x10 != 0:
-                injection_offset += 0x10 - (injection_offset % 0x10)
+            bank_cave = self.bank_caves[block.addr.bank]
+            if isinstance(bank_cave, list):
+                if block.label.startswith("dma_"):
+                    raise Exception(f"Graphics are not implemented yet for block {block.label}")
+                for i in range(len(bank_cave) - 1):
+                    cave_range = bank_cave[i]
+                    if cave_range[0] + block.precompiled_size > cave_range[1]:
+                        continue
+                    injection_offset = cave_range[0]
+                    cave_range[0] += block.precompiled_size
+                    break
+                else:
+                    injection_offset = bank_cave[-1]
+                    bank_cave[-1] += block.precompiled_size
+            else:
+                injection_offset = bank_cave
+                # If block is meant to be loaded in the graphics memory, it needs to be aligned particularly
+                if block.label.startswith("dma_") and injection_offset % 0x10 != 0:
+                    injection_offset += 0x10 - (injection_offset % 0x10)
+
+                self.bank_caves[block.addr.bank] = injection_offset + block.precompiled_size
 
             if injection_offset + block.precompiled_size > 0x4000:
                 raise Exception(f"Not enough space for block {block.label} in bank {hex_str(block.addr.bank)} "
-                                f"({hex(injection_offset + block.precompiled_size)})")
+                                f"({hex(injection_offset + block.precompiled_size)})."
+                                f"Block size: {hex(block.precompiled_size)}; "
+                                f"Space left: {hex((sum([cave_range[1] - cave_range[0] + 1 for cave_range in self.bank_caves[block.addr.bank]]) if isinstance(self.bank_caves[block.addr.bank], list) else 0) + 0x4001 - injection_offset)}")
             block.set_base_offset(injection_offset)
-            self.end_of_banks[block.addr.bank] = injection_offset + block.precompiled_size
 
         if block.label:
             self.add_global_label(block.label, block.addr)
+        for label in block.local_labels:
+            if not label.startswith("@"):
+                self.add_global_label(label, block.local_labels[label])
+
         self.blocks.append(block)
 
     def resolve_names(self, arg: str, current_addr: GameboyAddress, local_labels: Dict[str, GameboyAddress], opcode: str):
@@ -196,7 +223,7 @@ class Z80Assembler:
             block.local_labels[opcode[:-1]] = current_addr
             return 0
 
-        args = line[len(opcode)+1:].split(",")
+        args = line[len(opcode) + 1:].split(",")
         if len(args) == 0:
             args = [""]
 
@@ -228,7 +255,7 @@ class Z80Assembler:
                         generic_arg = f"({generic_arg})"
                     if generic_arg in mnemonic_tree:
                         arg = generic_arg
-                        extra_size = int(size/8)
+                        extra_size = int(size / 8)
                         break
                 if extra_size == 0:
                     raise UnknownMnemonicError(arg, line)
@@ -255,7 +282,7 @@ class Z80Assembler:
 
         args = [""]
         if len(split) > 1:
-            args = ' '.join(split[1:]).split(",")
+            args = " ".join(split[1:]).split(",")
 
         # Perform includes before resolving names
         if opcode == "/include":
@@ -269,7 +296,7 @@ class Z80Assembler:
         # First try matching a specific keyword
         if opcode == "db":
             # Declare byte
-            return [parse_hex_byte(arg) for arg in args]
+            return [parse_byte(arg) for arg in args]
         if opcode == "dw":
             # Declare word
             return [b for arg in args for b in parse_hex_word(arg)]
@@ -277,11 +304,14 @@ class Z80Assembler:
             # Declare word big endian (reversed)
             return [b for arg in args for b in reversed(parse_hex_word(arg))]
         if opcode == "/copy":
-            address = 0x4000 * parse_hex_string_to_value(args[1]) + parse_hex_string_to_value(args[2])
+            offset = parse_hex_string_to_value(args[2])
+            if offset > 0x4000:
+                offset -= 0x4000
+            address = 0x4000 * parse_hex_string_to_value(args[1]) + offset
             if args[0] == "s":
                 return self.seasons_rom[address:address + parse_hex_string_to_value(args[3])]
             else:
-                raise NotImplementedError("Ages code import is not implemented yet")
+                return self.ages_rom[address:address + parse_hex_string_to_value(args[3])]
 
         # ...then try matching a mnemonic
         extra_bytes = []

@@ -1,18 +1,40 @@
 from ..data.Constants import *
 
-EOB_ADDR = [
+# [x, y] = everything between x and y (included) is free
+# int = end of bank
+CAVE_DATA = [
     0x3ec8,  # 00
     0x3e89,  # 01
-    0x35bb,  # 02
+    [  # 02
+        [0x023d, 0x02a3],  # fileSelectMode5
+        0x35bb  # End of bank
+    ],
     0x3dd7,  # 03
-    0x3e12,  # 04
+    [  # 04
+        [0x2776, 0x280f],  # roomTileChangesAfterLoad for trees, which are reimplemented
+        0x3e12  # End of bank
+    ],
     0x3e2d,  # 05
     0x3864,  # 06 - 128 bytes reserved for sprite expansion w/ web patcher
     0x3900,  # 07
-    0x3fc0,  # 08
-    0x3f4e,  # 09
-    0x3bf9,  # 0a
-    0x3f6d,  # 0b
+    [  # 08
+        [0x2395, 0x26fd],  # Bipin & Blossom child mechanic
+        0x3fc0  # End of bank
+    ],
+    [
+        [0x2e6d, 0x2eae],  # Ricky giving his flute
+        0x3f4e,  # 09
+    ],
+    [  # 0a
+        [0x3bba, 0x3bd0],  # Blank from removing the spin upon obtaining the sword in d0
+        0x3be9,
+    ],
+    [  # 0b
+        [0x34ac, 0x34ee],  # Impa intro script
+        [0x39b4, 0x39e9],  # Twinrova cutscene 1
+        [0x39f5, 0x3a29],  # Twinrova cutscene 2
+        0x3f6d  # End of bank
+    ],
     0x3ea1,  # 0c
     0x3b82,  # 0d
     0x3ef3,  # 0e
@@ -58,13 +80,22 @@ EOB_ADDR = [
     0x4000,  # 36
     0x4000,  # 37
     0x3df0,  # 38
-    0x4000,  # 39
+    [  # 39
+        [0x0c00, 0x0c08],  # Skipped weird call, this bank is packed so better use any room
+        [0x115d, 0x1169],  # "sndd6"-"snddd", unused sound descriptors
+        [0x145c, 0x1468],  # mus41, unused music descriptor
+        [0x1a79, 0x1a85],  # Junk data at the end of sndde
+        0x3ff2  # End of bank
+    ],
     0x4000,  # 3a
     0x4000,  # 3b
     0x4000,  # 3c
     0x4000,  # 3d
     0x4000,  # 3e
-    0x314b   # 3f - also here
+    0x314b,  # 3f - also here
+
+    # New banks
+    0x0000,  # 40
 ]
 
 DEFINES = {
@@ -89,21 +120,35 @@ DEFINES = {
     "wGashaSpotFlags": "$c649",
     "wDungeonCompasses": "$c67c",
     "wDungeonMaps": "$c67e",
+    "wSeedSatchelLevel": "$c680",  # Moved from c6ae
+    "<wSeedSatchelLevel": "$80",
+    "wSwitchHookLevel": "$c681",
+    "<wSwitchHookLevel": "$81",
     "wObtainedTreasureFlags": "$c692",
     "wNetCountIn": "$c6a0",
     "wLinkMaxHealth": "$c6a3",
     "wShieldLevel": "$c6a9",
     "wCurrentBombs": "$c6aa",
     "wMaxBombs": "$c6ab",
-    "wSeedSatchelLevel": "$c6ae",
+    "wNumBombchus": "$c6ad",
+    "wMaxBombchus": "$c6ae",
     "wFluteIcon": "$c6af",
     "wFeatherLevel": "$c6b4",
     "wNumEmberSeeds": "$c6b5",
     "wEssencesObtained": "$c6bb",
+    "wShooterSelectedSeeds": "$c6bd",  # Replaces wPirateBellState
+    "<wShooterSelectedSeeds": "$bd",
     "wSatchelSelectedSeeds": "$c6be",
     "wActiveRing": "$c6c5",
     "wRingBoxLevel": "$c6c6",
     "wInsertedJewels": "$c6e1",
+    "wInventoryB": "$c6e8",  # Moved from c680
+    "wInventoryA": "$c6e9",  # Moved from c681
+    "wInventoryStorage": "$c6ea",  # Moved from c682-691
+    "<wInventoryB": "$e8",
+    "<wInventoryA": "$e9",
+    "<wInventoryStorage": "$ea",
+    "wOverworldRoomFlags": "$c700",
     "wTextIndexL": "$cba2",
     "wTextIndexH": "$cba3",
     "wTextNumberSubstitution": "$cba8",
@@ -113,10 +158,12 @@ DEFINES = {
     "wMenuLoadState": "$cbcc",
     "wMenuActiveState": "$cbcd",
     "wDungeonMapScrollState": "$cbce",
+    "wInventorySubmenu0CursorPos": "$cbd0",
     "wInventorySubmenu1CursorPos": "$cbd1",
     "wRingMenu_mode": "$cbd3",
     "wStatusBarNeedsRefresh": "$cbea",
     "wNetTreasureIn": "$cbfb",  # Custom address
+    "wSwitchHookState": "$cbfc",  # Custom address
     "wFrameCounter": "$cc00",
     "wIsLinkedGame": "$cc01",
     "wMenuDisabled": "$cc02",
@@ -157,6 +204,7 @@ DEFINES = {
 
     # Bank 0 functions
     "addAToDe": "$0068",
+    "addAToBc": "$006d",
     "interBankCall": "$008a",
     "getNumSetBits": "$0176",
     "checkFlag": "$0205",
@@ -180,6 +228,7 @@ DEFINES = {
     "getRoomFlags": "$1963",
     "openMenu": "$1a76",
     "linkInteractWithAButtonSensitiveObjects": "$1b23",
+    "checkLinkCollisionsEnabled": "$1cf0",
     "lookupKey": "$1dc4",
     "lookupCollisionTable": "$1ddd",
     "objectSetVisiblec2": "$1e03",
@@ -203,6 +252,7 @@ DEFINES = {
     "getFreePartSlot": "$3ea7",
 
     # Byte constants
+    "INVENTORY_CAPACITY": "$14",
     "TEXT_WARP_PROTECTION_MARGIN": "$09",
     "STARTING_TREE_MAP_INDEX": "$f8",
     "INTERACID_TREASURE": "$60",
@@ -235,11 +285,15 @@ DEFINES = {
     "TREASURE_SHIELD": "$01",
     "TREASURE_PUNCH": "$02",
     "TREASURE_BOMBS": "$03",
+    "TREASURE_CANE_OF_SOMARIA": "$04",
     "TREASURE_SWORD": "$05",
     "TREASURE_BOOMERANG": "$06",
     "TREASURE_ROD_OF_SEASONS": "$07",
     "TREASURE_MAGNET_GLOVES": "$08",
+    "TREASURE_SWITCH_HOOK": "$0a",
+    "TREASURE_BOMBCHUS": "$0d",
     "TREASURE_FLUTE": "$0e",
+    "TREASURE_SHOOTER": "$0f",
     "TREASURE_SLINGSHOT": "$13",
     "TREASURE_BRACELET": "$16",
     "TREASURE_FEATHER": "$17",
@@ -316,7 +370,7 @@ DEFINES = {
     "jumpifc6xxset": "$b3",
     "writec6xx": "$b4",
     "setglobalflag": "$b6",
-    "script_nop": "b7",
+    "script_nop": "$b7",
     "setdisabledobjectsto00": "$b9",
     "setdisabledobjectsto11": "$ba",
     "disableinput": "$bd",
@@ -343,47 +397,6 @@ DEFINES = {
     "setspeed": "$8b",
     "moveup": "$ec",
 }
-
-ASM_FILES = [
-    "asm/animals.yaml",
-    "asm/any_item_on_essence_pedestal.yaml",
-    "asm/boss_items.yaml",
-    "asm/business_scrubs.yaml",
-    "asm/collect.yaml",
-    "asm/combat_difficulty.yaml",
-    "asm/compass_chimes.yaml",
-    "asm/cutscenes.yaml",
-    "asm/file_select_custom_string.yaml",
-    "asm/gasha_loot.yaml",
-    "asm/get_item_behavior.yaml",
-    "asm/gfx.yaml",
-    "asm/impa_refill.yaml",
-    "asm/item_events.yaml",
-    "asm/layouts.yaml",
-    "asm/locations.yaml",
-    "asm/map_menu.yaml",
-    "asm/maku_tree.yaml",
-    "asm/misc.yaml",
-    "asm/multi.yaml",
-    "asm/new_game.yaml",
-    "asm/new_treasures.yaml",
-    "asm/progressives.yaml",
-    "asm/quick_switch.yaml",
-    "asm/remove_items_on_use.yaml",
-    "asm/rings.yaml",
-    "asm/samasa_combination.yaml",
-    "asm/seasons_handling.yaml",
-    "asm/seed_tree.yaml",
-    "asm/shops_handling.yaml",
-    "asm/subscreen_1_improvement.yaml",
-    "asm/static_items.yaml",
-    "asm/tarm_gate_requirement.yaml",
-    "asm/text.yaml",
-    "asm/triggers.yaml",
-    "asm/util.yaml",
-    "asm/vars.yaml",
-    "asm/warp_to_start.yaml",
-]
 
 RUPEE_VALUES = {
     0: 0x00,
@@ -594,15 +607,15 @@ SHOW_TEXT_LOW_INDEX = 0x98
 ENABLE_ALL_OBJECTS = 0xb9
 
 DIRECTION_STRINGS = {
-    DIRECTION_UP: [0x15, 0x20],
-    DIRECTION_DOWN: [0x16, 0x20],
-    DIRECTION_LEFT: [0x17, 0x20],
-    DIRECTION_RIGHT: [0x18, 0x20],
+    DIRECTION_UP: "⬆ ",
+    DIRECTION_DOWN: "⬇ ",
+    DIRECTION_LEFT: "⬅ ",
+    DIRECTION_RIGHT: "➡ ",
 }
 
 SEASON_STRINGS = {
-    SEASON_SPRING: [0x02, 0xde],
-    SEASON_SUMMER: ['S'.encode()[0], 0x04, 0xbc],
-    SEASON_AUTUMN: ['A'.encode()[0], 0x05, 0x25],
-    SEASON_WINTER: [0x03, 0x7e]
+    SEASON_SPRING: "Spring",
+    SEASON_SUMMER: "Summer",
+    SEASON_AUTUMN: "Autumn",
+    SEASON_WINTER: "Winter"
 }
