@@ -217,22 +217,103 @@ class OracleOfAgesCombatDifficulty(Choice):
 
 @dataclass
 class OracleOfAgesOptions(PerGameCommonOptions):
-    start_inventory_from_pool: StartInventoryPool
+
     goal: OracleOfAgesGoal
     logic_difficulty: OracleOfAgesLogicDifficulty
-    required_essences: OracleOfAgesRequiredEssences
-    required_slates: OracleOfAgesRequiredSlates
+    death_link: DeathLink
+
+    # Optional locations
+    advance_shop: OracleOfAgesAdvanceShop
+    #deterministic_gasha_locations: OracleOfAgesGashaLocations
+    #secret_locations: OracleOfAgesIncludeSecretLocations
+    
+    # Overworld Changes
     animal_companion: OracleOfAgesAnimalCompanion
     default_seed: OracleOfAgesDefaultSeedType
     shuffle_dungeons: OracleOfAgesDungeonShuffle
+
+    # Dungeon Changes
+    required_slates: OracleOfAgesRequiredSlates
     master_keys: OracleOfAgesMasterKeys
     keysanity_small_keys: OracleOfAgesSmallKeyShuffle
     keysanity_boss_keys: OracleOfAgesBossKeyShuffle
     keysanity_maps_compasses: OracleOfAgesMapCompassShuffle
     keysanity_slates: OracleOfAgesSlateShuffle
+
+    # Essences
+    required_essences: OracleOfAgesRequiredEssences
+    #shuffle_essences: OracleOfAgesEssenceSanity
+    #placed_essences: OracleOfAgesPlacedEssences
+    #exclude_dungeons_without_essence: OracleOfAgesExcludeDungeonsWithoutEssence
+    #show_dungeons_with_essence: OracleOfAgesShowDungeonsWithEssence
+
+    # Misc Options
     required_rings: OracleOfSeasonsRequiredRings
     excluded_rings: OracleOfSeasonsExcludedRings
     shop_prices_factor: OracleOfAgesPricesFactor
-    advance_shop: OracleOfAgesAdvanceShop
     combat_difficulty: OracleOfAgesCombatDifficulty
-    death_link: DeathLink
+    #cross_items: OracleOfAgesIncludeCrossItems
+
+    # QOL
+    #quick_sad_tokey: OracleOfAgesQuickDances
+    #quick_tomb_return: OracleOfAgesQuickTombReturn
+    #Lynna_Gardener: OracleOfAgesLynnaGarder
+
+
+    start_inventory_from_pool: StartInventoryPool
+
+oos_option_groups = [
+    OptionGroup("General", [
+        OracleOfAgesGoal,
+        OracleOfAgesLogicDifficulty,
+        DeathLink,
+    ]),
+    #OptionGroup("Items", [
+    #    OracleOfAgesIncludeCrossItems,
+    #]),
+    OptionGroup("Optional Locations", [
+        OracleOfAgesAdvanceShop,
+        #OracleOfAgesGashaLocations,
+        #OracleOfAgesIncludeSecretLocations
+    ]),
+    OptionGroup("Essences", [
+        OracleOfAgesRequiredEssences,
+        #OracleOfAgesEssenceSanity,
+        #OracleOfAgesPlacedEssences,
+        #OracleOfAgesExcludeDungeonsWithoutEssence,
+        #OracleOfAgesShowDungeonsWithEssence,
+    ]),
+
+    OptionGroup("Overworld Layout Options", [
+        OracleOfAgesAnimalCompanion,
+        OracleOfAgesDungeonShuffle,
+        OracleOfAgesDefaultSeedType,
+    ]),
+    OptionGroup("Dungeon Items", [
+        OracleOfAgesMasterKeys,
+        OracleOfAgesSmallKeyShuffle,
+        OracleOfAgesBossKeyShuffle,
+        OracleOfAgesMapCompassShuffle,
+        OracleOfAgesStartingMapsCompasses
+    ]),
+    #OptionGroup("Numeric Requirements", [
+    #    OracleOfAgesGashaNutKillRequirement,
+    #]),
+
+    #OptionGroup("QOL", [
+        #OracleOfAgesQuickFlute,
+        #OracleOfAgesQuickHarp,
+        #OracleOfAgesQuickDances,
+        #OracleOfAgesQuickTombReturn,
+        #OracleOfAgesLynnaGardening,
+
+    #]),
+    OptionGroup("Others", [
+        OracleOfAgesShopPrices,
+        OracleOfSeasonsRequiredRings,
+        OracleOfSeasonsExcludedRings,
+        #OracleOfAgessFoolsOre,
+        OracleOfAgesCombatDifficulty,
+        #OracleOfAgesOwlHint,
+    ]),
+]
