@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from Options import Choice, DeathLink, DefaultOnToggle, PerGameCommonOptions, Range, Toggle, StartInventoryPool, ItemSet
+from Options import Choice, DeathLink, DefaultOnToggle, PerGameCommonOptions, Range, Toggle, StartInventoryPool, ItemSet, OptionGroup
 
 from worlds.tloz_ooa.data.Items import ITEMS_DATA
 
@@ -262,7 +262,7 @@ class OracleOfAgesOptions(PerGameCommonOptions):
     combat_difficulty: OracleOfAgesCombatDifficulty
     #cross_items: OracleOfAgesIncludeCrossItems
 
-     QOL
+    # QOL
     #quick_sad_tokey: OracleOfAgesQuickDances
     #quick_tomb_return: OracleOfAgesQuickTombReturn
     lynna_gardener: OracleOfAgesLynnaGardener
@@ -302,7 +302,6 @@ oos_option_groups = [
         OracleOfAgesSmallKeyShuffle,
         OracleOfAgesBossKeyShuffle,
         OracleOfAgesMapCompassShuffle,
-        OracleOfAgesStartingMapsCompasses
     ]),
     #OptionGroup("Numeric Requirements", [
     #    OracleOfAgesGashaNutKillRequirement,
@@ -317,7 +316,7 @@ oos_option_groups = [
 
     ]),
     OptionGroup("Others", [
-        OracleOfAgesShopPrices,
+        OracleOfAgesPricesFactor,
         OracleOfSeasonsRequiredRings,
         OracleOfSeasonsExcludedRings,
         #OracleOfAgesFoolsOre,
