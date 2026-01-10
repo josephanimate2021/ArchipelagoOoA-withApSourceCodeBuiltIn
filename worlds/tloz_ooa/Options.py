@@ -215,6 +215,14 @@ class OracleOfAgesCombatDifficulty(Choice):
 
     default = 0
 
+
+class OracleOfAgesLynnaGardener(Toggle):
+    """
+    When enabled, a friendly gardener will have trimmed the bushes outside of Lynna City and cleared the path
+    so you don't have to!
+    """
+    display_name = "Lynna Gardener"
+
 @dataclass
 class OracleOfAgesOptions(PerGameCommonOptions):
 
@@ -254,10 +262,10 @@ class OracleOfAgesOptions(PerGameCommonOptions):
     combat_difficulty: OracleOfAgesCombatDifficulty
     #cross_items: OracleOfAgesIncludeCrossItems
 
-    # QOL
+     QOL
     #quick_sad_tokey: OracleOfAgesQuickDances
     #quick_tomb_return: OracleOfAgesQuickTombReturn
-    #Lynna_Gardener: OracleOfAgesLynnaGarder
+    lynna_gardener: OracleOfAgesLynnaGardener
 
 
     start_inventory_from_pool: StartInventoryPool
@@ -300,19 +308,19 @@ oos_option_groups = [
     #    OracleOfAgesGashaNutKillRequirement,
     #]),
 
-    #OptionGroup("QOL", [
+    OptionGroup("QOL", [
         #OracleOfAgesQuickFlute,
         #OracleOfAgesQuickHarp,
         #OracleOfAgesQuickDances,
         #OracleOfAgesQuickTombReturn,
-        #OracleOfAgesLynnaGardening,
+        OracleOfAgesLynnaGardener,
 
-    #]),
+    ]),
     OptionGroup("Others", [
         OracleOfAgesShopPrices,
         OracleOfSeasonsRequiredRings,
         OracleOfSeasonsExcludedRings,
-        #OracleOfAgessFoolsOre,
+        #OracleOfAgesFoolsOre,
         OracleOfAgesCombatDifficulty,
         #OracleOfAgesOwlHint,
     ]),

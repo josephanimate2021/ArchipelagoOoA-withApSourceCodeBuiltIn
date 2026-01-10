@@ -149,6 +149,8 @@ def ooa_has_slates(state: CollectionState, player: int, target_count):
 def ooa_has_enough_slates(state: CollectionState, player: int):
     return ooa_has_slates(state, player, state.multiworld.worlds[player].options.required_slates.value)
 
+def ooa_option_lynna_gardener(state: CollectionState, player: int):
+    return state.multiworld.worlds[player].options.lynna_gardener == true
 
 # Various item predicates ###########################################
 

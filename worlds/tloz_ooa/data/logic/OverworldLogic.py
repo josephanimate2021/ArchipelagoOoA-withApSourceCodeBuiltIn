@@ -16,7 +16,10 @@ def make_overworld_logic(player: int):
 
         # LYNNA CITY
         #######################################
-        ["forest of time", "lynna city", True, lambda state: ooa_can_break_bush(state, player)],
+        ["forest of time", "lynna city", True, lambda state: any([
+            ooa_can_break_bush(state, player),
+            ooa_option_lynna_gardener(state, player)
+        ]),
         ["lynna city", "south lynna tree", False, lambda state: ooa_can_harvest_tree(state, player, True)],
         ["lynna city", "lynna city chest", False, lambda state: ooa_can_use_ember_seeds(state, player, False)],
         ["lynna village", "lynna city chest", False, lambda state: ooa_can_go_back_to_present(state, player)],
@@ -121,7 +124,10 @@ def make_overworld_logic(player: int):
         ["lynna city", "shore present", True, lambda state: any([
             ooa_can_swim_deepwater(state, player, True),
             ooa_has_bracelet(state, player),
-            ooa_can_go_back_to_present(state, player),
+            all([
+                ooa_can_go_back_to_present(state, player),
+                ooa_can_jump_1_wide_pit(state, player, True)
+            ]),
             all([
                 ooa_can_break_bush(state, player, True),
                 ooa_can_jump_1_wide_pit(state, player, True)
