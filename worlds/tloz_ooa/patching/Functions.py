@@ -60,6 +60,8 @@ def get_asm_files(patch_data):
         asm_files.append("asm/conditional/qol_mermaid_suit.yaml")
     if patch_data["options"]["goal"] == OracleOfAgesGoal.option_beat_ganon:
         asm_files.append("asm/conditional/ganon_goal.yaml")
+    if patch_data["options"]["lynna_gardener"]:
+        asm_files.append("asm/conditional/lynna_gardener.yaml")
     return asm_files
 
 def define_location_constants(assembler: Z80Assembler, patch_data):
