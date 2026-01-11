@@ -7,9 +7,7 @@ def make_d0_logic(player: int):
         ["enter d0", "d0 behind the door", True, lambda state: ooa_has_small_keys(state, player, 0, 1)],
         ["d0 behind the door", "d0 basement", False, None],
         ["d0 behind the door", "maku path heartpiece", False, lambda state: ooa_can_kill_normal_enemy(state, player)],
-        #["d0 behind the door", "d0 heart piece", False, None],
-        ["d0 behind the door", "d0 exit", False, lambda state: ooa_can_kill_normal_enemy(state, player)],
-        ["d0 exit", "d0 behind the door", False, None],
+        ["d0 behind the door", "d0 exit", True, lambda state: ooa_can_kill_normal_enemy(state, player)],
     ]
 
 def make_d1_logic(player: int):
@@ -34,6 +32,7 @@ def make_d1_logic(player: int):
             ooa_has_bracelet(state, player),
             ooa_generic_boss_and_miniboss_kill(state, player),
         ])],
+
 
         # potentially 3 keys w/ vanilla route
         ["d1 wide room", "d1 U-room", False, lambda state: all([
@@ -457,6 +456,7 @@ def make_d5_logic(player: int):
         ["d5 switch A", "d5 eyes chest", False, lambda state: any([
             ooa_has_seedshooter(state, player),
             all([
+                ooa_option_medium_logic(state, player),
                 ooa_can_use_pegasus_seeds(state, player),
                 ooa_has_feather(state, player),
                 ooa_can_use_mystery_seeds(state, player),
@@ -465,14 +465,15 @@ def make_d5_logic(player: int):
         ])],
         ["d5 switch A", "d5 two-statue puzzle", False, lambda state: all([
             ooa_can_break_pot(state, player),
-            any([
-                ooa_has_cane(state, player),
-                ooa_option_medium_logic(state, player),
-            ]),
             ooa_has_feather(state, player),
+            ooa_has_cane(state, player),
             any([
                 ooa_has_seedshooter(state, player),
                 ooa_has_boomerang(state, player),
+                all([
+                    ooa_can_jump_2_wide_pit(state, player, False),
+                    ooa_has_sword(state, player,False),
+                ]),
                 all([
                     ooa_option_hard_logic(state, player),
                     ooa_can_jump_2_wide_pit(state, player, False),

@@ -124,12 +124,13 @@ class OracleOfAgesWorld(World):
                    "logic_difficulty",
                    "shuffle_dungeons",
                    "default_seed",
+                   "lynna_gardener"
                    # Locations
                    "advance_shop",
                    # Requirements
                    "required_essences", "required_slates",
                    # keysanity
-                   "keysanity_small_keys", "keysanity_boss_keys", "keysanity_slates"
+                   "keysanity_small_keys", "keysanity_boss_keys", "keysanity_slates", "master_keys"
                    ]
 
         slot_data = self.options.as_dict(*options)
