@@ -219,7 +219,8 @@ class OracleOfAgesCombatDifficulty(Choice):
 class OracleOfAgesLynnaGardener(Toggle):
     """
     When enabled, a friendly gardener will have trimmed the bushes outside of Lynna City and cleared the path
-    so you don't have to!
+    so you don't have to! This will expand the sphere 0 checks to include everything past the bushes that you
+    normally would need nothing for.
     """
     display_name = "Lynna Gardener"
 
