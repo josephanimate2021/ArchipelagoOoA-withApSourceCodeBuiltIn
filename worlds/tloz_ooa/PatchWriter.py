@@ -22,11 +22,11 @@ def ooa_create_appp_patch(world: "OracleOfAgesWorld") -> OoAProcedurePatch:
         "version": VERSION,
 
         "options": world.options.as_dict(*[
-            "start_inventory_from_pool", "goal", "logic_difficulty", "required_essences",
+            "goal", "logic_difficulty", "required_essences",
             "required_slates", "animal_companion", "default_seed", "shuffle_dungeons", "master_keys",
             "keysanity_small_keys", "keysanity_boss_keys", "keysanity_maps_compasses", "keysanity_slates",
             "required_rings", "excluded_rings", "shop_prices_factor", "advance_shop",
-            "combat_difficulty", "death_link"
+            "combat_difficulty", "death_link", "lynna_gardener"
         ]),
         "dungeon_entrances": {a.replace(" entrance", ""): b.replace("enter ", "")
                               for a, b in world.dungeon_entrances.items()},
