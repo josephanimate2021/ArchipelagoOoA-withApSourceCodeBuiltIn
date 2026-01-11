@@ -124,7 +124,7 @@ class OracleOfAgesWorld(World):
                    "logic_difficulty",
                    "shuffle_dungeons",
                    "default_seed",
-                   "lynna_gardener"
+                   "lynna_gardener",
                    # Locations
                    "advance_shop",
                    # Requirements
