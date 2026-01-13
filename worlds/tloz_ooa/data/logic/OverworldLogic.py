@@ -413,6 +413,7 @@ def make_overworld_logic(player: int):
                 ooa_has_switch_hook(state, player),
             ]),
         ])],
+        ["ridge west past base", "ridge_west_present", False, lambda state: ooa_can_switch_past_and_present(state, player)],
         ["ridge west past base", "goron elder", False, lambda state: state.has("Bomb Flower", player)],
         ["ridge west present", "ridge west past", False, lambda state: all([
             ooa_can_open_portal(state, player),

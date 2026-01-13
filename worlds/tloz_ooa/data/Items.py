@@ -95,7 +95,7 @@ ITEMS_DATA = {
         'id': 0x22
     },
     "Gale Seeds": {
-        'classification': ItemClassification.useful,
+        'classification': ItemClassification.progression,
         'id': 0x23
     },
     "Mystery Seeds": {
