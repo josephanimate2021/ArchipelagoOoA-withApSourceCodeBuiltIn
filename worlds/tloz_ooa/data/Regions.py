@@ -97,19 +97,19 @@ REGIONS = [
     "patch broken sword ceremony",
 
     #######
-    "ridge west past base",
-    "ridge west past",
+    "ridge west past base", #vanilla start, by goron elder
+    "ridge west past", #from goron elder to king mobin area in past
     "ridge west tree",
     "goron elder",
     #######
-    "ridge west present",
-    "ridge west cave",
+    "ridge west present", #from base to king moblin
+    #"ridge west cave",  #redundant?
     "under moblin keep",
     "defeat great moblin",
     "goron's hiding place",
     "ridge base chest",
     #######
-    "ridge upper past",
+    "ridge upper past", #near treasure seeking goron
     "bomb goron head",
     "treasure hunting goron",
     #######
@@ -122,7 +122,7 @@ REGIONS = [
     "goron dance, with letter",
     "trade goron vase",
     #######
-    "ridge base past west",
+    "ridge base past west", #west cave of ridge east base
     "ridge base bomb past",
     "ridge diamonds past",
     "d6 past entrance",
