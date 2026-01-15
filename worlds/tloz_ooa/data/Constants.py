@@ -309,6 +309,27 @@ LOCATION_GROUPS = {
     ]
 }
 
+GASHA_SPOT_REGIONS = [
+    "crescent past spot",
+    "talus lake past spot",
+    "talus peak past spot",
+    "zora village past spot",
+    "lynna village toilet spot",
+    "south shore past spot",
+    "ridge west base spot",
+    "ridge upper past spot",
+    "yoll graveyard spot",
+    "talus peak present spot",
+    "fairies woods spot",
+    "nuun highlands spot",
+    "ridge mid present spot",
+    "crescent present islet spot",
+    "crescent present vine spot",
+    "sea of storms spot",
+]
+
+
+
 TREASURE_SPAWN_INSTANT = 0x00
 TREASURE_SPAWN_POOF = 0x10
 TREASURE_SPAWN_DROP = 0x20

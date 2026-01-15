@@ -1,6 +1,6 @@
 from BaseClasses import CollectionState
 from Options import Accessibility
-from ..Constants import DUNGEON_NAMES, ESSENCES
+from ..Constants import *
 
 
 # Items predicates ############################################################
@@ -533,6 +533,16 @@ def ooa_can_harvest_tree(state: CollectionState, player: int, can_use_companion:
         ])
     ])
 
+def ooa_can_harvest_gasha(state: CollectionState, player: int, count: int):
+    reachable_soils = [state.has(f"_reached_{region_name}", player) for region_name in GASHA_SPOT_REGIONS]
+    return all([
+        reachable_soils.count(True) >= count,  # Enough soils are reachable
+        state.has("Gasha Seed", player, count),  # Enough seeds to plant
+        any([
+            # Can actually harvest the nut, and get kills
+            ooa_has_sword(state, player),
+        ])
+    ])
 
 def ooa_can_push_enemy(state: CollectionState, player: int):
     return any([

@@ -224,6 +224,24 @@ class OracleOfAgesLynnaGardener(Toggle):
     """
     display_name = "Lynna Gardener"
 
+
+#class OracleOfAgesGashaLocations(Range):
+   # """
+   # When set to a non-zero value, planting a Gasha tree on a unique soil gives a deterministic item which is taken
+   # into account by logic. Once an item has been obtained this way, the soil disappears forever to avoid any chance
+  #  of softlocking by wasting several Gasha Seeds on the same soil.
+   # The value of this option is the number of items that can be obtained that way, the maximum value expecting you
+   # to plant a tree on each one of the 16 Gasha spots in the game.
+   # """
+    #display_name = "Deterministic Gasha Locations"
+
+    #range_start = 0
+    #range_end = 16
+
+   # default = 0
+    #include_in_patch = True
+    #include_in_slot_data = True
+
 @dataclass
 class OracleOfAgesOptions(PerGameCommonOptions):
 
@@ -271,7 +289,7 @@ class OracleOfAgesOptions(PerGameCommonOptions):
 
     start_inventory_from_pool: StartInventoryPool
 
-oos_option_groups = [
+ooa_option_groups = [
     OptionGroup("General", [
         OracleOfAgesGoal,
         OracleOfAgesLogicDifficulty,
