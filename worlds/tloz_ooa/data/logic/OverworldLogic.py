@@ -331,7 +331,7 @@ def make_overworld_logic(player: int):
                 ooa_can_jump_3_wide_pit(state, player, False),
             ])
         ])],
-        ["nuun (dimitri)", "nuun highlands cave", False, lambda state: ooa_can_summon_dimitri(state, player)],
+        ["nuun (dimitri)", "nuun highlands cave", False, lambda state: ooa_has_flute(state, player)],
 
 
         # SYMMETRY CITY PRESENT
