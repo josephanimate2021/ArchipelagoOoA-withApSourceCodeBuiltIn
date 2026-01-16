@@ -42,7 +42,7 @@ class OracleOfSeasonsWorld(World):
 
     @classmethod
     def version(cls) -> str:
-        return f"{cls.world_version.major}.{cls.world_version.minor}"
+        return cls.world_version.as_simple_string()
 
     def __init__(self, multiworld, player):
         super().__init__(multiworld, player)
@@ -197,7 +197,7 @@ class OracleOfSeasonsWorld(World):
 
     def fill_slot_data(self) -> dict:
         slot_data = {
-            "version": f"{self.world_version.as_simple_string()}",
+            "version": f"{self.version()}",
             "options": self.options.as_dict(
                 *[option_name for option_name in OracleOfSeasonsOptions.type_hints
                   if hasattr(OracleOfSeasonsOptions.type_hints[option_name], "include_in_slot_data")]),

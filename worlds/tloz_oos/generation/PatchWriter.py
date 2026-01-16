@@ -13,7 +13,7 @@ def oos_create_ap_procedure_patch(world: OracleOfSeasonsWorld) -> OoSProcedurePa
     patch.player_name = world.multiworld.get_player_name(world.player)
 
     patch_data = {
-        "version": f"{world.world_version.as_simple_string()}",
+        "version": f"{world.version()}",
         "seed": world.multiworld.seed,
         "options": world.options.as_dict(
             *[option_name for option_name in OracleOfSeasonsOptions.type_hints
