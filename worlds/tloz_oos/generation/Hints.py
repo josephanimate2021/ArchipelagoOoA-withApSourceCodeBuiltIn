@@ -314,7 +314,7 @@ def create_item_hints(world: "OracleOfSeasonsWorld") -> list[Item | None]:
     hintable_items: list[Item | None] = [location.item for location in world.multiworld.get_filled_locations()
                                          if location.item.player == world.player
                                          and location.item.advancement
-                                         and not location.item.classification & ItemClassification.deprioritized
+                                         and not location.item.deprioritized
                                          and not location.is_event
                                          and not location.locked]
     hintable_items.append(None)
