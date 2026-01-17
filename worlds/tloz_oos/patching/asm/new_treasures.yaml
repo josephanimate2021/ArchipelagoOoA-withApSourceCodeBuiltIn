@@ -126,6 +126,7 @@
 3f/6f4c/: db $3d,$d4,$03,$d5,$03,$ff,$12  # Wooden Bird (#3D)
 3f/6f53/: db $3e,$d6,$01,$d7,$01,$ff,$13  # Engine Grease (#3E)
 3f/6f5a/: db $3f,$d8,$00,$d9,$00,$ff,$14  # Phonograph (#3F)
+3f/6fa7/: /copy s,$3f,$7113,$07           # Rusty Bell (#4a)
 3f/6ea4/: db $25,$ee,$01,$ef,$01,$ff,$49  # Pirate's Bell (#25)
 
 ############################################################
@@ -166,3 +167,8 @@
     ld e,$7b
     ld (de),a
     ret
+
+# Rusty Pirate Bell edits
+
+3f/6d0a/: db $00 # Remove Rusty Bell setting wPirateBellState in treasureCollectionBehaviourTable
+3f/6d7e/: db TREASURE_PUNCH # Change the rusty bell's sprite to not be affected by wPirateBellState

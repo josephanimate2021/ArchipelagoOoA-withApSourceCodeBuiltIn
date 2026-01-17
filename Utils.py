@@ -1055,7 +1055,7 @@ def visualize_regions(root_region: Region, file_name: str, *,
                       linetype_ortho: bool = True, regions_to_highlight: set[Region] | None = None) -> None:
     """Visualize the layout of a world as a PlantUML diagram.
 
-    :param root_region: The region from which to start the diagram from. (Usually the "Menu" region of your world.)
+        :param root_region: The region from which to start the diagram from. (Usually the "Menu" region of your world.)
     :param file_name: The name of the destination .puml file.
     :param show_entrance_names: (default False) If enabled, the name of the entrance will be shown near each connection.
     :param show_locations: (default True) If enabled, the locations will be listed inside each region.
