@@ -356,3 +356,21 @@ REGIONS = [
     "ridge west heartpiece",
     "ridge upper heartpiece",
 ]
+GASHA_REGIONS = [
+    "gasha tree 1",
+    "gasha tree 2",
+    "gasha tree 3",
+    "gasha tree 4",
+    "gasha tree 5",
+    "gasha tree 6",
+    "gasha tree 7",
+    "gasha tree 8",
+    "gasha tree 9",
+    "gasha tree 10",
+    "gasha tree 11",
+    "gasha tree 12",
+    "gasha tree 13",
+    "gasha tree 14",
+    "gasha tree 15",
+    "gasha tree 16"
+]

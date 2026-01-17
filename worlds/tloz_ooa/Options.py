@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from Options import Choice, DeathLink, DefaultOnToggle, PerGameCommonOptions, Range, Toggle, StartInventoryPool, ItemSet, OptionGroup
+from Options import Choice, DeathLink, DefaultOnToggle, PerGameCommonOptions, Range, Toggle, StartInventoryPool, ItemSet, OptionGroup, NamedRange
 
 from worlds.tloz_ooa.data.Items import ITEMS_DATA
 
@@ -225,22 +225,39 @@ class OracleOfAgesLynnaGardener(Toggle):
     display_name = "Lynna Gardener"
 
 
-#class OracleOfAgesGashaLocations(Range):
-   # """
-   # When set to a non-zero value, planting a Gasha tree on a unique soil gives a deterministic item which is taken
-   # into account by logic. Once an item has been obtained this way, the soil disappears forever to avoid any chance
-  #  of softlocking by wasting several Gasha Seeds on the same soil.
-   # The value of this option is the number of items that can be obtained that way, the maximum value expecting you
-   # to plant a tree on each one of the 16 Gasha spots in the game.
-   # """
-    #display_name = "Deterministic Gasha Locations"
+class OracleOfAgesGashaLocations(Range):
+    """
+    When set to a non-zero value, planting a Gasha tree on a unique soil gives a deterministic item which is taken
+    into account by logic. Once an item has been obtained this way, the soil disappears forever to avoid any chance
+    of softlocking by wasting several Gasha Seeds on the same soil.
+    The value of this option is the number of items that can be obtained that way, the maximum value expecting you
+    to plant a tree on each one of the 16 Gasha spots in the game.
+    """
+    display_name = "Deterministic Gasha Locations"
 
-    #range_start = 0
-    #range_end = 16
+    range_start = 0
+    range_end = 16
 
-   # default = 0
-    #include_in_patch = True
-    #include_in_slot_data = True
+    default = 0
+    include_in_patch = True
+    include_in_slot_data = True
+
+
+class OracleOfAgesGashaNutKillRequirement(NamedRange):
+    """
+    This option lets you configure how many kills are required to make a gasha tree grow.
+    Using a gasha ring halves this number.
+    """
+    display_name = "Gasha Nut Requirement"
+
+    range_start = 0
+    range_end = 250
+
+    default = 20
+    special_range_names = {
+        "vanilla": 40
+    }
+    include_in_patch = True
 
 @dataclass
 class OracleOfAgesOptions(PerGameCommonOptions):
@@ -251,7 +268,7 @@ class OracleOfAgesOptions(PerGameCommonOptions):
 
     # Optional locations
     advance_shop: OracleOfAgesAdvanceShop
-    #deterministic_gasha_locations: OracleOfAgesGashaLocations
+    deterministic_gasha_locations: OracleOfAgesGashaLocations
     #secret_locations: OracleOfAgesIncludeSecretLocations
     
     # Overworld Changes
@@ -285,6 +302,7 @@ class OracleOfAgesOptions(PerGameCommonOptions):
     #quick_sad_tokey: OracleOfAgesQuickDances
     #quick_tomb_return: OracleOfAgesQuickTombReturn
     lynna_gardener: OracleOfAgesLynnaGardener
+    gasha_nut_kill_requirement: OracleOfAgesGashaNutKillRequirement
 
 
     start_inventory_from_pool: StartInventoryPool
@@ -300,7 +318,7 @@ ooa_option_groups = [
     #]),
     OptionGroup("Optional Locations", [
         OracleOfAgesAdvanceShop,
-        #OracleOfAgesGashaLocations,
+        OracleOfAgesGashaLocations,
         #OracleOfAgesIncludeSecretLocations
     ]),
     OptionGroup("Essences", [
@@ -322,9 +340,9 @@ ooa_option_groups = [
         OracleOfAgesBossKeyShuffle,
         OracleOfAgesMapCompassShuffle,
     ]),
-    #OptionGroup("Numeric Requirements", [
-    #    OracleOfAgesGashaNutKillRequirement,
-    #]),
+    OptionGroup("Numeric Requirements", [
+        OracleOfAgesGashaNutKillRequirement,
+    ]),
 
     OptionGroup("QOL", [
         #OracleOfAgesQuickFlute,
