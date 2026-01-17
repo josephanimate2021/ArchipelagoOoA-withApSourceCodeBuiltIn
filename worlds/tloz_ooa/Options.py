@@ -236,7 +236,7 @@ class OracleOfAgesGashaLocations(Range):
     display_name = "Deterministic Gasha Locations"
 
     range_start = 0
-    range_end = 16
+    range_end = 15      #once sea of storms plot is figured out, change to 16
 
     default = 0
     include_in_patch = True
