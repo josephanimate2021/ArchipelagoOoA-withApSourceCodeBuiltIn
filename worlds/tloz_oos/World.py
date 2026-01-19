@@ -1,7 +1,7 @@
 import logging
 import os
 from threading import Event
-from typing import List, ClassVar, Any, Optional, Tuple, Type
+from typing import List, ClassVar, Any, Optional, Tuple, Type, TextIO
 
 from BaseClasses import Region, Location, LocationProgressType, Item, ItemClassification, MultiWorld, CollectionState
 from Fill import fill_restrictive
@@ -16,6 +16,7 @@ from .data.Constants import *
 from .data.Items import ITEMS_DATA
 from .data.Regions import REGIONS, NATZU_REGIONS, GASHA_REGIONS
 from .generation.Hints import create_region_hints, create_item_hints
+from .generation.Logic import OracleOfSeasonsState
 
 
 class OracleOfSeasonsWorld(World):
@@ -27,7 +28,6 @@ class OracleOfSeasonsWorld(World):
     game = "The Legend of Zelda - Oracle of Seasons"
     options_dataclass = OracleOfSeasonsOptions
     options: OracleOfSeasonsOptions
-    # required_client_version = (0, 5, 1)
     web = OracleOfSeasonsWeb()
     topology_present = True
 
@@ -44,7 +44,7 @@ class OracleOfSeasonsWorld(World):
     def version(cls) -> str:
         return cls.world_version.as_simple_string()
 
-    def __init__(self, multiworld, player):
+    def __init__(self, multiworld: MultiWorld, player: int):
         super().__init__(multiworld, player)
 
         self.pre_fill_items: List[Item] = []
@@ -167,7 +167,7 @@ class OracleOfSeasonsWorld(World):
             return self.get_random_ring_name()
         return item_name
 
-    def get_random_ring_name(self):
+    def get_random_ring_name(self) -> str:
         if len(self.random_rings_pool) > 0:
             return self.random_rings_pool.pop()
         return self.get_filler_item_name()  # It might loop but not enough to really matter
@@ -176,8 +176,9 @@ class OracleOfSeasonsWorld(World):
         from .generation.ER import oos_randomize_entrances
         oos_randomize_entrances(self)
 
+    # noinspection PyUnusedLocal
     @classmethod
-    def stage_fill_hook(cls, multiworld: MultiWorld, progitempool, usefulitempool, filleritempool, fill_locations):
+    def stage_fill_hook(cls, multiworld: MultiWorld, progitempool: list[Item], usefulitempool: list[Item], filleritempool: list[Item], fill_locations):
         from worlds.tloz_oos.generation.OrderPool import order_pool
         order_pool(multiworld, progitempool)
 
@@ -228,7 +229,7 @@ class OracleOfSeasonsWorld(World):
 
         return slot_data
 
-    def write_spoiler(self, spoiler_handle):
+    def write_spoiler(self, spoiler_handle: TextIO):
         from worlds.tloz_oos.generation.CreateRegions import location_is_active
         spoiler_handle.write(f"\n\nDefault Seasons ({self.multiworld.player_name[self.player]}):\n")
         for region_name, season in self.default_seasons.items():
@@ -257,7 +258,7 @@ class OracleOfSeasonsWorld(World):
                     spoiler_handle.write(f"\t- {loc_name}: {price} {currency}\n")
                 break
 
-    def collect(self, state: CollectionState, item: Item) -> bool:
+    def collect(self, state: CollectionState | OracleOfSeasonsState, item: Item) -> bool:
         change = super().collect(state, item)
         if not change:
             return False
@@ -278,7 +279,7 @@ class OracleOfSeasonsWorld(World):
         state.tloz_oos_available_cuccos[self.player] = None
         return True
 
-    def remove(self, state: CollectionState, item: Item) -> bool:
+    def remove(self, state: CollectionState | OracleOfSeasonsState, item: Item) -> bool:
         change = super().remove(state, item)
         if not change:
             return False
