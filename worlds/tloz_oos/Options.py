@@ -87,8 +87,8 @@ class OracleOfSeasonsDefaultSeasons(Choice):
     option_random_singularity = 2
     option_spring_singularity = 3
     option_summer_singularity = 4
-    option_winter_singularity = 5
-    option_autumn_singularity = 6
+    option_autumn_singularity = 5
+    option_winter_singularity = 6
 
     default = 1
     include_in_slot_data = True
