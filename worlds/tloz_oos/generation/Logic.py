@@ -190,11 +190,3 @@ def make_self_locking_item_lambda(player: int, item_name: str, required_count: i
     return lambda state, item: (item.player == player
                                 and item.name == item_name
                                 and state.has(item_name, player, required_count))
-
-
-class OracleOfSeasonsState(LogicMixin):
-    tloz_oos_available_cuccos: dict[int, dict[str, tuple[int, int, int]]]
-
-    def init_mixin(self, parent: MultiWorld):
-        self.tloz_oos_available_cuccos = {player: None for player, world in parent.worlds.items()
-                                          if parent.worlds[player].game == "The Legend of Zelda - Oracle of Seasons"}

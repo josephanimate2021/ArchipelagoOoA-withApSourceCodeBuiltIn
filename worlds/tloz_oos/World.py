@@ -1,10 +1,8 @@
-import logging
 import os
 from threading import Event
-from typing import List, ClassVar, Any, Optional, Tuple, Type, TextIO
+from typing import List, ClassVar, Any, Optional, Type, TextIO
 
-from BaseClasses import Region, Location, LocationProgressType, Item, ItemClassification, MultiWorld, CollectionState
-from Fill import fill_restrictive
+from BaseClasses import Item, ItemClassification, MultiWorld, CollectionState
 from Options import Option
 from worlds.AutoWorld import World
 from .Options import *
@@ -14,9 +12,8 @@ from .WebWorld import OracleOfSeasonsWeb
 from .data import LOCATIONS_DATA
 from .data.Constants import *
 from .data.Items import ITEMS_DATA
-from .data.Regions import REGIONS, NATZU_REGIONS, GASHA_REGIONS
 from .generation.Hints import create_region_hints, create_item_hints
-from .generation.Logic import OracleOfSeasonsState
+from .generation.LogicMixin import OracleOfSeasonsState
 
 
 class OracleOfSeasonsWorld(World):
