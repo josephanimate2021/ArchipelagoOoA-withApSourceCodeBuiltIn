@@ -279,7 +279,7 @@ def write_text_data(rom: RomData, dictionary: dict[str, str], texts: dict[str, s
             rom.write_word(text_table_current_address, 0)
         text_table_current_address += 2
 
-    if __debug__ and True:
+    if __debug__ and False:
         sorted_dict = sorted(list(encoded_dict1.items()) + list(encoded_dict2.items()), key=lambda kv: -len(kv[1]))
         for entry in sorted_dict:
             if entry[0] in dict1:
