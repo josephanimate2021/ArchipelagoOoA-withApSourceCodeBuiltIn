@@ -99,7 +99,7 @@ class OoAProcedurePatch(APProcedurePatch, APTokenMixin):
             basemd5 = hashlib.md5()
             basemd5.update(base_rom_bytes)
             if ROM_HASH != basemd5.hexdigest():
-                raise Exception("Supplied ROM does not match known MD5 for Oracle of Seasons US version."
+                raise Exception("Supplied ROM does not match known MD5 for Oracle of Ages US version."
                                 "Get the correct game and version, then dump it.")
             setattr(cls, "base_rom_bytes", base_rom_bytes)
         return base_rom_bytes
