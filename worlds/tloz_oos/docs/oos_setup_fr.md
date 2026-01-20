@@ -12,13 +12,12 @@
 
 ## Instructions d'installation
 
-1. Mettez votre **ROM US d'Oracle of Seasons** dans le dossier où Archipelago est installé (nommée "Legend of Zelda, The - Oracle of Seasons (USA).gbc")
-2. Téléchargez le  **fichier .apworld pour Oracle of Seasons** et double-cliquez dessus afin de l'installer dans le répertoire "custom_worlds/" de votre installation Archipelago 
-3. Générez une seed en utilisant vos fichiers d'options au format .yaml (voir ci-dessous si vous ne savez pas comment obtenir le fichier modèle)
-4. Téléchargez le fichier de patch au format .apoos qui a été généré en même temps que la seed par le serveur. Celui-ci vous permettra de générer votre ROM modifiée.
-5. Ouvrez ce fichier avec l'Archipelago Launcher
-6. Si tout s'est bien passé, la ROM patchée a été générée dans le même répertoire que le fichier .apoos, et Bizhawk ainsi que le client se sont automatiquement lancés
-7. Connectez-vous au serveur Archipelago de votre choix, et vous pouvez commencer à jouer!
+1. Téléchargez le **fichier .apworld pour Oracle of Seasons** et double-cliquez dessus afin de l'installer dans le répertoire "custom_worlds/" de votre installation Archipelago 
+2. Générez une seed en utilisant vos fichiers d'options au format .yaml (voir ci-dessous si vous ne savez pas comment obtenir le fichier modèle)
+3. Téléchargez le fichier de patch au format .apoos qui a été généré en même temps que la seed par le serveur. Celui-ci vous permettra de générer votre ROM modifiée.
+4. Ouvrez ce fichier avec l'Archipelago Launcher
+5. Si tout s'est bien passé, la ROM patchée a été générée dans le même répertoire que le fichier .apoos, et Bizhawk ainsi que le client se sont automatiquement lancés
+6. Connectez-vous au serveur Archipelago de votre choix, et vous pouvez commencer à jouer!
 
 ## Créer un fichier d'options (.yaml)
 
