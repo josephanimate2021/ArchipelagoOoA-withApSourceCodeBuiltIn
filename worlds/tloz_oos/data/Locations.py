@@ -2228,9 +2228,9 @@ LOCATIONS_DATA = {
         "conditional": True,
         "flag_byte": None,
         "owl_id": 4,
-        "scouting_byte": 0xca71,
+        "scouting_byte": 0xca84,
         "scouting_mask": 0x40,
-        "room": 0x0571
+        "room": 0x0584
     },
     "Mystery Owl": {
         "region_id": None,
