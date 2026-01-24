@@ -65,7 +65,7 @@ def create_items(world: OracleOfSeasonsWorld) -> None:
 def build_item_pool_dict(world: OracleOfSeasonsWorld) -> dict[str, int]:
     excluded_mapass = set()
     if world.options.exclude_dungeons_without_essence and not world.options.shuffle_essences:
-        for i, essence_name in enumerate(ITEM_GROUPS["Essences"]):
+        for i, essence_name in enumerate(ITEM_GROUPS["Essences"], 1):
             if essence_name not in world.essences_in_game:
                 excluded_mapass.add(f"Dungeon Map ({DUNGEON_NAMES[i]})")
                 excluded_mapass.add(f"Compass ({DUNGEON_NAMES[i]})")
