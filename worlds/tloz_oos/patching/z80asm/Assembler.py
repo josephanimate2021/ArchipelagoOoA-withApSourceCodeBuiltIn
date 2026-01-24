@@ -79,17 +79,17 @@ class Z80Assembler:
         self.ages_rom = ages_rom
         self.active = True
 
-    def define(self, key: str, replacement_string: str):
-        if key in self.defines:
-            raise Exception(f"Attempting to re-define a value for key '{key}'.")
+    def define(self, key: str, replacement_string: str, is_redefine: bool = False):
+        assert not is_redefine or key in self.defines, f"Attempting to re-define a value for key '{key}' but it didn't exist."
+        assert is_redefine or key not in self.defines, f"Attempting to define a value for key '{key}' which is already defined."
         self.defines[key] = replacement_string
 
-    def define_byte(self, key: str, byte: int):
+    def define_byte(self, key: str, byte: int, is_redefine: bool = False):
         while byte < 0:
             byte += 0x100
         while byte >= 0x100:
             byte -= 0x100
-        self.define(key, f"${hex_str(byte)}")
+        self.define(key, f"${hex_str(byte)}", is_redefine)
 
     def define_word(self, key: str, word: int):
         while word < 0:

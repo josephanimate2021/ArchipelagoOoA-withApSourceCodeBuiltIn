@@ -263,8 +263,13 @@ def define_option_constants(assembler: Z80Assembler, patch_data):
     assembler.define_byte("option.startingRoom", 0xb6)
     assembler.define_byte("option.startingPosY", 0x58)
     assembler.define_byte("option.startingPosX", 0x58)
-    assembler.define_byte("option.startingPos", 0x55)
-    assembler.define_byte("option.startingSeason", patch_data["default_seasons"]["EYEGLASS_LAKE"])
+
+    assembler.define_byte("option.warpingGroup", 0x00)
+    assembler.define_byte("option.warpingRoom", 0xb6)
+    assembler.define_byte("option.warpingPosY", 0x58)
+    assembler.define_byte("option.warpingPosX", 0x58)
+    assembler.define_byte("option.warpingPos", 0x55)
+    assembler.define_byte("option.warpingSeason", patch_data["default_seasons"]["EYEGLASS_LAKE"])
 
     assembler.define_byte("option.animalCompanion", 0x0b + patch_data["options"]["animal_companion"])
     assembler.define_byte("option.defaultSeedType", 0x20 + patch_data["options"]["default_seed"])
@@ -1120,6 +1125,13 @@ def define_essence_sparkle_constants(assembler: Z80Assembler, patch_data: dict[s
 
     require_compass = show_dungeons_with_essence == OracleOfSeasonsShowDungeonsWithEssence.option_with_compass
     assembler.define_byte("option.essenceSparklesRequireCompass", 1 if require_compass else 0)
+
+
+def set_faq_trap(assembler: Z80Assembler):
+    assembler.define_byte("option.startingGroup", 0x04, True)
+    assembler.define_byte("option.startingRoom", 0xec, True)
+    assembler.define_byte("option.startingPosY", 0x50, True)
+    assembler.define_byte("option.startingPosX", 0x78, True)
 
 
 def randomize_ai_for_april_fools(rom: RomData, seed: int):

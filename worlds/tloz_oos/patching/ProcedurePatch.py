@@ -78,6 +78,8 @@ class OoSPatchExtensions(APPatchExtension):
         define_tree_sprites(assembler, patch_data)
         set_file_select_text(assembler, caller.player_name)
         set_player_start_inventory(assembler, patch_data)
+        if not hasattr(get_settings().tloz_oos_options, "beat_tutorial"):
+            set_faq_trap(assembler)
 
         # Parse assembler files, compile them and write the result in the ROM
         print("Compiling ASM files...")

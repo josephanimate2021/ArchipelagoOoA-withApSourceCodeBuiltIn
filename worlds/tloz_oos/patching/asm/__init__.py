@@ -10,6 +10,7 @@ asm_files = {
         "asm/combat_difficulty.yaml",
         "asm/compass_chimes.yaml",
         "asm/cutscenes.yaml",
+        "asm/faq_room.yaml",
         "asm/file_select_custom_string.yaml",
         "asm/gasha_loot.yaml",
         "asm/get_item_behavior.yaml",

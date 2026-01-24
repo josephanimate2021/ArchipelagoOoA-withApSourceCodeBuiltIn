@@ -378,6 +378,7 @@ DEFINES = {
     "enableinput": "$be",
     "callscript": "$c0",
     "retscript": "$c1",
+    "jumpiftextoptioneq": "$c3",
     "jumpalways": "$c4",
     "jumpifmemoryset": "$c7",
     "jumpifmemoryeq": "$cb",

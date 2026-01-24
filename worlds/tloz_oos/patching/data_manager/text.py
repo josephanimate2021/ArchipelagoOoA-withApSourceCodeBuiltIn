@@ -192,6 +192,36 @@ def apply_text_edits(texts: dict[str, str]) -> None:
     texts["TX_020b"] = "Linked\nHero's Cave"
     texts["TX_0602"] = "Unknown Dungeon"
 
+    # FAQ room
+    texts["TX_5300"] = ("Did you read\n"
+                        "the FAQ?\n"
+                        "  \\optYes \\optNo")
+    texts["TX_5301"] = ("Please go\n"
+                        "read it\n"
+                        "\\optYes \\optWhere?")
+    texts["TX_5302"] = ("It is linked\n"
+                        "in the setup.\n"
+                        "If you don't\n"
+                        "have it, check\n"
+                        "tinyurl.com\n"
+                        "/2cb35snu\n")
+    texts["TX_5303"] = ("How do you\n"
+                        "refill your\n"
+                        "satchel and\n"
+                        "shield?\n"
+                        "\\optShop \\optImpa")
+    texts["TX_5304"] = ("Wrong. Please\n"
+                        "check the FAQ,\n"
+                        "you will get\n"
+                        "stuck otherwise.")
+    texts["TX_5305"] = ("Right! You can\n"
+                        "get out of\n"
+                        "here by warping.")
+    texts["TX_5306"] = ("Just warp to\n"
+                        "start, you\n"
+                        "can do it\n"
+                        "everywhere")
+
 
 def apply_ages_edits(seasons_texts: dict[str, str], ages_rom: RomData) -> None:
     ages_texts = get_ages_text_data(ages_rom)
