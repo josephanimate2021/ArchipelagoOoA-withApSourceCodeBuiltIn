@@ -193,11 +193,17 @@ def apply_text_edits(texts: dict[str, str]) -> None:
     texts["TX_0602"] = "Unknown Dungeon"
 
     # FAQ room
-    texts["TX_5300"] = ("Did you read\n"
+    texts["TX_5300"] = ("Welcome to the\n"
+                        "OoS randomizer\n"
+                        "for Archipelago!\n"
+                        "Did you read\n"
                         "the FAQ?\n"
                         "  \\optYes \\optNo")
-    texts["TX_5301"] = ("Please go\n"
-                        "read it\n"
+    texts["TX_5301"] = ("Reading the FAQ\n"
+                        "is important, as\n"
+                        "rando mechanics\n"
+                        "are in it.\n"
+                        "Please read it\n"
                         "\\optYes \\optWhere?")
     texts["TX_5302"] = ("It is linked\n"
                         "in the setup.\n"
@@ -216,7 +222,8 @@ def apply_text_edits(texts: dict[str, str]) -> None:
                         "stuck otherwise.")
     texts["TX_5305"] = ("Right! You can\n"
                         "get out of\n"
-                        "here by warping.")
+                        "here by warping\n"
+                        "to the start")
     texts["TX_5306"] = ("Just warp to\n"
                         "start, you\n"
                         "can do it\n"
