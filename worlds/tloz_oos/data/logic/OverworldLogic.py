@@ -553,9 +553,13 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ["floodgate keeper's house", "floodgate keyhole", False, lambda state: all([
             any([
                 oos_can_use_pegasus_seeds(state, player),
+                oos_has_cape(state, player),
                 oos_has_flippers(state, player),
-                oos_has_feather(state, player),
-                oos_has_cane(state, player)
+                oos_has_cane(state, player),
+                all([
+                    oos_option_medium_logic(state, player),
+                    oos_has_feather(state, player),
+                ])
             ]),
             oos_has_bracelet(state, player)
         ])],
@@ -566,7 +570,8 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ["spool stump", "d3 entrance", False, lambda state: oos_season_in_spool_swamp(state, player, SEASON_SUMMER)],
         ["d3 entrance", "spool swamp north", False, lambda state: \
             # Coming from alt d0/d2
-        oos_can_swim(state, player, False)],
+            oos_can_swim(state, player, False)
+         ],
 
         ["spool stump", "spool swamp middle", False, lambda state: any([
             not oos_is_default_season(state, player, "SPOOL_SWAMP", SEASON_SPRING),
