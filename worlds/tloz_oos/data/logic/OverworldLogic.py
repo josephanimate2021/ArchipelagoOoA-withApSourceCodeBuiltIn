@@ -792,7 +792,11 @@ def make_holodrum_logic(player: int, origin_name: str, options: OracleOfSeasonsO
         ["sunken city", "diver secret", False, lambda state: all([
             oos_has_flippers(state, player),
             any([
-                oos_option_medium_logic(state, player),
+                all([
+                    state.has("Swimmer's Ring", player),
+                    oos_option_medium_logic(state, player),
+                ]),
+                oos_option_hard_logic(state, player),
                 oos_has_sword(state, player),
                 oos_has_fools_ore(state, player),
             ])
