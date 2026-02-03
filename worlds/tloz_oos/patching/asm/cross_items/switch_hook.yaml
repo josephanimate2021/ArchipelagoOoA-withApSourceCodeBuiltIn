@@ -170,6 +170,7 @@
 3f/6814/: db $61,$0c,$40 ; GFX_68
 
 07/6010/: call getMimicData
+# TODO: In Moosh's screen hooking the flowers glitches visually, to be investigated
 07//getMimicData: |
   call $3a25 ; getTileMappingData
   ld a,c
@@ -181,7 +182,7 @@
   push de
   cp $26 ; normal flower
   ld a,$3b ; flower sprite
-  jr nz,@end
+  jr z,@end
   inc a ; stone flower instead
   
   @end:
