@@ -266,6 +266,7 @@ REGIONS = [
     "d2 boss",
     "d2 hardhat room",
     "d2 pot chest",
+    "d2 wild bombs",
     "d2 moblin chest",
     "d2 terrace chest",
     "enter d3",

@@ -472,8 +472,7 @@ def oos_has_bombs(state: CollectionState, player: int, amount: int = 1):
             # from D2 moblin room even if they never had bombs before
             amount == 1,
             oos_option_medium_logic(state, player),
-            state.has("_reached_d2_bracelet_room", player),
-            oos_can_harvest_regrowing_bush(state, player, False)
+            state.has("_wild_bombs", player),
         ])
     ])
 
@@ -705,11 +704,15 @@ def oos_can_break_bush(state: CollectionState, player: int, can_summon_companion
     ])
 
 
-def oos_can_harvest_regrowing_bush(state: CollectionState, player: int, allow_bombs: bool = True):
+def oos_can_harvest_regrowing_bush(state: CollectionState, player: int):
     return any([
         oos_has_sword(state, player),
         oos_has_fools_ore(state, player),
-        allow_bombs and oos_has_bombs(state, player)
+        oos_has_bombs(state, player),
+        all([
+            oos_option_medium_logic(state, player),
+            oos_has_bombchus(state, player, 4)
+        ])
     ])
 
 
@@ -1039,22 +1042,14 @@ def oos_can_kill_d2_hardhat(state: CollectionState, player: int):
                 oos_has_scent_seeds(state, player),
                 oos_has_gale_seeds(state, player),
                 oos_has_mystery_seeds(state, player)
-            ])
-        ]),
-        all([
-            oos_option_hard_logic(state, player),
-            oos_has_shovel(state, player)
+            ]),
+            oos_has_bombchus(state, player, 2)
         ])
     ])
 
 
 def oos_can_kill_d2_far_moblin(state: CollectionState, player: int):
     return any([
-        # Use the regrowable bombs that are there
-        oos_has_sword(state, player),
-        oos_has_fools_ore(state, player),
-        oos_has_bombs(state, player),
-
         oos_can_kill_normal_using_slingshot(state, player),
         all([
             any([

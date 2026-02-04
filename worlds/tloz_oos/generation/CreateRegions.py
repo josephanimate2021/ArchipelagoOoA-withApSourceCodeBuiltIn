@@ -105,6 +105,7 @@ def create_events(world: OracleOfSeasonsWorld) -> None:
     create_event(world, "golden octorok", "_beat_golden_octorok")
     create_event(world, "golden moblin", "_beat_golden_moblin")
     # Events for "wild" seeds that can be found inside respawnable bushes in dungeons
+    create_event(world, "d2 wild bombs", "_wild_bombs")
     create_event(world, "d4 miniboss room wild embers", "_wild_ember_seeds")
     create_event(world, "d5 armos chest", "_wild_ember_seeds")
     create_event(world, "d7 entrance wild embers", "_wild_ember_seeds")
@@ -115,7 +116,6 @@ def create_events(world: OracleOfSeasonsWorld) -> None:
     create_event(world, "subrosian dance hall", "_reached_subrosian_dance_hall")
     create_event(world, "subrosia pirates sector", "_met_pirates")
     create_event(world, "tower of autumn", "_opened_tower_of_autumn")
-    create_event(world, "d2 moblin chest", "_reached_d2_bracelet_room")
     create_event(world, "d5 drop ball", "_dropped_d5_magnet_ball")
     create_event(world, "d2 rupee room", "_reached_d2_rupee_room")
     create_event(world, "d6 rupee room", "_reached_d6_rupee_room")
