@@ -213,6 +213,8 @@ def define_additional_tile_replacements(assembler: Z80Assembler, patch_data):
             0x00, 0xef, 0x20, 0x66, 0xaf,  # Samasa Desert: Gasha Spot
             0x00, 0x44, 0x20, 0x44, 0x04,  # Path to Onox Castle: Gasha Spot
         ])
+    if patch_data["options"]["linked_heros_cave"] & OracleOfSeasonsLinkedHerosCave.no_alt_entrance:
+        table.extend([0x05, 0x2c, 0x00, 0x42, 0x52])
     assembler.add_floating_chunk("additionalTileReplacements", table)
 
 
