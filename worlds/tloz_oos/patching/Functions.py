@@ -329,9 +329,11 @@ def define_option_constants(assembler: Z80Assembler, patch_data):
             "d8": 0x35,
             "d11": 0x7b,
         }
+        dungeon_entrances = patch_data["dungeon_entrances"]
+        inverted_dungeon_entrances = {dungeon_entrances[key]: key for key in dungeon_entrances}
         dungeons_in_order_for_d11_puzzle = []
         for i in range(1, 9):
-            dungeons_in_order_for_d11_puzzle.append(chest_dict[patch_data["dungeon_entrances"][f"d{i}"]])
+            dungeons_in_order_for_d11_puzzle.append(chest_dict[inverted_dungeon_entrances[f"d{i}"]])
         assembler.add_floating_chunk("dungeonsInOrderForD11Puzzle", list(dungeons_in_order_for_d11_puzzle))
         dungeons_in_order_for_d11_puzzle.sort()
         assembler.add_floating_chunk("dungeonsForD11Puzzle", dungeons_in_order_for_d11_puzzle)

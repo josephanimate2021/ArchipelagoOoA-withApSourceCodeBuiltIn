@@ -7,8 +7,8 @@ def make_d0_logic(player: int):
         # 0 keys
         ["enter d0", "d0 key chest", False, None],
         ["enter d0", "d0 rupee chest", False, lambda state:
-        # If hole is removed, stairs are added inside dungeon to make the chest reachable
-        oos_option_no_d0_alt_entrance(state, player)
+            # If hole is removed, stairs are added inside dungeon to make the chest reachable
+            oos_option_no_d0_alt_entrance(state, player)
          ],
         ["d0 rupee chest", "enter d0", False, None],
         ["enter d0", "d0 hidden 2d section", False, lambda state: any([
