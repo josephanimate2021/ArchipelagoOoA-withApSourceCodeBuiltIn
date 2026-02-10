@@ -56,6 +56,34 @@ def generate_early(world: OracleOfSeasonsWorld) -> None:
     if world.options.linked_heros_cave.value:
         world.dungeon_entrances["d11 entrance"] = "enter d11"
 
+    world.item_mapping_collect = {
+        "Rupees (1)": ("Rupees", 1),
+        "Rupees (5)": ("Rupees", 5),
+        "Rupees (10)": ("Rupees", 10),
+        "Rupees (20)": ("Rupees", 20),
+        "Rupees (30)": ("Rupees", 30),
+        "Rupees (50)": ("Rupees", 50),
+        "Rupees (100)": ("Rupees", 100),
+        "Rupees (200)": ("Rupees", 200),
+        "_reached_d2_rupee_room": ("Rupees", 150),
+        "_reached_d6_rupee_room": ("Rupees", 90),
+
+        "Ore Chunks (10)": ("Ore Chunks", 10),
+        "Ore Chunks (25)": ("Ore Chunks", 25),
+        "Ore Chunks (50)": ("Ore Chunks", 50),
+
+        "Bombs (10)": ("Bombs", 10),
+        "Bombs (20)": ("Bombs", 20),
+
+        "Bombchus (10)": ("Bombchus", 10),
+        "Bombchus (20)": ("Bombchus", 20),
+    }
+    for old_man in world.old_man_rupee_values:
+        rupees = world.old_man_rupee_values[old_man]
+        rupees = max(rupees, 0)  # We ignore negative value because they will most often do nothing
+        # If this becomes an issue, state initialisation shall account for negative values
+        world.item_mapping_collect[f"rupees from {old_man}"] = ("Rupees", rupees)
+
 
 def pick_essences_in_game(world: OracleOfSeasonsWorld) -> None:
     # If the value for "Placed Essences" is lower than "Required Essences" (which can happen when using random

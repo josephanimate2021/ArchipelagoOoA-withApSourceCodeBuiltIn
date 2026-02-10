@@ -117,8 +117,9 @@ def create_events(world: OracleOfSeasonsWorld) -> None:
     create_event(world, "subrosia pirates sector", "_met_pirates")
     create_event(world, "tower of autumn", "_opened_tower_of_autumn")
     create_event(world, "d5 drop ball", "_dropped_d5_magnet_ball")
-    create_event(world, "d2 rupee room", "_reached_d2_rupee_room")
-    create_event(world, "d6 rupee room", "_reached_d6_rupee_room")
+    if world.options.logic_difficulty >= OracleOfSeasonsLogicDifficulty.option_medium:
+        create_event(world, "d2 rupee room", "_reached_d2_rupee_room")
+        create_event(world, "d6 rupee room", "_reached_d6_rupee_room")
     create_event(world, "maku seed", "Maku Seed")
 
     if world.options.goal == OracleOfSeasonsGoal.option_beat_onox:

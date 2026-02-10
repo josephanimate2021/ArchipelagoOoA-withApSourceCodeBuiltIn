@@ -1,6 +1,4 @@
-from itertools import count
-
-from rule_builder.rules import Has, And, Or, CanReachRegion
+from rule_builder.rules import And, Or, CanReachRegion
 from .Rulebuilder import *
 from ..Constants import *
 from ...Options import OracleOfSeasonsLogicDifficulty, OracleOfSeasonsDefaultSeedType, OracleOfSeasonsMasterKeys, OracleOfSeasonsDungeonShuffle, \
@@ -226,8 +224,8 @@ def oos_is_companion_dimitri() -> Rule:
     return from_option(OracleOfSeasonsAnimalCompanion, OracleOfSeasonsAnimalCompanion.option_dimitri)
 
 
-def oos_is_default_season(area_name: str, season: int) -> Rule:
-    return Season(area_name, season)
+def oos_is_default_season(area_name: str, season: int, is_season: bool = True) -> Rule:
+    return Season(area_name, season, is_season)
 
 
 def oos_can_remove_season(season: int) -> Rule:
@@ -255,7 +253,7 @@ def oos_has_required_jewels() -> Rule:
 
 def oos_can_reach_lost_woods_pedestal(allow_default: bool = False) -> Rule:
     return And(
-        LostWoods(False, allow_default),
+        LostWoods([], False, allow_default),
         Or(
             CanReachRegion("lost woods phonograph"),
             And(
@@ -269,7 +267,7 @@ def oos_can_reach_lost_woods_pedestal(allow_default: bool = False) -> Rule:
 
 def oos_can_complete_lost_woods_main_sequence(allow_default: bool = False) -> Rule:
     return And(
-        LostWoods(True, allow_default),
+        LostWoods([], True, allow_default),
         Or(
             CanReachRegion("lost woods deku"),
             And(
@@ -294,45 +292,6 @@ def oos_can_complete_d11_puzzle() -> bool:
 
 
 # Various item predicates ###########################################
-
-def oos_has_rupees(amount: int) -> Rule:
-    # Make free shops sphere 1 as players will get them at the start of the game anyway
-    if amount == 0:
-        return True
-    # Rupee checks being quite approximative, being able to farm is a must-have to prevent any stupid lock
-    if not oos_can_farm_rupees() -> Rule:
-        return False
-    # In hard logic, having the shovel is equivalent to having an infinite amount of Rupees thanks to RNG manips
-    if oos_option_hard_logic() and oos_has_shovel() -> Rule:
-        return True
-
-    rupees =.count("Rupees (1)")
-    rupees +=.count("Rupees (5)") * 5
-    rupees +=.count("Rupees (10)") * 10
-    rupees +=.count("Rupees (20)") * 20
-    rupees +=.count("Rupees (30)") * 30
-    rupees +=.count("Rupees (50)") * 50
-    rupees +=.count("Rupees (100)") * 100
-    rupees +=.count("Rupees (200)") * 200
-
-    # Secret rooms inside D2 and D6 containing loads of rupees, but only in medium logic
-    if oos_option_medium_logic() -> Rule:
-        if Has("_reached_d2_rupee_room") -> Rule:
-            rupees += 150
-        if Has("_reached_d6_rupee_room") -> Rule:
-            rupees += 90
-
-    # Old men giving and taking rupees
-    world =.multiworld.worlds[player]
-    for region_name, value in world.old_man_rupee_values.items() -> Rule:
-        event_name = "rupees from " + region_name
-        # Always assume bad rupees are obtained, otherwise getting an item could make a shop no longer available and break AP
-        if Has(event_name) or value < 0:
-            rupees += value
-
-    return rupees >= amount
-
-
 def oos_has_rupees_for_shop(shop_name: str) -> Rule:
     return Or(
         And(
@@ -429,7 +388,7 @@ def oos_has_bombs(amount: int = 1) -> Rule:
         And(
             # With medium logic is expected to know they can get free bombs
             # from D2 moblin room even if they never had bombs before
-            amount == 1,
+            from_bool(amount == 1),
             oos_option_medium_logic(),
             Has("_wild_bombs"),
         )
@@ -467,7 +426,7 @@ def oos_can_jump_1_wide_liquid(can_summon_companion: bool) -> Rule:
         oos_has_feather(),
         And(
             oos_option_medium_logic(),
-            can_summon_companion,
+            from_bool(can_summon_companion),
             oos_can_summon_ricky()
         )
     )
@@ -526,7 +485,7 @@ def oos_can_jump_1_wide_pit(can_summon_companion: bool) -> Rule:
     return Or(
         oos_has_feather(),
         And(
-            can_summon_companion,
+            from_bool(can_summon_companion),
             Or(
                 oos_can_summon_moosh(),
                 oos_can_summon_ricky()
@@ -603,7 +562,7 @@ def oos_can_use_ember_seeds(accept_mystery_seeds: bool) -> Rule:
             And(
                 # Medium logic expects the player to know they can use mystery seeds
                 # to randomly get the ember effect in some cases
-                accept_mystery_seeds,
+                from_bool(accept_mystery_seeds),
                 oos_option_medium_logic(),
                 oos_has_mystery_seeds(),
             )
@@ -683,7 +642,7 @@ def oos_can_break_mushroom(can_use_companion: bool) -> Rule:
             Or(
                 oos_has_magic_boomerang(),
                 And(
-                    can_use_companion,
+                    from_bool(can_use_companion),
                     oos_can_summon_dimitri()
                 )
             )
@@ -706,7 +665,7 @@ def oos_can_break_flowers(can_summon_companion: bool = False, allow_bombchus: bo
         oos_has_magic_boomerang(),
         oos_has_switch_hook(),
         And(
-            can_summon_companion,
+            from_bool(can_summon_companion),
             oos_has_flute()
         ),
         And(
@@ -721,7 +680,7 @@ def oos_can_break_flowers(can_summon_companion: bool = False, allow_bombchus: bo
                     oos_has_gale_seeds()
                 ),
                 And(
-                    allow_bombchus,
+                    from_bool(allow_bombchus),
                     oos_has_bombchus(4)
                 )
             )
@@ -765,7 +724,7 @@ def oos_can_harvest_tree(can_use_companion: bool) -> Rule:
             oos_has_rod(),
             oos_can_punch(),
             And(
-                can_use_companion,
+                from_bool(can_use_companion),
                 oos_option_medium_logic(),
                 oos_can_summon_dimitri()
             )
@@ -774,9 +733,8 @@ def oos_can_harvest_tree(can_use_companion: bool) -> Rule:
 
 
 def oos_can_harvest_gasha(count: int) -> Rule:
-    reachable_soils = [Has(f"_reached_{region_name}") for region_name in GASHA_SPOT_REGIONS]
     return And(
-        reachable_soils.count(True) >= count,  # Enough soils are reachable
+        HasFromList(*[f"_reached_{region_name}" for region_name in GASHA_SPOT_REGIONS], count=count),  # Enough soils are reachable
         Has("Gasha Seed", count),  # Enough seeds to plant
         Or(
             # Can actually harvest the nut, and get kills
@@ -811,7 +769,7 @@ def oos_can_kill_normal_enemy_no_cane(pit_available: bool = False,
         And(
             # If a pit is avaiable nearby, it can be used to put the enemies inside using
             # items that are usually non-lethal
-            pit_available,
+            from_bool(pit_available),
             oos_can_push_enemy()
         ),
         oos_has_sword(),
@@ -839,7 +797,7 @@ def oos_can_kill_normal_using_satchel(allow_gale_seeds: bool = True) -> Rule:
                 oos_has_scent_seeds(),
                 oos_has_mystery_seeds(),
                 And(
-                    allow_gale_seeds,
+                    from_bool(allow_gale_seeds),
                     oos_has_gale_seeds(),
                     oos_has_feather()
                 )
@@ -847,7 +805,7 @@ def oos_can_kill_normal_using_satchel(allow_gale_seeds: bool = True) -> Rule:
         ),
         And(
             # Hard logic => allow gale without feather
-            allow_gale_seeds,
+            from_bool(allow_gale_seeds),
             oos_option_hard_logic(),
             oos_has_gale_seeds()
         )
@@ -866,7 +824,7 @@ def oos_can_kill_normal_using_slingshot(allow_gale_seeds: bool = True) -> Rule:
                 oos_option_medium_logic(),
                 Or(
                     And(
-                        allow_gale_seeds,
+                        from_bool(allow_gale_seeds),
                         oos_has_gale_seeds(),
                     ),
                     oos_has_mystery_seeds(),
@@ -885,7 +843,7 @@ def oos_can_kill_armored_enemy(allow_cane: bool, allow_bombchus: bool) -> Rule:
             oos_has_bombs(4)
         ),
         And(
-            allow_bombchus,
+            from_bool(allow_bombchus),
             oos_has_bombchus(2)
         ),
         And(
@@ -897,7 +855,7 @@ def oos_can_kill_armored_enemy(allow_cane: bool, allow_bombchus: bool) -> Rule:
             )
         ),
         And(
-            allow_cane,
+            from_bool(allow_cane),
             oos_option_medium_logic(),
             oos_has_cane()
         ),
@@ -920,7 +878,7 @@ def oos_can_kill_moldorm(pit_available: bool = False) -> Rule:
         oos_can_kill_armored_enemy(True, True),
         oos_has_switch_hook(),
         And(
-            pit_available,
+            from_bool(pit_available),
             Or(
                 oos_has_shield(),
                 And(
@@ -1068,7 +1026,7 @@ def oos_can_remove_snow(can_summon_companion: bool) -> Rule:
     return Or(
         oos_has_shovel(),
         And(
-            can_summon_companion,
+            from_bool(can_summon_companion),
             oos_has_flute()
         )
     )
@@ -1078,7 +1036,7 @@ def oos_can_swim(can_summon_companion: bool) -> Rule:
     return Or(
         oos_has_flippers(),
         And(
-            can_summon_companion,
+            from_bool(can_summon_companion),
             oos_can_summon_dimitri()
         )
     )
@@ -1092,7 +1050,7 @@ def oos_can_remove_rockslide(can_summon_companion: bool) -> Rule:
             oos_has_bombchus(4)
         ),
         And(
-            can_summon_companion,
+            from_bool(can_summon_companion),
             oos_can_summon_ricky()
         )
     )
@@ -1173,7 +1131,7 @@ def oos_season_in_eastern_suburbs(season: int) -> Rule:
 
 def oos_not_season_in_eastern_suburbs(season: int) -> Rule:
     return Or(
-        not oos_is_default_season("EASTERN_SUBURBS", season),
+        oos_is_default_season("EASTERN_SUBURBS", season, False),
         oos_can_remove_season(season)
     )
 
@@ -1238,180 +1196,161 @@ def oos_season_in_horon_village(season: int) -> Rule:
         oos_has_season(season)
     )
 
+
 # Self-locking items helper predicates ##########################################
 
-def oos_self_locking_item(region_name: str, item_name: str) -> Rule:
-    if .multiworld.worlds[player].options.accessibility == Accessibility.option_full:
-        return False
+def oos_self_locking_item(location_name: str, item_name: str) -> Rule:
+    return ItemInLocation(location_name, item_name)
 
-    region =.multiworld.get_region(region_name)
-    items_in_region = [location.item for location in region.locations if location.item is not None]
-    for item in items_in_region:
-        if item.name == item_name and item.player == player:
-            return True
-    return False
 
 def oos_self_locking_small_key(region_name: str, dungeon: int) -> Rule:
     item_name = f"Small Key ({DUNGEON_NAMES[dungeon]})"
     return oos_self_locking_item(region_name, item_name)
 
+
 # Rooster adventure logic  ######################################################
 
-def oos_roosters() -> Rule:
-    if .tloz_oos_available_cuccos[player] is None:
-        # This computes cuccos for the whole game then caches it (total, top, bottom)
-        available_cuccos = {
-            "cucco mountain": (-1, -1, -1),
-            "horon": (-1, -1, -1),
-            "suburbs": (-1, -1, -1),
-            "moblin road": (-1, -1, -1),
-            "sunken": (-1, -1, -1),
-            "swamp": (-1, -1, -1),
-            "d6": (-1, -1, -1),
-        }
+POSITION_BOTH = 0
+POSITION_TOP = 1
+POSITION_BOTTOM = 2
 
-        def register_cucco(region: str, new_cuccos: tuple[int, int, int) -> Rule:
-            old_cuccos = available_cuccos[region]
 
-        available_cuccos[region] = tuple([max(old_cuccos[i], new_cuccos[i) for i in range(3))
+def oos_roosters(region: str, any_amount: int = 0, top_amount: int = 0, bottom_amount: int = 0, visited_regions=None) -> Rule:
+    # Avoid loops
+    if visited_regions is None:
+        visited_regions = set()
+    visited_regions.add(region)
 
-        def use_any_cucco(cuccos: tuple[int, int, int) -> tuple[int, int, int]:
-
-        return cuccos[0] - 1, cuccos[1], cuccos[2]
-
-        def use_top_cucco(cuccos: tuple[int, int, int) -> tuple[int, int, int]:
-
-        return cuccos[0] - 1, cuccos[1] - 1, cuccos[2]
-
-        def use_bottom_cucco(cuccos: tuple[int, int, int) -> tuple[int, int, int]:
-
-        return cuccos[0] - 1, cuccos[1], cuccos[2] - 1
-
-        # These tops count the 2 tops that have to be sacrificed to exit mt cucco
-        if Has("Shovel") -> Rule:
-            if Has("Progressive Boomerang") -> Rule:
-                top = 3
-            else:
-                top = 2
-        elif Has("Progressive Boomerang") and oos_can_use_pegasus_seeds() -> Rule:
-            top = 2
-        else:
-            top = 1  # Sign + season indicator
-
-        if oos_season_in_mt_cucco(SEASON_SPRING) \
-                and (oos_can_break_flowers() or Has("Spring Banana")) -> Rule:
-            bottom = 2  # Sign
-            # No more than 2 bottoms can be used in logic currently
-        else:
-            bottom = 0
-
-        available_cuccos["cucco mountain"] = (top + bottom, top, bottom)
-
-        if oos_can_jump_3_wide_pit() or oos_can_swim(True) -> Rule:
-            # Either go to holdrum plains through natzu's water or through temple remains
-            available_cuccos["horon"] = available_cuccos["cucco mountain"]
-
-        if oos_has_flute() -> Rule:
-            # go from holodrum to sunken
-            available_cuccos["sunken"] = available_cuccos["horon"]
-        elif oos_is_companion_moosh() -> Rule:
-            if oos_can_jump_4_wide_liquid() or oos_has_flute() -> Rule:
-                # go from holodrum to sunken
-                available_cuccos["sunken"] = available_cuccos["horon"]
-            elif oos_can_jump_3_wide_pit() -> Rule:
-                # go from holodrum to sunken, through moblin fortress
-                available_cuccos["sunken"] = use_top_cucco(available_cuccos["horon")
-                elif oos_is_companion_ricky() -> Rule:
-                # go from natzu north to sunken
-                if oos_can_break_flowers() and oos_can_swim(False) -> Rule:  # distance bush break
-                    available_cuccos["sunken"] = use_any_cucco(available_cuccos["cucco mountain")
-                elif oos_can_swim(False) -> Rule:
-                # go from natzu north to sunken
-                    available_cuccos["sunken"] = available_cuccos["cucco mountain"]
-                # Jump from sunken to suburbs
-                available_cuccos["suburbs"] = available_cuccos["sunken"]
-
-                if oos_can_use_ember_seeds(False) -> Rule:
-                # Go through horon village
-                available_cuccos["suburbs"] = available_cuccos["horon"]
-                elif oos_season_in_eyeglass_lake(SEASON_WINTER) \
-                     or ((not oos_is_default_season("EYEGLASS_LAKE", SEASON_SUMMER) or
-                          oos_can_remove_season(SEASON_SUMMER)) and oos_can_swim(True)) -> Rule:
-                # Go through the suburbs portal screen
-                available_cuccos["suburbs"] = use_any_cucco(available_cuccos["horon")
-
-                if oos_season_in_eastern_suburbs(SEASON_SPRING) -> Rule:
-                # Use the flower to go from suburbs to sunken
-                register_cucco("sunken", available_cuccos["suburbs")
-
-                if oos_season_in_eastern_suburbs(SEASON_WINTER) -> Rule:
-                # Walk
-                available_cuccos["moblin road"] = available_cuccos["suburbs"]
-                else:
-                # Use a top cucco from the top of the spring flower to go past the tree
-                available_cuccos["moblin road"] = use_top_cucco(available_cuccos["sunken")
-
-                if Or(
+    if any_amount > top_amount + bottom_amount:
+        return (oos_roosters(region, any_amount, top_amount + 1, bottom_amount, set(visited_regions)) |
+                oos_roosters(region, any_amount, top_amount, bottom_amount + 1, set(visited_regions)))
+    elif region == "cucco mountain":
+        rule = oos_can_reach_rooster_adventure()
+        if bottom_amount > 2:
+            raise NotImplementedError()
+        elif bottom_amount > 0:
+            rule &= And(
+                oos_season_in_mt_cucco(SEASON_SPRING),
+                oos_can_break_flowers() | Has("Spring Banana")
+            )
+        if top_amount > 3:
+            raise NotImplementedError()
+        elif top_amount == 3:
+            rule &= And(
+                oos_has_shovel(),
+                oos_has_boomerang()
+            )
+        elif top_amount == 2:
+            rule &= (oos_has_shovel() |
+                     (oos_has_boomerang() & oos_can_use_pegasus_seeds()))
+        # sign + season gives 2 tops, one of which being sacrificed,
+        # which is included in oos_can_reach_rooster_adventure()
+        return rule
+    elif region == "horon":
+        return And(
+            (oos_can_jump_3_wide_pit() | oos_can_swim(True)),  # Swim through Natzu
+            oos_roosters("cucco mountain", any_amount, top_amount, bottom_amount)
+        )
+    elif region == "sunken":
+        rule = Or(
+            And(
+                oos_roosters("horon", any_amount, top_amount, bottom_amount, set(visited_regions)),
+                Or(
+                    # Go through Natzu
+                    oos_has_flute(),
+                    oos_is_companion_moosh() & oos_can_jump_4_wide_liquid()
+                )
+            ),
+            And(
+                # Go through moblin fortress using a top cucco
+                oos_roosters("horon", any_amount + 1, top_amount + 1, bottom_amount, set(visited_regions)),
+                oos_is_companion_moosh() & oos_can_jump_3_wide_pit()
+            ),
+            And(
+                oos_is_companion_ricky(),
+                oos_can_swim(False),
+                oos_can_break_flowers() | oos_roosters("cucco mountain", any_amount + 1, top_amount, bottom_amount, set(visited_regions)),
+                oos_roosters("cucco mountain", any_amount, top_amount, bottom_amount, set(visited_regions))
+            )
+        )
+        if "suburbs" not in visited_regions:
+            rule |= And(
+                # Suburbs flower
+                oos_season_in_eastern_suburbs(SEASON_SPRING),
+                oos_roosters("suburbs", any_amount, top_amount, bottom_amount, set(visited_regions))
+            )
+        return rule
+    elif region == "suburbs":
+        return Or(
+            oos_roosters("sunken", any_amount, top_amount, bottom_amount, set(visited_regions)),
+            And(
+                oos_roosters("horon", any_amount, top_amount, bottom_amount, set(visited_regions)),
+                oos_can_use_ember_seeds(False)
+            ),
+            And(
+                # Use portal screen in suburbs
+                oos_roosters("horon", any_amount + 1, top_amount, bottom_amount, set(visited_regions)),
+                oos_season_in_eyeglass_lake(SEASON_WINTER),
+                Or(
+                    Season("EYEGLASS_LAKE", SEASON_SUMMER, True),
+                    oos_can_remove_season(SEASON_SUMMER)
+                ),
+                oos_can_swim(True)
+            )
+        )
+    elif region == "moblin road":
+        return Or(
+            And(
+                oos_season_in_eastern_suburbs(SEASON_WINTER),
+                oos_roosters("suburbs", any_amount, top_amount, bottom_amount, set(visited_regions))
+            ),
+            # Use a top rooster from top of the flower
+            oos_roosters("sunken", any_amount + 1, top_amount + 1, bottom_amount, set(visited_regions))
+        )
+    elif region == "swamp":
+        return Or(
+            And(
+                Or(
                     oos_season_in_holodrum_plain(SEASON_SUMMER),
                     oos_can_jump_4_wide_pit(),
                     oos_can_summon_ricky(),
                     oos_can_summon_moosh()
-                ) -> Rule:
-                # Move up the swamp vines regularly
-                available_cuccos["swamp"] = available_cuccos["horon"]
-                else:
-                # Or use a bottom cucco
-                available_cuccos["swamp"] = use_bottom_cucco(available_cuccos["horon")
-
-                if And(  # Reach tarm ruins, could probably be optimized
-                    oos_has_required_jewels(),
+                ),
+                oos_roosters("horon", any_amount, top_amount, bottom_amount, set(visited_regions))
+            ),
+            # Use bottom cucco to climb the vines
+            oos_roosters("horon", any_amount + 1, top_amount, bottom_amount + 1, set(visited_regions))
+        )
+    elif region == "d6":
+        return And(
+            oos_has_required_jewels(),
+            Or(
+                oos_season_in_lost_woods(SEASON_SUMMER),
+                And(
+                    oos_season_in_lost_woods(SEASON_AUTUMN),
+                    oos_option_medium_logic(),
+                    oos_has_magic_boomerang(),
                     Or(
-                        oos_season_in_lost_woods(SEASON_SUMMER),
-                        And(
-                            oos_season_in_lost_woods(SEASON_AUTUMN),
-                            oos_option_medium_logic(),
-                            oos_has_magic_boomerang(),
-                            Or(
-                                oos_can_jump_1_wide_pit(False),
-                                oos_option_hard_logic()
-                            )
-                        )
-                    ),
-                    oos_season_in_lost_woods(SEASON_WINTER),
-                    oos_can_remove_season(SEASON_WINTER)
-                ) -> Rule:
-                can_reach_deku = And(
-                    oos_has_shield(),
-                    Or(
-                        available_cuccos["swamp"][1],
-                        oos_can_jump_2_wide_liquid(),
-                        oos_can_swim(False)
+                        oos_can_jump_1_wide_pit(False),
+                        oos_option_hard_logic()
                     )
                 )
-                if And(
-                    oos_has_autumn(),
-                    oos_can_break_mushroom(False),
-                    Or(
-                        oos_can_complete_lost_woods_main_sequence(False, can_reach_deku),
-                        And(
-                            oos_can_complete_lost_woods_main_sequence(True, can_reach_deku),
-                            oos_can_reach_lost_woods_pedestal(False, And(
-                                oos_can_use_ember_seeds(False),
-                                Has("Phonograph")
-                            )),
-                        )
-                    )
-                ) -> Rule:
-                available_cuccos["d6"] = available_cuccos["swamp"]
+            ),
+            oos_season_in_lost_woods(SEASON_WINTER),
+            oos_can_remove_season(SEASON_WINTER),
+            oos_has_autumn(),
+            oos_can_break_mushroom(False),
+            Or(
+                oos_can_complete_lost_woods_main_sequence(False),
+                And(
+                    oos_can_complete_lost_woods_main_sequence(True),
+                    oos_can_reach_lost_woods_pedestal(False)
+                )
+            )
+        )
+    else:
+        raise NotImplementedError()
 
-                for region in available_cuccos:
-                    if
-                Or(available_cuccos[region][i] < 0 for i in range(3)) -> Rule: \
-                    available_cuccos[region] = (-1, -1, -1)
-                .tloz_oos_available_cuccos[player] = available_cuccos
-
-    return.tloz_oos_available_cuccos[player]
 
 def oos_can_reach_rooster_adventure() -> Rule:
-    # This is only safe if an indirect condition is set
     return oos_option_hell_logic() & CanReachRegion("rooster adventure")

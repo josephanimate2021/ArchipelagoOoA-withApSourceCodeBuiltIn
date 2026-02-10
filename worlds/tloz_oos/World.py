@@ -36,6 +36,36 @@ class OracleOfSeasonsWorld(World):
     item_name_groups = ITEM_GROUPS
     location_name_groups = LOCATION_GROUPS
     origin_region_name = "impa's house"
+    item_mapping: ClassVar[dict[str, str]] = {
+        "Rupees (1)": "Rupees",
+        "Rupees (5)": "Rupees",
+        "Rupees (10)": "Rupees",
+        "Rupees (20)": "Rupees",
+        "Rupees (30)": "Rupees",
+        "Rupees (50)": "Rupees",
+        "Rupees (100)": "Rupees",
+        "Rupees (200)": "Rupees",
+        "_reached_d2_rupee_room": "Rupees",
+        "_reached_d6_rupee_room": "Rupees",
+        "rupees from old man in goron mountain": "Rupees",
+        "rupees from old man near blaino": "Rupees",
+        "rupees from old man near d1": "Rupees",
+        "rupees from old man near western coast house": "Rupees",
+        "rupees from old man in horon": "Rupees",
+        "rupees from old man near d6": "Rupees",
+        "rupees from old man near holly's house": "Rupees",
+        "rupees from old man near mrs. ruul": "Rupees",
+
+        "Ore Chunks (10)": "Ore Chunks",
+        "Ore Chunks (25)": "Ore Chunks",
+        "Ore Chunks (50)": "Ore Chunks",
+
+        "Bombs (10)": "Bombs",
+        "Bombs (20)": "Bombs",
+
+        "Bombchus (10)": "Bombchus",
+        "Bombchus (20)": "Bombchus",
+    }
 
     @classmethod
     def version(cls) -> str:
@@ -58,6 +88,7 @@ class OracleOfSeasonsWorld(World):
         self.essences_in_game: List[str] = ITEM_GROUPS["Essences"].copy()
         self.random_rings_pool: List[str] = []
         self.remaining_progressive_gasha_seeds = 0
+        self.item_mapping_collect: dict[str, tuple[str, int]] = {}
 
         self.made_hints = Event()
         self.region_hints: list[tuple[str, str | int]] = []
@@ -260,20 +291,10 @@ class OracleOfSeasonsWorld(World):
         if not change:
             return False
 
-        if item.name == "Bombs (10)":
-            state.prog_items[self.player]["Bombs"] += 1
-        elif item.name == "Bombs (20)":
-            state.prog_items[self.player]["Bombs"] += 2
-        elif item.name == "Bombchus (10)":
-            state.prog_items[self.player]["Bombchus"] += 1
-        elif item.name == "Bombchus (20)":
-            state.prog_items[self.player]["Bombchus"] += 2
+        mapping = self.item_mapping_collect.get(item.name, None)
+        if mapping is not None:
+            state.prog_items[self.player][mapping[0]] += mapping[1]
 
-        if self.options.logic_difficulty < OracleOfSeasonsLogicDifficulty.option_hell:
-            return True
-        if item.code is None or item.code >= 0x2100 and item.code != 0x2e00:  # Not usable item nor ember nor flippers
-            return True
-        state.tloz_oos_available_cuccos[self.player] = None
         return True
 
     def remove(self, state: CollectionState | OracleOfSeasonsState, item: Item) -> bool:
@@ -281,20 +302,10 @@ class OracleOfSeasonsWorld(World):
         if not change:
             return False
 
-        if item.name == "Bombs (10)":
-            state.prog_items[self.player]["Bombs"] -= 1
-        elif item.name == "Bombs (20)":
-            state.prog_items[self.player]["Bombs"] -= 2
-        elif item.name == "Bombchus (10)":
-            state.prog_items[self.player]["Bombchus"] -= 1
-        elif item.name == "Bombchus (20)":
-            state.prog_items[self.player]["Bombchus"] -= 2
+        mapping = self.item_mapping_collect.get(item.name, None)
+        if mapping is not None:
+            state.prog_items[self.player][mapping[0]] -= mapping[1]
 
-        if self.options.logic_difficulty < OracleOfSeasonsLogicDifficulty.option_hell:
-            return True
-        if item.code is None or item.code >= 0x2100 and item.code != 0x2e00:  # Not usable item nor ember nor flippers
-            return True
-        state.tloz_oos_available_cuccos[self.player] = None
         return True
 
     # UT stuff

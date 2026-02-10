@@ -4,26 +4,27 @@ from typing import Any, override
 from BaseClasses import CollectionState
 from Options import Option, Accessibility
 from rule_builder.options import OptionFilter
-from rule_builder.rules import Rule, HasFromList, HasGroup, HasAll, False_, True_, Has
+from rule_builder.rules import Rule, HasFromList, HasGroup, HasAll, False_, True_, Has, TWorld
 from worlds.tloz_oos import OracleOfSeasonsWorld
 from worlds.tloz_oos.Options import OracleOfSeasonsGoldenOreSpotsShuffle
 from worlds.tloz_oos.data.Constants import SEASON_CHAOTIC, SEASON_ITEMS, MARKET_LOCATIONS
 
 
 @dataclasses.dataclass
-class Season(Rule[OracleOfSeasonsWorld], OracleOfSeasonsWorld.game):
+class Season(Rule[OracleOfSeasonsWorld], game=OracleOfSeasonsWorld.game):
     area_name: str
     season: int
+    excluded: bool = False
 
     @override
     def _instantiate(self, world: OracleOfSeasonsWorld) -> Rule.Resolved:
-        if world.default_seasons[self.area_name] == self.season:
+        if (world.default_seasons[self.area_name] == self.season) == self.excluded:
             return True_().resolve(world)
         else:
             return False_().resolve(world)
 
 
-class HasGroupOption(HasGroup):
+class HasGroupOption(HasGroup, game=OracleOfSeasonsWorld.game):
     option_name: str
 
     def __init__(self, item_name: str, option_name: str):
@@ -32,23 +33,23 @@ class HasGroupOption(HasGroup):
 
     def _instantiate(self, world: OracleOfSeasonsWorld) -> Rule.Resolved:
         self.count = getattr(world.options, self.option_name).value
-        super()._instantiate(world)
+        return super()._instantiate(world)
 
 
-class HasFromListOption(HasFromList):
+class HasFromListOption(HasFromList, game=OracleOfSeasonsWorld.game):
     option_name: str
 
     def __init__(self, *item_names: str, option_name: str):
         self.option_name = option_name
-        super().__init__(item_names)
+        super().__init__(*item_names)
 
     def _instantiate(self, world: OracleOfSeasonsWorld) -> Rule.Resolved:
         self.count = getattr(world.options, self.option_name).value
-        super()._instantiate(world)
+        return super()._instantiate(world)
 
 
 @dataclasses.dataclass
-class LostWoods(HasAll):
+class LostWoods(HasAll, game=OracleOfSeasonsWorld.game):
     is_main_sequence: bool
     allow_default: bool
 
@@ -64,13 +65,14 @@ class LostWoods(HasAll):
             current_season = SEASON_CHAOTIC
 
         needed_seasons = set()
-        for season in sequence:
+        for item in sequence:
+            season = item[1]
             if season != current_season:
                 current_season = SEASON_CHAOTIC
                 needed_seasons.add(SEASON_ITEMS[season])
 
         self.item_names = tuple(needed_seasons)
-        super()._instantiate(world)
+        return super()._instantiate(world)
 
 
 @dataclasses.dataclass
@@ -88,7 +90,7 @@ class CanReachNumRegions(Rule[OracleOfSeasonsWorld], game=OracleOfSeasonsWorld.g
         if self.region_need == 0:
             return True_().resolve(world)
         return self.Resolved(
-            self.region_names,
+            tuple(self.region_names),
             self.region_need,
             player=world.player,
             caching_enabled=getattr(world, "rule_caching_enabled", False),
@@ -100,7 +102,7 @@ class CanReachNumRegions(Rule[OracleOfSeasonsWorld], game=OracleOfSeasonsWorld.g
         return f"{self.__class__.__name__}({self.region_names}{options})"
 
     class Resolved(Rule.Resolved):
-        region_names: list[str]
+        region_names: tuple[str]
         region_need: int
 
         @override
@@ -147,7 +149,7 @@ class HasOresForShop(Rule[OracleOfSeasonsWorld], game=OracleOfSeasonsWorld.game)
 
 @dataclasses.dataclass
 class ItemInLocation(Rule[OracleOfSeasonsWorld], game=OracleOfSeasonsWorld.game):
-    location: str
+    location_name: str
     item_name: str
 
     @override
@@ -155,19 +157,19 @@ class ItemInLocation(Rule[OracleOfSeasonsWorld], game=OracleOfSeasonsWorld.game)
         if world.options.accessibility == Accessibility.option_full:
             return False_().resolve(world)
         return self.Resolved(
-            self.location,
+            self.location_name,
             self.item_name,
-            player=world.player
+            player=world.player,
         )
 
     class Resolved(Rule.Resolved):
-        location: str
+        location_name: str
         item_name: str
 
         @override
         def _evaluate(self, state: CollectionState) -> bool:
-            location = state.multiworld.get_location(self.location, self.player)
-            return
+            item = state.multiworld.get_location(self.location_name, self.player).item
+            return item is not None and item.name == self.item_name and item.player == self.player
 
 
 def from_bool(condition: bool) -> Rule:
