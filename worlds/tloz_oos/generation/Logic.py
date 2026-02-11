@@ -13,6 +13,7 @@ def create_randomizable_connections(world: OracleOfSeasonsWorld, prefix: str,
         entrance = region_1.create_exit(f"{prefix}{reg1}")
         entrance.randomization_group = outer_group
         entrance.randomization_type = EntranceType.TWO_WAY
+        world.set_rule(entrance, True_())
 
         entrance = region_1.create_er_target(f"{prefix}{reg1}")
         entrance.randomization_group = outer_group
@@ -21,13 +22,14 @@ def create_randomizable_connections(world: OracleOfSeasonsWorld, prefix: str,
         entrance = region_2.create_exit(f"{prefix}{reg2}")
         entrance.randomization_group = inner_group
         entrance.randomization_type = EntranceType.TWO_WAY
+        world.set_rule(entrance, True_())
 
         entrance = region_2.create_er_target(f"{prefix}{reg2}")
         entrance.randomization_group = inner_group
         entrance.randomization_type = EntranceType.TWO_WAY
 
 
-def create_connections(world: OracleOfSeasonsWorld, player: int, origin_name: str, options):
+def create_connections(world: OracleOfSeasonsWorld, origin_name: str, options):
     all_logic = [
         make_holodrum_logic(origin_name, options),
         make_subrosia_logic(),
@@ -65,6 +67,7 @@ def create_connections(world: OracleOfSeasonsWorld, player: int, origin_name: st
             portal_connections.append([reg1, reg2, True, None])
         all_logic.append(portal_connections)
 
+    true_rule = True_()
     # Create connections
     for logic_array in all_logic:
         for entrance_desc in logic_array:
@@ -72,14 +75,14 @@ def create_connections(world: OracleOfSeasonsWorld, player: int, origin_name: st
             region_2 = world.get_region(entrance_desc[1])
             is_two_way = entrance_desc[2]
             rule = entrance_desc[3]
+            if rule is None:
+                rule = true_rule
 
             entrance = region_1.connect(region_2, None)
-            if rule is not None:
-                world.set_rule(entrance, rule)
+            world.set_rule(entrance, rule)
             if is_two_way:
                 entrance = region_2.connect(region_1, None)
-                if rule is not None:
-                    world.set_rule(entrance, rule)
+                world.set_rule(entrance, rule)
 
 
 def apply_self_locking_rules(multiworld: MultiWorld, player: int):

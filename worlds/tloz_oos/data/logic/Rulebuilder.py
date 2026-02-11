@@ -121,6 +121,11 @@ class CanReachNumRegions(Rule[OracleOfSeasonsWorld], game=OracleOfSeasonsWorld.g
                 region_name: {id(self)} for region_name in self.region_names
             }
 
+        @override
+        def __str__(self) -> str:
+            items = ", ".join(self.region_names)
+            return f"Can reach {self.region_need} regions ({items})"
+
 
 @dataclasses.dataclass
 class HasRupeesForShop(Rule[OracleOfSeasonsWorld], game=OracleOfSeasonsWorld.game):
@@ -170,6 +175,10 @@ class ItemInLocation(Rule[OracleOfSeasonsWorld], game=OracleOfSeasonsWorld.game)
         def _evaluate(self, state: CollectionState) -> bool:
             item = state.multiworld.get_location(self.location_name, self.player).item
             return item is not None and item.name == self.item_name and item.player == self.player
+
+        @override
+        def __str__(self) -> str:
+            return f"{self.item_name} in {self.location_name}"
 
 
 def from_bool(condition: bool) -> Rule:

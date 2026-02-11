@@ -106,7 +106,7 @@ class OracleOfSeasonsWorld(World):
 
     def set_rules(self) -> None:
         from worlds.tloz_oos.generation.Logic import create_connections, apply_self_locking_rules
-        create_connections(self, self.player, self.origin_region_name, self.options)
+        create_connections(self, self.origin_region_name, self.options)
         apply_self_locking_rules(self.multiworld, self.player)
         self.multiworld.completion_condition[self.player] = lambda state: state.has("_beaten_game", self.player)
 
