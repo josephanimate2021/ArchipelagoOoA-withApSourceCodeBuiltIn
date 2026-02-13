@@ -327,7 +327,7 @@ def oos_can_farm_ore_chunks() -> Rule:
         And(
             oos_option_hard_logic(),
             Or(
-                Has("_reached_subrosian_dance_hall"),
+                CanReachRegion("subrosian dance hall"),
                 oos_has_bracelet(),
                 oos_has_switch_hook()
             )
@@ -337,7 +337,7 @@ def oos_can_farm_ore_chunks() -> Rule:
 
 def oos_can_date_rosa() -> Rule:
     return And(
-        Has("_reached_rosa"),
+        CanReachRegion("subrosia market sector"),
         Has("Ribbon")
     )
 
@@ -1077,7 +1077,7 @@ def oos_season_in_spool_swamp(season: int) -> Rule:
         oos_is_default_season("SPOOL_SWAMP", season),
         And(
             oos_has_season(season),
-            Has("_reached_spool_stump")
+            CanReachRegion("spool stump")
         )
     )
 
@@ -1087,7 +1087,10 @@ def oos_season_in_eyeglass_lake(season: int) -> Rule:
         oos_is_default_season("EYEGLASS_LAKE", season),
         And(
             oos_has_season(season),
-            Has("_reached_eyeglass_stump")
+            Or(
+                CanReachRegion("d1 stump"),
+                CanReachRegion("d5 stump"),
+            )
         )
     )
 
@@ -1097,7 +1100,10 @@ def oos_season_in_temple_remains(season: int) -> Rule:
         oos_is_default_season("TEMPLE_REMAINS", season),
         And(
             oos_has_season(season),
-            Has("_reached_remains_stump")
+            Or(
+                CanReachRegion("temple remains lower stump"),
+                CanReachRegion("temple remains higher stump"),
+            )
         )
     )
 
@@ -1107,7 +1113,7 @@ def oos_season_in_holodrum_plain(season: int) -> Rule:
         oos_is_default_season("HOLODRUM_PLAIN", season),
         And(
             oos_has_season(season),
-            Has("_reached_ghastly_stump")
+            CanReachRegion("ghastly stump")
         )
     )
 
@@ -1117,7 +1123,7 @@ def oos_season_in_western_coast(season: int) -> Rule:
         oos_is_default_season("WESTERN_COAST", season),
         And(
             oos_has_season(season),
-            Has("_reached_coast_stump")
+            CanReachRegion("coast stump"),
         )
     )
 
@@ -1144,7 +1150,7 @@ def oos_season_in_sunken_city(season: int) -> Rule:
             Or(
                 oos_is_default_season("SUNKEN_CITY", SEASON_WINTER),
                 oos_can_swim(True),
-                Has("_saved_dimitri_in_sunken_city")
+                CanReachRegion("sunken city dimitri")
             )
         )
     )
@@ -1162,7 +1168,7 @@ def oos_season_in_central_woods_of_winter(season: int) -> Rule:
         oos_is_default_season("WOODS_OF_WINTER", season),
         And(
             oos_has_season(season),
-            Has("_reached_d2_stump")
+            CanReachRegion("d2 stump")
         )
     )
 

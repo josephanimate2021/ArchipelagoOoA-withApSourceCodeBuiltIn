@@ -140,7 +140,7 @@ def make_holodrum_logic(origin_name: str, options: OracleOfSeasonsOptions):
                 oos_has_shovel(),
                 oos_is_default_season("WESTERN_COAST", SEASON_WINTER, False),
                 And(
-                    Has("_reached_coast_stump"),
+                    CanReachRegion("coast stump"),
                     oos_can_remove_season(SEASON_WINTER)
                 )
             )
@@ -1180,7 +1180,7 @@ def make_holodrum_logic(origin_name: str, options: OracleOfSeasonsOptions):
         ["maku tree", "maku tree, 5 essences", False, oos_has_essences(5)],
         ["maku tree", "maku tree, 7 essences", False, oos_has_essences(7)],
 
-        ["north horon", "d9 entrance", False, Has("Maku Seed")],
+        ["north horon", "d9 entrance", False, CanReachRegion("Maku Seed")],
         ["d9 entrance", "onox beaten", False, And(
             oos_can_kill_armored_enemy(True, True),
             oos_can_kill_facade(),

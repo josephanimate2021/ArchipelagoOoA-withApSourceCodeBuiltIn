@@ -120,7 +120,7 @@ def apply_self_locking_rules(multiworld: MultiWorld, player: int):
             is_small_key(item, player, 5),
             And(
                 oos_has_small_keys(5, 3),
-                Has("_dropped_d5_magnet_ball"),
+                CanReachRegion("d5 drop ball"),
                 oos_has_magnet_gloves(),
                 Or(
                     oos_can_kill_magunesu(),

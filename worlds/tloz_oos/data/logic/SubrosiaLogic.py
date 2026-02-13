@@ -158,7 +158,7 @@ def make_subrosia_logic():
         )],
 
         ["subrosia furnace sector", "great furnace", False, And(
-            Has("_opened_tower_of_autumn"),
+            CanReachRegion("tower of autumn"),
             Or(
                 Has("Red Ore"),
                 oos_self_locking_item("Subrosia: Item Smelted in Great Furnace", "Red Ore")

@@ -564,7 +564,7 @@ def make_d5_logic():
          oos_self_locking_small_key("Unicorn's Cave: Magnet Gloves Chest", 5)],
         ["enter d5", "d5 basement", False, And(
             oos_self_locking_small_key("Unicorn's Cave: Treadmills Basement Item", 5),
-            Has("_dropped_d5_magnet_ball"),
+            CanReachRegion("d5 drop ball"),
             oos_has_small_keys(5, 3),
             oos_has_magnet_gloves(),
             Or(
@@ -601,7 +601,7 @@ def make_d5_logic():
             # Magnet ball button
             Or(
                 And(
-                    Has("_dropped_d5_magnet_ball"),
+                    CanReachRegion("d5 drop ball"),
                     oos_has_magnet_gloves(),
                 ),
                 oos_has_cane()
