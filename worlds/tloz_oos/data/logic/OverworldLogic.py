@@ -1180,7 +1180,7 @@ def make_holodrum_logic(origin_name: str, options: OracleOfSeasonsOptions):
         ["maku tree", "maku tree, 5 essences", False, oos_has_essences(5)],
         ["maku tree", "maku tree, 7 essences", False, oos_has_essences(7)],
 
-        ["north horon", "d9 entrance", False, CanReachRegion("Maku Seed")],
+        ["north horon", "d9 entrance", False, CanReachRegion("maku seed")],
         ["d9 entrance", "onox beaten", False, And(
             oos_can_kill_armored_enemy(True, True),
             oos_can_kill_facade(),

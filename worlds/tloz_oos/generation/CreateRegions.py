@@ -9,13 +9,13 @@ from ..data.Constants import GASHA_SPOT_REGIONS, ITEM_GROUPS, SCRUB_LOCATIONS, S
 from ..data.Regions import REGIONS, NATZU_REGIONS, GASHA_REGIONS, D11_REGIONS
 
 
-def location_is_active(world: OracleOfSeasonsWorld, location_name: str, location_data: dict[str, Any]) -> bool:
+def location_is_active(world: OracleOfSeasonsWorld, location_name: str, location_data: dict[str, Any]) -> Any:
     if not location_data.get("conditional", False):
         return True
 
     region_id = location_data["region_id"]
     if region_id == "advance shop":
-        return world.options.advance_shop.value
+        return world.options.advance_shop
     if location_name in SUBROSIA_HIDDEN_DIGGING_SPOTS_LOCATIONS:
         return world.options.shuffle_golden_ore_spots
     if location_name in RUPEE_OLD_MAN_LOCATIONS:

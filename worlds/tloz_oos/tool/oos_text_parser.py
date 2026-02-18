@@ -2,9 +2,9 @@ import json
 import os
 
 from settings import get_settings
-from worlds.tloz_oos.patching.RomData import RomData
-from worlds.tloz_oos.patching.text.decoding import parse_text_dict, parse_all_texts, decode_text
-from worlds.tloz_oos.patching.text.encoding import write_text_data, encode_dict
+from ..common.patching.RomData import RomData
+from ..common.patching.text.decoding import parse_all_texts, decode_text, parse_text_dict
+from ..common.patching.text.encoding import encode_dict, write_text_data
 
 if __name__ == "__main__":
     if not os.path.isdir("output"):

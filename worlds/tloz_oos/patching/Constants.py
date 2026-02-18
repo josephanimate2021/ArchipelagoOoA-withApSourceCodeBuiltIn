@@ -1,9 +1,9 @@
-from .z80asm.Assembler import GameboyAddress
+from ..common.patching.z80asm.Assembler import GameboyAddress
 from ..data.Constants import *
 
 # [x, y] = everything between x and y (included) is free
 # int = end of bank
-CAVE_DATA = [
+CAVE_DATA: list[int | list[int | list[int]]] = [
     0x3ec8,  # 00
     0x3e89,  # 01
     [  # 02
@@ -424,7 +424,7 @@ RUPEE_VALUES = {
     999: 0x14,
 }
 
-DUNGEON_ENTRANCES = {
+DUNGEON_ENTRANCES: dict[str, dict[str, int]] = {
     # "addr": Address of the pointer to the warp dest aka start of the line + 2
     "d0": {
         "addr": GameboyAddress(0x04, 0x7651).address_in_rom(),
@@ -491,7 +491,7 @@ DUNGEON_ENTRANCES = {
     }
 }
 
-DUNGEON_EXITS = {
+DUNGEON_EXITS: dict[str, int] = {
     "d0": GameboyAddress(0x04, 0x7909).address_in_rom(),
     "d1": GameboyAddress(0x04, 0x790d).address_in_rom(),
     "d2": GameboyAddress(0x04, 0x7911).address_in_rom(),

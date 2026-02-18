@@ -5,10 +5,9 @@ import yaml
 
 from worlds.Files import APProcedurePatch, APTokenMixin, APPatchExtension
 from .Functions import *
-from .RomData import RomData
-from .data_manager.text import get_seasons_text_data, apply_ages_edits
-from .text.encoding import write_text_data
-from .z80asm.Assembler import Z80Assembler, Z80Block
+from .data_manager.text import apply_ages_edits, get_modded_seasons_text_data
+from ..common.patching.text.encoding import write_text_data
+from ..common.patching.z80asm.Assembler import Z80Assembler, Z80Block, GameboyAddress
 
 
 class OoSPatchExtensions(APPatchExtension):
@@ -45,7 +44,7 @@ class OoSPatchExtensions(APPatchExtension):
         random.seed(patch_data["seed"] + caller.player)
 
         assembler = Z80Assembler(CAVE_DATA, DEFINES, rom, ages_rom)
-        dictionary, texts = get_seasons_text_data(rom_data)
+        dictionary, texts = get_modded_seasons_text_data(rom_data)
         if patch_data["options"]["cross_items"]:
             if texts["TX_0053"] == "":  # Check if cane text exists
                 # If not, add the Ages texts

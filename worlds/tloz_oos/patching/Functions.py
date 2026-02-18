@@ -7,15 +7,16 @@ from typing import Any
 import Utils
 from settings import get_settings
 from .Constants import *
-from .RomData import RomData
 from .Util import *
 from .asm import asm_files
-from .text import normalize_text
-from .z80asm.Assembler import Z80Assembler, GameboyAddress
-from .z80asm.Util import parse_hex_string_to_value
 from ..Options import OracleOfSeasonsOldMenShuffle, OracleOfSeasonsGoal, OracleOfSeasonsAnimalCompanion, \
     OracleOfSeasonsMasterKeys, OracleOfSeasonsFoolsOre, OracleOfSeasonsShowDungeonsWithEssence, OracleOfSeasonsLinkedHerosCave
 from ..World import OracleOfSeasonsWorld
+from ..common.patching.RomData import RomData
+from ..common.patching.Util import get_available_random_colors_from_sprite_name, simple_hex
+from ..common.patching.text import normalize_text
+from ..common.patching.z80asm.Assembler import Z80Assembler
+from ..common.patching.z80asm.Util import parse_hex_string_to_value
 from ..data.Locations import LOCATIONS_DATA
 from ..data.Constants import *
 from ..generation.Hints import make_hint_texts
@@ -61,7 +62,7 @@ def write_chest_contents(rom: RomData, patch_data):
     for location_name, location_data in LOCATIONS_DATA.items():
         if location_data.get("collect", COLLECT_TOUCH) != COLLECT_CHEST and not location_data.get("is_chest", False) or location_name not in locations_data:
             continue
-        chest_addr = rom.get_chest_addr(location_data["room"])
+        chest_addr = rom.get_chest_addr(location_data["room"], 0x15, 0x4f6c)
         item = locations_data[location_name]
         item_id, item_subid = get_item_id_and_subid(item)
         rom.write_byte(chest_addr, item_id)
@@ -714,7 +715,7 @@ def set_file_select_text(assembler: Z80Assembler, slot_name: str):
     assembler.add_floating_chunk("dma_FileSelectStringTiles", text_tiles)
 
 
-def process_item_name_for_shop_text(item: Dict) -> str:
+def process_item_name_for_shop_text(item: dict) -> str:
     if "player" in item:
         player_name = item["player"]
         if len(player_name) > 14:

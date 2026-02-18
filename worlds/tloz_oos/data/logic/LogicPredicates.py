@@ -1102,7 +1102,7 @@ def oos_season_in_temple_remains(season: int) -> Rule:
             oos_has_season(season),
             Or(
                 CanReachRegion("temple remains lower stump"),
-                CanReachRegion("temple remains higher stump"),
+                CanReachRegion("temple remains upper stump"),
             )
         )
     )

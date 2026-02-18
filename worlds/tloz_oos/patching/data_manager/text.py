@@ -1,12 +1,12 @@
 import json
 from pathlib import Path
 
-from typing_extensions import Any
+from typing import Any
 
 import Utils
-from ...patching.RomData import RomData
-from ...patching.text import normalize_text
-from ...patching.text.decoding import parse_text_dict, parse_all_texts
+from ...common.patching.RomData import RomData
+from ...common.patching.data_manager.text import get_text_data
+from ...common.patching.text import normalize_text
 
 
 def load_modded_seasons_text_data() -> None | tuple[dict[str, str], dict[str, str]]:
@@ -30,31 +30,6 @@ def load_modded_seasons_text_data() -> None | tuple[dict[str, str], dict[str, st
     apply_text_edits(texts)
     save_seasons_edited_text_data(texts)
     return json.load(open(dict_file, encoding="utf-8")), texts
-
-
-def load_vanilla_ages_text_data() -> None | dict[str, str]:
-    text_dir = Path(Utils.cache_path("oos_ooa/text"))
-    vanilla_text_file = text_dir.joinpath(f"ages_texts_vanilla.json")
-    if not vanilla_text_file.is_file():
-        return None
-    return json.load(open(vanilla_text_file, encoding="utf-8"))
-
-
-def save_vanilla_text_data(dictionary: dict[str, str],
-                           texts: dict[str, str],
-                           seasons: bool = True) -> None:
-    text_dir = Path(Utils.cache_path("oos_ooa/text"))
-    text_dir.mkdir(parents=True, exist_ok=True)
-
-    game_name = "seasons" if seasons else "ages"
-    dict_file = text_dir.joinpath(f"{game_name}_dict.json")
-    text_file = text_dir.joinpath(f"{game_name}_texts_vanilla.json")
-
-    with dict_file.open("w", encoding="utf-8") as f:
-        json.dump(dictionary, f, ensure_ascii=False)
-
-    with text_file.open("w", encoding="utf-8") as f:
-        json.dump(texts, f, ensure_ascii=False)
 
 
 def save_seasons_edited_text_data(texts: dict[str, str]) -> None:
@@ -231,7 +206,7 @@ def apply_text_edits(texts: dict[str, str]) -> None:
 
 
 def apply_ages_edits(seasons_texts: dict[str, str], ages_rom: RomData) -> None:
-    ages_texts = get_ages_text_data(ages_rom)
+    _, ages_texts = get_text_data(ages_rom, False, False)
     # Cross items
     # Obtain text
     seasons_texts["TX_0053"] = ages_texts["TX_0073"]  # Cane
@@ -246,25 +221,12 @@ def apply_ages_edits(seasons_texts: dict[str, str], ages_rom: RomData) -> None:
     save_seasons_edited_text_data(seasons_texts)
 
 
-def get_seasons_text_data(rom_data: RomData) -> tuple[dict[str, str], dict[str, str]]:
+def get_modded_seasons_text_data(rom_data: RomData) -> tuple[dict[str, str], dict[str, str]]:
     result = load_modded_seasons_text_data()
     if result is not None:
         return result
 
-    dictionary = parse_text_dict(rom_data, True)
-    texts = parse_all_texts(rom_data, dictionary, True)
-    save_vanilla_text_data(dictionary, texts, True)
+    dictionary, texts = get_text_data(rom_data, True, True)
     apply_text_edits(texts)
     save_seasons_edited_text_data(texts)
     return dictionary, texts
-
-
-def get_ages_text_data(rom_data: RomData) -> tuple[dict[str, str], dict[str, str]]:
-    result = load_vanilla_ages_text_data()
-    if result is not None:
-        return result
-
-    dictionary = parse_text_dict(rom_data, False)
-    texts = parse_all_texts(rom_data, dictionary, False)
-    save_vanilla_text_data(dictionary, texts, False)
-    return texts
