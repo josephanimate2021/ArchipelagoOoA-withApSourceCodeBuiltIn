@@ -1,0 +1,3 @@
+[submodule "worlds/tloz_ooa"]
+	path = worlds/tloz_ooa
+	url = https://github.com/josephanimate2021/ArchipelagoOoA
