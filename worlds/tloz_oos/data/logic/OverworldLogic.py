@@ -861,7 +861,11 @@ def make_holodrum_logic(origin_name: str, options: OracleOfSeasonsOptions):
 
         ["mount cucco", "goron mountain, across pits", False, Or(
             Has("Spring Banana"),
-            oos_can_jump_4_wide_pit(),
+            And(
+                oos_option_hard_logic(),
+                oos_can_jump_4_wide_pit(),
+            ),
+            oos_can_jump_5_wide_pit()
         )],
 
         ["mount cucco", "goron blocked cave entrance", False, Or(
