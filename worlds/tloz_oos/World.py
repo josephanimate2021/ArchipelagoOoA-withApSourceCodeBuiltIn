@@ -7,8 +7,8 @@ from Options import Option
 from worlds.AutoWorld import World
 from .Options import *
 from .Settings import OracleOfSeasonsSettings
-from .Util import *
 from .WebWorld import OracleOfSeasonsWeb
+from .common.Util import build_location_name_to_id_dict, build_item_name_to_id_dict
 from .data import LOCATIONS_DATA
 from .data.Constants import *
 from .data.Items import ITEMS_DATA
@@ -30,8 +30,8 @@ class OracleOfSeasonsWorld(World):
     settings: ClassVar[OracleOfSeasonsSettings]
     settings_key = "tloz_oos_options"
 
-    location_name_to_id = build_location_name_to_id_dict()
-    item_name_to_id = build_item_name_to_id_dict()
+    location_name_to_id = build_location_name_to_id_dict(LOCATIONS_DATA)
+    item_name_to_id = build_item_name_to_id_dict(ITEMS_DATA)
     item_name_groups = ITEM_GROUPS
     location_name_groups = LOCATION_GROUPS
     origin_region_name = "impa's house"
