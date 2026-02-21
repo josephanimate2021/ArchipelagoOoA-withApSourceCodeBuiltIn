@@ -100,11 +100,11 @@ class OracleOfSeasonsWorld(World):
         generate_early(self)
 
     def create_regions(self) -> None:
-        from generation.CreateRegions import create_regions
+        from .generation.CreateRegions import create_regions
         create_regions(self)
 
     def set_rules(self) -> None:
-        from generation.Logic import create_connections, apply_self_locking_rules
+        from .generation.Logic import create_connections, apply_self_locking_rules
         create_connections(self, self.origin_region_name, self.options)
         apply_self_locking_rules(self.multiworld, self.player)
         self.multiworld.completion_condition[self.player] = lambda state: state.has("_beaten_game", self.player)
@@ -168,7 +168,7 @@ class OracleOfSeasonsWorld(World):
         return Item(name, classification, ap_code, self.player)
 
     def create_items(self) -> None:
-        from generation.CreateItems import create_items
+        from .generation.CreateItems import create_items
         create_items(self)
 
     def get_pre_fill_items(self) -> list[Item]:
@@ -176,7 +176,7 @@ class OracleOfSeasonsWorld(World):
 
     @classmethod
     def stage_pre_fill(cls, multiworld: MultiWorld):
-        from generation.PreFill import stage_pre_fill_dungeon_items
+        from .generation.PreFill import stage_pre_fill_dungeon_items
         stage_pre_fill_dungeon_items(multiworld)
 
     def get_filler_item_name(self) -> str:
@@ -206,11 +206,11 @@ class OracleOfSeasonsWorld(World):
     # noinspection PyUnusedLocal
     @classmethod
     def stage_fill_hook(cls, multiworld: MultiWorld, progitempool: list[Item], usefulitempool: list[Item], filleritempool: list[Item], fill_locations):
-        from generation.OrderPool import order_pool
+        from .generation.OrderPool import order_pool
         order_pool(multiworld, progitempool)
 
     def generate_output(self, output_directory: str):
-        from generation.PatchWriter import oos_create_ap_procedure_patch
+        from .generation.PatchWriter import oos_create_ap_procedure_patch
 
         if self.options.bird_hint.know_it_all():
             self.region_hints = create_region_hints(self)
@@ -257,7 +257,7 @@ class OracleOfSeasonsWorld(World):
         return slot_data
 
     def write_spoiler(self, spoiler_handle: TextIO):
-        from generation.CreateRegions import location_is_active
+        from .generation.CreateRegions import location_is_active
         spoiler_handle.write(f"\n\nDefault Seasons ({self.multiworld.player_name[self.player]}):\n")
         for region_name, season in self.default_seasons.items():
             spoiler_handle.write(f"\t- {region_name} --> {SEASON_NAMES[season]}\n")
