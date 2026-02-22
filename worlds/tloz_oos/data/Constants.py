@@ -1,5 +1,5 @@
 from enum import IntEnum
-from ..Tloz_oo_common.data.Constants import *
+from ..common.data.Constants import *
 
 SEASON_SPRING = 0x00
 SEASON_SUMMER = 0x01

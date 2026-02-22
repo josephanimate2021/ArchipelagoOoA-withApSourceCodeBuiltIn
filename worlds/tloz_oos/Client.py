@@ -9,8 +9,8 @@ from Utils import async_start
 from settings import get_settings
 from .data.Locations import LOCATIONS_DATA
 from .data.Items import ITEMS_DATA
-from .Tloz_oo_common.Options import OraclesGoal
-from .Tloz_oo_common.Util import build_item_id_to_name_dict, build_location_name_to_id_dict
+from .common.Options import OraclesGoal
+from .common.Util import build_item_id_to_name_dict, build_location_name_to_id_dict
 
 if TYPE_CHECKING:
     from worlds._bizhawk.context import BizHawkClientContext

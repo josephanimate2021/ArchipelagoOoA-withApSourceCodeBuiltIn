@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from Options import Choice, DefaultOnToggle, PerGameCommonOptions, Range, Toggle, StartInventoryPool, \
     ItemsAccessibility, OptionGroup, NamedRange
-from .Tloz_oo_common.Options import *
+from .common.Options import *
 
 
 class OracleOfSeasonsDefaultSeasons(Choice):

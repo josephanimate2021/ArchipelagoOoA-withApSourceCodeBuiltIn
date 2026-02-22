@@ -3,11 +3,11 @@ import random
 from typing_extensions import TYPE_CHECKING
 
 from BaseClasses import Item
-from ..Tloz_oo_common.patching.Util import simple_hex
-from ..Tloz_oo_common.patching.text import normalize_text
+from ..common.patching.Util import simple_hex
+from ..common.patching.text import normalize_text
 
 if TYPE_CHECKING:
-    from . import OracleOfSeasonsWorld
+    from .. import OracleOfSeasonsWorld
 
 know_it_all_birds = [
     "TX_3200",  # "Know-It-All Bird #1",

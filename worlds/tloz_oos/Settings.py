@@ -1,8 +1,8 @@
 from typing import Union
 
 import settings
-from .Tloz_oo_common.data.Constants import SEASONS_ROM_HASH, AGES_ROM_HASH
-from .Tloz_oo_common.Settings import *
+from .common.data.Constants import SEASONS_ROM_HASH, AGES_ROM_HASH
+from .common.Settings import *
 
 
 class OracleOfSeasonsSettings(settings.Group):

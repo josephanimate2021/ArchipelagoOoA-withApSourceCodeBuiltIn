@@ -10,14 +10,14 @@ from .Constants import *
 from .Util import *
 from .asm import asm_files
 from ..Options import OracleOfSeasonsFoolsOre, OracleOfSeasonsLinkedHerosCave
-from ..Tloz_oo_common.Options import OraclesOldMenShuffle, OraclesGoal, OraclesAnimalCompanion, \
+from ..common.Options import OraclesOldMenShuffle, OraclesGoal, OraclesAnimalCompanion, \
     OraclesMasterKeys, OraclesShowDungeonsWithEssence
 from ..World import OracleOfSeasonsWorld
-from ..Tloz_oo_common.patching.RomData import RomData
-from ..Tloz_oo_common.patching.Util import get_available_random_colors_from_sprite_name, simple_hex
-from ..Tloz_oo_common.patching.text import normalize_text
-from ..Tloz_oo_common.patching.z80asm.Assembler import Z80Assembler
-from ..Tloz_oo_common.patching.z80asm.Util import parse_hex_string_to_value
+from ..common.patching.RomData import RomData
+from ..common.patching.Util import get_available_random_colors_from_sprite_name, simple_hex
+from ..common.patching.text import normalize_text
+from ..common.patching.z80asm.Assembler import Z80Assembler
+from ..common.patching.z80asm.Util import parse_hex_string_to_value
 from ..data.Locations import LOCATIONS_DATA
 from ..data.Constants import *
 from ..generation.Hints import make_hint_texts

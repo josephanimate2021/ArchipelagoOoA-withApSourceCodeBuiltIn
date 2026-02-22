@@ -1,5 +1,5 @@
 from BaseClasses import MultiWorld
-from ..Tloz_oo_common.generation.Logic import create_connections, is_small_key, is_item, apply_self_locking_rules
+from ..common.generation.Logic import create_connections, is_small_key, is_item, apply_self_locking_rules
 from ..data.logic.DungeonsLogic import *
 from ..data.logic.OverworldLogic import *
 from ..data.logic.SubrosiaLogic import *

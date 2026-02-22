@@ -6,13 +6,13 @@ from BaseClasses import Item, ItemClassification, MultiWorld, CollectionState
 from Options import Option
 from worlds.AutoWorld import World
 from .Options import *
-from .Tloz_oo_common.Options import *
+from .common.Options import *
 from .Settings import OracleOfSeasonsSettings
-from .Tloz_oo_common.Util import *
+from .common.Util import *
 from .WebWorld import OracleOfSeasonsWeb
 from .data import LOCATIONS_DATA
 from .data.Constants import *
-from .Tloz_oo_common.data.Constants import * 
+from .common.data.Constants import * 
 from .data.Items import ITEMS_DATA
 from .generation.Hints import *
 
@@ -111,11 +111,11 @@ class OracleOfSeasonsWorld(World):
     def generate_early(self) -> None:
         if self.interpret_slot_data(None):
             return
-        from .Tloz_oo_common.generation.GenerateEarly import generate_early
+        from .common.generation.GenerateEarly import generate_early
         generate_early(self)
 
     def create_regions(self) -> None:
-        from .Tloz_oo_common.generation.CreateRegions import create_regions
+        from .common.generation.CreateRegions import create_regions
         create_regions(self)
 
     def set_rules(self) -> None:
@@ -142,11 +142,11 @@ class OracleOfSeasonsWorld(World):
             self.multiworld.register_indirect_condition(self.get_region("lost woods top statue"), self.get_entrance("rooster adventure -> lost woods deku"))
 
     def create_item(self, name) -> Item:
-        from .Tloz_oo_common.generation.CreateItems import create_item
+        from .common.generation.CreateItems import create_item
         return create_item(self, name)
 
     def create_items(self) -> None:
-        from .Tloz_oo_common.generation.CreateItems import create_items
+        from .common.generation.CreateItems import create_items
         create_items(self)
 
     def get_pre_fill_items(self) -> list[Item]:
@@ -178,7 +178,7 @@ class OracleOfSeasonsWorld(World):
         return self.get_filler_item_name()  # It might loop but not enough to really matter
 
     def connect_entrances(self) -> None:
-        from .Tloz_oo_common.generation.ER import oo_randomize_entrances
+        from .common.generation.ER import oo_randomize_entrances
         oo_randomize_entrances(self)
 
     # noinspection PyUnusedLocal
@@ -235,7 +235,7 @@ class OracleOfSeasonsWorld(World):
         return slot_data
 
     def write_spoiler(self, spoiler_handle: TextIO):
-        from .Tloz_oo_common.generation.CreateRegions import location_is_active
+        from .common.generation.CreateRegions import location_is_active
         spoiler_handle.write(f"\n\nDefault Seasons ({self.multiworld.player_name[self.player]}):\n")
         for region_name, season in self.default_seasons.items():
             spoiler_handle.write(f"\t- {region_name} --> {SEASON_NAMES[season]}\n")

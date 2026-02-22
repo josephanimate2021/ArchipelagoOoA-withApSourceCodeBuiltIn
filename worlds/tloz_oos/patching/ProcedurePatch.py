@@ -6,8 +6,8 @@ import yaml
 from worlds.Files import APProcedurePatch, APTokenMixin, APPatchExtension
 from .Functions import *
 from .data_manager.text import apply_ages_edits, get_modded_seasons_text_data
-from ..Tloz_oo_common.patching.text.encoding import write_text_data
-from ..Tloz_oo_common.patching.z80asm.Assembler import Z80Assembler, Z80Block, GameboyAddress
+from ..common.patching.text.encoding import write_text_data
+from ..common.patching.z80asm.Assembler import Z80Assembler, Z80Block, GameboyAddress
 from ..Settings import SEASONS_ROM_HASH
 
 

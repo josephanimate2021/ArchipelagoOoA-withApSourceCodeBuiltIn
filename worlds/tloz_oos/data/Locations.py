@@ -1,5 +1,5 @@
 from .Constants import *
-from ..Tloz_oo_common.scripts.genFlagByteFromRoom import *
+from ..common.scripts.genFlagByteFromRoom import *
 
 LOCATIONS_DATA = {
     "North Horon: Chest Across Bridge": {

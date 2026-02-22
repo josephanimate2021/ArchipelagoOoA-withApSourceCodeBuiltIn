@@ -1,9 +1,9 @@
 from rule_builder.rules import And, Or, CanReachRegion
 from .Rulebuilder import *
 from ..Constants import *
-from ...Tloz_oo_common.Options import OraclesLogicDifficulty, OraclesDefaultSeedType, OraclesMasterKeys, OraclesDungeonShuffle, OraclesAnimalCompanion
+from ...common.Options import OraclesLogicDifficulty, OraclesDefaultSeedType, OraclesMasterKeys, OraclesDungeonShuffle, OraclesAnimalCompanion
 from ...Options import OracleOfSeasonsD0AltEntrance, OracleOfSeasonsD2AltEntrance, OracleOfSeasonsLostWoodsItemSequence, OracleOfSeasonsLostWoodsMainSequence, OracleOfSeasonsHoronSeason
-from ...Tloz_oo_common.data.logic.LogicPredicates import *
+from ...common.data.logic.LogicPredicates import *
 
 
 # Items predicates ############################################################

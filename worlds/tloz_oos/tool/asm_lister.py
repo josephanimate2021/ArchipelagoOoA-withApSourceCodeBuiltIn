@@ -1,7 +1,7 @@
 import json
 import os
 
-from worlds.tloz_oos import patching
+from .. import patching
 
 if __name__ == "__main__":
     dir_name = os.path.dirname(patching.__file__) + "/asm"

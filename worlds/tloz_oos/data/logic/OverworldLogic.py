@@ -1,5 +1,5 @@
 from ...Options import OracleOfSeasonsOptions, OracleOfSeasonsLinkedHerosCave, OraclesOfSeasonsTarmGateRequirement
-from ...Tloz_oo_common.Options import OraclesIncludeSecretLocations
+from ...common.Options import OraclesIncludeSecretLocations
 from .LogicPredicates import *
 
 

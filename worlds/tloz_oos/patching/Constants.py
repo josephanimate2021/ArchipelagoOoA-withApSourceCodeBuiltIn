@@ -1,6 +1,6 @@
-from ..Tloz_oo_common.patching.z80asm.Assembler import GameboyAddress
+from ..common.patching.z80asm.Assembler import GameboyAddress
 from ..data.Constants import *
-from ..Tloz_oo_common.patching.Constants import *
+from ..common.patching.Constants import *
 
 # [x, y] = everything between x and y (included) is free
 # int = end of bank
