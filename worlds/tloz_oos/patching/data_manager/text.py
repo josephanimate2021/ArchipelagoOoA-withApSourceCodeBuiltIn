@@ -4,9 +4,9 @@ from pathlib import Path
 from typing import Any
 
 import Utils
-from ...common.patching.RomData import RomData
-from ...common.patching.data_manager.text import get_text_data
-from ...common.patching.text import normalize_text
+from ...Tloz_oo_common.patching.RomData import RomData
+from ...Tloz_oo_common.patching.data_manager.text import get_text_data
+from ...Tloz_oo_common.patching.text import normalize_text
 
 
 def load_modded_seasons_text_data() -> None | tuple[dict[str, str], dict[str, str]]:

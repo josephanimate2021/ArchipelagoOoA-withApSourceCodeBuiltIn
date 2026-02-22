@@ -7,7 +7,7 @@ from rule_builder.options import OptionFilter, Operator
 from rule_builder.rules import Rule, HasFromList, HasGroup, HasAll, False_, True_, Has, TWorld
 from ... import OracleOfSeasonsWorld
 from ...Options import OracleOfSeasonsGoldenOreSpotsShuffle
-from ...Constants import SEASON_CHAOTIC, SEASON_ITEMS, MARKET_LOCATIONS
+from ...data.Constants import SEASON_CHAOTIC, SEASON_ITEMS, MARKET_LOCATIONS
 
 
 @dataclasses.dataclass
@@ -136,7 +136,7 @@ class HasRupeesForShop(Rule[OracleOfSeasonsWorld], game=OracleOfSeasonsWorld.gam
         amount = world.shop_rupee_requirements.get(self.shop_name, 0)
         if amount == 0:
             return True_().resolve(world)
-        from LogicPredicates import oos_can_farm_rupees
+        from .LogicPredicates import oos_can_farm_rupees
         return (oos_can_farm_rupees() & Has("Rupees", amount / 2)).resolve(world)
 
 
@@ -146,7 +146,7 @@ class HasOresForShop(Rule[OracleOfSeasonsWorld], game=OracleOfSeasonsWorld.game)
         amount = sum([world.shop_prices[loc] for loc in MARKET_LOCATIONS])
         if amount == 0:
             return True_().resolve(world)
-        from LogicPredicates import oos_can_farm_ore_chunks
+        from .LogicPredicates import oos_can_farm_ore_chunks
         if world.options.shuffle_golden_ore_spots == OracleOfSeasonsGoldenOreSpotsShuffle.option_false:
             return oos_can_farm_ore_chunks().resolve(world)
         return (oos_can_farm_ore_chunks() & Has("Ore Chunks", amount / 2)).resolve(world)

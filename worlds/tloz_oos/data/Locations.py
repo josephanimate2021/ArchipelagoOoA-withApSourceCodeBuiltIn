@@ -1,4 +1,5 @@
 from .Constants import *
+from ..Tloz_oo_common.scripts.genFlagByteFromRoom import *
 
 LOCATIONS_DATA = {
     "North Horon: Chest Across Bridge": {
@@ -2409,13 +2410,4 @@ LOCATIONS_DATA = {
     },
 }
 
-for location in LOCATIONS_DATA.values():
-    if "flag_byte" not in location:
-        room = location["room"]
-        if room >= 0x200:
-            if room >= 0x300:
-                if room >= 0x600:
-                    room -= 0x200
-                room -= 0x100
-            room -= 0x100
-        location["flag_byte"] = 0xc700 + room
+gen_flag_byte(LOCATIONS_DATA)

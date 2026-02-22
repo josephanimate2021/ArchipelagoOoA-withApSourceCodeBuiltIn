@@ -1,5 +1,6 @@
-from ..common.patching.z80asm.Assembler import GameboyAddress
+from ..Tloz_oo_common.patching.z80asm.Assembler import GameboyAddress
 from ..data.Constants import *
+from ..Tloz_oo_common.patching.Constants import *
 
 # [x, y] = everything between x and y (included) is free
 # int = end of bank
@@ -400,30 +401,6 @@ DEFINES = {
     "moveup": "$ec",
 }
 
-RUPEE_VALUES = {
-    0: 0x00,
-    1: 0x01,
-    2: 0x02,
-    5: 0x03,
-    10: 0x04,
-    20: 0x05,
-    40: 0x06,
-    30: 0x07,
-    60: 0x08,
-    70: 0x09,
-    25: 0x0a,
-    50: 0x0b,
-    100: 0x0c,
-    200: 0x0d,
-    400: 0x0e,
-    150: 0x0f,
-    300: 0x10,
-    500: 0x11,
-    900: 0x12,
-    80: 0x13,
-    999: 0x14,
-}
-
 DUNGEON_ENTRANCES: dict[str, dict[str, int]] = {
     # "addr": Address of the pointer to the warp dest aka start of the line + 2
     "d0": {
@@ -591,13 +568,6 @@ PORTAL_WARPS = {
     }
 }
 
-PALETTE_BYTES = {
-    "green": 0x00,
-    "blue": 0x01,
-    "red": 0x02,
-    "orange": 0x03,
-}
-
 # Scripting constants
 DELAY_6 = 0xf6
 CALL_SCRIPT = 0xc0
@@ -608,13 +578,6 @@ MOVE_RIGHT = 0xed
 WRITE_OBJECT_BYTE = 0x8e
 SHOW_TEXT_LOW_INDEX = 0x98
 ENABLE_ALL_OBJECTS = 0xb9
-
-DIRECTION_STRINGS = {
-    DIRECTION_UP: "⬆ ",
-    DIRECTION_DOWN: "⬇ ",
-    DIRECTION_LEFT: "⬅ ",
-    DIRECTION_RIGHT: "➡ ",
-}
 
 SEASON_STRINGS = {
     SEASON_SPRING: "Spring",

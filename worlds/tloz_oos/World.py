@@ -6,13 +6,15 @@ from BaseClasses import Item, ItemClassification, MultiWorld, CollectionState
 from Options import Option
 from worlds.AutoWorld import World
 from .Options import *
+from .Tloz_oo_common.Options import *
 from .Settings import OracleOfSeasonsSettings
-from .Util import *
+from .Tloz_oo_common.Util import *
 from .WebWorld import OracleOfSeasonsWeb
 from .data import LOCATIONS_DATA
 from .data.Constants import *
+from .Tloz_oo_common.data.Constants import * 
 from .data.Items import ITEMS_DATA
-from .generation.Hints import create_region_hints, create_item_hints
+from .generation.Hints import *
 
 
 class OracleOfSeasonsWorld(World):
@@ -27,11 +29,15 @@ class OracleOfSeasonsWorld(World):
     web = OracleOfSeasonsWeb()
     topology_present = True
 
+    seasons = True
+    ages = False
+    romhack = False
+
     settings: ClassVar[OracleOfSeasonsSettings]
     settings_key = "tloz_oos_options"
 
-    location_name_to_id = build_location_name_to_id_dict()
-    item_name_to_id = build_item_name_to_id_dict()
+    location_name_to_id = build_location_name_to_id_dict(LOCATIONS_DATA)
+    item_name_to_id = build_item_name_to_id_dict(ITEMS_DATA)
     item_name_groups = ITEM_GROUPS
     location_name_groups = LOCATION_GROUPS
     origin_region_name = "impa's house"
@@ -66,13 +72,22 @@ class OracleOfSeasonsWorld(World):
         "Bombchus (20)": "Bombchus",
     }
 
+    city_name = "Horon Village"
+
     @classmethod
     def version(cls) -> str:
         return cls.world_version.as_simple_string()
 
     def __init__(self, multiworld: MultiWorld, player: int):
         super().__init__(multiworld, player)
-
+        self.trees_table = {
+            OracleOfSeasonsDuplicateSeedTree.option_horon_village: "Horon Village: Seed Tree",
+            OracleOfSeasonsDuplicateSeedTree.option_woods_of_winter: "Woods of Winter: Seed Tree",
+            OracleOfSeasonsDuplicateSeedTree.option_north_horon: "Holodrum Plain: Seed Tree",
+            OracleOfSeasonsDuplicateSeedTree.option_spool_swamp: "Spool Swamp: Seed Tree",
+            OracleOfSeasonsDuplicateSeedTree.option_sunken_city: "Sunken City: Seed Tree",
+            OracleOfSeasonsDuplicateSeedTree.option_tarm_ruins: "Tarm Ruins: Seed Tree",
+        }
         self.pre_fill_items: List[Item] = []
         self.default_seasons: Dict[str, str] = DEFAULT_SEASONS.copy()
         self.dungeon_entrances: Dict[str, str] = DUNGEON_CONNECTIONS.copy()
@@ -96,17 +111,17 @@ class OracleOfSeasonsWorld(World):
     def generate_early(self) -> None:
         if self.interpret_slot_data(None):
             return
-        from .generation.GenerateEarly import generate_early
+        from .Tloz_oo_common.generation.GenerateEarly import generate_early
         generate_early(self)
 
     def create_regions(self) -> None:
-        from generation.CreateRegions import create_regions
+        from .Tloz_oo_common.generation.CreateRegions import create_regions
         create_regions(self)
 
     def set_rules(self) -> None:
-        from generation.Logic import create_connections, apply_self_locking_rules
-        create_connections(self, self.origin_region_name, self.options)
-        apply_self_locking_rules(self.multiworld, self.player)
+        from .generation.Logic import apply_self_locking_rules_seasons, create_connections_seasons
+        create_connections_seasons(self)
+        apply_self_locking_rules_seasons(self.multiworld, self.player)
         self.multiworld.completion_condition[self.player] = lambda state: state.has("_beaten_game", self.player)
 
         self.multiworld.register_indirect_condition(self.get_region("lost woods top statue"), self.get_entrance("lost woods -> lost woods deku"))
@@ -119,56 +134,19 @@ class OracleOfSeasonsWorld(World):
             for i in range(1, 9):
                 self.multiworld.register_indirect_condition(self.get_region(f"enter d{i}"), self.get_entrance("d11 floor 4 chest -> d11 final chest"))
 
-        if self.options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_hell:
+        if self.options.logic_difficulty == OraclesLogicDifficulty.option_hell:
             cucco_region = self.get_region("rooster adventure")
             # This saves using an event which is slightly more efficient
             self.multiworld.register_indirect_condition(cucco_region, self.get_entrance("d6 sector -> old man near d6"))
             self.multiworld.register_indirect_condition(cucco_region, self.get_entrance("d6 sector -> d6 entrance"))
             self.multiworld.register_indirect_condition(self.get_region("lost woods top statue"), self.get_entrance("rooster adventure -> lost woods deku"))
 
-    def create_item(self, name: str) -> Item:
-        # If item name has a "!PROG" suffix, force it to be progression. This is typically used to create the right
-        # amount of progression rupees while keeping them a filler item as default
-        if name.endswith("!PROG"):
-            name = name.removesuffix("!PROG")
-            classification = ItemClassification.progression_deprioritized_skip_balancing
-        elif name.endswith("!USEFUL"):
-            # Same for above but with useful. This is typically used for Required Rings,
-            # as we don't want those locked in a barren dungeon
-            name = name.removesuffix("!USEFUL")
-            classification = ITEMS_DATA[name]["classification"]
-            if classification == ItemClassification.filler:
-                classification = ItemClassification.useful
-        elif name.endswith("!FILLER"):
-            name = name.removesuffix("!FILLER")
-            classification = ItemClassification.filler
-        else:
-            classification = ITEMS_DATA[name]["classification"]
-        ap_code = self.item_name_to_id[name]
-
-        # A few items become progression only in hard logic
-        progression_items_in_medium_logic = ["Expert's Ring", "Fist Ring", "Swimmer's Ring", "Energy Ring", "Heart Ring L-2"]
-        if self.options.logic_difficulty >= OracleOfSeasonsLogicDifficulty.option_medium and name in progression_items_in_medium_logic:
-            classification = ItemClassification.progression
-        if self.options.logic_difficulty >= OracleOfSeasonsLogicDifficulty.option_hard and name == "Heart Ring L-1":
-            classification = ItemClassification.progression
-        # As many Gasha Seeds become progression as the number of deterministic Gasha Nuts
-        if self.remaining_progressive_gasha_seeds > 0 and name == "Gasha Seed":
-            self.remaining_progressive_gasha_seeds -= 1
-            classification = ItemClassification.progression_deprioritized
-
-        # Players in Medium+ are expected to know the default paths through Lost Woods, Phonograph becomes filler
-        if self.options.logic_difficulty >= OracleOfSeasonsLogicDifficulty.option_medium and not self.options.randomize_lost_woods_item_sequence and name == "Phonograph":
-            classification = ItemClassification.filler
-
-        # UT doesn't let us know if the item is progression or not, so it is always progression
-        if hasattr(self.multiworld, "generation_is_fake"):
-            classification = ItemClassification.progression
-
-        return Item(name, classification, ap_code, self.player)
+    def create_item(self, name) -> Item:
+        from .Tloz_oo_common.generation.CreateItems import create_item
+        return create_item(self, name)
 
     def create_items(self) -> None:
-        from generation.CreateItems import create_items
+        from .Tloz_oo_common.generation.CreateItems import create_items
         create_items(self)
 
     def get_pre_fill_items(self) -> list[Item]:
@@ -176,14 +154,14 @@ class OracleOfSeasonsWorld(World):
 
     @classmethod
     def stage_pre_fill(cls, multiworld: MultiWorld):
-        from generation.PreFill import stage_pre_fill_dungeon_items
+        from .generation.PreFill import stage_pre_fill_dungeon_items
         stage_pre_fill_dungeon_items(multiworld)
 
     def get_filler_item_name(self) -> str:
         FILLER_ITEM_NAMES = [
             "Rupees (1)", "Rupees (5)", "Rupees (10)", "Rupees (10)",
             "Rupees (20)", "Rupees (30)",
-            "Ore Chunks (10)", "Ore Chunks (10)", "Ore Chunks (25)",
+            ("Ore Chunks (10)", "Ore Chunks (10)", "Ore Chunks (25)") if self.seasons else "",
             "Random Ring", "Random Ring", "Random Ring",
             "Gasha Seed", "Gasha Seed",
             "Potion"
@@ -200,17 +178,17 @@ class OracleOfSeasonsWorld(World):
         return self.get_filler_item_name()  # It might loop but not enough to really matter
 
     def connect_entrances(self) -> None:
-        from .generation.ER import oos_randomize_entrances
-        oos_randomize_entrances(self)
+        from .Tloz_oo_common.generation.ER import oo_randomize_entrances
+        oo_randomize_entrances(self)
 
     # noinspection PyUnusedLocal
     @classmethod
     def stage_fill_hook(cls, multiworld: MultiWorld, progitempool: list[Item], usefulitempool: list[Item], filleritempool: list[Item], fill_locations):
-        from generation.OrderPool import order_pool
+        from .generation.OrderPool import order_pool
         order_pool(multiworld, progitempool)
 
     def generate_output(self, output_directory: str):
-        from generation.PatchWriter import oos_create_ap_procedure_patch
+        from .generation.PatchWriter import oos_create_ap_procedure_patch
 
         if self.options.bird_hint.know_it_all():
             self.region_hints = create_region_hints(self)
@@ -257,7 +235,7 @@ class OracleOfSeasonsWorld(World):
         return slot_data
 
     def write_spoiler(self, spoiler_handle: TextIO):
-        from generation.CreateRegions import location_is_active
+        from .Tloz_oo_common.generation.CreateRegions import location_is_active
         spoiler_handle.write(f"\n\nDefault Seasons ({self.multiworld.player_name[self.player]}):\n")
         for region_name, season in self.default_seasons.items():
             spoiler_handle.write(f"\t- {region_name} --> {SEASON_NAMES[season]}\n")

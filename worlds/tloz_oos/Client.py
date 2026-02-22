@@ -8,8 +8,9 @@ from worlds._bizhawk.client import BizHawkClient
 from Utils import async_start
 from settings import get_settings
 from .data.Locations import LOCATIONS_DATA
-from .Options import OracleOfSeasonsGoal
-from .Util import build_item_id_to_name_dict, build_location_name_to_id_dict
+from .data.Items import ITEMS_DATA
+from .Tloz_oo_common.Options import OraclesGoal
+from .Tloz_oo_common.Util import build_item_id_to_name_dict, build_location_name_to_id_dict
 
 if TYPE_CHECKING:
     from worlds._bizhawk.context import BizHawkClientContext
@@ -66,8 +67,8 @@ class OracleOfSeasonsClient(BizHawkClient):
 
     def __init__(self) -> None:
         super().__init__()
-        self.item_id_to_name = build_item_id_to_name_dict()
-        self.location_name_to_id = build_location_name_to_id_dict()
+        self.item_id_to_name = build_item_id_to_name_dict(ITEMS_DATA)
+        self.location_name_to_id = build_location_name_to_id_dict(LOCATIONS_DATA)
         self.local_scouted_locations = defaultdict(lambda: set())
         self.local_tracker = {}
 
@@ -251,10 +252,10 @@ class OracleOfSeasonsClient(BizHawkClient):
 
     async def process_game_completion(self, ctx: "BizHawkClientContext", flag_bytes, current_room: int):
         game_clear = False
-        if ctx.slot_data["options"]["goal"] == OracleOfSeasonsGoal.option_beat_onox:
+        if ctx.slot_data["options"]["goal"] == OraclesGoal.option_beat_vanilla_boss:
             # Room with Din's descending crystal was reached, it's a win
             game_clear = (current_room == ROOM_AFTER_DRAGONOX)
-        elif ctx.slot_data["options"]["goal"] == OracleOfSeasonsGoal.option_beat_ganon:
+        elif ctx.slot_data["options"]["goal"] == OraclesGoal.option_beat_ganon:
             # Room with Zelda lying down was reached, and Ganon was beaten
             ganon_flag_offset = 0xCA9A - RAM_ADDRS["location_flags"][0]
             ganon_was_beaten = (flag_bytes[ganon_flag_offset] & 0x80 == 0x80)

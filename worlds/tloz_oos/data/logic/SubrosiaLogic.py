@@ -45,7 +45,7 @@ def make_subrosia_logic():
             oos_has_bracelet(),
             oos_can_jump_3_wide_liquid()
         )],
-        ["subrosia volcano sector", "bomb temple remains", False, oos_has_bombs()],
+        ["subrosia volcano sector", "bomb temple remains", False, oo_has_bombs()],
 
         ["subrosia hide and seek sector", "subrosia market sector", False, And(
             oos_has_bracelet(),
@@ -58,10 +58,10 @@ def make_subrosia_logic():
         ["subrosia market sector", "subrosia hide and seek sector", False, And(
             # H&S skip, with bracelet : https://youtu.be/lH1yvshG3LE
             # H&S skip, without bracelet : https://youtube.com/clip/Ugkx6EcYk0akEEgfO1SuhSfAO3Px5KCTtUKD
-            oos_option_hell_logic(),
+            oo_option_hell_logic(),
             oos_has_feather(),
             oos_can_use_pegasus_seeds(),
-            oos_has_bombs(),
+            oo_has_bombs(),
             # Old H&S skip doesn't require bracelet
         )],
         ["subrosia hide and seek sector", "subrosia temple sector", True, oos_can_jump_4_wide_liquid()],
@@ -71,8 +71,8 @@ def make_subrosia_logic():
         ["subrosia furnace sector", "subrosia east junction", False, Or(
             oos_has_feather(),
             And(
-                oos_option_medium_logic(),
-                oos_has_switch_hook()
+                oo_option_medium_logic(),
+                oo_has_switch_hook()
             )
         )],
 
@@ -87,7 +87,7 @@ def make_subrosia_logic():
             Has("Rusty Bell"),
             oos_self_locking_item("Subrosia: Smithy Rusty Bell Reforge", "Rusty Bell")
         )],
-        ["subrosia temple sector", "smith secret", False, oos_has_shield()],
+        ["subrosia temple sector", "smith secret", False, oo_has_shield()],
 
         ["subrosia temple sector", "temple of seasons", False, None],
         ["subrosia temple sector", "tower of winter", False, Or(
@@ -107,14 +107,14 @@ def make_subrosia_logic():
             oos_has_magic_boomerang()
         )],
 
-        ["subrosia market sector", "subrosia seaside", False, oos_has_shovel()],
+        ["subrosia market sector", "subrosia seaside", False, oo_has_shovel()],
         ["subrosia market sector", "subrosia market star ore", False, Or(
             Has("Star Ore"),
             oos_self_locking_item("Subrosia: Market #1", "Star Ore")
         )],
         ["subrosia market sector", "subrosia market ore chunks", False, oos_can_buy_market()],
 
-        ["subrosia hide and seek sector", "subrosia hide and seek", False, oos_has_shovel()],
+        ["subrosia hide and seek sector", "subrosia hide and seek", False, oo_has_shovel()],
         ["subrosia hide and seek sector", "tower of spring", False, oos_has_feather()],
         ["subrosia hide and seek sector", "subrosian wilds chest", False, And(
             oos_has_feather(),
@@ -129,7 +129,7 @@ def make_subrosia_logic():
                 oos_has_magnet_gloves()
             ),
             oos_has_feather(),
-            oos_has_shovel()
+            oo_has_shovel()
         )],
 
         ["subrosia hide and seek sector", "subrosian house", False, oos_has_feather()],
@@ -150,10 +150,10 @@ def make_subrosia_logic():
             oos_can_jump_4_wide_pit(),
             And(
                 # early red ore : https://youtu.be/fB10dV2Gunk
-                oos_option_hell_logic(),
+                oo_option_hell_logic(),
                 oos_has_feather(),
                 oos_can_use_pegasus_seeds(),
-                oos_has_bombs()
+                oo_has_bombs()
             )
         )],
 
@@ -174,18 +174,18 @@ def make_subrosia_logic():
             oos_has_bracelet()
         )],
 
-        ["subrosia temple sector", "subrosia temple digging spot", False, oos_has_shovel()],
+        ["subrosia temple sector", "subrosia temple digging spot", False, oo_has_shovel()],
         ["subrosia temple sector", "subrosia bath digging spot", False, And(
             oos_can_jump_1_wide_pit(False),
             Or(
                 oos_can_jump_3_wide_liquid(),
                 oos_has_magnet_gloves()
             ),
-            oos_has_shovel()
+            oo_has_shovel()
         )],
-        ["subrosia market sector", "subrosia market digging spot", False, oos_has_shovel()],
+        ["subrosia market sector", "subrosia market digging spot", False, oo_has_shovel()],
 
-        ["subrosia bridge sector", "subrosia bridge digging spot", False, oos_has_shovel()],
+        ["subrosia bridge sector", "subrosia bridge digging spot", False, oo_has_shovel()],
 
         ["subrosia pirates sector", "pirates after bell", False, Has("Pirate's Bell")],
     ]
