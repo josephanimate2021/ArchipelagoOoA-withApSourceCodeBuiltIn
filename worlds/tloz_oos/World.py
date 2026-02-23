@@ -161,7 +161,7 @@ class OracleOfSeasonsWorld(World):
         FILLER_ITEM_NAMES = [
             "Rupees (1)", "Rupees (5)", "Rupees (10)", "Rupees (10)",
             "Rupees (20)", "Rupees (30)",
-            ("Ore Chunks (10)", "Ore Chunks (10)", "Ore Chunks (25)") if self.seasons else "",
+            "Ore Chunks (10)", "Ore Chunks (10)", "Ore Chunks (25)"
             "Random Ring", "Random Ring", "Random Ring",
             "Gasha Seed", "Gasha Seed",
             "Potion"
