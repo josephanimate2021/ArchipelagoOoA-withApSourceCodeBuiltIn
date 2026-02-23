@@ -116,7 +116,7 @@ class OoSPatchExtensions(APPatchExtension):
         return rom_data.output()
 
 
-class OoSProcedurePatch(APProcedurePatch, APTokenMixin):
+class OoProcedurePatch(APProcedurePatch, APTokenMixin):
     hash = [SEASONS_ROM_HASH]
     patch_file_ending: str = ".apoos"
     result_file_ending: str = ".gbc"

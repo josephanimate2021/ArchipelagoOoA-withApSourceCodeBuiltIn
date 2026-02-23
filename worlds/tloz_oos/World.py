@@ -154,28 +154,12 @@ class OracleOfSeasonsWorld(World):
 
     @classmethod
     def stage_pre_fill(cls, multiworld: MultiWorld):
-        from .generation.PreFill import stage_pre_fill_dungeon_items
-        stage_pre_fill_dungeon_items(multiworld)
+        from .common.generation.PreFill import stage_pre_fill_dungeon_items
+        stage_pre_fill_dungeon_items(multiworld, cls.game)
 
     def get_filler_item_name(self) -> str:
-        FILLER_ITEM_NAMES = [
-            "Rupees (1)", "Rupees (5)", "Rupees (10)", "Rupees (10)",
-            "Rupees (20)", "Rupees (30)",
-            "Ore Chunks (10)", "Ore Chunks (10)", "Ore Chunks (25)"
-            "Random Ring", "Random Ring", "Random Ring",
-            "Gasha Seed", "Gasha Seed",
-            "Potion"
-        ]
-
-        item_name = self.random.choice(FILLER_ITEM_NAMES)
-        if item_name == "Random Ring":
-            return self.get_random_ring_name()
-        return item_name
-
-    def get_random_ring_name(self) -> str:
-        if len(self.random_rings_pool) > 0:
-            return self.random_rings_pool.pop()
-        return self.get_filler_item_name()  # It might loop but not enough to really matter
+        from .common.generation.FillerItems import get_filler_item_name
+        return get_filler_item_name(self)
 
     def connect_entrances(self) -> None:
         from .common.generation.ER import oo_randomize_entrances
@@ -184,11 +168,11 @@ class OracleOfSeasonsWorld(World):
     # noinspection PyUnusedLocal
     @classmethod
     def stage_fill_hook(cls, multiworld: MultiWorld, progitempool: list[Item], usefulitempool: list[Item], filleritempool: list[Item], fill_locations):
-        from .generation.OrderPool import order_pool
-        order_pool(multiworld, progitempool)
+        from .common.generation.OrderPool import order_pool
+        order_pool(multiworld, progitempool, cls.game)
 
     def generate_output(self, output_directory: str):
-        from .generation.PatchWriter import oos_create_ap_procedure_patch
+        from .common.generation.PatchWriter import oo_create_ap_procedure_patch
 
         if self.options.bird_hint.know_it_all():
             self.region_hints = create_region_hints(self)
@@ -196,14 +180,24 @@ class OracleOfSeasonsWorld(World):
         if self.options.bird_hint.owl():
             self.item_hints = create_item_hints(self)
         self.made_hints.set()
-        patch = oos_create_ap_procedure_patch(self)
-        rom_path = os.path.join(output_directory, f"{self.multiworld.get_out_file_name_base(self.player)}"
-                                                  f"{patch.patch_file_ending}")
+        patch = oo_create_ap_procedure_patch(self, {
+            "options": self.options.as_dict(
+            *[option_name for option_name in OracleOfSeasonsOptions.type_hints
+                if hasattr(OracleOfSeasonsOptions.type_hints[option_name], "include_in_patch")]),
+            "seasons": True,
+            "samasa_gate_sequence": " ".join([str(x) for x in self.samasa_gate_code]),
+            "lost_woods_item_sequence": self.lost_woods_item_sequence,
+            "lost_woods_main_sequence": self.lost_woods_main_sequence,
+            "default_seasons": self.default_seasons,
+            "subrosia_portals": self.portal_connections,
+            "subrosia_seaside_location": self.random.randint(0, 3),
+        })
+        rom_path = os.path.join(output_directory, f"{self.multiworld.get_out_file_name_base(self.player)}" f"{patch.patch_file_ending}")
         patch.write(rom_path)
 
     def fill_slot_data(self) -> dict:
-        slot_data = {
-            "version": f"{self.version()}",
+        from .common.generation.SlotData import fill_slot_data
+        return fill_slot_data(self, {
             "options": self.options.as_dict(
                 *[option_name for option_name in OracleOfSeasonsOptions.type_hints
                   if hasattr(OracleOfSeasonsOptions.type_hints[option_name], "include_in_slot_data")]),
@@ -211,28 +205,8 @@ class OracleOfSeasonsWorld(World):
             "lost_woods_item_sequence": self.lost_woods_item_sequence,
             "lost_woods_main_sequence": self.lost_woods_main_sequence,
             "default_seasons": self.default_seasons,
-            "old_man_rupee_values": self.old_man_rupee_values,
-            "dungeon_entrances": {a.replace(" entrance", ""): b.replace("enter ", "")
-                                  for a, b in self.dungeon_entrances.items()},
-            "essences_in_game": self.essences_in_game,
             "subrosia_portals": self.portal_connections,
-            "shop_rupee_requirements": self.shop_rupee_requirements,
-            "shop_costs": self.shop_prices,
-        }
-
-        self.made_hints.wait()
-        # The structure is made to make it easy to call CreateHints
-        slot_data_item_hints = []
-        for item_hint in self.item_hints:
-            if item_hint is None:
-                # Joke hint
-                slot_data_item_hints.append(None)
-                continue
-            location = item_hint.location
-            slot_data_item_hints.append((location.address, location.player))
-        slot_data["item_hints"] = slot_data_item_hints
-
-        return slot_data
+        })
 
     def write_spoiler(self, spoiler_handle: TextIO):
         from .common.generation.CreateRegions import location_is_active
