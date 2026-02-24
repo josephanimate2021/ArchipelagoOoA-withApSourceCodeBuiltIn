@@ -121,7 +121,7 @@ def make_d2_logic():
                     # It's tight but doable
                     oos_option_medium_logic(),
                     oos_can_use_pegasus_seeds(),
-                    oos_has_bombchus(4)
+                    oos_has_bombchus_for_tiles()
                 )
             )
         )],
@@ -139,11 +139,21 @@ def make_d2_logic():
         )],
         # You can take the Facade miniboss teleporter to reach dungeon entrance, even if you entered the dungeon
         # through the alt-entrance
+        ["d2 spinner", "d2 wild bombs", False, And(
+            Or(
+                oos_can_remove_rockslide(False),
+                oos_has_small_keys(2, 3) # spin the spinner to access the pol's voice room
+            ),
+            Or(
+                oos_can_harvest_regrowing_bush(),
+                oos_has_bombs()  # Bombs for more bombs is ok in any amount
+            )
+        )],
         ["d2 spinner", "d2 torch room", False, None],
         ["d2 spinner", "dodongo owl", False, oos_can_use_mystery_seeds()],
         ["d2 spinner", "d2 boss", False, And(
             oos_has_boss_key(2),
-            oos_has_bombs(),
+            oos_has_bombs(),  # regrowable there
             oos_has_bracelet()
         )],
 
@@ -152,13 +162,16 @@ def make_d2_logic():
         ["d2 hardhat room", "d2 pot chest", False, oos_can_break_pot()],
         ["d2 hardhat room", "d2 moblin chest", False, And(
             oos_can_kill_d2_hardhat(),
-            oos_can_kill_d2_far_moblin()
+            Or(
+                oos_can_kill_d2_far_moblin(),
+                oos_can_harvest_regrowing_bush(),
+                oos_has_bombs()  # Bombs for more bombs is ok in any amount
+            )
         )],
         ["d2 hardhat room", "d2 wild bombs", False, And(
             oos_can_kill_d2_hardhat(),
             oos_can_harvest_regrowing_bush()
         )],
-        ["d2 wild bombs", "d2 moblin chest", False, None],
         ["d2 spinner", "d2 terrace chest", False, oos_has_small_keys(2, 3)],
     ]
 
@@ -299,7 +312,7 @@ def make_d4_logic():
                     oos_option_hell_logic(),
                     oos_has_cape(),
                     oos_can_use_pegasus_seeds(),
-                    oos_has_bombs()
+                    oos_has_bombs_for_bombjump()
                 )
             )
         )],
@@ -645,9 +658,19 @@ def make_d6_logic():
     return [
         # 0 keys
         ["enter d6", "d6 1F east", False, Or(
+            # In room 4b3:
+            # jump over the hole
             oos_has_feather(),
+
+            # Break the crystals (with crumbling floor)
             oos_has_sword(),
-            oos_has_bombs(),
+            oos_has_bombs_for_tiles(),
+            And(
+                oos_option_medium_logic(),
+                Has("Expert's Ring")
+            ),
+
+            # Walk through the holes
             oos_option_hard_logic()
         )],
 
@@ -691,7 +714,7 @@ def make_d6_logic():
                     # Just do the first one in hard, then use bombchus to kill the keese then hit the orb
                     oos_option_hard_logic(),
                     oos_has_shooter(),
-                    oos_has_bombchus(2),
+                    oos_has_bombchus_to_fight(),
                 )
             )
         )],
@@ -743,7 +766,7 @@ def make_d6_logic():
                         oos_has_fools_ore(),
                         And(
                             oos_option_medium_logic(),
-                            oos_has_bombs(4)
+                            oos_has_bombs_to_fight()
                         ),
                         And(
                             # Fist Ring doesn't damage Vire
@@ -766,7 +789,7 @@ def make_d6_logic():
                         oos_has_fools_ore(),
                         And(
                             oos_option_medium_logic(),
-                            oos_has_bombs(4)
+                            oos_has_bombs_to_fight()
                         ),
                         And(
                             # Fist Ring doesn't damage Vire
@@ -787,7 +810,7 @@ def make_d6_logic():
                 oos_has_fools_ore(),
                 And(
                     oos_option_medium_logic(),
-                    oos_has_bombs(4)
+                    oos_has_bombs_to_fight()
                 ),
                 And(
                     # Fist Ring doesn't damage Vire
@@ -903,7 +926,7 @@ def make_d7_logic():
             # poe skip 2 : https://youtu.be/MIMm6q_yGyQ
             oos_option_hell_logic(),
             oos_has_small_keys(7, 2),
-            oos_has_bombs(),
+            oos_has_bombs_for_bombjump(),
             oos_has_cape(),
             oos_can_use_pegasus_seeds(),
             oos_has_flippers(),
@@ -966,8 +989,8 @@ def make_d7_logic():
                     oos_has_sword(),
                     oos_has_fools_ore(),
                     oos_has_rod(),
-                    oos_has_bombs(),
-                    oos_has_bombchus(4)
+                    oos_has_bombs_for_tiles(),
+                    oos_has_bombchus_for_tiles()
                 ),
                 # Reach trampolines using the magnet gloves
                 oos_has_feather(),
@@ -1249,7 +1272,7 @@ def make_d8_logic():
             oos_has_shooter(),
             And(
                 oos_option_medium_logic(),
-                oos_has_bombchus(2)
+                oos_has_bombchus_to_fight()
             )
         )],
 
@@ -1337,8 +1360,8 @@ def make_d11_logic(options: OracleOfSeasonsOptions):
                 And(
                     Or(
                         oos_has_flute(),
-                        oos_has_bombs(4),
-                        oos_has_bombchus(2)
+                        oos_has_bombs_to_fight(),
+                        oos_has_bombchus_to_fight()
                     ),
                     oos_can_kill_magunesu(),
                     oos_can_kill_spiked_beetle()
@@ -1379,7 +1402,7 @@ def make_d11_logic(options: OracleOfSeasonsOptions):
             oos_has_small_keys(11, 4),
             Or(
                 oos_has_magic_boomerang(),
-                oos_has_bombchus(2),
+                oos_has_bombchus_to_fight(),
                 And(
                     oos_option_medium_logic(),
                     oos_has_sword(True),

@@ -588,7 +588,7 @@ def make_holodrum_logic(origin_name: str, options: OracleOfSeasonsOptions):
                                 oos_can_use_ember_seeds(False),
                             ),
                             And(
-                                oos_has_bombs(2),
+                                oos_has_bombs_for_tiles(),
                                 oos_option_hard_logic()
                             )
                         )
@@ -899,7 +899,7 @@ def make_holodrum_logic(origin_name: str, options: OracleOfSeasonsOptions):
                 oos_has_bombs(),
                 And(  # Bombchu can only destroy the second block, so we need to use cape to jump around the first
                     oos_option_medium_logic(),
-                    oos_has_bombchus(4),
+                    oos_has_bombchus_for_tiles(),
                     oos_can_use_pegasus_seeds()
                 ),
             )

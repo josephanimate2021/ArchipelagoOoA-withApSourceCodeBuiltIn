@@ -284,7 +284,7 @@ def oos_can_beat_required_golden_beasts() -> Rule:
                              option_name="golden_beasts_requirement")
 
 
-def oos_can_complete_d11_puzzle() -> bool:
+def oos_can_complete_d11_puzzle() -> Rule:
     return Or(
         from_option(OracleOfSeasonsDungeonShuffle, OracleOfSeasonsDungeonShuffle.option_false),
         CanReachNumRegions([f"enter d{i}" for i in range(1, 9)], 7)  # And then deduce the last
@@ -395,8 +395,28 @@ def oos_has_bombs(amount: int = 1) -> Rule:
     )
 
 
+def oos_has_bombs_to_fight() -> Rule:
+    return oos_has_bombs(4)
+
+
+def oos_has_bombs_for_tiles() -> Rule:
+    return oos_has_bombs(2)
+
+
+def oos_has_bombs_for_bombjump() -> Rule:
+    return oos_has_bombs(2)
+
+
 def oos_has_bombchus(amount: int = 1) -> Rule:
     return Has("Bombchus", amount)
+
+
+def oos_has_bombchus_to_fight() -> Rule:
+    return oos_has_bombchus(2)
+
+
+def oos_has_bombchus_for_tiles() -> Rule:
+    return oos_has_bombchus(4)
 
 
 def oos_has_flute() -> Rule:
@@ -626,10 +646,10 @@ def oos_can_harvest_regrowing_bush() -> Rule:
     return Or(
         oos_has_sword(),
         oos_has_fools_ore(),
-        oos_has_bombs(),
+        oos_has_bombs_for_tiles(),
         And(
             oos_option_medium_logic(),
-            oos_has_bombchus(4)
+            oos_has_bombchus_for_tiles()
         )
     )
 
@@ -673,7 +693,7 @@ def oos_can_break_flowers(can_summon_companion: bool = False, allow_bombchus: bo
             # not to be frustrating
             oos_option_medium_logic(),
             Or(
-                oos_has_bombs(2),
+                oos_has_bombs_for_tiles(),
                 oos_can_use_ember_seeds(False),
                 And(
                     oos_has_seed_thrower(),
@@ -681,7 +701,7 @@ def oos_can_break_flowers(can_summon_companion: bool = False, allow_bombchus: bo
                 ),
                 And(
                     from_bool(allow_bombchus),
-                    oos_has_bombchus(4)
+                    oos_has_bombchus_for_tiles()
                 )
             )
         ),
@@ -691,7 +711,7 @@ def oos_can_break_flowers(can_summon_companion: bool = False, allow_bombchus: bo
 def oos_can_break_crystal() -> Rule:
     return Or(
         oos_has_sword(),
-        oos_has_bombs(),
+        oos_has_bombs_for_tiles(),
         oos_has_bracelet(),
         And(
             oos_option_medium_logic(),
@@ -699,7 +719,7 @@ def oos_can_break_crystal() -> Rule:
         ),
         And(
             oos_option_medium_logic(),
-            oos_has_bombchus(4)
+            oos_has_bombchus_for_tiles()
         ),
     )
 
@@ -778,9 +798,9 @@ def oos_can_kill_normal_enemy_no_cane(pit_available: bool = False,
         oos_can_kill_normal_using_slingshot(allow_gale_seeds),
         And(
             oos_option_medium_logic(),
-            oos_has_bombs(4)
+            oos_has_bombs_to_fight()
         ),
-        oos_has_bombchus(2),
+        oos_has_bombchus_to_fight(),
         oos_can_punch()
     )
 
@@ -840,11 +860,11 @@ def oos_can_kill_armored_enemy(allow_cane: bool, allow_bombchus: bool) -> Rule:
         oos_has_fools_ore(),
         And(
             oos_option_medium_logic(),
-            oos_has_bombs(4)
+            oos_has_bombs_to_fight()
         ),
         And(
             from_bool(allow_bombchus),
-            oos_has_bombchus(2)
+            oos_has_bombchus_to_fight()
         ),
         And(
             oos_has_satchel(2),  # Expect a 50+ seeds satchel to be able to chain rooms in dungeons
@@ -892,8 +912,8 @@ def oos_can_kill_moldorm(pit_available: bool = False) -> Rule:
 
 def oos_can_kill_facade() -> Rule:
     return Or(
-        oos_has_bombs(),
-        oos_has_bombchus(2)
+        oos_has_bombs_to_fight(),
+        oos_has_bombchus_to_fight()
     )
 
 
@@ -954,8 +974,14 @@ def oos_can_kill_d2_hardhat() -> Rule:
                 oos_has_scent_seeds(),
                 oos_has_gale_seeds(),
                 oos_has_mystery_seeds()
-            ),
-            oos_has_bombchus(2)
+            )
+        ),
+        And(
+            oos_option_medium_logic(),
+            Or(
+                oos_has_bombchus_to_fight(),
+                oos_has_bombs_to_fight()
+            )
         )
     )
 
@@ -1047,7 +1073,7 @@ def oos_can_remove_rockslide(can_summon_companion: bool) -> Rule:
         oos_has_bombs(),
         And(
             oos_option_medium_logic(),
-            oos_has_bombchus(4)
+            oos_has_bombchus_for_tiles()
         ),
         And(
             from_bool(can_summon_companion),
