@@ -45,7 +45,10 @@ CAVE_DATA: list[int | list[int | list[int]]] = [
     0x3c8f,  # 12
     0x3bd2,  # 13
     0x2fc9,  # 14 - ton of free space here
-    0x392d,  # 15
+    [  # 15
+        [0x1435, 0x1464], # Trade item (0x41) data
+        0x392d
+    ],
     0x3a07,  # 16
     0x3f3a,  # 17
     0x3e6d,  # 18
@@ -320,6 +323,7 @@ DEFINES = {
     "TREASURE_MAKU_SEED": "$36",
     "TREASURE_ORE_CHUNKS": "$37",
     "TREASURE_ESSENCE": "$40",
+    "TREASURE_ARCHIPELAGO_ITEM": "$41", # (ex trade item)
     "TREASURE_GNARLED_KEY": "$42",
     "TREASURE_FLOODGATE_KEY": "$43",
     "TREASURE_DRAGON_KEY": "$44",
