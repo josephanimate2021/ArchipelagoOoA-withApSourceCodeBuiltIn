@@ -243,7 +243,21 @@ class OracleOfSeasonsWorld(World):
         if self.options.linked_heros_cave.value:
             self.dungeon_entrances["d11 entrance"] = "enter d11"
 
-         return False
+    def collect(self, state: CollectionState, item: Item) -> bool:
+        change = super().collect(state, item)
+        if not change:
+            return False
+
+        mapping = self.item_mapping_collect.get(item.name, None)
+        if mapping is not None:
+            state.prog_items[self.player][mapping[0]] += mapping[1]
+
+        return True
+
+    def remove(self, state: CollectionState, item: Item) -> bool:
+        change = super().remove(state, item)
+        if not change:
+            return False
 
         mapping = self.item_mapping_collect.get(item.name, None)
         if mapping is not None:
