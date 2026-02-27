@@ -1,6 +1,6 @@
 import os
 from threading import Event
-from typing import List, ClassVar, Any, Optional, Type, TextIO
+from typing import List, ClassVar, Any, Optional, Type, TextIO, Dict
 
 from BaseClasses import Item, ItemClassification, MultiWorld, CollectionState
 from Options import Option
@@ -66,6 +66,10 @@ class OracleOfSeasonsWorld(World):
         "Bombchus (20)": "Bombchus",
     }
 
+    ages = False
+    seasons = True
+    romhack = False
+
     @classmethod
     def version(cls) -> str:
         return cls.world_version.as_simple_string()
@@ -96,12 +100,24 @@ class OracleOfSeasonsWorld(World):
     def generate_early(self) -> None:
         if self.interpret_slot_data(None):
             return
-        from .generation.GenerateEarly import generate_early
+        from .common.generation.GenerateEarly import generate_early
         generate_early(self)
 
+    def restrict_non_local_items(self) -> None:
+        from .generation.GenerateEarly import restrict_non_local_items
+        restrict_non_local_items(self)
+
+    def location_is_active(self, location_name: str, location_data: dict[str, Any]) -> Any: 
+        from .generation.CreateRegions import location_is_active
+        return location_is_active(self, location_name, location_data)
+
     def create_regions(self) -> None:
-        from .generation.CreateRegions import create_regions
+        from .common.generation.CreateRegions import create_regions
         create_regions(self)
+
+    def create_events(self) -> None:
+        from .generation.CreateRegions import create_events
+        create_events(self)
 
     def set_rules(self) -> None:
         from .generation.Logic import create_connections, apply_self_locking_rules
@@ -127,45 +143,8 @@ class OracleOfSeasonsWorld(World):
             self.multiworld.register_indirect_condition(self.get_region("lost woods top statue"), self.get_entrance("rooster adventure -> lost woods deku"))
 
     def create_item(self, name: str) -> Item:
-        # If item name has a "!PROG" suffix, force it to be progression. This is typically used to create the right
-        # amount of progression rupees while keeping them a filler item as default
-        if name.endswith("!PROG"):
-            name = name.removesuffix("!PROG")
-            classification = ItemClassification.progression_deprioritized_skip_balancing
-        elif name.endswith("!USEFUL"):
-            # Same for above but with useful. This is typically used for Required Rings,
-            # as we don't want those locked in a barren dungeon
-            name = name.removesuffix("!USEFUL")
-            classification = ITEMS_DATA[name]["classification"]
-            if classification == ItemClassification.filler:
-                classification = ItemClassification.useful
-        elif name.endswith("!FILLER"):
-            name = name.removesuffix("!FILLER")
-            classification = ItemClassification.filler
-        else:
-            classification = ITEMS_DATA[name]["classification"]
-        ap_code = self.item_name_to_id[name]
-
-        # A few items become progression only in hard logic
-        progression_items_in_medium_logic = ["Expert's Ring", "Fist Ring", "Swimmer's Ring", "Energy Ring", "Heart Ring L-2"]
-        if self.options.logic_difficulty >= OracleOfSeasonsLogicDifficulty.option_medium and name in progression_items_in_medium_logic:
-            classification = ItemClassification.progression
-        if self.options.logic_difficulty >= OracleOfSeasonsLogicDifficulty.option_hard and name == "Heart Ring L-1":
-            classification = ItemClassification.progression
-        # As many Gasha Seeds become progression as the number of deterministic Gasha Nuts
-        if self.remaining_progressive_gasha_seeds > 0 and name == "Gasha Seed":
-            self.remaining_progressive_gasha_seeds -= 1
-            classification = ItemClassification.progression_deprioritized
-
-        # Players in Medium+ are expected to know the default paths through Lost Woods, Phonograph becomes filler
-        if self.options.logic_difficulty >= OracleOfSeasonsLogicDifficulty.option_medium and not self.options.randomize_lost_woods_item_sequence and name == "Phonograph":
-            classification = ItemClassification.filler
-
-        # UT doesn't let us know if the item is progression or not, so it is always progression
-        if hasattr(self.multiworld, "generation_is_fake"):
-            classification = ItemClassification.progression
-
-        return Item(name, classification, ap_code, self.player)
+        from .common.generation.CreateItems import create_item
+        return create_item(self, name)
 
     def create_items(self) -> None:
         from .generation.CreateItems import create_items
@@ -257,49 +236,14 @@ class OracleOfSeasonsWorld(World):
         return slot_data
 
     def write_spoiler(self, spoiler_handle: TextIO):
-        from .generation.CreateRegions import location_is_active
-        spoiler_handle.write(f"\n\nDefault Seasons ({self.multiworld.player_name[self.player]}):\n")
-        for region_name, season in self.default_seasons.items():
-            spoiler_handle.write(f"\t- {region_name} --> {SEASON_NAMES[season]}\n")
+        from .common.generation.SpoilerLog import write_spoiler
+        write_spoiler(self, spoiler_handle)
 
-        if self.options.shuffle_dungeons:
-            spoiler_handle.write(f"\nDungeon Entrances ({self.multiworld.player_name[self.player]}):\n")
-            for entrance, dungeon in self.dungeon_entrances.items():
-                spoiler_handle.write(f"\t- {entrance} --> {dungeon.replace('enter ', '')}\n")
+    def handle_heros_cave(self):
+        if self.options.linked_heros_cave.value:
+            self.dungeon_entrances["d11 entrance"] = "enter d11"
 
-        if self.options.shuffle_portals != "vanilla":
-            spoiler_handle.write(f"\nSubrosia Portals ({self.multiworld.player_name[self.player]}):\n")
-            for portal_holo, portal_sub in self.portal_connections.items():
-                spoiler_handle.write(f"\t- {portal_holo} --> {portal_sub}\n")
-
-        spoiler_handle.write(f"\nShop Prices ({self.multiworld.player_name[self.player]}):\n")
-        shop_codes = [code for shop in self.shop_order for code in shop]
-        shop_codes.extend(MARKET_LOCATIONS)
-        for shop_code in shop_codes:
-            price = self.shop_prices[shop_code]
-            for loc_name, loc_data in LOCATIONS_DATA.items():
-                if loc_data.get("symbolic_name", None) is None or loc_data["symbolic_name"] != shop_code:
-                    continue
-                if location_is_active(self, loc_name, loc_data):
-                    currency = "Ore Chunks" if shop_code.startswith("subrosia") else "Rupees"
-                    spoiler_handle.write(f"\t- {loc_name}: {price} {currency}\n")
-                break
-
-    def collect(self, state: CollectionState, item: Item) -> bool:
-        change = super().collect(state, item)
-        if not change:
-            return False
-
-        mapping = self.item_mapping_collect.get(item.name, None)
-        if mapping is not None:
-            state.prog_items[self.player][mapping[0]] += mapping[1]
-
-        return True
-
-    def remove(self, state: CollectionState, item: Item) -> bool:
-        change = super().remove(state, item)
-        if not change:
-            return False
+         return False
 
         mapping = self.item_mapping_collect.get(item.name, None)
         if mapping is not None:
