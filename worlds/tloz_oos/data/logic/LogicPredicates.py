@@ -1,8 +1,8 @@
 from rule_builder.rules import And, Or, CanReachRegion
 from .Rulebuilder import *
 from ..Constants import *
-from ...Options import OracleOfSeasonsLogicDifficulty, OracleOfSeasonsDefaultSeedType, OracleOfSeasonsMasterKeys, OracleOfSeasonsDungeonShuffle, \
-    OracleOfSeasonsD0AltEntrance, OracleOfSeasonsD2AltEntrance, OracleOfSeasonsAnimalCompanion, OracleOfSeasonsLostWoodsItemSequence, \
+from ...Options import OraclesLogicDifficulty, OraclesDefaultSeedType, OraclesMasterKeys, OraclesDungeonShuffle, \
+    OracleOfSeasonsD0AltEntrance, OracleOfSeasonsD2AltEntrance, OraclesAnimalCompanion, OracleOfSeasonsLostWoodsItemSequence, \
     OracleOfSeasonsLostWoodsMainSequence, OracleOfSeasonsHoronSeason
 
 
@@ -128,7 +128,7 @@ def oos_has_magnet_gloves() -> Rule:
 def oos_has_ember_seeds() -> Rule:
     return Or(
         Has("Ember Seeds"),
-        from_option(OracleOfSeasonsDefaultSeedType, OracleOfSeasonsDefaultSeedType.option_ember),
+        from_option(OraclesDefaultSeedType, OraclesDefaultSeedType.option_ember),
         And(
             Has("_wild_ember_seeds"),
             oos_option_medium_logic()
@@ -139,21 +139,21 @@ def oos_has_ember_seeds() -> Rule:
 def oos_has_scent_seeds() -> Rule:
     return Or(
         Has("Scent Seeds"),
-        from_option(OracleOfSeasonsDefaultSeedType, OracleOfSeasonsDefaultSeedType.option_scent),
+        from_option(OraclesDefaultSeedType, OraclesDefaultSeedType.option_scent),
     )
 
 
 def oos_has_pegasus_seeds() -> Rule:
     return Or(
         Has("Pegasus Seeds"),
-        from_option(OracleOfSeasonsDefaultSeedType, OracleOfSeasonsDefaultSeedType.option_pegasus)
+        from_option(OraclesDefaultSeedType, OraclesDefaultSeedType.option_pegasus)
     )
 
 
 def oos_has_mystery_seeds() -> Rule:
     return Or(
         Has("Mystery Seeds"),
-        from_option(OracleOfSeasonsDefaultSeedType, OracleOfSeasonsDefaultSeedType.option_mystery),
+        from_option(OraclesDefaultSeedType, OraclesDefaultSeedType.option_mystery),
         And(
             Has("_wild_mystery_seeds"),
             oos_option_medium_logic()
@@ -164,44 +164,44 @@ def oos_has_mystery_seeds() -> Rule:
 def oos_has_gale_seeds() -> Rule:
     return Or(
         Has("Gale Seeds"),
-        from_option(OracleOfSeasonsDefaultSeedType, OracleOfSeasonsDefaultSeedType.option_gale)
+        from_option(OraclesDefaultSeedType, OraclesDefaultSeedType.option_gale)
     )
 
 
 def oos_has_small_keys(dungeon_id: int, amount: int = 1) -> Rule:
     return Or(
         Has(f"Small Key ({DUNGEON_NAMES[dungeon_id]})", amount,
-            options=[OptionFilter(OracleOfSeasonsMasterKeys, OracleOfSeasonsMasterKeys.option_disabled)]),
+            options=[OptionFilter(OraclesMasterKeys, OraclesMasterKeys.option_disabled)]),
         Has(f"Master Key ({DUNGEON_NAMES[dungeon_id]})",
-            options=[OptionFilter(OracleOfSeasonsMasterKeys, OracleOfSeasonsMasterKeys.option_disabled, "ne")]),
+            options=[OptionFilter(OraclesMasterKeys, OraclesMasterKeys.option_disabled, "ne")]),
     )
 
 
 def oos_has_boss_key(dungeon_id: int) -> Rule:
     return Or(
         Has(f"Boss Key ({DUNGEON_NAMES[dungeon_id]})",
-            options=[OptionFilter(OracleOfSeasonsMasterKeys, OracleOfSeasonsMasterKeys.option_all_dungeon_keys, "ne")]),
+            options=[OptionFilter(OraclesMasterKeys, OraclesMasterKeys.option_all_dungeon_keys, "ne")]),
         Has(f"Master Key ({DUNGEON_NAMES[dungeon_id]})",
-            options=[OptionFilter(OracleOfSeasonsMasterKeys, OracleOfSeasonsMasterKeys.option_all_dungeon_keys)]),
+            options=[OptionFilter(OraclesMasterKeys, OraclesMasterKeys.option_all_dungeon_keys)]),
     )
 
 
 # Options and generation predicates ###########################################
 
 def oos_option_medium_logic() -> Rule:
-    return from_option(OracleOfSeasonsLogicDifficulty, OracleOfSeasonsLogicDifficulty.option_medium, "ge")
+    return from_option(OraclesLogicDifficulty, OraclesLogicDifficulty.option_medium, "ge")
 
 
 def oos_option_hard_logic() -> Rule:
-    return from_option(OracleOfSeasonsLogicDifficulty, OracleOfSeasonsLogicDifficulty.option_hard, "ge")
+    return from_option(OraclesLogicDifficulty, OraclesLogicDifficulty.option_hard, "ge")
 
 
 def oos_option_hell_logic() -> Rule:
-    return from_option(OracleOfSeasonsLogicDifficulty, OracleOfSeasonsLogicDifficulty.option_hell, "ge")
+    return from_option(OraclesLogicDifficulty, OraclesLogicDifficulty.option_hell, "ge")
 
 
 def oos_option_shuffled_dungeons() -> Rule:
-    return from_option(OracleOfSeasonsDungeonShuffle, OracleOfSeasonsDungeonShuffle.option_true)
+    return from_option(OraclesDungeonShuffle, OraclesDungeonShuffle.option_true)
 
 
 def oos_option_no_d0_alt_entrance() -> Rule:
@@ -213,15 +213,15 @@ def oos_option_no_d2_alt_entrance() -> Rule:
 
 
 def oos_is_companion_ricky() -> Rule:
-    return from_option(OracleOfSeasonsAnimalCompanion, OracleOfSeasonsAnimalCompanion.option_ricky)
+    return from_option(OraclesAnimalCompanion, OraclesAnimalCompanion.option_ricky)
 
 
 def oos_is_companion_moosh() -> Rule:
-    return from_option(OracleOfSeasonsAnimalCompanion, OracleOfSeasonsAnimalCompanion.option_moosh)
+    return from_option(OraclesAnimalCompanion, OraclesAnimalCompanion.option_moosh)
 
 
 def oos_is_companion_dimitri() -> Rule:
-    return from_option(OracleOfSeasonsAnimalCompanion, OracleOfSeasonsAnimalCompanion.option_dimitri)
+    return from_option(OraclesAnimalCompanion, OraclesAnimalCompanion.option_dimitri)
 
 
 def oos_is_default_season(area_name: str, season: int, is_season: bool = True) -> Rule:
@@ -286,7 +286,7 @@ def oos_can_beat_required_golden_beasts() -> Rule:
 
 def oos_can_complete_d11_puzzle() -> Rule:
     return Or(
-        from_option(OracleOfSeasonsDungeonShuffle, OracleOfSeasonsDungeonShuffle.option_false),
+        from_option(OraclesDungeonShuffle, OraclesDungeonShuffle.option_false),
         CanReachNumRegions([f"enter d{i}" for i in range(1, 9)], 7)  # And then deduce the last
     )
 

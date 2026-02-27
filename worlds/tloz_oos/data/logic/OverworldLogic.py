@@ -1,4 +1,4 @@
-from ...Options import OracleOfSeasonsOptions, OracleOfSeasonsLinkedHerosCave, OracleOfSeasonsIncludeSecretLocations, OraclesOfSeasonsTarmGateRequirement
+from ...Options import OracleOfSeasonsOptions, OracleOfSeasonsLinkedHerosCave, OraclesIncludeSecretLocations, OraclesOfSeasonsTarmGateRequirement
 from .LogicPredicates import *
 
 
@@ -888,7 +888,7 @@ def make_holodrum_logic(origin_name: str, options: OracleOfSeasonsOptions):
                 Has("Lava Soup"),
                 And(
                     oos_self_locking_item("Goron Mountain: Biggoron Trade", "Lava Soup"),
-                    from_option(OracleOfSeasonsIncludeSecretLocations, OracleOfSeasonsIncludeSecretLocations.option_false)
+                    from_option(OraclesIncludeSecretLocations, OraclesIncludeSecretLocations.option_false)
                 )
             )
         )],
@@ -1375,7 +1375,7 @@ def make_holodrum_logic(origin_name: str, options: OracleOfSeasonsOptions):
             )],
         ])
 
-    if options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_hell:
+    if options.logic_difficulty == OraclesLogicDifficulty.option_hell:
         # Rooster adventure
         holodrum_logic.extend([
             ["d4 entrance", "dragon keyhole", False, And(

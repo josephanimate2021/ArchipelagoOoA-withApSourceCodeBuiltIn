@@ -6,10 +6,10 @@ from pathlib import Path
 import Utils
 from settings import get_settings
 from .Constants import *
-from .Util import *
+from ..common.patching.Data import *
 from .asm import asm_files
-from ..Options import OracleOfSeasonsOldMenShuffle, OracleOfSeasonsGoal, OracleOfSeasonsAnimalCompanion, \
-    OracleOfSeasonsMasterKeys, OracleOfSeasonsFoolsOre, OracleOfSeasonsShowDungeonsWithEssence, OracleOfSeasonsLinkedHerosCave
+from ..Options import OraclesOldMenShuffle, OraclesGoal, OraclesAnimalCompanion, \
+    OraclesMasterKeys, OracleOfSeasonsFoolsOre, OraclesShowDungeonsWithEssence, OracleOfSeasonsLinkedHerosCave
 from ..World import OracleOfSeasonsWorld
 from ..common.patching.RomData import RomData
 from ..common.patching.Util import get_available_random_colors_from_sprite_name, simple_hex
@@ -17,7 +17,7 @@ from ..common.patching.text import normalize_text
 from ..common.patching.z80asm.Assembler import Z80Assembler
 from ..common.patching.z80asm.Util import parse_hex_string_to_value
 from ..data.Constants import *
-from ..data.Locations import LOCATIONS_DATA
+from ..data import LOCATIONS_DATA, ITEMS_DATA
 from ..generation.Hints import make_hint_texts
 
 
@@ -53,7 +53,7 @@ def get_asm_files(patch_data: dict[str, Any]) -> list[str]:
     files = list(asm_files["base"])
     if patch_data["options"]["quick_flute"]:
         files += asm_files["quick_flute"]
-    if patch_data["options"]["shuffle_old_men"] == OracleOfSeasonsOldMenShuffle.option_turn_into_locations:
+    if patch_data["options"]["shuffle_old_men"] == OraclesOldMenShuffle.option_turn_into_locations:
         files += asm_files["old_men_as_locations"]
     if patch_data["options"]["remove_d0_alt_entrance"]:
         files += asm_files["remove_d0_alt_entrance"]
@@ -63,7 +63,7 @@ def get_asm_files(patch_data: dict[str, Any]) -> list[str]:
         files += asm_files["prevent_drowning_d0_warp"]
     elif patch_data["dungeon_entrances"]["d3"] == "d2":
         files += asm_files["prevent_drowning_d2_warp"]
-    if patch_data["options"]["goal"] == OracleOfSeasonsGoal.option_beat_ganon:
+    if patch_data["options"]["goal"] == OraclesGoal.option_beat_ganon:
         files += asm_files["ganon_goal"]
     if patch_data["options"]["rosa_quick_unlock"]:
         files += asm_files["instant_rosa"]
@@ -322,7 +322,7 @@ def define_option_constants(assembler: Z80Assembler, patch_data: dict[str, Any])
     keysanity = patch_data["options"]["keysanity_small_keys"] or patch_data["options"]["keysanity_boss_keys"]
     assembler.define_byte("option.customCompassChimes", 1 if keysanity else 0)
 
-    master_keys_as_boss_keys = patch_data["options"]["master_keys"] == OracleOfSeasonsMasterKeys.option_all_dungeon_keys
+    master_keys_as_boss_keys = patch_data["options"]["master_keys"] == OraclesMasterKeys.option_all_dungeon_keys
     assembler.define_byte("option.smallKeySprite", 0x43 if master_keys_as_boss_keys else 0x42)
 
     scrubs_all_refill = not patch_data["options"]["shuffle_business_scrubs"]
@@ -655,7 +655,7 @@ def alter_treasure_types(rom: RomData, item_data: dict[str, dict[str, Any]]) -> 
 
 
 def set_old_men_rupee_values(rom: RomData, patch_data: dict[str, Any]) -> None:
-    if patch_data["options"]["shuffle_old_men"] == OracleOfSeasonsOldMenShuffle.option_turn_into_locations:
+    if patch_data["options"]["shuffle_old_men"] == OraclesOldMenShuffle.option_turn_into_locations:
         return
     for i, name in enumerate(OLD_MAN_RUPEE_VALUES.keys()):
         if name in patch_data["old_man_rupee_values"]:
@@ -671,7 +671,7 @@ def set_old_men_rupee_values(rom: RomData, patch_data: dict[str, Any]) -> None:
 
 def apply_miscellaneous_options(rom: RomData, patch_data: dict[str, Any]) -> None:
     # If companion is Dimitri, allow calling him using the Flute inside Sunken City
-    if patch_data["options"]["animal_companion"] == OracleOfSeasonsAnimalCompanion.option_dimitri:
+    if patch_data["options"]["animal_companion"] == OraclesAnimalCompanion.option_dimitri:
         rom.write_byte(0x24f39, 0xa7)
         rom.write_byte(0x24f3b, 0xe7)
 
@@ -680,12 +680,12 @@ def apply_miscellaneous_options(rom: RomData, patch_data: dict[str, Any]) -> Non
     if patch_data["options"]["enforce_potion_in_shop"]:
         rom.write_byte(0x20cfb, 0x00)
 
-    if patch_data["options"]["master_keys"] != OracleOfSeasonsMasterKeys.option_disabled:
+    if patch_data["options"]["master_keys"] != OraclesMasterKeys.option_disabled:
         # Remove small key consumption on keydoor opened
         rom.write_byte(0x18357, 0x00)
         # Change obtention text
         rom.write_bytes(0x7546f, [0x02, 0xe5, 0x20, 0x4b, 0x65, 0x79, 0x05, 0xD8, 0x00])
-    if patch_data["options"]["master_keys"] == OracleOfSeasonsMasterKeys.option_all_dungeon_keys:
+    if patch_data["options"]["master_keys"] == OraclesMasterKeys.option_all_dungeon_keys:
         # Remove boss key consumption on boss keydoor opened
         rom.write_word(0x1834f, 0x0000)
     rom.write_byte(GameboyAddress(0x0a, 0x46ed).address_in_rom(),
@@ -1153,7 +1153,7 @@ def define_essence_sparkle_constants(assembler: Z80Assembler, patch_data: dict[s
             byte_array.extend([entrance_data["group"], entrance_data["room"]])
     assembler.add_floating_chunk("essenceLocationsTable", byte_array)
 
-    require_compass = show_dungeons_with_essence == OracleOfSeasonsShowDungeonsWithEssence.option_with_compass
+    require_compass = show_dungeons_with_essence == OraclesShowDungeonsWithEssence.option_with_compass
     assembler.define_byte("option.essenceSparklesRequireCompass", 1 if require_compass else 0)
 
 

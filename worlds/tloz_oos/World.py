@@ -135,7 +135,7 @@ class OracleOfSeasonsWorld(World):
             for i in range(1, 9):
                 self.multiworld.register_indirect_condition(self.get_region(f"enter d{i}"), self.get_entrance("d11 floor 4 chest -> d11 final chest"))
 
-        if self.options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_hell:
+        if self.options.logic_difficulty == OraclesLogicDifficulty.option_hell:
             cucco_region = self.get_region("rooster adventure")
             # This saves using an event which is slightly more efficient
             self.multiworld.register_indirect_condition(cucco_region, self.get_entrance("d6 sector -> old man near d6"))

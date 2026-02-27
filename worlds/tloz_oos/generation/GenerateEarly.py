@@ -1,5 +1,5 @@
 from Options import OptionError
-from ..Options import OracleOfSeasonsOldMenShuffle
+from ..Options import OraclesOldMenShuffle
 from ..Util import get_old_man_values_pool
 from ..World import OracleOfSeasonsWorld
 from ..data import LOCATIONS_DATA, ITEMS_DATA
@@ -139,15 +139,15 @@ def randomize_default_seasons(world: OracleOfSeasonsWorld) -> None:
 
 
 def randomize_old_men(world: OracleOfSeasonsWorld) -> None:
-    if world.options.shuffle_old_men == OracleOfSeasonsOldMenShuffle.option_shuffled_values:
+    if world.options.shuffle_old_men == OraclesOldMenShuffle.option_shuffled_values:
         shuffled_rupees = list(world.old_man_rupee_values.values())
         world.random.shuffle(shuffled_rupees)
         world.old_man_rupee_values = dict(zip(world.old_man_rupee_values, shuffled_rupees))
-    elif world.options.shuffle_old_men == OracleOfSeasonsOldMenShuffle.option_random_values:
+    elif world.options.shuffle_old_men == OraclesOldMenShuffle.option_random_values:
         for key in world.old_man_rupee_values.keys():
             sign = world.random.choice([-1, 1])
             world.old_man_rupee_values[key] = world.random.choice(get_old_man_values_pool()) * sign
-    elif world.options.shuffle_old_men == OracleOfSeasonsOldMenShuffle.option_random_positive_values:
+    elif world.options.shuffle_old_men == OraclesOldMenShuffle.option_random_positive_values:
         for key in world.old_man_rupee_values.keys():
             world.old_man_rupee_values[key] = world.random.choice(get_old_man_values_pool())
     else:

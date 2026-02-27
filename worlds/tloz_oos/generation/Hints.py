@@ -7,7 +7,7 @@ from ..common.patching.Util import simple_hex
 from ..common.patching.text import normalize_text
 
 if TYPE_CHECKING:
-    from . import OracleOfSeasonsWorld
+    from ..World import OracleOfSeasonsWorld
 
 know_it_all_birds = [
     "TX_3200",  # "Know-It-All Bird #1",

@@ -8,6 +8,7 @@ from .Functions import *
 from .data_manager.text import apply_ages_edits, get_modded_seasons_text_data
 from ..common.patching.text.encoding import write_text_data
 from ..common.patching.z80asm.Assembler import Z80Assembler, Z80Block, GameboyAddress
+from ..common.data.Constants import SEASONS_ROM_HASH
 
 
 class OoSPatchExtensions(APPatchExtension):
@@ -117,7 +118,7 @@ class OoSPatchExtensions(APPatchExtension):
 
 
 class OoSProcedurePatch(APProcedurePatch, APTokenMixin):
-    hash = [ROM_HASH]
+    hash = [SEASONS_ROM_HASH]
     patch_file_ending: str = ".apoos"
     result_file_ending: str = ".gbc"
 

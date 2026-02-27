@@ -291,9 +291,9 @@ class OracleOfSeasonsOptions(PerGameCommonOptions):
     death_link: OracleOfSeasonsDeathLink
 
     # Optional locations
-    advance_shop: OraclesShop
+    advance_shop: OraclesAdvanceShop
     shuffle_old_men: OraclesOldMenShuffle
-    shuffle_business_scrubs: OraclesScrubsShuffle
+    shuffle_business_scrubs: OraclesBusinessScrubsShuffle
     shuffle_golden_ore_spots: OracleOfSeasonsGoldenOreSpotsShuffle
     deterministic_gasha_locations: OraclesGashaLocations
     secret_locations: OraclesIncludeSecretLocations

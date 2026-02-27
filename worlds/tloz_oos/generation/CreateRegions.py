@@ -2,7 +2,7 @@ from typing_extensions import Any
 
 from BaseClasses import Item, ItemClassification, Location, Region, LocationProgressType
 from ..World import OracleOfSeasonsWorld
-from ..Options import OracleOfSeasonsGoal, OracleOfSeasonsOldMenShuffle, OracleOfSeasonsLogicDifficulty
+from ..Options import OraclesGoal, OraclesOldMenShuffle, OraclesLogicDifficulty
 from ..data import LOCATIONS_DATA
 from ..data.Constants import GASHA_SPOT_REGIONS, ITEM_GROUPS, SCRUB_LOCATIONS, SUBROSIA_HIDDEN_DIGGING_SPOTS_LOCATIONS, RUPEE_OLD_MAN_LOCATIONS, \
     SECRETS, LOCATION_GROUPS
@@ -19,7 +19,7 @@ def location_is_active(world: OracleOfSeasonsWorld, location_name: str, location
     if location_name in SUBROSIA_HIDDEN_DIGGING_SPOTS_LOCATIONS:
         return world.options.shuffle_golden_ore_spots
     if location_name in RUPEE_OLD_MAN_LOCATIONS:
-        return world.options.shuffle_old_men == OracleOfSeasonsOldMenShuffle.option_turn_into_locations
+        return world.options.shuffle_old_men == OraclesOldMenShuffle.option_turn_into_locations
     if location_name in SCRUB_LOCATIONS:
         return world.options.shuffle_business_scrubs
     if location_name == "Horon Village: Shop #3":
@@ -57,7 +57,7 @@ def create_regions(world: OracleOfSeasonsWorld) -> None:
         region = Region(region_name, world.player, world.multiworld)
         world.multiworld.regions.append(region)
 
-    if world.options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_hell:
+    if world.options.logic_difficulty == OraclesLogicDifficulty.option_hell:
         region = Region("rooster adventure", world.player, world.multiworld)
         world.multiworld.regions.append(region)
 
@@ -103,14 +103,14 @@ def create_events(world: OracleOfSeasonsWorld) -> None:
     # Various events to help with logic
     create_event(world, "bomb temple remains", "_triggered_volcano")
     create_event(world, "subrosia pirates sector", "_met_pirates")
-    if world.options.logic_difficulty >= OracleOfSeasonsLogicDifficulty.option_medium:
+    if world.options.logic_difficulty >= OraclesLogicDifficulty.option_medium:
         create_event(world, "d2 rupee room", "_reached_d2_rupee_room")
         create_event(world, "d6 rupee room", "_reached_d6_rupee_room")
     create_event(world, "maku seed", "Maku Seed")
 
-    if world.options.goal == OracleOfSeasonsGoal.option_beat_onox:
+    if world.options.goal == OraclesGoal.option_beat_vanila_boss:
         create_event(world, "onox beaten", "_beaten_game")
-    elif world.options.goal == OracleOfSeasonsGoal.option_beat_ganon:
+    elif world.options.goal == OraclesGoal.option_beat_ganon:
         create_event(world, "ganon beaten", "_beaten_game")
 
     # Create events for reaching Gasha spots, used when Gasha-sanity is on
@@ -118,7 +118,7 @@ def create_events(world: OracleOfSeasonsWorld) -> None:
         create_event(world, region_name, f"_reached_{region_name}")
 
     # Create event items to represent rupees obtained from Old Men, unless they are turned into locations
-    if world.options.shuffle_old_men != OracleOfSeasonsOldMenShuffle.option_turn_into_locations:
+    if world.options.shuffle_old_men != OraclesOldMenShuffle.option_turn_into_locations:
         for region_name in world.old_man_rupee_values:
             create_event(world, region_name, "rupees from " + region_name)
 

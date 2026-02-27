@@ -2,8 +2,8 @@ import logging
 
 from BaseClasses import Item, ItemClassification
 from ..World import OracleOfSeasonsWorld
-from ..Options import OracleOfSeasonsShopPrices, OracleOfSeasonsMasterKeys, OracleOfSeasonsFoolsOre, OracleOfSeasonsDuplicateSeedTree, \
-    OracleOfSeasonsLogicDifficulty
+from ..Options import OraclesShopPrices, OraclesMasterKeys, OracleOfSeasonsFoolsOre, OracleOfSeasonsDuplicateSeedTree, \
+    OraclesLogicDifficulty
 from ..data import LOCATIONS_DATA, ITEMS_DATA
 from ..data.Constants import ITEM_GROUPS, DUNGEON_NAMES, MARKET_LOCATIONS, VALID_RUPEE_ITEM_VALUES, VALID_ORE_ITEM_VALUES, SEED_ITEMS
 from ..generation.CreateRegions import location_is_active
@@ -31,9 +31,9 @@ def create_item(world: OracleOfSeasonsWorld, name: str) -> Item:
 
     # A few items become progression only in hard logic
     progression_items_in_medium_logic = ["Expert's Ring", "Fist Ring", "Swimmer's Ring", "Energy Ring", "Heart Ring L-2"]
-    if world.options.logic_difficulty >= OracleOfSeasonsLogicDifficulty.option_medium and name in progression_items_in_medium_logic:
+    if world.options.logic_difficulty >= OraclesLogicDifficulty.option_medium and name in progression_items_in_medium_logic:
         classification = ItemClassification.progression
-    if world.options.logic_difficulty >= OracleOfSeasonsLogicDifficulty.option_hard and name == "Heart Ring L-1":
+    if world.options.logic_difficulty >= OraclesLogicDifficulty.option_hard and name == "Heart Ring L-1":
         classification = ItemClassification.progression
     # As many Gasha Seeds become progression as the number of deterministic Gasha Nuts
     if world.remaining_progressive_gasha_seeds > 0 and name == "Gasha Seed":
@@ -41,7 +41,7 @@ def create_item(world: OracleOfSeasonsWorld, name: str) -> Item:
         classification = ItemClassification.progression_deprioritized
 
     # Players in Medium+ are expected to know the default paths through Lost Woods, Phonograph becomes filler
-    if world.options.logic_difficulty >= OracleOfSeasonsLogicDifficulty.option_medium and not world.options.randomize_lost_woods_item_sequence and name == "Phonograph":
+    if world.options.logic_difficulty >= OraclesLogicDifficulty.option_medium and not world.options.randomize_lost_woods_item_sequence and name == "Phonograph":
         classification = ItemClassification.filler
 
     # UT doesn't let us know if the item is progression or not, so it is always progression
@@ -87,22 +87,22 @@ def build_item_pool_dict(world: OracleOfSeasonsWorld) -> dict[str, int]:
             filler_item_count += 1
             continue
         if item_name.startswith("Rupees ("):
-            if world.options.shop_prices == OracleOfSeasonsShopPrices.option_free:
+            if world.options.shop_prices == OraclesShopPrices.option_free:
                 filler_item_count += 1
             else:
                 rupee_item_count += 1
             continue
         if item_name.startswith("Ore Chunks ("):
-            if world.options.shop_prices == OracleOfSeasonsShopPrices.option_free or not world.options.shuffle_golden_ore_spots:
+            if world.options.shop_prices == OraclesShopPrices.option_free or not world.options.shuffle_golden_ore_spots:
                 filler_item_count += 1
             else:
                 ore_item_count += 1
             continue
-        if world.options.master_keys != OracleOfSeasonsMasterKeys.option_disabled and "Small Key" in item_name:
+        if world.options.master_keys != OraclesMasterKeys.option_disabled and "Small Key" in item_name:
             # Small Keys don't exist if Master Keys are set to replace them
             filler_item_count += 1
             continue
-        if world.options.master_keys == OracleOfSeasonsMasterKeys.option_all_dungeon_keys and "Boss Key" in item_name:
+        if world.options.master_keys == OraclesMasterKeys.option_all_dungeon_keys and "Boss Key" in item_name:
             # Boss keys don't exist if Master Keys are set to replace them
             filler_item_count += 1
             continue
@@ -160,7 +160,7 @@ def build_item_pool_dict(world: OracleOfSeasonsWorld) -> dict[str, int]:
         extra_items += 4
 
     # If Master Keys are enabled, put one for every dungeon
-    if world.options.master_keys != OracleOfSeasonsMasterKeys.option_disabled:
+    if world.options.master_keys != OraclesMasterKeys.option_disabled:
         for small_key_name in ITEM_GROUPS["Master Keys"]:
             if world.options.linked_heros_cave or small_key_name != "Master Key (Linked Hero's Cave)":
                 item_pool_dict[small_key_name] = 1
@@ -280,7 +280,7 @@ def filter_confined_dungeon_items_from_pool(world: OracleOfSeasonsWorld, items: 
                 excluded_dungeons.append(i + 1)
 
     # Put Small Keys / Master Keys unless keysanity is enabled for those
-    if world.options.master_keys != OracleOfSeasonsMasterKeys.option_disabled:
+    if world.options.master_keys != OraclesMasterKeys.option_disabled:
         small_keys_name = "Master Key"
     else:
         small_keys_name = "Small Key"
