@@ -24,11 +24,10 @@ Archipelago 0.6.2 or newer were not able to use the apworld to play The Legend o
 ## Building
 In order to build this code for usage with Archipelago, you need to follow these steps:
 1. Download the source code by clicking on Code -> Download ZIP
-2. Extract the zip file where you will see a folder called ArchipelagoOoA-<BRANCH_NAME> for which BRANCH_NAME will be main as that's the current branch this source code is on.
-3. Rename that folder to tloz_ooa
-4. Right click on the new folder and go to Compress To -> ZIP File.
-5. Once compressed, you will replace .zip with .apworld, If you don't see the filename extension, go to View -> Show -> File name extensions. This will reveal the extension for the filename that we are trying to work with.
-6. Double click on the apworld and Archipelago will install the apworld onto it's folder. You can also put the apworld file inside your Archipelago Folder -> custom_worlds folder. That method works as well as Archipelago is essentially doing that as well when you open the apworld with it.
+2. Extract the zip file where you will see a folder called ArchipelagoOoA-<BRANCH_NAME> for which BRANCH_NAME will be ooa as that's the current branch this source code is on.
+3. You may need to download Python 3.13 if you don't have it, because Archipelago does not support the latest version of Python yet. The link is [here](https://www.python.org/downloads/release/python-31312/).
+4. Open your Terminal and type in this command: python Launcher.py
+5. If this your first time launching Archipelago, you may be prompted with a few things to install. Once that's done, Archipelago will launch just fine, and that will allow you to manually test this apworld out for yourself.
 
 ## Want to colloborate?
 Here are two ways to get in!
