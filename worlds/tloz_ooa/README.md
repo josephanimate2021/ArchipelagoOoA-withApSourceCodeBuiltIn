@@ -1,8 +1,5 @@
 # ArchipelagoOoA
-Updates to and maintenance of APWorld for The Legend of Zelda: Oracle of Ages.
-
-This is a re-hosting of the [code originally developed by SenPierre](https://github.com/SenPierre/ArchipelagoOoA). I did not fork from that repo because there were some compatability issues with Archipelago 0.6.2+ which made it so that users that used
-Archipelago 0.6.2 or newer were not able to use the apworld to play The Legend of Zelda: Oracle of Ages Randomizer. Besides, work on adding new options was already started on this repo anyway at the time of forking this one which was posted on Discord by Ishigh1 on the Archipelago Discord Server.
+This is an apworld for The Legend of Zelda: Oracle of Ages that takes an Oracle of Ages (US Version) ROM, and uses Archipelago to generate a new seed for you to play using your preferences according to the options in the Options.py file and settings in the Settings.py file.
 
 ## Options I am thinking about addding.
 * Shuffle Business Scrubs - Just like in Seasons, there are business scrubs that sell items to you for a certain price. Just like in Seasons Archipelago Randomizer, we can carry that over.
