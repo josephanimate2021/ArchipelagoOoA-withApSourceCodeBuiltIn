@@ -1,0 +1,5 @@
+# Modify the minibosses to make a chest appear when they get defeated.
+0f/4580/enemyBoss_beginMiniboss: |
+    ld b,$2d
+    ld bc, $12 | $02
+    jp objectCreateInteraction

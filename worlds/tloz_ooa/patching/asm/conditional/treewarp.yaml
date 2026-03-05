@@ -1,0 +1,48 @@
+02//checkTreeVisited: |
+    cp STARTING_TREE_MAP_INDEX
+    jp nz,$6560     ; _mapMenu_checkRoomVisited
+    or a
+    ret
+02/5ec8/: |
+    call checkTreeVisited
+02/65e1/: |
+    call checkTreeVisited
+
+# always treat starting seed tree as visited for warping purposes.
+02//checkCursorVisited: |
+    ld a,(wMapMenu_cursorIndex)
+    jp checkTreeVisited
+
+02/609b/: |
+    call checkCursorVisited
+
+02//treeWarp: |
+      ld a,(wKeysPressed)
+      and $08
+      jr z,@done
+      ld a,(wAreaFlags)
+      and AREAFLAG_OUTDOORS
+      jr nz,@warp
+      ld a,SND_ERROR
+      jp playSound
+      @warp:
+      ld hl,wWarpDestGroup
+      ld (hl),$80
+      inc hl
+      ld (hl),$78
+      ld l,$4a
+      ld (hl),$55
+      call $5fbf
+      @done:
+      jp $4fba
+
+02/5ff9/: |
+    call checkTreeVisited
+02/6133/: |
+    call nz,treeWarp
+02/618b/: |
+    call nz,treeWarp
+02/619d/: |
+    call checkCursorVisited
+02/66a9/: |
+    call checkTreeVisited
