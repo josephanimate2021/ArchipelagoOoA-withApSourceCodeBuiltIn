@@ -26,7 +26,7 @@ In order to build this code for usage with Archipelago, you need to follow these
 1. Download the source code by clicking on Code -> Download ZIP
 2. Extract the zip file where you will see a folder called ArchipelagoOoA-<BRANCH_NAME> for which BRANCH_NAME will be ooa as that's the current branch this source code is on.
 3. You may need to download Python 3.13 if you don't have it, because Archipelago does not support the latest version of Python yet. The link is [here](https://www.python.org/downloads/release/python-31312/).
-4. Open your Terminal and type in this command: python Launcher.py
+4. Open your Terminal inside the extracted Archipelago Folder and type in this command: python Launcher.py
 5. If this your first time launching Archipelago, you may be prompted with a few things to install. Once that's done, Archipelago will launch just fine, and that will allow you to manually test this apworld out for yourself.
 
 ## Want to colloborate?
