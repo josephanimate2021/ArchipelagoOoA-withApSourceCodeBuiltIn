@@ -3,7 +3,7 @@ This is an apworld for The Legend of Zelda: Oracle of Ages that takes an Oracle 
 
 ## NOTE:
 The common folder is not fully implemented yet. If there are things pointing to the common folder and their files don't exist, that's because they all came from this [repository](https://github.com/josephanimate2021/Tloz_oo_common) that is supported
-for both ages and seasons that is currently being worked on and pending PR'd by Ishigh1. Thank you for your patience.
+for both ages and seasons that is currently being worked on and pending PR'd to Ishigh1's [repository](https://github.com/Ishigh1/Tloz_oo-common). Thank you for your patience.
 
 Also, thank you for pointing that out SenPierre.
 
