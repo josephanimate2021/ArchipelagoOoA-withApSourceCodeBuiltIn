@@ -1,6 +1,12 @@
 # ArchipelagoOoA
 This is an apworld for The Legend of Zelda: Oracle of Ages that takes an Oracle of Ages (US Version) ROM, and uses Archipelago to generate a new seed for you to play using your preferences according to the options in the Options.py file and settings in the Settings.py file.
 
+## NOTE:
+The common folder is not fully implemented yet. If there are things pointing to the common folder and their files don't exist, that's because they all came from this [repository](https://github.com/josephanimate2021/Tloz_oo_common) that is supported
+for both ages and seasons that is currently being worked on and pending PR'd by Ishigh1. Thank you for your patience.
+
+Also, thank you for pointing that out SenPierre.
+
 ## Options I am thinking about addding.
 * Shuffle Business Scrubs - Just like in Seasons, there are business scrubs that sell items to you for a certain price. Just like in Seasons Archipelago Randomizer, we can carry that over.
 * Placed Essences - In Seasons Archipelago Randomizer, you can set how many essences are placed in the world. Well with Ages, I figured why not apply ths same logic as well. This will make some dungeons barren while the Required Essences option is set which makes more sense so that the user isn't just going into a dungeon with junk items and getting an essense at the end. This will cause them to get more essenses than what they need.
