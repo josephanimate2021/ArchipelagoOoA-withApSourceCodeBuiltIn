@@ -5,12 +5,13 @@ from typing import Any
 
 import Utils
 from ...common.patching.RomData import RomData
+from ...common.patching.Util import simple_hex
 from ...common.patching.data_manager.text import get_text_data
 from ...common.patching.text import normalize_text
+from ...data.Constants import VERSION
 
 
 def load_modded_ages_text_data() -> None | tuple[dict[str, str], dict[str, str]]:
-    from ... import OracleOfAgesWorld
     text_dir = Path(Utils.cache_path("oos_ooa/text"))
     dict_file = text_dir.joinpath(f"ages_dict.json")
     if not dict_file.is_file():
@@ -20,7 +21,7 @@ def load_modded_ages_text_data() -> None | tuple[dict[str, str], dict[str, str]]
     if text_file.is_file():
         texts: dict[str, Any] = json.load(open(text_file, encoding="utf-8"))
         version = texts.pop("version")
-        if version == OracleOfAgesWorld.version():
+        if version == VERSION:
             return json.load(open(dict_file, encoding="utf-8")), texts
 
     vanilla_text_file = text_dir.joinpath(f"ages_texts_vanilla.json")
@@ -33,8 +34,7 @@ def load_modded_ages_text_data() -> None | tuple[dict[str, str], dict[str, str]]
 
 
 def save_ages_edited_text_data(texts: dict[str, str]) -> None:
-    from ... import OracleOfAgesWorld
-    texts["version"] = OracleOfAgesWorld.version()
+    texts["version"] = VERSION
 
     text_dir = Path(Utils.cache_path("oos_ooa/text"))
     text_file = text_dir.joinpath(f"ages_texts.json")
@@ -46,6 +46,8 @@ def save_ages_edited_text_data(texts: dict[str, str]) -> None:
 
 
 def apply_text_edits(texts: dict[str, str]) -> None:
+    texts_to_blank = []
+
     # New items
     # Replace ring box 1
     texts["TX_0034"] = ("You got 🟥Ember\n"
@@ -58,21 +60,24 @@ def apply_text_edits(texts: dict[str, str]) -> None:
                         "item for another\n"
                         "world!")
 
+    # Trade items (TODO)
+
     # Appraisal text
     texts["TX_301c"] = ("You got the\n"
                         "\\call(fd)!")
 
     # Cross items
     # Obtain text
-    texts["TX_003b"] = ""  # Strange flute
-    texts["TX_0051"] = ""  # Warrior child heart
-    texts["TX_0053"] = ""  # Warrior child heart refill
-    texts["TX_0054"] = ""  # Unappraised ring
+    texts_to_blank.append("TX_003b")  # Strange flute
+    texts_to_blank.append("TX_0051")  # Warrior child heart
+    texts_to_blank.append("TX_0053")  # Warrior child heart refill
+    texts_to_blank.append("TX_0054")  # Unappraised ring
     # Inventory text
-    texts["TX_091d"] = ""  # Replaces ring box 1
-    texts["TX_091e"] = ""  # Replaces ring box 2
-    texts["TX_0917"] = ""  # Replaces unappraised ring
-    texts["TX_092e"] = ""  # Replaces strange flute
+    texts_to_blank.append("TX_091d")  # Replaces ring box 1
+    texts_to_blank.append("TX_091e")  # Replaces ring box 2
+    texts_to_blank.append("TX_0917")  # Replaces unappraised ring
+    texts_to_blank.append("TX_092e")  # Replaces strange flute
+    # Note: 3 other seemingly unused seeds follow
 
     # Replace the shield selling part of dekus which will never be used
     texts["TX_450a"] = ("\\sfx(c6)Greetings!\n"
@@ -86,7 +91,10 @@ def apply_text_edits(texts: dict[str, str]) -> None:
                         "you need a\n"
                         "refill!")
 
-    texts["TX_020b"] = "Linked Hero's Cave"
+    # Now unused text from Maku talking (TODO)
+
+    # Mark dungeons
+    texts["TX_2510"] = "Unknown Dungeon"
 
     # FAQ room
     texts["TX_4d00"] = ("Welcome to the\n"
@@ -125,20 +133,17 @@ def apply_text_edits(texts: dict[str, str]) -> None:
                         "can do it\n"
                         "everywhere")
 
+    # Remove ring fortune (TODO)
+
+    # There is probably more, and the red snake could also be attacked
+
+    for text in texts_to_blank:
+        texts[text] = ""
+
 
 def apply_seasons_edits(ages_texts: dict[str, str], seasons_rom: RomData) -> None:
-    _, ages_texts = get_text_data(seasons_rom, False, False)
-    # Cross items
-    # Obtain text
-    ages_texts["TX_0053"] = ages_texts["TX_0073"]  # Cane
-    ages_texts["TX_003b"] = ages_texts["TX_0030"]  # Hook 1
-    ages_texts["TX_0051"] = ages_texts["TX_0028"]  # Hook 2
-    ages_texts["TX_0054"] = ages_texts["TX_002e"]  # Shooter
-    # Inventory text
-    ages_texts["TX_091d"] = ages_texts["TX_093c"]  # Cane
-    ages_texts["TX_091e"] = ages_texts["TX_093d"]  # Hook 1
-    ages_texts["TX_0917"] = ages_texts["TX_093e"]  # Hook 2
-    ages_texts["TX_092e"] = ages_texts["TX_0940"]  # Shooter
+    _, seasons_texts = get_text_data(seasons_rom, False, True)
+    # Cross items (TODO)
     save_ages_edited_text_data(ages_texts)
 
 
@@ -147,7 +152,7 @@ def get_modded_ages_text_data(rom_data: RomData) -> tuple[dict[str, str], dict[s
     if result is not None:
         return result
 
-    dictionary, texts = get_text_data(rom_data, True, True)
+    dictionary, texts = get_text_data(rom_data, True, False)
     apply_text_edits(texts)
     save_ages_edited_text_data(texts)
     return dictionary, texts

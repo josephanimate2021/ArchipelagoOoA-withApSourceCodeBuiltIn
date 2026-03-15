@@ -1,20 +1,15 @@
-import hashlib
-import os
+import json
 import pkgutil
 
 import yaml
 
-import Utils
 from worlds.Files import APProcedurePatch, APTokenMixin, APPatchExtension
-
 from .Functions import *
-from .Constants import *
-from ..common.patching.RomData import RomData
+from .data_manager.text import apply_seasons_edits, get_modded_ages_text_data
+from ..common.patching.text.encoding import write_text_data
 from ..common.patching.z80asm.Assembler import Z80Assembler, Z80Block, GameboyAddress
 
 from tkinter.filedialog import askopenfilename
-
-ROM_HASH = "c4639cc61c049e5a085526bb6cac03bb"
 
 
 class OoAPatchExtensions(APPatchExtension):
@@ -23,14 +18,11 @@ class OoAPatchExtensions(APPatchExtension):
     @staticmethod
     def apply_patches(caller: APProcedurePatch, rom: bytes, patch_file: str) -> bytes:
         rom_data = RomData(rom)
-        patch_data = yaml.safe_load(caller.get_file(patch_file).decode("utf-8"))
+        patch_data = json.loads(caller.get_file(patch_file).decode("utf-8"))
 
         if not (patch_data["version"] in RETRO_COMPAT_VERSION):
             raise Exception(f"Invalid version: this seed was generated on v{patch_data['version']}, "
                             f"and is not compatible with current : v{VERSION}")
-
-        #if patch_data["options"]["enforce_potion_in_shop"]:
-        #    patch_data["locations"]["Horon Village: Shop #3"] = "Potion"
 
         # if patch_data["options"]["cross_items"]:
             # file_name = get_settings().tloz_ooa_options.seasons_rom_file
@@ -39,14 +31,23 @@ class OoAPatchExtensions(APPatchExtension):
             # seasons_rom = bytes(rom_file.read())
             # rom_file.close()
 
-            # for bank in range(0x40, 0x80):``
+            # for bank in range(0x40, 0x80):
                 # bank = 0xdd  # TODO: this is an invalid instruction that hangs the game, it's easier to debug but looks worse, remove/comment out once stable
                 # rom_data.add_bank(bank)
             # rom_data.update_rom_size()
         # else:
         seasons_rom = bytes()
 
+        # Initialize random seed with the one used for generation + the player ID, so that cosmetic stuff set
+        # to "random" always generate the same for successive patchings for a given slot
+        random.seed(patch_data["seed"] + caller.player)
+
         assembler = Z80Assembler(EOB_ADDR, DEFINES, rom, seasons_rom)
+        dictionary, texts = get_modded_ages_text_data(rom_data)
+        # if patch_data["options"]["cross_items"]:
+            # if texts["TX_0053"] == "":  # Check if cane text exists
+                # If not, add the Ages texts
+                # apply_seasons_edits(texts, RomData(ages_rom))
 
         # Generate dungeon entrance/exit data
         dungeon_entrances = dict(DUNGEON_ENTRANCES)
@@ -63,26 +64,29 @@ class OoAPatchExtensions(APPatchExtension):
                 dungeon_entrances["d11"]["room"] = 0x48
                 dungeon_entrances["d11"]["map_tile"] = 0x048
                 dungeon_entrances["d11"]["position"] = 0x28
-            elif patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_d2_present:
-                dungeon_entrances["d11"] = dungeon_entrances["d2 present"]
-                dungeon_entrances["d11"]["default"] = "d11"
+            # elif patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_d2_present:
+                # dungeon_entrances["d11"] = dungeon_entrances["d2 present"]
+                # dungeon_entrances["d11"]["default"] = "d11"
 
-        # Define static values & data blocks
-        for symbolic_name, price in patch_data["shop_prices"].items():
-            assembler.define_byte(f"shopPrices.{symbolic_name}", RUPEE_VALUES[price])
-        define_location_constants(assembler, patch_data)
+        # Define assembly constants & floating chunks
+        item_data = define_foreign_item_data(assembler, texts, patch_data)
+        define_location_constants(assembler, patch_data, item_data)
         define_option_constants(assembler, patch_data)
-        define_text_constants(assembler, patch_data)
-        define_dungeon_items_text_constants(assembler, patch_data)
-
-        # Define dynamic data blocks
-        define_compass_rooms_table(assembler, patch_data)
-        define_collect_properties_table(assembler, patch_data)
+        make_text_data(assembler, texts, patch_data)
+        define_compass_rooms_table(assembler, patch_data, item_data)
+        define_collect_properties_table(assembler, patch_data, item_data)
+        define_additional_tile_replacements(assembler, patch_data)
+        define_dungeon_items_text_constants(texts, patch_data)
+        define_essence_sparkle_constants(assembler, patch_data, dungeon_entrances)
+        # define_tree_sprites(assembler, patch_data, item_data)
         set_file_select_text(assembler, caller.player_name)
+        # set_player_start_inventory(assembler, patch_data)
+        if not hasattr(get_settings().tloz_ooa_options, "beat_tutorial"):
+            set_faq_trap(assembler)
 
         # Parse assembler files, compile them and write the result in the ROM
         print("Compiling ASM files...")
-        # write_text_data(rom_data, dictionary, texts, True)
+        write_text_data(rom_data, dictionary, texts, False)
         for file_path in get_asm_files(patch_data):
             data_loaded = yaml.safe_load(pkgutil.get_data(__name__, file_path))
             for metalabel, contents in data_loaded.items():
@@ -91,22 +95,30 @@ class OoAPatchExtensions(APPatchExtension):
         for block in assembler.blocks:
             rom_data.write_bytes(block.addr.address_in_rom(), block.byte_array)
 
-        alter_treasures(rom_data)
-        write_chest_contents(rom_data, patch_data)
-        write_seed_tree_content(rom_data, patch_data)
-        # set_dungeon_warps(rom_data, patch_data, dungeon_entrances, dungeon_exits)
-        #apply_miscellaneous_options(rom_data, patch_data)
+        # if patch_data["options"]["linked_heros_cave"] & OracleOfSeasonsLinkedHerosCave.samasa:
+            # dungeon_entrances["d11"]["addr"] = assembler.global_labels["warpSourceDesert"].address_in_rom() + 2
 
+        # Perform direct edits on the ROM
+        alter_treasure_types(rom_data, item_data)
+        write_chest_contents(rom_data, patch_data, item_data)
+        # set_old_men_rupee_values(rom_data, patch_data)
+        set_dungeon_warps(rom_data, patch_data, dungeon_entrances, dungeon_exits)
+        apply_miscellaneous_options(rom_data, patch_data)
+        # if patch_data["options"]["randomize_ai"]:
+            # randomize_ai_for_april_fools(rom_data, patch_data["seed"] + caller.player)
+
+        # Apply cosmetic settings
         set_heart_beep_interval_from_settings(rom_data)
         set_character_sprite_from_settings(rom_data)
-        apply_misc_option(rom_data, patch_data)
         inject_slot_name(rom_data, caller.player_name)
 
+        rom_data.update_header_checksum()
         rom_data.update_checksum(0x14e)
         return rom_data.output()
 
+
 class OoAProcedurePatch(APProcedurePatch, APTokenMixin):
-    hash = [ROM_HASH]
+    hash = [AGES_ROM_HASH]
     patch_file_ending: str = ".apooa"
     result_file_ending: str = ".gbc"
 
@@ -119,18 +131,12 @@ class OoAProcedurePatch(APProcedurePatch, APTokenMixin):
     def get_source_data(cls) -> bytes:
         base_rom_bytes = getattr(cls, "base_rom_bytes", None)
         if not base_rom_bytes:
-            file_name = get_settings().tloz_ooa_options["rom_file"]
-            if not os.path.exists(file_name):
-                file_name = Utils.user_path(file_name)
-            if not os.path.exists(file_name):
-                file_name = askopenfilename() 
-            base_rom_bytes = bytes(open(file_name, "rb").read())
+            file_name = get_settings().tloz_ooa_options.rom_file
+            file_name = Utils.user_path(file_name)
 
-            basemd5 = hashlib.md5()
-            basemd5.update(base_rom_bytes)
-            if ROM_HASH != basemd5.hexdigest():
-                raise Exception("Supplied ROM does not match known MD5 for Oracle of Ages US version."
-                                "Get the correct game and version, then dump it.")
+            rom_file = open(file_name, "rb")
+            base_rom_bytes = bytes(rom_file.read())
+            rom_file.close()
+
             setattr(cls, "base_rom_bytes", base_rom_bytes)
         return base_rom_bytes
-
