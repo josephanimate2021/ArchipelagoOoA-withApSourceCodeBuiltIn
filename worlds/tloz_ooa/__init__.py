@@ -8,7 +8,7 @@ from typing import List, Dict, ClassVar, Any
 from .generation.Data import *
 from .generation.Logic import create_connections, apply_self_locking_rules
 from .Options import *
-from .generation.PatchWriter import ooa_create_ap_procedure_patch
+from .generation.PatchWriter import ooa_create_appp_patch
 from .data.Constants import *
 from .data import ITEMS_DATA
 from .Client import OracleOfAgesClient  # Unused, but required to register with BizHawkClient
@@ -181,7 +181,7 @@ class OracleOfAgesWorld(World):
         pre_fill(self)
     
     def generate_output(self, output_directory: str):
-        patch = ooa_create_ap_procedure_patch(self)
+        patch = ooa_create_appp_patch(self)
         rom_path = os.path.join(output_directory, f"{self.multiworld.get_out_file_name_base(self.player)}"
                                                   f"{patch.patch_file_ending}")
         patch.write(rom_path)

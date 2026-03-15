@@ -1,6 +1,9 @@
 from BaseClasses import ItemClassification
+from ..patching.Constants import DEFINES
 
-ITEMS_DATA = {
+from typing import Any
+
+ITEMS_DATA: dict[str, dict[str, Any]] = {
     #   "No Item": {
     #   'classification': ItemClassification.filler,
     #   "",
