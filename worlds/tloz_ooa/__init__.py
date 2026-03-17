@@ -47,6 +47,10 @@ class OracleOfAgesWorld(World):
 
     city_name = "Lynna City"
 
+    @classmethod
+    def version(cls) -> str:
+        return cls.world_version.as_simple_string()
+
     def __init__(self, multiworld, player):
         super().__init__(multiworld, player)
         self.pre_fill_items: List[Item] = []
@@ -139,7 +143,7 @@ class OracleOfAgesWorld(World):
             if location_data["region_id"] == "d" + str(location_data["dungeon"]) + " miniboss":
                 return self.options.miniboss_locations
             
-        if location_name in SECRETS:
+        if "secret_location" in location_data and not False:
             return self.options.secret_locations
         
 
@@ -172,6 +176,12 @@ class OracleOfAgesWorld(World):
     def create_items(self):
         from .generation.CreateItems import create_items
         create_items(self)
+
+    def get_random_ring_name(self) -> str:
+        from .generation.CreateItems import get_filler_item_name
+        if len(self.random_rings_pool) > 0:
+            return self.random_rings_pool.pop()
+        return get_filler_item_name(self)  # It might loop but not enough to really matter
 
     def get_pre_fill_items(self):
         return self.pre_fill_items

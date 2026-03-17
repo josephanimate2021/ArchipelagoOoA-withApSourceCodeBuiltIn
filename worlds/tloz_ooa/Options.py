@@ -1,9 +1,6 @@
-from dataclasses import dataclass
-
-from Options import Choice, DeathLink, DefaultOnToggle, PerGameCommonOptions, Range, Toggle, StartInventoryPool, ItemSet, OptionSet, NamedRange, ItemsAccessibility
-
 from .data.Constants import TREES_TABLE
 from .common.Options import *
+from Options import OptionSet
 
 
 class OracleOfAgesMinibossLocations(Toggle):
@@ -113,44 +110,127 @@ class OracleOfAgesSlateShuffle(Toggle):
 @dataclass
 class OracleOfAgesOptions(PerGameCommonOptions):
     accessibility: ItemsAccessibility
-    start_inventory_from_pool: StartInventoryPool
-    # remove_items_from_pool: OraclesRemoveItemsFromPool
-    # cross_items: OraclesIncludeCrossItems
-    miniboss_locations: OracleOfAgesMinibossLocations
-    lynna_gardener: OracleOfAgesLynnaGardener
-    quick_flute: OraclesQuickFlute
-    # bird_hints: OraclesBirdHint
-    deterministic_gasha_locations: OraclesGashaLocations
-    gasha_nut_kill_requirement: OraclesGashaNutKillRequirement
     goal: OraclesGoal
-    linked_heros_cave: OracleOfAgesLinkedHerosCave
-    shuffle_old_men: OraclesOldMenShuffle
-    secret_locations: OraclesIncludeSecretLocations
     logic_difficulty: OraclesLogicDifficulty
+    death_link: OraclesDeathLink
+
+    # Optional locations
+    advance_shop: OraclesAdvanceShop
+    shuffle_old_men: OraclesOldMenShuffle
+    shuffle_business_scrubs: OraclesBusinessScrubsShuffle
+    miniboss_locations: OracleOfAgesMinibossLocations
+    deterministic_gasha_locations: OraclesGashaLocations
+    secret_locations: OraclesIncludeSecretLocations
+    linked_heros_cave: OracleOfAgesLinkedHerosCave
+
+    # Essences
     required_essences: OraclesRequiredEssences
-    placed_essences: OraclesPlacedEssences
+    required_slates: OracleOfAgesRequiredSlates
     shuffle_essences: OraclesEssenceSanity
-    warp_to_start_location: OracleOfAgesWarpToStartLocation
+    placed_essences: OraclesPlacedEssences
     exclude_dungeons_without_essence: OraclesExcludeDungeonsWithoutEssence
     show_dungeons_with_map: OraclesShowDungeonsWithMap
     show_dungeons_with_essence: OraclesShowDungeonsWithEssence
-    required_slates: OracleOfAgesRequiredSlates
+
+    # Overworld layout options
     animal_companion: OraclesAnimalCompanion
+    warp_to_start_location: OracleOfAgesWarpToStartLocation
+
+    # shuffle_entrances: OracleOfAgesEntranceShuffle
+    shuffle_dungeons: OraclesDungeonShuffle
     default_seed: OraclesDefaultSeedType
     duplicate_seed_trees: OracleOfAgesDuplicateSeedTrees
-    enforce_potion_in_shop: OraclesEnforcePotionInShop
-    shuffle_dungeons: OraclesDungeonShuffle
+
+    # Dungeon items
     master_keys: OraclesMasterKeys
+    keysanity_slates: OracleOfAgesSlateShuffle
     keysanity_small_keys: OraclesSmallKeyShuffle
     keysanity_boss_keys: OraclesBossKeyShuffle
     keysanity_maps_compasses: OraclesMapCompassShuffle
-    keysanity_slates: OracleOfAgesSlateShuffle
+    starting_maps_compasses: OraclesStartingMapsCompasses
+
+    # Numeric requirements for some checks / access to regions
+    gasha_nut_kill_requirement: OraclesGashaNutKillRequirement
+
+    # QOL
+    quick_flute: OraclesQuickFlute
+    lynna_gardener: OracleOfAgesLynnaGardener
+
+    # Miscellaneous options
+    shop_prices: OraclesShopPrices
+    enforce_potion_in_shop: OraclesEnforcePotionInShop
     required_rings: OraclesRequiredRings
     excluded_rings: OraclesExcludedRings
-    shop_prices: OraclesShopPrices
-    shuffle_business_scrubs: OraclesBusinessScrubsShuffle
-    advance_shop: OraclesAdvanceShop
+    cross_items: OraclesIncludeCrossItems
     combat_difficulty: OraclesCombatDifficulty
-    death_link: DeathLink
+    bird_hint: OraclesBirdHint
+    randomize_ai: OraclesRandomizeAi
     move_link: OraclesMoveLink
-    # randomize_enemy_ai: OraclesRandomizeAi
+
+    start_inventory_from_pool: StartInventoryPool
+    remove_items_from_pool: OraclesRemoveItemsFromPool
+
+
+ooa_option_groups = [
+    OptionGroup("General", [
+        ItemsAccessibility,
+        OraclesGoal,
+        OraclesLogicDifficulty,
+        OraclesDeathLink,
+    ]),
+    OptionGroup("Items", [
+        OraclesIncludeCrossItems,
+    ]),
+    OptionGroup("Optional Locations", [
+        OraclesAdvanceShop,
+        OraclesOldMenShuffle,
+        OraclesBusinessScrubsShuffle,
+        OracleOfAgesMinibossLocations,
+        OraclesGashaLocations,
+        OraclesIncludeSecretLocations,
+        OracleOfAgesLinkedHerosCave
+    ]),
+    OptionGroup("Essences", [
+        OraclesRequiredEssences,
+        OraclesEssenceSanity,
+        OraclesPlacedEssences,
+        OraclesExcludeDungeonsWithoutEssence,
+        OraclesShowDungeonsWithMap,
+        OraclesShowDungeonsWithEssence,
+    ]),
+    OptionGroup("Overworld Layout Options", [
+        OraclesAnimalCompanion,
+        # OracleOfAgesEntranceShuffle
+        OraclesDungeonShuffle,
+        OraclesDefaultSeedType,
+        OracleOfAgesDuplicateSeedTrees,
+    ]),
+    OptionGroup("Dungeon Items", [
+        OraclesMasterKeys,
+        OraclesSmallKeyShuffle,
+        OraclesBossKeyShuffle,
+        OraclesMapCompassShuffle,
+        OracleOfAgesSlateShuffle,
+        OraclesStartingMapsCompasses
+    ]),
+    OptionGroup("Numeric Requirements", [
+        OracleOfAgesRequiredSlates,
+        OraclesGashaNutKillRequirement,
+    ]),
+    OptionGroup("QOL", [
+        OraclesQuickFlute,
+        OracleOfAgesLynnaGardener,
+    ]),
+    OptionGroup("Others", [
+        OraclesShopPrices,
+        OraclesEnforcePotionInShop,
+        OraclesRequiredRings,
+        OraclesExcludedRings,
+        OracleOfAgesWarpToStartLocation,
+        OraclesCombatDifficulty,
+        OraclesBirdHint,
+        OraclesRandomizeAi,
+        OraclesMoveLink,
+        OraclesRemoveItemsFromPool
+    ]),
+]

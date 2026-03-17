@@ -21,11 +21,10 @@ def make_overworld_logic(player: int, options):
         ["gasha tree 12", "gasha tree 13", False, lambda state: ooa_can_harvest_gasha(state, player, 13)],
         ["gasha tree 13", "gasha tree 14", False, lambda state: ooa_can_harvest_gasha(state, player, 14)],
         ["gasha tree 14", "gasha tree 15", False, lambda state: ooa_can_harvest_gasha(state, player, 15)],
-        ["gasha tree 15", "gasha tree 16", False, lambda state: ooa_can_harvest_gasha(state, player, 16)], #activate once sea of storms present plot is figured out
 
         #GASHA PLOT LOGIC
         ##################
-         #Past Gasha Plots
+        #Past Gasha Plots
         ["lynna village", "crescent past spot", False, lambda state: all([
             ooa_can_swim_deepwater(state, player, False), #double check if this includes raft
             ooa_has_shovel(state, player)
@@ -79,10 +78,7 @@ def make_overworld_logic(player: int, options):
             ooa_can_swim_deepwater(state, player, True)
         ])],
         ["crescent present east", "crescent present vine spot", False, lambda state: ooa_has_bracelet(state, player)],
-        ["piratian captain", "sea of storms spot", False, lambda state: all([
-            ooa_can_switch_past_and_present(state, player),
-            ooa_has_shovel(state, player)
-        ])],
+        # sea of storms present spot requires access to present sea of storms, which requires a user to have secret locations enabled. Sorry flame.
         #["nuun (ricky)", "nuun highlands spot", False, lambda state: all([
         #    ooa_can_jump_1_wide_pit(state, player, True),
         #    any([
@@ -125,7 +121,6 @@ def make_overworld_logic(player: int, options):
             ooa_has_rupees(state, player, 400)
         ])],
         
-        ["lynna city", "mayor plen's secret", False, None],
         ["lynna city", "mayor plen's house", False, lambda state: ooa_has_long_hook(state, player)],
         ["lynna city", "lynna city comedian trade", False, lambda state: state.has("Cheesy Mustache", player)],
         ["lynna city", "mamamu yan trade", False, lambda state: state.has("Doggie Mask", player)],
@@ -699,7 +694,7 @@ def make_overworld_logic(player: int, options):
             ooa_can_dive(state, player),
             state.has("Zora Scale", player),
         ])],
-        ["piratian captain", "sea of storms past", False, lambda state: ooa_can_switch_past_and_present(state, player) if state.multiworld.worlds[player].options.secret_locations else None],
+        ["piratian captain", "sea of storms past", False, None],
         ["crescent past west", "d8 entrance", False, lambda state: all([
             state.has("Tokay Eyeball", player),
             ooa_can_break_pot(state, player),
@@ -727,7 +722,18 @@ def make_overworld_logic(player: int, options):
     ]
 
     if options.secret_locations:
-        labrynna_logic.append(["lynna city", "princess zelda rescue", False, lambda state: ooa_has_feather(state, player)])
+        labrynna_logic.extend([
+            ["lynna city", "princess zelda rescue", False, lambda state: ooa_has_feather(state, player)],
+            ["lynna city", "mayor plen's secret", False, None],
+            ["fairies' woods", "fairies' woods secret", False, None],
+        ])
+        gasha_logic.extend([
+            ["gasha tree 15", "gasha tree 16", False, lambda state: ooa_can_harvest_gasha(state, player, 16)],
+            ["piratian captain", "sea of storms spot", False, lambda state: all([
+                ooa_can_switch_past_and_present(state, player),
+                ooa_has_shovel(state, player)
+            ])],
+        ])
     
     if options.linked_heros_cave.value > 0:
         labrynna_logic.append(["fairies' woods" if options.linked_heros_cave == OracleOfAgesLinkedHerosCave.option_d2_present else "lynna city", "d11 entrance", False, lambda state: all([
@@ -736,10 +742,14 @@ def make_overworld_logic(player: int, options):
         ])])
     
     if options.shuffle_old_men == OraclesOldMenShuffle.option_turn_into_locations:
-        labrynna_logic.append(["ridge base present", "rolling ridge present old man", False, lambda state: ooa_can_use_ember_seeds(state, player, False)])
-        labrynna_logic.append(["ridge base past west", "rolling ridge past old man", False, lambda state: ooa_can_use_ember_seeds(state, player, False)])
+        labrynna_logic.extend([
+            ["ridge base present", "rolling ridge present old man", False, lambda state: ooa_can_use_ember_seeds(state, player, False)],
+            ["ridge base past west", "rolling ridge past old man", False, lambda state: ooa_can_use_ember_seeds(state, player, False)]
+        ])
 
     for i in range(options.deterministic_gasha_locations):
+        if (i == 15 and not options.secret_locations):
+            continue
         labrynna_logic.append(gasha_logic[i])
 
     return labrynna_logic

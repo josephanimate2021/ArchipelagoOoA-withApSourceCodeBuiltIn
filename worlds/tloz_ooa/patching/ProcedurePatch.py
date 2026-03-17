@@ -14,23 +14,24 @@ from ..common.patching.z80asm.Assembler import Z80Assembler, Z80Block, GameboyAd
 
 from tkinter.filedialog import askopenfilename
 
-ROM_HASH = "c4639cc61c049e5a085526bb6cac03bb"
-
 
 class OoAPatchExtensions(APPatchExtension):
     game = "The Legend of Zelda - Oracle of Ages"
 
     @staticmethod
     def apply_patches(caller: APProcedurePatch, rom: bytes, patch_file: str) -> bytes:
+        from .. import OracleOfAgesWorld
         rom_data = RomData(rom)
         patch_data = yaml.safe_load(caller.get_file(patch_file).decode("utf-8"))
 
-        if not (patch_data["version"] in RETRO_COMPAT_VERSION):
-            raise Exception(f"Invalid version: this seed was generated on v{patch_data['version']}, "
-                            f"and is not compatible with current : v{VERSION}")
+        version = patch_data["version"].split(".")
+        world_version = OracleOfAgesWorld.world_version
+        if int(version[0]) != world_version.major or int(version[1]) > world_version.minor:
+            raise Exception(f"Invalid version: this patch was generated on v{patch_data['version']}, "
+                            f"you are currently using v{world_version.as_simple_string()}")
 
         #if patch_data["options"]["enforce_potion_in_shop"]:
-        #    patch_data["locations"]["Horon Village: Shop #3"] = "Potion"
+        #    patch_data["locations"]["Lynna City: Shop #3"] = "Potion"
 
         # if patch_data["options"]["cross_items"]:
             # file_name = get_settings().tloz_ooa_options.seasons_rom_file
@@ -106,7 +107,7 @@ class OoAPatchExtensions(APPatchExtension):
         return rom_data.output()
 
 class OoAProcedurePatch(APProcedurePatch, APTokenMixin):
-    hash = [ROM_HASH]
+    hash = [AGES_ROM_HASH]
     patch_file_ending: str = ".apooa"
     result_file_ending: str = ".gbc"
 
@@ -128,7 +129,7 @@ class OoAProcedurePatch(APProcedurePatch, APTokenMixin):
 
             basemd5 = hashlib.md5()
             basemd5.update(base_rom_bytes)
-            if ROM_HASH != basemd5.hexdigest():
+            if AGES_ROM_HASH != basemd5.hexdigest():
                 raise Exception("Supplied ROM does not match known MD5 for Oracle of Ages US version."
                                 "Get the correct game and version, then dump it.")
             setattr(cls, "base_rom_bytes", base_rom_bytes)

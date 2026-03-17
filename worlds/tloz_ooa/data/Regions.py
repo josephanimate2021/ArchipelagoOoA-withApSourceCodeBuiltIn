@@ -48,6 +48,7 @@ REGIONS = [
 
     #######
     "fairies' woods",
+    "fairies' woods secret",
     "fairies' woods chest",
     "d2 present entrance",
     #######

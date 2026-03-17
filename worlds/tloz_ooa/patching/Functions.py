@@ -11,22 +11,15 @@ from ..data.Constants import *
 from .Constants import *
 from pathlib import Path
 
-from .. import LOCATIONS_DATA, OraclesMasterKeys, OracleOfAgesLinkedHerosCave, OraclesGoal, OraclesOldMenShuffle, ITEMS_DATA
+from ..Options import OraclesMasterKeys, OracleOfAgesLinkedHerosCave, OraclesGoal, OraclesOldMenShuffle
+from ..data.Locations import LOCATIONS_DATA
 
-def get_item_id_and_subid(item_name: str):
-    if item_name == "Archipelago Item":
-        return 0x41, 0x00
-    elif item_name == "Archipelago Progression Item":
-        return 0x41, 0x01
-
-    item_data = ITEMS_DATA[item_name]
-    item_id = item_data["id"]
-    item_subid = item_data["subid"] if "subid" in item_data else 0x00
-    return item_id, item_subid
+def get_item_id_and_subid_ancient(item_name: str):
+    return get_item_id_and_subid({"item": item_name})
 
 
 def get_treasure_addr(rom: RomData, item_name: str):
-    item_id, item_subid = get_item_id_and_subid(item_name)
+    item_id, item_subid = get_item_id_and_subid_ancient(item_name)
     addr = 0x59332 + (item_id * 4)
     if rom.read_byte(addr) & 0x80 != 0:
         addr = 0x54000 + rom.read_word(addr + 1)
@@ -61,7 +54,7 @@ def alter_treasures(rom: RomData):
 
 def get_asm_files(patch_data):
     asm_files = ASM_FILES.copy()
-    if get_settings()["tloz_ooa_options"]["qol_quick_flute"]:
+    if patch_data["options"]["quick_flute"]:
         asm_files.append("asm/conditional/quick_flute.yaml")
     if get_settings()["tloz_ooa_options"]["skip_tokkey_dance"]:
         asm_files.append("asm/conditional/skip_dance.yaml")
@@ -101,7 +94,7 @@ def define_location_constants(assembler: Z80Assembler, patch_data):
         if item_name == "Flute":
             item_name = COMPANIONS[patch_data["options"]["animal_companion"]] + "'s Flute"
 
-        item_id, item_subid = get_item_id_and_subid(item_name)
+        item_id, item_subid = get_item_id_and_subid_ancient(item_name)
         assembler.define_byte(f"locations.{symbolic_name}.id", item_id)
         assembler.define_byte(f"locations.{symbolic_name}.subid", item_subid)
         assembler.define_word(f"locations.{symbolic_name}", (item_id << 8) + item_subid)
@@ -223,7 +216,7 @@ def write_chest_contents(rom: RomData, patch_data):
         else:
             chest_addr = rom.get_chest_addr(location_data['room'], 0x16, 0x5108)
         item_name = patch_data["locations"][location_name]
-        item_id, item_subid = get_item_id_and_subid(item_name)
+        item_id, item_subid = get_item_id_and_subid_ancient(item_name)
         rom.write_byte(chest_addr, item_id)
         rom.write_byte(chest_addr + 1, item_subid)
 
@@ -231,7 +224,7 @@ def write_chest_contents(rom: RomData, patch_data):
 def define_compass_rooms_table(assembler: Z80Assembler, patch_data):
     table = []
     for location_name, item_name in patch_data["locations"].items():
-        _, item_subid = get_item_id_and_subid(item_name)
+        _, item_subid = get_item_id_and_subid_ancient(item_name)
         dungeon = 0xff
         if item_name.startswith("Small Key") or item_name.startswith("Master Key"):
             dungeon = item_subid
@@ -291,7 +284,7 @@ def write_seed_tree_content(rom: RomData, patch_data):
     for _, tree_data in SEED_TREE_DATA.items():
         original_data = rom.read_byte(tree_data["codeAdress"])
         item_name = patch_data["locations"][tree_data["location"]]
-        item_id, _ = get_item_id_and_subid(item_name)
+        item_id, _ = get_item_id_and_subid_ancient(item_name)
         newdata = (original_data & 0x0f) | (item_id - 0x20) << 4
         rom.write_bytes(tree_data["codeAdress"], [newdata])
 
@@ -395,7 +388,7 @@ def define_dungeon_items_text_constants(assembler: Z80Assembler, patch_data):
             dungeon_map_text.extend([0x4d, 0x61, 0x70])  # "Map"
             dungeon_map_text.extend(dungeon_precision)
         else:
-            dungeon_map_text.extend([0x44, 0x05, 0x8a, 0x20, 0x4d, 0x61, 0x70])  # "Dungeon Map"
+            dungeon_map_text.extend(process_item_name_for_shop_text("Dungeon Map"))  # "Dungeon Map"
         dungeon_map_text.extend([0x09, 0x00, 0x21, 0x00])  # "\color(WHITE)!(end)"
         assembler.add_floating_chunk(f"text.dungeonMap{dungeon_tag}", dungeon_map_text)
 
@@ -411,6 +404,7 @@ def define_dungeon_items_text_constants(assembler: Z80Assembler, patch_data):
         assembler.add_floating_chunk(f"text.compass{dungeon_tag}", compasses_text)
 
 def set_file_select_text(assembler: Z80Assembler, slot_name: str):
+    from .. import OracleOfAgesWorld
     def char_to_tile(c: str) -> int:
         if '0' <= c <= '9':
             return ord(c) - 0x20
@@ -425,7 +419,7 @@ def set_file_select_text(assembler: Z80Assembler, slot_name: str):
         else:
             return 0xfc  # All other chars are blank spaces
 
-    row_1 = [char_to_tile(c) for c in f"AP {VERSION}"]
+    row_1 = [char_to_tile(c) for c in f"AP {OracleOfAgesWorld.version()}"]
     row_1_left_padding = int((16 - len(row_1)) / 2)
     row_1_right_padding = int(16 - row_1_left_padding - len(row_1))
     row_1 = ([0x00] * row_1_left_padding) + row_1 + ([0x00] * row_1_right_padding)

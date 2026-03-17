@@ -19,7 +19,7 @@ def ooa_create_appp_patch(world: "OracleOfAgesWorld") -> OoAProcedurePatch:
     patch.player_name = world.multiworld.get_player_name(world.player)
 
     patch_data = {
-        "version": f"{VERSION}",
+        "version": f"{world.version()}",
         "seed": world.multiworld.seed,
         "options": world.options.as_dict(
             *[option_name for option_name in OracleOfAgesOptions.type_hints
