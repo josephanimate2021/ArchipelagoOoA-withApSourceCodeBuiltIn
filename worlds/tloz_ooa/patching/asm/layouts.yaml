@@ -55,6 +55,8 @@
     db $00,$76,$00,$54,$a7
     # end tile adding for black tower entrance present
     /endif
+    db $03,$bf,$00,$74,$b2 # block off exit for faq room
+    db $03,$bf,$00,$75,$b2 # block off exit for faq room
     db $00,$20,$00,$61,$d7 # portal in talus peaks
     db $01,$48,$00,$45,$d7 # portal south of past maku tree
     db $00,$37,$02,$43,$d7 # portal in southeast ricky/moosh nuun

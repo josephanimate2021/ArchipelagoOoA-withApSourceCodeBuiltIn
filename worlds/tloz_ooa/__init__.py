@@ -47,6 +47,10 @@ class OracleOfAgesWorld(World):
 
     city_name = "Lynna City"
 
+    @classmethod
+    def version(cls) -> str:
+        return cls.world_version.as_simple_string()
+
     def __init__(self, multiworld, player):
         super().__init__(multiworld, player)
         self.pre_fill_items: List[Item] = []
@@ -71,6 +75,7 @@ class OracleOfAgesWorld(World):
         # TODO MOAR DATA ?
 
         slot_data = self.options.as_dict(*[option_name for option_name in OracleOfAgesOptions.type_hints if hasattr(OracleOfAgesOptions.type_hints[option_name], "include_in_slot_data")])
+        slot_data["version"] = f"{self.version()}",
         slot_data["animal_companion"] = COMPANIONS[self.options.animal_companion.value]
         slot_data["default_seed"] = SEED_ITEMS[self.options.default_seed.value]
         slot_data["dungeon_entrances"] = self.dungeon_entrances
@@ -139,7 +144,7 @@ class OracleOfAgesWorld(World):
             if location_data["region_id"] == "d" + str(location_data["dungeon"]) + " miniboss":
                 return self.options.miniboss_locations
             
-        if location_name in SECRETS:
+        if "secret_location" in location_data and not False:
             return self.options.secret_locations
         
 

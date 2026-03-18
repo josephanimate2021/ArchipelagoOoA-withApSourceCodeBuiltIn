@@ -61,7 +61,7 @@ def alter_treasures(rom: RomData):
 
 def get_asm_files(patch_data):
     asm_files = ASM_FILES.copy()
-    if get_settings()["tloz_ooa_options"]["qol_quick_flute"]:
+    if patch_data["options"]["quick_flute"]:
         asm_files.append("asm/conditional/quick_flute.yaml")
     if get_settings()["tloz_ooa_options"]["skip_tokkey_dance"]:
         asm_files.append("asm/conditional/skip_dance.yaml")
@@ -110,10 +110,13 @@ def define_location_constants(assembler: Z80Assembler, patch_data):
 def define_option_constants(assembler: Z80Assembler, patch_data):
     options = patch_data["options"]
 
-    assembler.define_byte("option.startingGroup", 0x00)
-    assembler.define_byte("option.startingRoom", 0x39)
-    assembler.define_byte("option.startingPosY", 0x02)
-    assembler.define_byte("option.startingPosX", 0x01)
+    if not hasattr(get_settings().tloz_ooa_options, "beat_tutorial"):
+        assembler.define_byte("option.startingGroup", 0x03)
+        assembler.define_byte("option.startingRoom", 0xbf)
+    else: # Redirect user to the first item check, saving them some time.
+        assembler.define_byte("option.startingGroup", 0x00)
+        assembler.define_byte("option.startingRoom", 0x39)
+
     assembler.define_byte("option.warpingGroup", patch_data["warp_to_start_variables"]["group"] if "group" in patch_data["warp_to_start_variables"] else 0x00)
     assembler.define_byte("option.warpingRoom", patch_data["warp_to_start_variables"]["room"] if "room" in patch_data["warp_to_start_variables"] else 0x59)
     assembler.define_byte("option.warpingPos", patch_data["warp_to_start_variables"]["pos"] if "pos" in patch_data["warp_to_start_variables"] else 0x55)
@@ -411,6 +414,7 @@ def define_dungeon_items_text_constants(assembler: Z80Assembler, patch_data):
         assembler.add_floating_chunk(f"text.compass{dungeon_tag}", compasses_text)
 
 def set_file_select_text(assembler: Z80Assembler, slot_name: str):
+    from .. import OracleOfAgesWorld
     def char_to_tile(c: str) -> int:
         if '0' <= c <= '9':
             return ord(c) - 0x20
@@ -425,7 +429,7 @@ def set_file_select_text(assembler: Z80Assembler, slot_name: str):
         else:
             return 0xfc  # All other chars are blank spaces
 
-    row_1 = [char_to_tile(c) for c in f"AP {VERSION}"]
+    row_1 = [char_to_tile(c) for c in f"ARCHIP. {OracleOfAgesWorld.version()}"]
     row_1_left_padding = int((16 - len(row_1)) / 2)
     row_1_right_padding = int(16 - row_1_left_padding - len(row_1))
     row_1 = ([0x00] * row_1_left_padding) + row_1 + ([0x00] * row_1_right_padding)
