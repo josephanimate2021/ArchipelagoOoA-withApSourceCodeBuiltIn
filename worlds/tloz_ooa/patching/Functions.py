@@ -395,7 +395,7 @@ def define_dungeon_items_text_constants(assembler: Z80Assembler, patch_data):
             dungeon_map_text.extend([0x4d, 0x61, 0x70])  # "Map"
             dungeon_map_text.extend(dungeon_precision)
         else:
-            dungeon_map_text.extend([0x44, 0x05, 0x8a, 0x20, 0x4d, 0x61, 0x70])  # "Dungeon Map"
+            dungeon_map_text.extend(process_item_name_for_shop_text("Dungeon Map"))  # "Dungeon Map"
         dungeon_map_text.extend([0x09, 0x00, 0x21, 0x00])  # "\color(WHITE)!(end)"
         assembler.add_floating_chunk(f"text.dungeonMap{dungeon_tag}", dungeon_map_text)
 
