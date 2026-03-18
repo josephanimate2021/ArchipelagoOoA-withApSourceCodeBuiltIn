@@ -10,7 +10,7 @@
 
 # First byte (not sure what that's for)
 # Second byte is the dest room
-# Third byte is a postion in the form of $yx
+# Third byte is link's postion after the warp in the form of $yx
 
 # init d2 present entrance source
 04/7646/: db $00,$83,$07,$44
