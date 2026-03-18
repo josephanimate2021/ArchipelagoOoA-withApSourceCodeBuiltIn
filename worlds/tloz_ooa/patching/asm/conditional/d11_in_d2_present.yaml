@@ -16,5 +16,7 @@
 04/7646/: db $00,$83,$07,$44
 
 # init hero's cave exit.
-04/7ad6/: db $04,$ce,$41,$04
-04/702e/: db $83,$25
+04/7ad6/: db $04,$ce,$41,$04 # Another example of a warp source.
+
+# This script below changes the bytes for the warp dest on index 41.
+04/702d/: db $01,$83,$25
