@@ -117,7 +117,6 @@ class OracleOfAgesWorld(World):
         if not self.options.keysanity_slates:
             self.options.non_local_items.value -= set(["Slate"])
 
-    
     def shuffle_dungeons(self):
         shuffled_dungeons = list(self.dungeon_entrances.values())
         while True:

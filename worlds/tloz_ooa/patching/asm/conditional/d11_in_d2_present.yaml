@@ -1,5 +1,20 @@
+# Breakdown on how warp sources work:
+
+# first byte is either type of warp for standard warping, or $80 to mark the start of a positionwarp block, 0 otherwise
+# second byte is the src room for standard/pointer, the position for position warp
+# 3rd byte and 4th byte are the address of the group for pointer warp (only works if pointer warp is used)
+# 3rd byte is the id of the warp dest in standard/position (only works if position warp is not being used)
+# 4th byte is in form $xy, where x is the warp dest group, y is the type of transition upon taking the warp (only works if position warp is not being used)
+
+# Breakdown on how warp destinations work:
+
+# First byte (not sure what that's for)
+# Second byte is the dest room
+# Third byte is a postion in the form of $yx
+
 # init d2 present entrance source
-04/75d6/: db $00,$83,$07,$44
+04/7646/: db $00,$83,$07,$44
 
 # init hero's cave exit.
-
+04/7ad6/: db $04,$ce,$41,$04
+04/702e/: db $83,$25

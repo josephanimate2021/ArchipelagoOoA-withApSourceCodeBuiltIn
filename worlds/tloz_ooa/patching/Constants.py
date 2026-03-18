@@ -543,7 +543,7 @@ DUNGEON_ENTRANCES = {
         "group": 0x00,
         "position": 0x25,
         "shifted": False,
-        "default":"N/A"
+        "default":"d11"
     },
     "d3": {
         "addr": 0x135c8,

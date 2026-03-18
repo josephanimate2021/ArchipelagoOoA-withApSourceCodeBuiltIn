@@ -11,11 +11,7 @@ from .Functions import *
 from .Constants import *
 from ..common.patching.RomData import RomData
 from ..common.patching.z80asm.Assembler import Z80Assembler, Z80Block, GameboyAddress
-
 from tkinter.filedialog import askopenfilename
-
-ROM_HASH = "c4639cc61c049e5a085526bb6cac03bb"
-
 
 class OoAPatchExtensions(APPatchExtension):
     game = "The Legend of Zelda - Oracle of Ages"
@@ -54,20 +50,19 @@ class OoAPatchExtensions(APPatchExtension):
         dungeon_entrances = dict(DUNGEON_ENTRANCES)
         dungeon_exits = dict(DUNGEON_EXITS)
         if patch_data["options"]["linked_heros_cave"] != OracleOfAgesLinkedHerosCave.option_disabled:
-            dungeon_exits["d11"] = GameboyAddress(0x04, 0x7ae2).address_in_rom()
+            dungeon_exits["d11"] = 0x13000
             dungeon_entrances["d11"] = {
+                "addr": 0x13000,
+                "room": 0x48,
+                "map_tile": 0x48,
+                "position": 0x28,
                 "group": 0x00,
                 "shifted": False,
                 "default": "d11"
             }
             if patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_maku_tree_entrance_right_side:
                 dungeon_entrances["d11"]["addr"] = GameboyAddress(0x04, 0x770c).address_in_rom()
-                dungeon_entrances["d11"]["room"] = 0x48
-                dungeon_entrances["d11"]["map_tile"] = 0x048
-                dungeon_entrances["d11"]["position"] = 0x28
-            elif patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_d2_present:
-                dungeon_entrances["d11"] = dungeon_entrances["d2 present"]
-                dungeon_entrances["d11"]["default"] = "d11"
+                dungeon_exits["d11"] = GameboyAddress(0x04, 0x7ae2).address_in_rom()
 
         # Define static values & data blocks
         for symbolic_name, price in patch_data["shop_prices"].items():
@@ -96,7 +91,7 @@ class OoAPatchExtensions(APPatchExtension):
         alter_treasures(rom_data)
         write_chest_contents(rom_data, patch_data)
         write_seed_tree_content(rom_data, patch_data)
-        # set_dungeon_warps(rom_data, patch_data, dungeon_entrances, dungeon_exits)
+        set_dungeon_warps(rom_data, patch_data, dungeon_entrances, dungeon_exits)
         #apply_miscellaneous_options(rom_data, patch_data)
 
         set_heart_beep_interval_from_settings(rom_data)
@@ -108,7 +103,7 @@ class OoAPatchExtensions(APPatchExtension):
         return rom_data.output()
 
 class OoAProcedurePatch(APProcedurePatch, APTokenMixin):
-    hash = [ROM_HASH]
+    hash = [AGES_ROM_HASH]
     patch_file_ending: str = ".apooa"
     result_file_ending: str = ".gbc"
 
@@ -130,7 +125,7 @@ class OoAProcedurePatch(APProcedurePatch, APTokenMixin):
 
             basemd5 = hashlib.md5()
             basemd5.update(base_rom_bytes)
-            if ROM_HASH != basemd5.hexdigest():
+            if AGES_ROM_HASH != basemd5.hexdigest():
                 raise Exception("Supplied ROM does not match known MD5 for Oracle of Ages US version."
                                 "Get the correct game and version, then dump it.")
             setattr(cls, "base_rom_bytes", base_rom_bytes)
