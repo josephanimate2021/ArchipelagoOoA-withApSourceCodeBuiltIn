@@ -15,7 +15,7 @@
 # init d2 present entrance source
 04/7646/: db $00,$83,$07,$44
 
-# init hero's cave exit.
+# init hero's cave exit source.
 04/7ad6/: db $04,$ce,$41,$04 # Another example of a warp source.
 
 # This script below changes the bytes for the warp dest on index 41.
