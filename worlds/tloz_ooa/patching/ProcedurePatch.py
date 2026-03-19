@@ -68,6 +68,13 @@ class OoAPatchExtensions(APPatchExtension):
             elif patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_d2_present:
                 dungeon_entrances["d11"]["room"] = 0x83
                 dungeon_entrances["d11"]["position"] = 0x25
+            elif patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_seawater_cure_room_present:
+                dungeon_entrances["d11"]["room"] = 0xa3
+                dungeon_entrances["d11"]["position"] = 0x32
+            elif patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_zoras_domain:
+                dungeon_entrances["d11"]["room"] = 0xc0
+                dungeon_entrances["d11"]["position"] = 0x43
+                dungeon_entrances["d11"]["group"] = 0x02
 
             if "map_tile" not in dungeon_entrances["d11"]:
                 dungeon_entrances["d11"]["map_tile"] = dungeon_entrances["d11"]["room"]
@@ -78,6 +85,8 @@ class OoAPatchExtensions(APPatchExtension):
         # Define static values & data blocks
         for symbolic_name, price in patch_data["shop_prices"].items():
             assembler.define_byte(f"shopPrices.{symbolic_name}", RUPEE_VALUES[price])
+
+        define_tile_replacements_table(assembler, patch_data)
         define_location_constants(assembler, patch_data)
         define_option_constants(assembler, patch_data)
         define_text_constants(assembler, patch_data)

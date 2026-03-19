@@ -45,44 +45,8 @@
 
 00/38c0/: call applyExtraTileSubstitutions
 
-# data for applyAllTileSubstitutions: group,room,flags,yx,tile
 04//tileSubTable: |
-    /ifdef option.secretLocationsEnabled
-    db $01,$c7,$00,$48,$d0 # add stair tile in sea of storms past to allow players to time travel to the present sea of storms.
-    db $03,$c7,$00,$48,$2c # add statue in sea of storms past underwater prevent players from resurfacing on that area.
-    # add walkable tiles to black tower present entrance
-    db $00,$76,$00,$55,$a7
-    db $00,$76,$00,$54,$a7
-    # end tile adding for black tower entrance present
-    /endif
-    db $03,$bf,$00,$74,$b2 # block off exit for faq room
-    db $03,$bf,$00,$75,$b2 # block off exit for faq room
-    db $00,$20,$00,$61,$d7 # portal in talus peaks
-    db $01,$48,$00,$45,$d7 # portal south of past maku tree
-    db $00,$37,$02,$43,$d7 # portal in southeast ricky/moosh nuun
-    ; db $00,$39,$00,$63,$f0 # open chest on intro screen
-    ; db $00,$39,$20,$63,$f1 # closed chest on intro screen
-    db $00,$6b,$00,$42,$3a # removed tree in yoll graveyard
-    db $00,$6b,$02,$42,$ce # not removed tree in yoll graveyard
-    db $00,$83,$00,$43,$3a # path outside D2 present
-    db $03,$0f,$00,$66,$f9 # water in d6 past entrance
-    db $01,$13,$00,$61,$d7 # portal in symmetry city past
-    db $01,$13,$00,$68,$d7 # portal in symmetry city past
-    db $00,$25,$00,$37,$d7 # portal in nuun highlands
-    # db $05,$da,$01,$a4,$4b2 # tunnel to moblin keep
-    db $05,$da,$01,$a5,$b2 # cont.
-    db $05,$da,$01,$a6,$b2 # cont.
-    db $00,$24,$02,$49,$63 # other side of symmetry city bridge
-    db $00,$24,$02,$59,$63 # cont.
-    db $00,$24,$02,$69,$63 # cont.
-    db $00,$24,$02,$79,$73 # cont.
-    db $01,$2c,$00,$70,$69 # ledge in rolling ridge east past
-    db $01,$2c,$00,$71,$06 # cont.
-    db $01,$2c,$00,$72,$67 # cont.
-    db $01,$a5,$00,$35,$48 # ledge by library past
-    db $01,$a5,$00,$45,$0b # cont.
-    db $01,$a5,$00,$55,$6c # cont.
-    db $01,$48,$02,$31,$cd # past maku road: remove dirt when exiting
+    /include tileReplacementTable
     db $ff
 
 # burning the first tree in yoll graveyard should set room flag 1 so that it

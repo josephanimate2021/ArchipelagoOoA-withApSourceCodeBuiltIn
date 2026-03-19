@@ -93,9 +93,9 @@ class OracleOfAgesWorld(World):
         else:
             return {
                 # The syntax is like this:
-                # "room" repersents a byte number for the screen that link will go to when warp to start is activated.
-                # "pos" repersents a byte number for a position link will be in when warp to start is active.
-                # "group" repersents a byte number for a screen group that link will be in once warp to start is activated.
+                # "room" represents a byte number for the screen that link will go to when warp to start is activated.
+                # "pos" represents a byte number for a position link will be in when warp to start is active.
+                # "group" represents a byte number for a screen group that link will be in once warp to start is activated.
                 # "dest_transittion" is a number that will changes the screen after the warp
                 # "src_transittion" is a number that will changes the screen before the warp
             }

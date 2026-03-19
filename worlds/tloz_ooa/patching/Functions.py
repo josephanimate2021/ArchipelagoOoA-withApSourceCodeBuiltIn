@@ -82,7 +82,7 @@ def get_asm_files(patch_data):
         if patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_maku_tree_entrance_right_side:
             asm_files.append("asm/conditional/d11_in_maku_tree_entrance_right_side.yaml")
         else:
-            asm_files.append("asm/conditional/d11_custom_warp.yaml")
+            asm_files.append(f"asm/conditional/d11_custom_warp_group_{2 if patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_zoras_domain else 0}.yaml")
             if patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_d2_present:
                 asm_files.append("asm/conditional/d11_in_d2_present.yaml")
     if patch_data["options"]["miniboss_locations"]:
@@ -103,13 +103,67 @@ def prefill_warps(assembler: Z80Assembler, patch_data: dict[str, dict[str, Any]]
             d11Entrance = "d2 past"
         else:
             d11Entrance = d11Exit
+
+        # Breakdown on how warp destinations work:
+
+        # First byte (not sure what that's for)
+        # Second byte is the dest room
+        # Third byte is link's postion after the warp in the form of $yx
             
-        assembler.add_floating_chunk("herosCaveExitDest", [dungeon_entrances["d11"]["room"], dungeon_entrances["d11"]["position"]])
+        rom.write_bytes(GameboyAddress(0x04, 0x702e).address_in_rom(), [dungeon_entrances["d11"]["room"], dungeon_entrances["d11"]["position"]])
         assembler.add_floating_chunk("warpSourceHerosCaveEntrance", dungeon_entrances[d11Entrance]["warp_source_addr"])
 
         # Writes down the new exit source for the hero's cave custom warp.
         rom.write_bytes(dungeon_exits[d11Exit]["addr_custom_warp"], dungeon_exits[d11Exit]["warp_source_addr"])
-        rom.write_bytes(dungeon_exits[d11Exit]["addr_custom_warp"] + 2, [0x41, 0x04])
+        rom.write_bytes(dungeon_exits[d11Exit]["addr_custom_warp"] + 2, [0x41, 0x24 if patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_zoras_domain else 0x04])
+
+def define_tile_replacements_table(assembler: Z80Assembler, patch_data: dict[str, dict[str, Any]]):
+
+    # data for applyAllTileSubstitutions: group,room,flags,yx,tile
+    tiles_to_replace = [
+        0x03, 0xbf, 0x00, 0x74, 0xb2, # block off exit for faq room
+        0x03, 0xbf, 0x00, 0x75, 0xb2, # block off exit for faq room
+        0x00, 0x20, 0x00, 0x61, 0xd7, # portal in talus peaks
+        0x01, 0x48, 0x00, 0x45, 0xd7, # portal south of past maku tree
+        0x00, 0x37, 0x02, 0x43, 0xd7, # portal in southeast ricky/moosh nuun
+        0x00, 0x6b, 0x00, 0x42, 0x3a, # removed tree in yoll graveyard
+        0x00, 0x6b, 0x02, 0x42, 0xce, # not removed tree in yoll graveyard
+        0x00, 0x83, 0x00, 0x43, 0x3a, # path outside D2 present
+        0x03, 0x0f, 0x00, 0x66, 0xf9, # water in d6 past entrance
+        0x01, 0x13, 0x00, 0x61, 0xd7, # portal in symmetry city past
+        0x01, 0x13, 0x00, 0x68, 0xd7, # portal in symmetry city past
+        0x00, 0x25, 0x00, 0x37, 0xd7, # portal in nuun highlands
+        0x05, 0xda, 0x01, 0xa5, 0xb2, # cont.
+        0x05, 0xda, 0x01, 0xa6, 0xb2, # cont.
+        0x00, 0x24, 0x02, 0x49, 0x63, # other side of symmetry city bridge
+        0x00, 0x24, 0x02, 0x59, 0x63, # cont.
+        0x00, 0x24, 0x02, 0x69, 0x63, # cont.
+        0x00, 0x24, 0x02, 0x79, 0x73, # cont.
+        0x01, 0x2c, 0x00, 0x70, 0x69, # ledge in rolling ridge east past
+        0x01, 0x2c, 0x00, 0x71, 0x06, # cont.
+        0x01, 0x2c, 0x00, 0x72, 0x67, # cont.
+        0x01, 0xa5, 0x00, 0x35, 0x48, # ledge by library past
+        0x01, 0xa5, 0x00, 0x45, 0x0b, # cont.
+        0x01, 0xa5, 0x00, 0x55, 0x6c, # cont.
+        0x01, 0x48, 0x02, 0x31, 0xcd, # past maku road: remove dirt when exiting
+    ]
+
+    if patch_data["options"]["secret_locations"]:
+        tiles_to_replace.extend([
+            0x01, 0xc7, 0x00, 0x48, 0xd0, # add stair tile in sea of storms past to allow players to time travel to the present sea of storms.
+            0x03, 0xc7, 0x00, 0x48, 0x2c, # add statue in sea of storms past underwater prevent players from resurfacing on that area.
+
+            # add walkable tiles to black tower present entrance
+            0x00, 0x76, 0x00, 0x55, 0xa7,
+            0x00, 0x76, 0x00, 0x54, 0xa7,
+        ])
+
+    if patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_zoras_domain:
+        tiles_to_replace.extend([
+            0x02, 0xc0, 0x00, 0x43, 0xdc # Add stair tile near chest
+        ])
+
+    assembler.add_floating_chunk("tileReplacementTable", tiles_to_replace)
 
 def define_location_constants(assembler: Z80Assembler, patch_data):
     for location_name, location_data in LOCATIONS_DATA.items():

@@ -6,14 +6,5 @@
 # 3rd byte is the id of the warp dest in standard/position (only works if position warp is not being used)
 # 4th byte is in form $xy, where x is the warp dest group, y is the type of transition upon taking the warp (only works if position warp is not being used)
 
-# Breakdown on how warp destinations work:
-
-# First byte (not sure what that's for)
-# Second byte is the dest room
-# Third byte is link's postion after the warp in the form of $yx
-
 # init any entrance source (using custom dungeon info)
 04/7648/: /include warpSourceHerosCaveEntrance
-
-# This script below changes the bytes for the warp dest on index 41.
-04/702e/: /include herosCaveExitDest
