@@ -253,6 +253,7 @@ DEFINES = {
 
     # wram
     "wSubscreen1CurrentSlotIndex": "$c085",
+    "wBigBuffer": "$c300",
     "wKeysPressed":"$c481",
     "wKeysJustPressed":"$c482",
     "wAnimalRegion":"$c610",
@@ -293,6 +294,7 @@ DEFINES = {
     "wBoughtItems1":"$c642",
     "wBoughtItems2":"$c643",
     "wDungeonCompasses":"$c684",
+    "wSubscreen1CurrentSlotIndex": "$c085",
 
     # rom 00
     "interBankCall":"$008a",
