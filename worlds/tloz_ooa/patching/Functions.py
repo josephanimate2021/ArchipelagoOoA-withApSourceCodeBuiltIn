@@ -81,11 +81,32 @@ def get_asm_files(patch_data):
         asm_files.append("asm/conditional/d11.yaml")
         if patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_maku_tree_entrance_right_side:
             asm_files.append("asm/conditional/d11_in_maku_tree_entrance_right_side.yaml")
-        elif patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_d2_present:
-            asm_files.append("asm/conditional/d11_in_d2_present.yaml")
+        else:
+            asm_files.append("asm/conditional/d11_custom_warp.yaml")
+            if patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_d2_present:
+                asm_files.append("asm/conditional/d11_in_d2_present.yaml")
     if patch_data["options"]["miniboss_locations"]:
         asm_files.append("asm/conditional/miniboss_locations.yaml")
     return asm_files
+
+def prefill_warps(assembler: Z80Assembler, patch_data: dict[str, dict[str, Any]], dungeon_entrances: dict[str, dict[str, Any]], dungeon_exits: dict[str, dict[str, Any]]):
+    """
+    Fills custom made warps with warp addresses that lead to either dungeons or other misc places (Helps with dungeon shuffle and possibly ER).
+    """
+    if (
+        patch_data["options"]["linked_heros_cave"] != OracleOfAgesLinkedHerosCave.option_disabled
+        and patch_data["options"]["linked_heros_cave"] != OracleOfAgesLinkedHerosCave.option_maku_tree_entrance_right_side
+    ):
+        d11Exit = patch_data["dungeon_entrances"]["d11"]
+
+        if d11Exit == "d2":
+            d11Entrance = "d2 past"
+        else:
+            d11Entrance = d11Exit
+            
+        assembler.add_floating_chunk("herosCaveExitDest", [dungeon_entrances["d11"]["room"], dungeon_entrances["d11"]["position"]])
+        assembler.add_floating_chunk("warpSourceHerosCaveEntrance", dungeon_entrances[d11Entrance]["warp_source_addr"])
+        assembler.add_floating_chunk("warpSourceHerosCaveExit", dungeon_exits[d11Exit]["warp_source_addr"])
 
 def define_location_constants(assembler: Z80Assembler, patch_data):
     for location_name, location_data in LOCATIONS_DATA.items():
@@ -301,14 +322,17 @@ def write_seed_tree_content(rom: RomData, patch_data):
 def set_dungeon_warps(rom: RomData, patch_data: dict[str, Any], dungeon_entrances: dict[str, Any], dungeon_exits: dict[str, Any]):
     warp_matchings = patch_data["dungeon_entrances"]
     enter_values = {name: rom.read_word(dungeon["addr"]) for name, dungeon in dungeon_entrances.items()}
-    exit_values = {name: rom.read_word(addr) for name, addr in dungeon_exits.items()}
+    exit_values = {name: rom.read_word(dungeon["addr"]) for name, dungeon in dungeon_exits.items()}
 
     # Apply warp matchings expressed in the patch
     for from_name, to_name in warp_matchings.items():
+        if from_name == "d11" and patch_data["options"]["linked_heros_cave"] != OracleOfAgesLinkedHerosCave.option_maku_tree_entrance_right_side:
+            # For some reason, d11 with a custom warp is causing the d3 exit to not work right. Hopefully skipping this while d11 is present helps.
+            continue
         default_entrance_of_to_name = [name for name, dungeon in dungeon_entrances.items() if dungeon["default"] == to_name][0]
         default_exit_of_from_name = dungeon_entrances[from_name]["default"]
         entrance_addr = dungeon_entrances[from_name]["addr"]
-        exit_addr = dungeon_exits[to_name]
+        exit_addr = dungeon_exits[to_name]["addr"]
         rom.write_word(entrance_addr, enter_values[default_entrance_of_to_name])
         rom.write_word(exit_addr, exit_values[default_exit_of_from_name])
 
@@ -316,11 +340,11 @@ def set_dungeon_warps(rom: RomData, patch_data: dict[str, Any], dungeon_entrance
     entrance_map = dict((v, k) for k, v in warp_matchings.items())
 
     # D1-D8 Essence Warps (hardcoded in one array using a unified format)
-    for i in range(8):
-        # if i == 8:
-            # if patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_disabled:
-                # continue
-            # i = 10
+    for i in range(9):
+        if i == 8:
+            if patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_disabled:
+                continue
+            i = 10
         entrance_name = f"d{i + 1}"
         if i == 5:
             entrance_name += " past"

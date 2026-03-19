@@ -509,6 +509,7 @@ DUNGEON_ENTRANCES = {
 
     # Most of the addresses here were likely found using ZOLE and then added 2 shortly after.
     "d0": {
+        "warp_source_addr": [0x01, 0x44],
         "addr": GameboyAddress(0x04, 0x7728).address_in_rom(),
         "map_tile": 0x148,
         "room": 0x48,
@@ -519,6 +520,7 @@ DUNGEON_ENTRANCES = {
     },
     "d1": {
         "addr": 0x13000,
+        "warp_source_addr": [0x02, 0x44],
         "map_tile": 0x08d,
         "room": 0x8d,
         "group": 0x00,
@@ -529,6 +531,7 @@ DUNGEON_ENTRANCES = {
     },
     "d2 past": {
         "addr": 0x1372c,
+        "warp_source_addr": [0x03, 0x44],
         "map_tile": 0x183,
         "room": 0x83,
         "group": 0x01,
@@ -536,16 +539,8 @@ DUNGEON_ENTRANCES = {
         "shifted": False,
         "default":"d2"
     },
-    "d2 present": {
-        "addr": 0x13648,
-        "map_tile": 0x083,
-        "room": 0x83,
-        "group": 0x00,
-        "position": 0x25,
-        "shifted": False,
-        "default":"d11"
-    },
     "d3": {
+        "warp_source_addr": [0x04, 0x44],
         "addr": 0x135c8,
         "map_tile": 0x0ba,
         "room": 0xba,
@@ -555,6 +550,7 @@ DUNGEON_ENTRANCES = {
         "default":"d3"
     },
     "d4": {
+        "warp_source_addr": [0x05, 0x44],
         "addr": 0x135cc,
         "map_tile": 0x003,
         "room": 0x03,
@@ -564,6 +560,7 @@ DUNGEON_ENTRANCES = {
         "default":"d4"
     },
     "d5": {
+        "warp_source_addr": [0x06, 0x44],
         "addr": 0x136b0,
         "map_tile": 0x00a,
         "room": 0x0a,
@@ -573,6 +570,7 @@ DUNGEON_ENTRANCES = {
         "default":"d5"
     },
     "d6 present": {
+        "warp_source_addr": [0x00, 0x54],
         "addr": 0x13748,
         "map_tile": 0x03c,
         "room": 0x0e,
@@ -582,6 +580,7 @@ DUNGEON_ENTRANCES = {
         "default":"d6 present"
     },
     "d7": {
+        "warp_source_addr": [0x01, 0x54],
         "addr": 0x13874,
         "map_tile": 0x090,
         "room": 0x90,
@@ -591,6 +590,7 @@ DUNGEON_ENTRANCES = {
         "default":"d7"
     },
     "d8": {
+        "warp_source_addr": [0x02, 0x54],
         "addr": 0x13730,
         "map_tile": 0x15c,
         "room": 0x5c,
@@ -600,6 +600,7 @@ DUNGEON_ENTRANCES = {
         "default":"d8"
     },
     "d6 past": {
+        "warp_source_addr": [0x06, 0x54],
         "addr": 0x139b4,
         "map_tile": 0x13c,
         "room": 0x0f,
@@ -609,6 +610,7 @@ DUNGEON_ENTRANCES = {
         "default":"d6 past"
     },
     "ambi's palace": {
+        "warp_source_addr": [0x62, 0x54],
         "addr": 0x13758,
         "map_tile": 0x106,
         "room": 0x06,
@@ -620,18 +622,50 @@ DUNGEON_ENTRANCES = {
 }
 
 DUNGEON_EXITS = {
-    # TODO
-    "d0": 0x13aec,
-    "d1": 0x13ad0,
-    "d2": 0x13ad4,
-    "d3": 0x13ad8,
-    "d4": 0x13adc,
-    "d5": 0x13ae0,
-    "d6 present": 0x13c48,
-    "d7": 0x13c60,
-    "d8": 0x13c74,
-    "d6 past": 0x13c54,
-    "ambi's palace": 0x13d18
+    "d0": {
+        "warp_source_addr": [0x04, 0xcd],
+        "addr": 0x13aec
+    },
+    "d1": {
+        "warp_source_addr": [0x04, 0x24],
+        "addr": 0x13ad0
+    },
+    "d2": {
+        "warp_source_addr": [0x04, 0x46],
+        "addr": 0x13ad4
+    },
+    "d3": {
+        "warp_source_addr": [0x04, 0x66],
+        "addr": 0x13ad8
+    },
+    "d4": {
+        "warp_source_addr": [0x04, 0x91],
+        "addr": 0x13adc
+    },
+    "d5": {
+        "warp_source_addr": [0x04, 0xbb],
+        "addr": 0x13ae0
+    },
+    "d6 present": {
+        "warp_source_addr": [0x05, 0x26],
+        "addr": 0x13c48
+    },
+    "d7": {
+        "warp_source_addr": [0x05, 0x56],
+        "addr": 0x13c60
+    },
+    "d8": {
+        "warp_source_addr": [0x05, 0xaa],
+        "addr": 0x13c74
+    },
+    "d6 past": {
+        "warp_source_addr": [0x05, 0x44],
+        "addr": 0x13c54
+    },
+    "ambi's palace": {
+        "warp_source_addr": [0x05, 0xd2],
+        "addr": 0x13d18
+    }
 }
 
 PALETTE_BYTES = {

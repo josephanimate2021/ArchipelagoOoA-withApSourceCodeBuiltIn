@@ -50,19 +50,29 @@ class OoAPatchExtensions(APPatchExtension):
         dungeon_entrances = dict(DUNGEON_ENTRANCES)
         dungeon_exits = dict(DUNGEON_EXITS)
         if patch_data["options"]["linked_heros_cave"] != OracleOfAgesLinkedHerosCave.option_disabled:
-            dungeon_exits["d11"] = 0x13000
             dungeon_entrances["d11"] = {
-                "addr": 0x13000,
-                "room": 0x48,
-                "map_tile": 0x48,
-                "position": 0x28,
+                "addr": GameboyAddress(0x04, 0x770c).address_in_rom(),
+                "warp_source_addr": [0x07, 0x44],
                 "group": 0x00,
                 "shifted": False,
                 "default": "d11"
             }
+            dungeon_exits["d11"] = {
+                "warp_source_addr": [0x04, 0xce],
+                "addr": GameboyAddress(0x04, 0x7ae2).address_in_rom()
+            }
             if patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_maku_tree_entrance_right_side:
-                dungeon_entrances["d11"]["addr"] = GameboyAddress(0x04, 0x770c).address_in_rom()
-                dungeon_exits["d11"] = GameboyAddress(0x04, 0x7ae2).address_in_rom()
+                dungeon_entrances["d11"]["room"] = 0x48
+                dungeon_entrances["d11"]["position"] = 0x28
+            elif patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_d2_present:
+                dungeon_entrances["d11"]["room"] = 0x83
+                dungeon_entrances["d11"]["position"] = 0x25
+
+            if "map_tile" not in dungeon_entrances["d11"]:
+                dungeon_entrances["d11"]["map_tile"] = dungeon_entrances["d11"]["room"]
+
+        # Fill warps (pre stage)
+        prefill_warps(assembler, patch_data, dungeon_entrances, dungeon_exits)
 
         # Define static values & data blocks
         for symbolic_name, price in patch_data["shop_prices"].items():
@@ -79,7 +89,7 @@ class OoAPatchExtensions(APPatchExtension):
 
         # Parse assembler files, compile them and write the result in the ROM
         print("Compiling ASM files...")
-        # write_text_data(rom_data, dictionary, texts, True)
+        # write_text_data(rom_data, dictionary, texts, False)
         for file_path in get_asm_files(patch_data):
             data_loaded = yaml.safe_load(pkgutil.get_data(__name__, file_path))
             for metalabel, contents in data_loaded.items():
@@ -91,7 +101,10 @@ class OoAPatchExtensions(APPatchExtension):
         alter_treasures(rom_data)
         write_chest_contents(rom_data, patch_data)
         write_seed_tree_content(rom_data, patch_data)
+
+        # Fill warps (post stage)
         set_dungeon_warps(rom_data, patch_data, dungeon_entrances, dungeon_exits)
+
         #apply_miscellaneous_options(rom_data, patch_data)
 
         set_heart_beep_interval_from_settings(rom_data)

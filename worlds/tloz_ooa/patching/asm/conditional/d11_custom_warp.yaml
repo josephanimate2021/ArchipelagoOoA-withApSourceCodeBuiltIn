@@ -12,5 +12,12 @@
 # Second byte is the dest room
 # Third byte is link's postion after the warp in the form of $yx
 
-# init d2 present entrance source
-04/7646/: db $00,$83
+# init d2 present entrance source (using custom dungeon info)
+04/7648/: /include warpSourceHerosCaveEntrance
+
+# init hero's cave exit source.
+04/7ad6/: /include warpSourceHerosCaveExit
+04/7ad8/: db $41,$04
+
+# This script below changes the bytes for the warp dest on index 41.
+04/702e/: /include herosCaveExitDest
