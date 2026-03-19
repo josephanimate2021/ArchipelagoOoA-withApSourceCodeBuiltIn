@@ -61,7 +61,7 @@ def alter_treasures(rom: RomData):
 
 def get_asm_files(patch_data):
     asm_files = ASM_FILES.copy()
-    if get_settings()["tloz_ooa_options"]["qol_quick_flute"]:
+    if patch_data["options"]["quick_flute"]:
         asm_files.append("asm/conditional/quick_flute.yaml")
     if get_settings()["tloz_ooa_options"]["skip_tokkey_dance"]:
         asm_files.append("asm/conditional/skip_dance.yaml")
@@ -81,11 +81,89 @@ def get_asm_files(patch_data):
         asm_files.append("asm/conditional/d11.yaml")
         if patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_maku_tree_entrance_right_side:
             asm_files.append("asm/conditional/d11_in_maku_tree_entrance_right_side.yaml")
-        elif patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_d2_present:
-            asm_files.append("asm/conditional/d11_in_d2_present.yaml")
+        else:
+            asm_files.append(f"asm/conditional/d11_custom_warp_group_{2 if patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_zoras_domain else 0}.yaml")
+            if patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_d2_present:
+                asm_files.append("asm/conditional/d11_in_d2_present.yaml")
     if patch_data["options"]["miniboss_locations"]:
         asm_files.append("asm/conditional/miniboss_locations.yaml")
     return asm_files
+
+def prefill_warps(assembler: Z80Assembler, patch_data: dict[str, dict[str, Any]], dungeon_entrances: dict[str, dict[str, Any]], dungeon_exits: dict[str, dict[str, Any]], rom: RomData):
+    """
+    Fills custom made warps with warp addresses that lead to either dungeons or other misc places (Helps with dungeon shuffle and possibly ER).
+    """
+    if (
+        patch_data["options"]["linked_heros_cave"] != OracleOfAgesLinkedHerosCave.option_disabled
+        and patch_data["options"]["linked_heros_cave"] != OracleOfAgesLinkedHerosCave.option_maku_tree_entrance_right_side
+    ):
+        d11Exit = patch_data["dungeon_entrances"]["d11"]
+
+        if d11Exit == "d2":
+            d11Entrance = "d2 past"
+        else:
+            d11Entrance = d11Exit
+
+        # Breakdown on how warp destinations work:
+
+        # First byte (not sure what that's for)
+        # Second byte is the dest room
+        # Third byte is link's postion after the warp in the form of $yx
+            
+        rom.write_bytes(GameboyAddress(0x04, 0x702e).address_in_rom(), [dungeon_entrances["d11"]["room"], dungeon_entrances["d11"]["position"]])
+        assembler.add_floating_chunk("warpSourceHerosCaveEntrance", dungeon_entrances[d11Entrance]["warp_source_addr"])
+
+        # Writes down the new exit source for the hero's cave custom warp.
+        rom.write_bytes(dungeon_exits[d11Exit]["addr_custom_warp"], dungeon_exits[d11Exit]["warp_source_addr"])
+        rom.write_bytes(dungeon_exits[d11Exit]["addr_custom_warp"] + 2, [0x41, 0x24 if patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_zoras_domain else 0x04])
+
+def define_tile_replacements_table(assembler: Z80Assembler, patch_data: dict[str, dict[str, Any]]):
+
+    # data for applyAllTileSubstitutions: group,room,flags,yx,tile
+    tiles_to_replace = [
+        0x03, 0xbf, 0x00, 0x74, 0xb2, # block off exit for faq room
+        0x03, 0xbf, 0x00, 0x75, 0xb2, # block off exit for faq room
+        0x00, 0x20, 0x00, 0x61, 0xd7, # portal in talus peaks
+        0x01, 0x48, 0x00, 0x45, 0xd7, # portal south of past maku tree
+        0x00, 0x37, 0x02, 0x43, 0xd7, # portal in southeast ricky/moosh nuun
+        0x00, 0x6b, 0x00, 0x42, 0x3a, # removed tree in yoll graveyard
+        0x00, 0x6b, 0x02, 0x42, 0xce, # not removed tree in yoll graveyard
+        0x00, 0x83, 0x00, 0x43, 0x3a, # path outside D2 present
+        0x03, 0x0f, 0x00, 0x66, 0xf9, # water in d6 past entrance
+        0x01, 0x13, 0x00, 0x61, 0xd7, # portal in symmetry city past
+        0x01, 0x13, 0x00, 0x68, 0xd7, # portal in symmetry city past
+        0x00, 0x25, 0x00, 0x37, 0xd7, # portal in nuun highlands
+        0x05, 0xda, 0x01, 0xa5, 0xb2, # cont.
+        0x05, 0xda, 0x01, 0xa6, 0xb2, # cont.
+        0x00, 0x24, 0x02, 0x49, 0x63, # other side of symmetry city bridge
+        0x00, 0x24, 0x02, 0x59, 0x63, # cont.
+        0x00, 0x24, 0x02, 0x69, 0x63, # cont.
+        0x00, 0x24, 0x02, 0x79, 0x73, # cont.
+        0x01, 0x2c, 0x00, 0x70, 0x69, # ledge in rolling ridge east past
+        0x01, 0x2c, 0x00, 0x71, 0x06, # cont.
+        0x01, 0x2c, 0x00, 0x72, 0x67, # cont.
+        0x01, 0xa5, 0x00, 0x35, 0x48, # ledge by library past
+        0x01, 0xa5, 0x00, 0x45, 0x0b, # cont.
+        0x01, 0xa5, 0x00, 0x55, 0x6c, # cont.
+        0x01, 0x48, 0x02, 0x31, 0xcd, # past maku road: remove dirt when exiting
+    ]
+
+    if patch_data["options"]["secret_locations"]:
+        tiles_to_replace.extend([
+            0x01, 0xc7, 0x00, 0x48, 0xd0, # add stair tile in sea of storms past to allow players to time travel to the present sea of storms.
+            0x03, 0xc7, 0x00, 0x48, 0x2c, # add statue in sea of storms past underwater prevent players from resurfacing on that area.
+
+            # add walkable tiles to black tower present entrance
+            0x00, 0x76, 0x00, 0x55, 0xa7,
+            0x00, 0x76, 0x00, 0x54, 0xa7,
+        ])
+
+    if patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_zoras_domain:
+        tiles_to_replace.extend([
+            0x02, 0xc0, 0x00, 0x43, 0xdc # Add stair tile near chest
+        ])
+
+    assembler.add_floating_chunk("tileReplacementTable", tiles_to_replace)
 
 def define_location_constants(assembler: Z80Assembler, patch_data):
     for location_name, location_data in LOCATIONS_DATA.items():
@@ -110,10 +188,13 @@ def define_location_constants(assembler: Z80Assembler, patch_data):
 def define_option_constants(assembler: Z80Assembler, patch_data):
     options = patch_data["options"]
 
-    assembler.define_byte("option.startingGroup", 0x00)
-    assembler.define_byte("option.startingRoom", 0x39)
-    assembler.define_byte("option.startingPosY", 0x02)
-    assembler.define_byte("option.startingPosX", 0x01)
+    if not hasattr(get_settings().tloz_ooa_options, "beat_tutorial"):
+        assembler.define_byte("option.startingGroup", 0x03)
+        assembler.define_byte("option.startingRoom", 0xbf)
+    else: # Redirect user to the first item check, saving them some time.
+        assembler.define_byte("option.startingGroup", 0x00)
+        assembler.define_byte("option.startingRoom", 0x39)
+
     assembler.define_byte("option.warpingGroup", patch_data["warp_to_start_variables"]["group"] if "group" in patch_data["warp_to_start_variables"] else 0x00)
     assembler.define_byte("option.warpingRoom", patch_data["warp_to_start_variables"]["room"] if "room" in patch_data["warp_to_start_variables"] else 0x59)
     assembler.define_byte("option.warpingPos", patch_data["warp_to_start_variables"]["pos"] if "pos" in patch_data["warp_to_start_variables"] else 0x55)
@@ -298,14 +379,17 @@ def write_seed_tree_content(rom: RomData, patch_data):
 def set_dungeon_warps(rom: RomData, patch_data: dict[str, Any], dungeon_entrances: dict[str, Any], dungeon_exits: dict[str, Any]):
     warp_matchings = patch_data["dungeon_entrances"]
     enter_values = {name: rom.read_word(dungeon["addr"]) for name, dungeon in dungeon_entrances.items()}
-    exit_values = {name: rom.read_word(addr) for name, addr in dungeon_exits.items()}
+    exit_values = {name: rom.read_word(dungeon["addr"]) for name, dungeon in dungeon_exits.items()}
 
     # Apply warp matchings expressed in the patch
     for from_name, to_name in warp_matchings.items():
+        if from_name == "d11" and patch_data["options"]["linked_heros_cave"] != OracleOfAgesLinkedHerosCave.option_maku_tree_entrance_right_side:
+            # For some reason, d11 with a custom warp is causing the d3 exit to not work right. Hopefully skipping this while d11 is present helps.
+            continue
         default_entrance_of_to_name = [name for name, dungeon in dungeon_entrances.items() if dungeon["default"] == to_name][0]
         default_exit_of_from_name = dungeon_entrances[from_name]["default"]
         entrance_addr = dungeon_entrances[from_name]["addr"]
-        exit_addr = dungeon_exits[to_name]
+        exit_addr = dungeon_exits[to_name]["addr"]
         rom.write_word(entrance_addr, enter_values[default_entrance_of_to_name])
         rom.write_word(exit_addr, exit_values[default_exit_of_from_name])
 
@@ -313,11 +397,11 @@ def set_dungeon_warps(rom: RomData, patch_data: dict[str, Any], dungeon_entrance
     entrance_map = dict((v, k) for k, v in warp_matchings.items())
 
     # D1-D8 Essence Warps (hardcoded in one array using a unified format)
-    for i in range(8):
-        # if i == 8:
-            # if patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_disabled:
-                # continue
-            # i = 10
+    for i in range(9):
+        if i == 8:
+            if patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_disabled:
+                continue
+            i = 10
         entrance_name = f"d{i + 1}"
         if i == 5:
             entrance_name += " past"
@@ -395,7 +479,7 @@ def define_dungeon_items_text_constants(assembler: Z80Assembler, patch_data):
             dungeon_map_text.extend([0x4d, 0x61, 0x70])  # "Map"
             dungeon_map_text.extend(dungeon_precision)
         else:
-            dungeon_map_text.extend([0x44, 0x05, 0x8a, 0x20, 0x4d, 0x61, 0x70])  # "Dungeon Map"
+            dungeon_map_text.extend(process_item_name_for_shop_text("Dungeon Map"))  # "Dungeon Map"
         dungeon_map_text.extend([0x09, 0x00, 0x21, 0x00])  # "\color(WHITE)!(end)"
         assembler.add_floating_chunk(f"text.dungeonMap{dungeon_tag}", dungeon_map_text)
 
@@ -411,6 +495,7 @@ def define_dungeon_items_text_constants(assembler: Z80Assembler, patch_data):
         assembler.add_floating_chunk(f"text.compass{dungeon_tag}", compasses_text)
 
 def set_file_select_text(assembler: Z80Assembler, slot_name: str):
+    from .. import OracleOfAgesWorld
     def char_to_tile(c: str) -> int:
         if '0' <= c <= '9':
             return ord(c) - 0x20
@@ -425,7 +510,7 @@ def set_file_select_text(assembler: Z80Assembler, slot_name: str):
         else:
             return 0xfc  # All other chars are blank spaces
 
-    row_1 = [char_to_tile(c) for c in f"AP {VERSION}"]
+    row_1 = [char_to_tile(c) for c in f"ARCHIP. {OracleOfAgesWorld.version()}"]
     row_1_left_padding = int((16 - len(row_1)) / 2)
     row_1_right_padding = int(16 - row_1_left_padding - len(row_1))
     row_1 = ([0x00] * row_1_left_padding) + row_1 + ([0x00] * row_1_right_padding)

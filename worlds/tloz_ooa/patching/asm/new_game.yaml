@@ -131,5 +131,10 @@
     pop hl
     ret
 03/6e97/: jp setInitialFlags 
+
 # Set default text speed to 5
 07/418b/: db $04
+
+# Change Link starting point (Postion is unaffected because it doesen't interfere with anything else)
+07/419b/: db option.startingGroup       # Room
+07/419d/: db option.startingRoom        # Room

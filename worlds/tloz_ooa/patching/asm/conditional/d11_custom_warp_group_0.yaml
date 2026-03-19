@@ -6,5 +6,5 @@
 # 3rd byte is the id of the warp dest in standard/position (only works if position warp is not being used)
 # 4th byte is in form $xy, where x is the warp dest group, y is the type of transition upon taking the warp (only works if position warp is not being used)
 
-# init d2 present entrance source
-04/7646/: db $00,$83
+# init any entrance source (using custom dungeon info)
+04/7648/: /include warpSourceHerosCaveEntrance

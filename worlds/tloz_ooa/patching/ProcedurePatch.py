@@ -11,11 +11,7 @@ from .Functions import *
 from .Constants import *
 from ..common.patching.RomData import RomData
 from ..common.patching.z80asm.Assembler import Z80Assembler, Z80Block, GameboyAddress
-
 from tkinter.filedialog import askopenfilename
-
-ROM_HASH = "c4639cc61c049e5a085526bb6cac03bb"
-
 
 class OoAPatchExtensions(APPatchExtension):
     game = "The Legend of Zelda - Oracle of Ages"
@@ -24,10 +20,12 @@ class OoAPatchExtensions(APPatchExtension):
     def apply_patches(caller: APProcedurePatch, rom: bytes, patch_file: str) -> bytes:
         rom_data = RomData(rom)
         patch_data = yaml.safe_load(caller.get_file(patch_file).decode("utf-8"))
-
-        if not (patch_data["version"] in RETRO_COMPAT_VERSION):
-            raise Exception(f"Invalid version: this seed was generated on v{patch_data['version']}, "
-                            f"and is not compatible with current : v{VERSION}")
+        from .. import OracleOfAgesWorld
+        version = patch_data["version"].split(".")
+        world_version = OracleOfAgesWorld.world_version
+        if int(version[0]) != world_version.major or int(version[1]) > world_version.minor:
+            raise Exception(f"Invalid version: this patch was generated on v{patch_data['version']}, "
+                            f"you are currently using v{world_version.as_simple_string()}")
 
         #if patch_data["options"]["enforce_potion_in_shop"]:
         #    patch_data["locations"]["Horon Village: Shop #3"] = "Potion"
@@ -52,24 +50,43 @@ class OoAPatchExtensions(APPatchExtension):
         dungeon_entrances = dict(DUNGEON_ENTRANCES)
         dungeon_exits = dict(DUNGEON_EXITS)
         if patch_data["options"]["linked_heros_cave"] != OracleOfAgesLinkedHerosCave.option_disabled:
-            dungeon_exits["d11"] = GameboyAddress(0x04, 0x7ae2).address_in_rom()
             dungeon_entrances["d11"] = {
+                "addr": GameboyAddress(0x04, 0x770c).address_in_rom(),
+                "warp_source_addr": [0x07, 0x44],
                 "group": 0x00,
                 "shifted": False,
                 "default": "d11"
             }
+            dungeon_exits["d11"] = {
+                "warp_source_addr": [0x04, 0xce],
+                "addr_custom_warp": GameboyAddress(0x04, 0x7ad6).address_in_rom(),
+                "addr": GameboyAddress(0x04, 0x7ae2).address_in_rom()
+            }
             if patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_maku_tree_entrance_right_side:
-                dungeon_entrances["d11"]["addr"] = GameboyAddress(0x04, 0x770c).address_in_rom()
                 dungeon_entrances["d11"]["room"] = 0x48
-                dungeon_entrances["d11"]["map_tile"] = 0x048
                 dungeon_entrances["d11"]["position"] = 0x28
             elif patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_d2_present:
-                dungeon_entrances["d11"] = dungeon_entrances["d2 present"]
-                dungeon_entrances["d11"]["default"] = "d11"
+                dungeon_entrances["d11"]["room"] = 0x83
+                dungeon_entrances["d11"]["position"] = 0x25
+            elif patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_seawater_cure_room_present:
+                dungeon_entrances["d11"]["room"] = 0xa3
+                dungeon_entrances["d11"]["position"] = 0x32
+            elif patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_zoras_domain:
+                dungeon_entrances["d11"]["room"] = 0xc0
+                dungeon_entrances["d11"]["position"] = 0x43
+                dungeon_entrances["d11"]["group"] = 0x02
+
+            if "map_tile" not in dungeon_entrances["d11"]:
+                dungeon_entrances["d11"]["map_tile"] = dungeon_entrances["d11"]["room"]
+
+        # Fill warps (pre stage)
+        prefill_warps(assembler, patch_data, dungeon_entrances, dungeon_exits, rom_data)
 
         # Define static values & data blocks
         for symbolic_name, price in patch_data["shop_prices"].items():
             assembler.define_byte(f"shopPrices.{symbolic_name}", RUPEE_VALUES[price])
+
+        define_tile_replacements_table(assembler, patch_data)
         define_location_constants(assembler, patch_data)
         define_option_constants(assembler, patch_data)
         define_text_constants(assembler, patch_data)
@@ -82,7 +99,7 @@ class OoAPatchExtensions(APPatchExtension):
 
         # Parse assembler files, compile them and write the result in the ROM
         print("Compiling ASM files...")
-        # write_text_data(rom_data, dictionary, texts, True)
+        # write_text_data(rom_data, dictionary, texts, False)
         for file_path in get_asm_files(patch_data):
             data_loaded = yaml.safe_load(pkgutil.get_data(__name__, file_path))
             for metalabel, contents in data_loaded.items():
@@ -94,7 +111,10 @@ class OoAPatchExtensions(APPatchExtension):
         alter_treasures(rom_data)
         write_chest_contents(rom_data, patch_data)
         write_seed_tree_content(rom_data, patch_data)
-        # set_dungeon_warps(rom_data, patch_data, dungeon_entrances, dungeon_exits)
+
+        # Fill warps (post stage)
+        set_dungeon_warps(rom_data, patch_data, dungeon_entrances, dungeon_exits)
+
         #apply_miscellaneous_options(rom_data, patch_data)
 
         set_heart_beep_interval_from_settings(rom_data)
@@ -106,7 +126,7 @@ class OoAPatchExtensions(APPatchExtension):
         return rom_data.output()
 
 class OoAProcedurePatch(APProcedurePatch, APTokenMixin):
-    hash = [ROM_HASH]
+    hash = [AGES_ROM_HASH]
     patch_file_ending: str = ".apooa"
     result_file_ending: str = ".gbc"
 
@@ -128,7 +148,7 @@ class OoAProcedurePatch(APProcedurePatch, APTokenMixin):
 
             basemd5 = hashlib.md5()
             basemd5.update(base_rom_bytes)
-            if ROM_HASH != basemd5.hexdigest():
+            if AGES_ROM_HASH != basemd5.hexdigest():
                 raise Exception("Supplied ROM does not match known MD5 for Oracle of Ages US version."
                                 "Get the correct game and version, then dump it.")
             setattr(cls, "base_rom_bytes", base_rom_bytes)
