@@ -624,47 +624,58 @@ DUNGEON_ENTRANCES = {
 DUNGEON_EXITS = {
     "d0": {
         "warp_source_addr": [0x04, 0xcd],
-        "addr": 0x13aec
+        "addr": 0x13aec,
+        "addr_custom_warp": GameboyAddress(0x04, 0x7aea).address_in_rom()
     },
     "d1": {
         "warp_source_addr": [0x04, 0x24],
-        "addr": 0x13ad0
+        "addr": 0x13ad0,
+        "addr_custom_warp": GameboyAddress(0x04, 0x7ace).address_in_rom()
     },
     "d2": {
         "warp_source_addr": [0x04, 0x46],
-        "addr": 0x13ad4
+        "addr": 0x13ad4,
+        "addr_custom_warp": GameboyAddress(0x04, 0x7ad2).address_in_rom()
     },
     "d3": {
         "warp_source_addr": [0x04, 0x66],
-        "addr": 0x13ad8
+        "addr": 0x13ad8,
+        "addr_custom_warp": GameboyAddress(0x04, 0x7ad6).address_in_rom()
     },
     "d4": {
         "warp_source_addr": [0x04, 0x91],
-        "addr": 0x13adc
+        "addr": 0x13adc,
+        "addr_custom_warp": GameboyAddress(0x04, 0x7ada).address_in_rom()
     },
     "d5": {
         "warp_source_addr": [0x04, 0xbb],
-        "addr": 0x13ae0
+        "addr": 0x13ae0,
+        "addr_custom_warp": GameboyAddress(0x04, 0x7ade).address_in_rom()
     },
     "d6 present": {
         "warp_source_addr": [0x05, 0x26],
-        "addr": 0x13c48
+        "addr": 0x13c48,
+        "addr_custom_warp": GameboyAddress(0x04, 0x7c46).address_in_rom()
     },
     "d7": {
         "warp_source_addr": [0x05, 0x56],
-        "addr": 0x13c60
+        "addr": 0x13c60,
+        "addr_custom_warp": GameboyAddress(0x04, 0x7c5e).address_in_rom()
     },
     "d8": {
         "warp_source_addr": [0x05, 0xaa],
-        "addr": 0x13c74
+        "addr": 0x13c74,
+        "addr_custom_warp": GameboyAddress(0x04, 0x7c72).address_in_rom()
     },
     "d6 past": {
         "warp_source_addr": [0x05, 0x44],
-        "addr": 0x13c54
+        "addr": 0x13c54,
+        "addr_custom_warp": GameboyAddress(0x04, 0x7c52).address_in_rom()
     },
     "ambi's palace": {
         "warp_source_addr": [0x05, 0xd2],
-        "addr": 0x13d18
+        "addr": 0x13d18,
+        "addr_custom_warp": GameboyAddress(0x04, 0x7d16).address_in_rom()
     }
 }
 

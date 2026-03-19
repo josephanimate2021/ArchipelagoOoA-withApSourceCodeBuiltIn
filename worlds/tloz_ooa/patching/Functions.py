@@ -89,7 +89,7 @@ def get_asm_files(patch_data):
         asm_files.append("asm/conditional/miniboss_locations.yaml")
     return asm_files
 
-def prefill_warps(assembler: Z80Assembler, patch_data: dict[str, dict[str, Any]], dungeon_entrances: dict[str, dict[str, Any]], dungeon_exits: dict[str, dict[str, Any]]):
+def prefill_warps(assembler: Z80Assembler, patch_data: dict[str, dict[str, Any]], dungeon_entrances: dict[str, dict[str, Any]], dungeon_exits: dict[str, dict[str, Any]], rom: RomData):
     """
     Fills custom made warps with warp addresses that lead to either dungeons or other misc places (Helps with dungeon shuffle and possibly ER).
     """
@@ -106,7 +106,10 @@ def prefill_warps(assembler: Z80Assembler, patch_data: dict[str, dict[str, Any]]
             
         assembler.add_floating_chunk("herosCaveExitDest", [dungeon_entrances["d11"]["room"], dungeon_entrances["d11"]["position"]])
         assembler.add_floating_chunk("warpSourceHerosCaveEntrance", dungeon_entrances[d11Entrance]["warp_source_addr"])
-        assembler.add_floating_chunk("warpSourceHerosCaveExit", dungeon_exits[d11Exit]["warp_source_addr"])
+
+        # Writes down the new exit source for the hero's cave custom warp.
+        rom.write_bytes(dungeon_exits[d11Exit]["addr_custom_warp"], dungeon_exits[d11Exit]["warp_source_addr"])
+        rom.write_bytes(dungeon_exits[d11Exit]["addr_custom_warp"] + 2, [0x41, 0x04])
 
 def define_location_constants(assembler: Z80Assembler, patch_data):
     for location_name, location_data in LOCATIONS_DATA.items():

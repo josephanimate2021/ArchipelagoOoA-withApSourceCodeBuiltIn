@@ -59,6 +59,7 @@ class OoAPatchExtensions(APPatchExtension):
             }
             dungeon_exits["d11"] = {
                 "warp_source_addr": [0x04, 0xce],
+                "addr_custom_warp": GameboyAddress(0x04, 0x7ad6).address_in_rom(),
                 "addr": GameboyAddress(0x04, 0x7ae2).address_in_rom()
             }
             if patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_maku_tree_entrance_right_side:
@@ -72,7 +73,7 @@ class OoAPatchExtensions(APPatchExtension):
                 dungeon_entrances["d11"]["map_tile"] = dungeon_entrances["d11"]["room"]
 
         # Fill warps (pre stage)
-        prefill_warps(assembler, patch_data, dungeon_entrances, dungeon_exits)
+        prefill_warps(assembler, patch_data, dungeon_entrances, dungeon_exits, rom_data)
 
         # Define static values & data blocks
         for symbolic_name, price in patch_data["shop_prices"].items():
