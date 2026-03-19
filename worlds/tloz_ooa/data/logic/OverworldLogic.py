@@ -736,10 +736,10 @@ def make_overworld_logic(player: int, options):
                 else "library past" if options.linked_heros_cave == OracleOfAgesLinkedHerosCave.option_seawater_cure_room_present 
                 else "zora village" if options.linked_heros_cave == OracleOfAgesLinkedHerosCave.option_zoras_domain 
                 else "lynna city"
-            ), "d11 entrance", False, lambda state: all([
+            ), "d11 entrance", False, None if options.linked_heros_cave != OracleOfAgesLinkedHerosCave.option_seawater_cure_room_present else lambda state: all([
                 ooa_can_go_back_to_present(state, player),
                 ooa_has_switch_hook(state, player)
-            ]) if options.linked_heros_cave == OracleOfAgesLinkedHerosCave.option_seawater_cure_room_present else None
+            ]) 
         ])
     
     if options.shuffle_old_men == OraclesOldMenShuffle.option_turn_into_locations:
