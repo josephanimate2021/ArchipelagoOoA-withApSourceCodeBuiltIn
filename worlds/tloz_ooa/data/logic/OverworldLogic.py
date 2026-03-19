@@ -730,16 +730,17 @@ def make_overworld_logic(player: int, options):
         labrynna_logic.append(["lynna city", "princess zelda rescue", False, lambda state: ooa_has_feather(state, player)])
     
     if options.linked_heros_cave.value > 0:
-        labrynna_logic.append([(
-            "fairies' woods" if options.linked_heros_cave == OracleOfAgesLinkedHerosCave.option_d2_present 
-            else "library present" if options.linked_heros_cave == OracleOfAgesLinkedHerosCave.option_seawater_cure_room_present 
-            else "zora village" if options.linked_heros_cave == OracleOfAgesLinkedHerosCave.option_zoras_domain 
-            else "lynna city"
-        ), "d11 entrance", False, lambda state: all([
-            ooa_has_bracelet(state, player),
-            ooa_can_use_ember_seeds(state, player, True),
-            ooa_can_go_back_to_present(state, player) if options.linked_heros_cave == OracleOfAgesLinkedHerosCave.option_seawater_cure_room_present else True
-        ])])
+        labrynna_logic.append([
+            (
+                "fairies' woods" if options.linked_heros_cave == OracleOfAgesLinkedHerosCave.option_d2_present 
+                else "library past" if options.linked_heros_cave == OracleOfAgesLinkedHerosCave.option_seawater_cure_room_present 
+                else "zora village" if options.linked_heros_cave == OracleOfAgesLinkedHerosCave.option_zoras_domain 
+                else "lynna city"
+            ), "d11 entrance", False, lambda state: all([
+                ooa_can_go_back_to_present(state, player),
+                ooa_has_switch_hook(state, player)
+            ]) if options.linked_heros_cave == OracleOfAgesLinkedHerosCave.option_seawater_cure_room_present else None
+        ])
     
     if options.shuffle_old_men == OraclesOldMenShuffle.option_turn_into_locations:
         labrynna_logic.append(["ridge base present", "rolling ridge present old man", False, lambda state: ooa_can_use_ember_seeds(state, player, False)])

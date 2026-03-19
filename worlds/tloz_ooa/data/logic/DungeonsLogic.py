@@ -836,7 +836,11 @@ def make_d8_logic(player: int):
 
 def make_d11_logic(player: int):
     return [
-        ["enter d11", "d11 pots puzzle 1", False, lambda state: ooa_has_cane(state, player)],
+        ["enter d11", "d11 pots puzzle 1", False, lambda state: all([
+            ooa_has_bracelet(state, player),
+            ooa_can_use_ember_seeds(state, player, True),
+            ooa_has_cane(state, player)
+        ])],
         ["d11 pots puzzle 1", "d11 statue 1 puzzle", False, lambda state: all([
             ooa_has_small_keys(state, player, 11, 1),
             ooa_has_bombs(state, player),
@@ -849,10 +853,7 @@ def make_d11_logic(player: int):
         ])],
         ["d11 bridge puzzle 1", "d11 shoot eyes", False, lambda state: all([
             ooa_has_small_keys(state, player, 11, 3),
-            any([
-                ooa_can_use_ember_seeds(state, player, True),
-                ooa_can_use_scent_seeds_for_smell(state, player)
-            ])
+            ooa_can_use_scent_seeds_for_smell(state, player)
         ])],
         ["d11 shoot eyes", "d11 statue 2 puzzle", False, None],
         ["d11 shoot eyes", "d11 pots puzzle 2", False, lambda state: all([
