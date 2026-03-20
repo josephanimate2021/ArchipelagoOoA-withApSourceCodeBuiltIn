@@ -521,7 +521,7 @@ DUNGEON_ENTRANCES = {
         "default":"d0"
     },
     "d1": {
-        "addr": 0x13000,
+        "addr": 0x13718,
         "warp_source_addr": [0x02, 0x44],
         "map_tile": 0x08d,
         "room": 0x8d,
