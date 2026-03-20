@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
-from Options import Choice, DeathLink, DefaultOnToggle, PerGameCommonOptions, Range, Toggle, StartInventoryPool, ItemSet, OptionSet, NamedRange, ItemsAccessibility
+from Options import Choice, DeathLink, DefaultOnToggle, PerGameCommonOptions, Range, Toggle, StartInventoryPool, OptionDict, OptionSet, OptionError, ItemsAccessibility
 
-from .data.Constants import TREES_TABLE
+from .data.Constants import *
 from .common.Options import *
 
 
@@ -100,6 +100,20 @@ class OracleOfAgesDuplicateSeedTrees(OptionSet):
     include_in_patch = True
     include_in_slot_data = True
 
+class OracleOfAgesEntrancePlando(OptionDict):
+    """
+    This option allows you to plan out which entrances are or are not randomized for the game. 
+    For example, you can make the d4 entrance lead to d0 even though the dungeon shuffler never wanted that. It's all in your imagination.
+    Please note that right now this option only works on dungeons because ER is not implemented yet. This option may also not work when shuffle_dungeons is on.
+    """
+    display_name = "Entrance Plando"
+    default = DUNGEON_ENTRANCES.copy()
+
+    verify_item_name = False
+
+    include_in_patch = True
+    include_in_slot_data = True
+
 
 class OracleOfAgesSlateShuffle(Toggle):
     """
@@ -114,6 +128,7 @@ class OracleOfAgesSlateShuffle(Toggle):
 class OracleOfAgesOptions(PerGameCommonOptions):
     accessibility: ItemsAccessibility
     start_inventory_from_pool: StartInventoryPool
+    entrance_plando: OracleOfAgesEntrancePlando
     # remove_items_from_pool: OraclesRemoveItemsFromPool
     # cross_items: OraclesIncludeCrossItems
     miniboss_locations: OracleOfAgesMinibossLocations

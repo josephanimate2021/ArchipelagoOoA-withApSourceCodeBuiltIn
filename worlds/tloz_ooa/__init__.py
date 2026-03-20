@@ -101,6 +101,26 @@ class OracleOfAgesWorld(World):
             }
 
     def generate_early(self):
+        if not self.options.shuffle_dungeons: # For entrance plando
+            plandoFixText = "Please fix your plando and then generate your game again."
+            for property in self.dungeon_entrances:
+                if property not in self.options.entrance_plando:
+                    raise OptionError(f"The property '{property}' is not in your entrance plando. That property is needed in order for manually placed entrances to work right. {plandoFixText}")
+            entrance_values = []
+            for property, value in self.options.entrance_plando.items():
+                if value in entrance_values:
+                    raise OptionError(f"There is an entrance value conflict in your entrance plando. Please resolve it before generating your game again. Possible conflict source could be '{property}: {value}'")
+                if property not in DUNGEON_ENTRANCES:
+                    if self.options.linked_heros_cave == OracleOfAgesLinkedHerosCave.option_disabled or property != "d11 entrance":
+                        raise OptionError(f"The property '{property}' was not implemented in the dungeon entrances dict. {plandoFixText if property != "d11 entrance" else (
+                            "You can fix this issue by enabling 'linked_heros_cave' at any setting."
+                        )}")
+                entrance_values.append(value)
+                self.dungeon_entrances[property] = value
+            for _, value in DUNGEON_ENTRANCES.items():
+                if value not in entrance_values:
+                    raise OptionError(f"A value for one of the entrance properties was nowhere to be found in your entrance plando. This is needed in order to create normal functioning entrances. {plandoFixText}")
+
         from .common.generation.GenerateEarly import generate_early
         generate_early(self)
 
