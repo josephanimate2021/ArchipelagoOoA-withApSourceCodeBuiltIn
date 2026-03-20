@@ -110,12 +110,18 @@ def prefill_warps(assembler: Z80Assembler, patch_data: dict[str, dict[str, Any]]
         # Second byte is the dest room
         # Third byte is link's postion after the warp in the form of $yx
             
-        rom.write_bytes(GameboyAddress(0x04, 0x702e).address_in_rom(), [dungeon_entrances["d11"]["room"], dungeon_entrances["d11"]["position"]])
+        rom.write_bytes(GameboyAddress(0x04, 0x702d).address_in_rom(), [
+            (0x0e if dungeon_entrances["d11"]["shifted"] else 0x01), 
+            dungeon_entrances["d11"]["room"], 
+            dungeon_entrances["d11"]["position"]
+        ])
         assembler.add_floating_chunk("warpSourceHerosCaveEntrance", dungeon_entrances[d11Entrance]["warp_source_addr"])
 
         # Writes down the new exit source for the hero's cave custom warp.
-        rom.write_bytes(dungeon_exits[d11Exit]["addr_custom_warp"], dungeon_exits[d11Exit]["warp_source_addr"])
-        rom.write_bytes(dungeon_exits[d11Exit]["addr_custom_warp"] + 2, [0x41, 0x24 if patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_zoras_domain else 0x04])
+        rom.write_bytes(dungeon_exits["d11"]["addr_custom_warp"], dungeon_exits[d11Exit]["warp_source_addr"])
+        rom.write_bytes(dungeon_exits["d11"]["addr_custom_warp"] + 2, [
+            0x41, (dungeon_entrances[d11Entrance]["group"] * 10) + 0x04
+        ])
 
 def define_tile_replacements_table(assembler: Z80Assembler, patch_data: dict[str, dict[str, Any]]):
 
@@ -160,7 +166,7 @@ def define_tile_replacements_table(assembler: Z80Assembler, patch_data: dict[str
 
     if patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_zoras_domain:
         tiles_to_replace.extend([
-            0x02, 0xc0, 0x00, 0x43, 0xdc # Add stair tile near chest
+            0x02, 0xc0, 0x00, 0x43, 0xdc # Add stair tile near chest in zora's vilage present
         ])
 
     assembler.add_floating_chunk("tileReplacementTable", tiles_to_replace)
@@ -406,12 +412,20 @@ def set_dungeon_warps(rom: RomData, patch_data: dict[str, Any], dungeon_entrance
         if i == 5:
             entrance_name += " past"
         entrance = dungeon_entrances[entrance_map[entrance_name]]
-        rom.write_bytes(0x2874f + (i * 4), [
-            entrance["group"] | 0x80,
-            entrance["room"],
-            entrance["position"],
-            0x0e if entrance["shifted"] else 0x01
-        ])
+        if i == 10:
+            rom.write_bytes(GameboyAddress(0x0a, 0x7205).address_in_rom(), [
+                entrance["room"], 
+                0x0e if entrance["shifted"] else 0x01, 
+                entrance["position"], 
+                (entrance["group"] * 10) + 0x03
+            ])
+        else:
+            rom.write_bytes(0x2874f + (i * 4), [
+                entrance["group"] | 0x80,
+                entrance["room"],
+                entrance["position"],
+                0x0e if entrance["shifted"] else 0x01
+            ])
 
 #    # Change Minimap popups to indicate the randomized dungeon's name
 #    for i in range(8):

@@ -60,7 +60,7 @@ class OoAPatchExtensions(APPatchExtension):
             dungeon_exits["d11"] = {
                 "warp_source_addr": [0x04, 0xce],
                 "addr_custom_warp": GameboyAddress(0x04, 0x7ad6).address_in_rom(),
-                "addr": GameboyAddress(0x04, 0x7ae2).address_in_rom()
+                "addr": 0x13ae4
             }
             if patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_maku_tree_entrance_right_side:
                 dungeon_entrances["d11"]["room"] = 0x48
