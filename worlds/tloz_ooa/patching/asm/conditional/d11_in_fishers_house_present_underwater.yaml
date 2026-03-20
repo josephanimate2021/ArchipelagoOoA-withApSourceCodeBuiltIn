@@ -1,0 +1,10 @@
+# Breakdown on how warp sources work:
+
+# first byte is either type of warp for standard warping, or $80 to mark the start of a positionwarp block, 0 otherwise
+# second byte is the src room for standard/pointer, the position for position warp
+# 3rd byte and 4th byte are the address of the group for pointer warp (only works if pointer warp is used)
+# 3rd byte is the id of the warp dest in standard/position (only works if position warp is not being used)
+# 4th byte is in form $xy, where x is the warp dest group, y is the type of transition upon taking the warp (only works if position warp is not being used)
+
+# init entrance source for fishers house cave underwater
+04/78fe/: db $00,$c5

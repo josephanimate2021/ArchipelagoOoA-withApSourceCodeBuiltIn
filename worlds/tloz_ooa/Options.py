@@ -60,8 +60,10 @@ class OracleOfAgesLinkedHerosCave(Choice):
     When enabled, en entrance to linked hero's cave will be placed anywhere you specify.
     - Maku Tree Entrance (Right Side): an entrance is placed near the cave on the left that leads to Maku Road.
     - D2 Present: an entrance will be initialized and placed inside the cave that would've collapsed when you pick up a rock that blocks the way.
-    - Zora's Domain: An unused warp will be taken advantage of to place hero's cave inside it.
-    - Seawater Cure Room Present: A cave that takes you to a fairy room full of nothing will be occupied by Hero's Cave.
+    - Zora's Domain: An unused warp will be taken advantage of to place hero's cave or a shuffled dungeon inside it.
+    - Seawater Cure Room Present: A cave that takes you to a fairy room full of nothing will be occupied by Hero's Cave or a shuffled dungeon.
+    - Under Fisher's House Present: A cave that is usually blocked off underwater near the fisher's house in the present will be unblocked and it's warp will be programed to take you to hero's cave or any dungeon that's shuffled.
+    - Graveyard: The gravestone that leads to the poe's house will lead to hero's cave or any shuffled dungeon instead.
     """
     display_name = "Linked Hero's Cave"
 
@@ -70,6 +72,8 @@ class OracleOfAgesLinkedHerosCave(Choice):
     option_d2_present = 2
     option_zoras_domain = 3
     option_seawater_cure_room_present = 4
+    option_under_fishers_house_present = 5
+    option_graveyard = 6
 
     default = 0
 

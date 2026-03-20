@@ -68,13 +68,23 @@ class OoAPatchExtensions(APPatchExtension):
             elif patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_d2_present:
                 dungeon_entrances["d11"]["room"] = 0x83
                 dungeon_entrances["d11"]["position"] = 0x25
+            elif patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_graveyard:
+                dungeon_entrances["d11"]["room"] = 0x7c
+                dungeon_entrances["d11"]["position"] = 0x35
             elif patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_seawater_cure_room_present:
                 dungeon_entrances["d11"]["room"] = 0xa3
                 dungeon_entrances["d11"]["position"] = 0x32
-            elif patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_zoras_domain:
-                dungeon_entrances["d11"]["room"] = 0xc0
-                dungeon_entrances["d11"]["position"] = 0x43
+            elif (
+                patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_zoras_domain
+                or patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_under_fishers_house_present
+            ):
                 dungeon_entrances["d11"]["group"] = 0x02
+                if patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_under_fishers_house_present:
+                    dungeon_entrances["d11"]["room"] = 0xc5
+                    dungeon_entrances["d11"]["position"] = 0x50
+                else:
+                    dungeon_entrances["d11"]["room"] = 0xc0
+                    dungeon_entrances["d11"]["position"] = 0x43
 
             if "map_tile" not in dungeon_entrances["d11"]:
                 dungeon_entrances["d11"]["map_tile"] = dungeon_entrances["d11"]["room"]

@@ -81,10 +81,18 @@ def get_asm_files(patch_data):
         asm_files.append("asm/conditional/d11.yaml")
         if patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_maku_tree_entrance_right_side:
             asm_files.append("asm/conditional/d11_in_maku_tree_entrance_right_side.yaml")
-        else:
-            asm_files.append(f"asm/conditional/d11_custom_warp_group_{2 if patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_zoras_domain else 0}.yaml")
+        elif patch_data["options"]["linked_heros_cave"] != OracleOfAgesLinkedHerosCave.option_graveyard:
+            groupNum = (
+                2 if (
+                    patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_zoras_domain
+                    or patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_under_fishers_house_present
+                ) else 0
+            )
+            asm_files.append(f"asm/conditional/d11_custom_warp_group_{groupNum}.yaml")
             if patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_d2_present:
                 asm_files.append("asm/conditional/d11_in_d2_present.yaml")
+            elif patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_under_fishers_house_present:
+                asm_files.append("asm/conditional/d11_in_fishers_house_present_underwater.yaml")
     if patch_data["options"]["miniboss_locations"]:
         asm_files.append("asm/conditional/miniboss_locations.yaml")
     return asm_files
@@ -167,6 +175,20 @@ def define_tile_replacements_table(assembler: Z80Assembler, patch_data: dict[str
     if patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_zoras_domain:
         tiles_to_replace.extend([
             0x02, 0xc0, 0x00, 0x43, 0xdc # Add stair tile near chest in zora's vilage present
+        ])
+    elif patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_under_fishers_house_present:
+        tiles_to_replace.extend([
+            # remove rock to the left of the fisher guy's house (present)
+            0x02, 0xc5, 0x00, 0x60, 0x3b,
+            0x02, 0xc4, 0x00, 0x69, 0x3b,
+            
+            # Add deepwater tile in place of the old rock.
+            0x00, 0xc5, 0x00, 0x60, 0xfc,
+            0x00, 0xc4, 0x00, 0x69, 0xfc,
+
+            # Place new rock tile on the surface, same with underwater.
+            0x00, 0xc4, 0x00, 0x68, 0x97,
+            0x02, 0xc4, 0x00, 0x68, 0x74,
         ])
 
     assembler.add_floating_chunk("tileReplacementTable", tiles_to_replace)
@@ -390,7 +412,6 @@ def set_dungeon_warps(rom: RomData, patch_data: dict[str, Any], dungeon_entrance
     # Apply warp matchings expressed in the patch
     for from_name, to_name in warp_matchings.items():
         if from_name == "d11" and patch_data["options"]["linked_heros_cave"] != OracleOfAgesLinkedHerosCave.option_maku_tree_entrance_right_side:
-            # For some reason, d11 with a custom warp is causing the d3 exit to not work right. Hopefully skipping this while d11 is present helps.
             continue
         default_entrance_of_to_name = [name for name, dungeon in dungeon_entrances.items() if dungeon["default"] == to_name][0]
         default_exit_of_from_name = dungeon_entrances[from_name]["default"]
