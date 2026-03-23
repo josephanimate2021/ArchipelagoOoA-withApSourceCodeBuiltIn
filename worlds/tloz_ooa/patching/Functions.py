@@ -13,6 +13,22 @@ from pathlib import Path
 
 from .. import LOCATIONS_DATA, OraclesMasterKeys, OracleOfAgesLinkedHerosCave, OraclesGoal, OraclesOldMenShuffle, ITEMS_DATA
 
+def apworld_path(file_path):
+    path = Utils.user_path("lib/" if os.path.exists(Utils.user_path("lib")) else "")
+    path += "custom_" if os.path.exists(os.path.join(path, Utils.user_path("custom_worlds"))) else ""
+    world_path = Utils.user_path("worlds/tloz_ooa")
+    path += os.path.join(path, world_path)
+    
+    def path_exists(p):
+        if not os.path.exists(p):
+            raise FileNotFoundError(f"Your apworld could not be found inside {p} for some reason.")
+        path = os.path.join(p, file_path)
+        if os.path.exists(path):
+            return path
+        raise FileNotFoundError(f"Your file could not be found inside {path}") 
+    
+    return path_exists(world_path if os.path.exists(world_path) else path)
+
 def get_item_id_and_subid(item_name: str):
     if item_name == "Archipelago Item":
         return 0x41, 0x00

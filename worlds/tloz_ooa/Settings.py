@@ -27,6 +27,11 @@ class OOASettings(settings.Group):
         Defines if you want to skip the joke you tell to the sad boi
         """
 
+    class OoAUseVWF(str):
+        """
+        Forces the game to use a variable width font instead of the game's fixed font width which makes the text more pleasent to read.
+        """
+
     rom_file: OOARomFile = OOARomFile(OOARomFile.copy_to)
     heart_beep_interval: Union[OraclesSettings.OoHeartBeepInterval, str] = "vanilla"
     character_sprite: Union[OraclesSettings.OoCharacterSprite, str] = "link"
@@ -34,3 +39,4 @@ class OOASettings(settings.Group):
     qol_mermaid_suit: Union[OoAQolMermaidSuit, bool] = True
     skip_tokkey_dance: Union[OoASkipTokkeyDance, bool] = False
     skip_boi_joke: Union[OoASkipSadBoiJoke, bool] = False
+    use_vwf: Union[OoAUseVWF, bool] = True

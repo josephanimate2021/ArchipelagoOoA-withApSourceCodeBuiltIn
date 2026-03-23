@@ -10,6 +10,7 @@ from worlds.Files import APProcedurePatch, APTokenMixin, APPatchExtension
 from .Functions import *
 from .Constants import *
 from ..common.patching.RomData import RomData
+from .xdelta import apply_xdelta_patch
 from ..common.patching.z80asm.Assembler import Z80Assembler, Z80Block, GameboyAddress
 from tkinter.filedialog import askopenfilename
 
@@ -18,6 +19,10 @@ class OoAPatchExtensions(APPatchExtension):
 
     @staticmethod
     def apply_patches(caller: APProcedurePatch, rom: bytes, patch_file: str) -> bytes:
+        # file_name = Utils.user_path(get_settings().tloz_ooa_options["rom_file"])
+        # if get_settings().tloz_ooa_options["use_vwf"]:
+            # rom = apply_xdelta_patch(file_name, apworld_path("patching/xdelta/vwf.xdelta"))
+            # os.remove(Utils.user_path("ages.gbc"))
         rom_data = RomData(rom)
         patch_data = yaml.safe_load(caller.get_file(patch_file).decode("utf-8"))
         from .. import OracleOfAgesWorld
@@ -44,7 +49,7 @@ class OoAPatchExtensions(APPatchExtension):
         # else:
         seasons_rom = bytes()
 
-        assembler = Z80Assembler(EOB_ADDR, DEFINES, rom, seasons_rom)
+        assembler = Z80Assembler(EOB_ADDR, DEFINES, rom, seasons_rom) # type: ignore
 
         # Generate dungeon entrance/exit data
         dungeon_entrances = dict(DUNGEON_ENTRANCES)
@@ -111,7 +116,7 @@ class OoAPatchExtensions(APPatchExtension):
         print("Compiling ASM files...")
         # write_text_data(rom_data, dictionary, texts, False)
         for file_path in get_asm_files(patch_data):
-            data_loaded = yaml.safe_load(pkgutil.get_data(__name__, file_path))
+            data_loaded = yaml.safe_load(pkgutil.get_data(__name__, file_path)) # type: ignore
             for metalabel, contents in data_loaded.items():
                 assembler.add_block(Z80Block(metalabel, contents))
         assembler.compile_all()
@@ -136,7 +141,7 @@ class OoAPatchExtensions(APPatchExtension):
         return rom_data.output()
 
 class OoAProcedurePatch(APProcedurePatch, APTokenMixin):
-    hash = [AGES_ROM_HASH]
+    hash = [AGES_ROM_HASH] # type: ignore
     patch_file_ending: str = ".apooa"
     result_file_ending: str = ".gbc"
 
