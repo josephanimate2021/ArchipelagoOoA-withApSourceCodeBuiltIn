@@ -128,11 +128,21 @@ class OracleOfAgesSlateShuffle(Toggle):
     include_in_patch = True
     include_in_slot_data = True
 
+class OracleOfAgesMusicShuffle(Toggle):
+    """
+    If enabled, Music will be shuffled
+    """
+    display_name = "Music Shuffle"
+
+    include_in_patch = True
+    include_in_slot_data = True
+
 @dataclass
 class OracleOfAgesOptions(PerGameCommonOptions):
     accessibility: ItemsAccessibility
     start_inventory_from_pool: StartInventoryPool
     entrance_plando: OracleOfAgesEntrancePlando
+    music_shuffle: OracleOfAgesMusicShuffle
     # remove_items_from_pool: OraclesRemoveItemsFromPool
     # cross_items: OraclesIncludeCrossItems
     miniboss_locations: OracleOfAgesMinibossLocations

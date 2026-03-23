@@ -1,0 +1,64 @@
+# This file shuffles the music at obvious points. 
+# There may be more that I am not being shown that I'll have to write outside this file.
+
+# Change symmetry present music if shuffled
+01/5e5b/: cp MUS_SYMMETRY_PRESENT
+01/5e65/: ld a,MUS_SADNESS
+
+# Change file select screen music if shuffled
+02/4195/: ld a,MUS_FILE_SELECT
+02/73cd/: ld a,MUS_GAMEOVER
+
+# Change titlescreen music if it's shuffled
+03/4dd7/: ld a,MUS_TITLESCREEN
+
+# Change music for intro 1 if it's shuffled
+03/4e96/: ld a,MUS_INTRO_1
+
+# Change music for intro 2 if it's shuffled
+03/530f/: ld a,MUS_INTRO_2
+
+# Change maple music if it's shuffled
+05/6412/: ld a,MUS_MAPLE_THEME
+05/66a5/: cp MUS_MAPLE_GAME
+05/66a7/: ld a,MUS_MAPLE_GAME
+
+# Change room of rites music if it's shuffled
+09/4d29/: ld a,MUS_ROOM_OF_RITES
+10/4a1d/: ld a,MUS_ROOM_OF_RITES
+
+# Change minigame music if it's shuffled
+0a/5783/: ld a,MUS_MINIGAME
+
+# Change zelda saved music if shuffled
+0b/6376/: ld a,MUS_ZELDA_SAVED
+
+# Change great moblin music if defined
+0b/6aee/: ld a,MUS_GREAT_MOBLIN
+
+# Change miniboss music if shuffled
+0a/7988/: ld a,MUS_MINIBOSS
+0b/6b2a/: ld a,MUS_MINIBOSS
+0f/4580/: ld b,MUS_MINIBOSS
+0f/5e5c/: ld b,MUS_MINIBOSS
+0f/568b/: ld a,MUS_MINIBOSS
+
+# Change great fairy fountain music if defined
+0e/502f/: ld a,MUS_FAIRY_FOUNTAIN
+
+# Change miniboss music if shuffled
+0e/77ad/: ld a,MUS_BOSS
+0f/4584/: ld b,MUS_BOSS
+0f/65bc/: ld a,MUS_BOSS
+0f/7455/: ld a,MUS_BOSS
+10/68b1/: ld a,MUS_BOSS
+
+# Change trinrova music if it's shuffled
+10/4672/: ld a,MUS_TWINROVA
+10/4bf7/: ld a,MUS_TWINROVA
+
+# Change ganon boss fight music if shuffled
+10/520b/: ld a,MUS_GANON
+
+# Change final boss music if shuffled
+10/58f8/: ld a,MUS_FINAL_BOSS

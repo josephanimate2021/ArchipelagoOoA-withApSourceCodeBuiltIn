@@ -66,16 +66,14 @@
     db $20,$20,$50,$99
 3f/4607/: ld hl,seedCapacityTable
 
-# allow skipping the capcom screen after the user presses the start button (somehow this responds better than the one in the seasons archipelago???)
-03//skipCapcom: |
-      ld hl,$cbb3
-      ld a,$94
-      cp (hl)
-      call forceEnableIntroInputs
-      ret c
-      jp decHlRef16WithCap
-
-03/4d6b/: call skipCapcom
+# allow skipping the capcom screen after one second by pressing start
+03//checkSkipCapcom: |
+    ld hl,$cbb3
+    ld a,$94
+    cp (hl)
+    ret c
+    jp forceEnableIntroInputs
+03/4d68/: call checkSkipCapcom
 
 # don't equip sword in shooting gallery if link doesn't have it. it wouldn't
 # work anyway.

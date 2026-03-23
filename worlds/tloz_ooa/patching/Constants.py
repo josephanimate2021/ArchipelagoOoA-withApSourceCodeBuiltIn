@@ -472,7 +472,8 @@ ASM_FILES = [
     "asm/tokay_market.yaml",
     "asm/compass_chimes.yaml",
 	"asm/warp_to_start.yaml",
-	"asm/subscreen_1_improvement.yaml"
+	"asm/subscreen_1_improvement.yaml",
+    "asm/music.yaml"
 ]
 
 RUPEE_VALUES = {

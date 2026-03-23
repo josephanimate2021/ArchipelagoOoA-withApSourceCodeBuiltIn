@@ -234,6 +234,9 @@ def define_location_constants(assembler: Z80Assembler, patch_data):
 def define_option_constants(assembler: Z80Assembler, patch_data):
     options = patch_data["options"]
 
+    for property, value in patch_data["music_order"].items():
+        assembler.define_byte(property, value)
+
     if not hasattr(get_settings().tloz_ooa_options, "beat_tutorial"):
         assembler.define_byte("option.startingGroup", 0x03)
         assembler.define_byte("option.startingRoom", 0xbf)

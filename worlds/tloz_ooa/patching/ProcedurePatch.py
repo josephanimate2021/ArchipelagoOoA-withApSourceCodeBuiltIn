@@ -1,6 +1,7 @@
 import hashlib
 import os
 import pkgutil
+import json
 
 import yaml
 
@@ -23,7 +24,7 @@ class OoAPatchExtensions(APPatchExtension):
         if get_settings().tloz_ooa_options["qol_waves_removal"]:
             rom = apply_patch(rom, apworld_path("patching/ips/no_waves.ips"))
         rom_data = RomData(rom)
-        patch_data = yaml.safe_load(caller.get_file(patch_file).decode("utf-8"))
+        patch_data = json.loads(caller.get_file(patch_file).decode("utf-8"))
         from .. import OracleOfAgesWorld
         version = patch_data["version"].split(".")
         world_version = OracleOfAgesWorld.world_version
