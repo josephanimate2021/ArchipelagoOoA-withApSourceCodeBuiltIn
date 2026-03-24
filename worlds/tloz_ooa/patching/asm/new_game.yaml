@@ -2,7 +2,7 @@
 # at actual file creation.
 
 07//initialGlobalFlags: |
-    db $0c,$1d,$20,$23,$2b,$33,$40,$41,$43,$45,$ff
+    db $0a,$0c,$1d,$20,$21,$23,$2b,$33,$3d,$40,$41,$43,$45,$ff
 07/4195/startingBomb: db $00
 
 # set flags to skip opening and a bunch of other things. see doc/technical.md
@@ -43,14 +43,6 @@
     ld (wDimitriState),a
     ld a,$ff
     ld (wAnimalTutorialFlags),a
-
-    ; Mark intro as seen
-    ld a,$0a
-    call setGlobalFlag
-    ld a,$3d
-    call setGlobalFlag
-    ld a,$21
-    call setGlobalFlag
     
     ; Change seeds selected by default inside shooter and satchel
     ld a,option.defaultSeedType - $20
@@ -126,7 +118,7 @@
     call setGlobalFlag
 
     pop hl
-    ld hl,$415c  ; initializeChildOnGameStart, probably useless but we never know
+    ld hl,$415c  ; initializeChildOnGameStart; this may look useless, but this prevents the game from locking up after file creation.
     ret
 07/4049/: call setInitialFlags 
 
