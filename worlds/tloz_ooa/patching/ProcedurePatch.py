@@ -11,6 +11,7 @@ from .Functions import *
 from .Constants import *
 from ..common.patching.RomData import RomData
 from .xdelta import apply_xdelta_patch
+from .PyPatcherGBA.src.pypatchergba import apply_patch
 from ..common.patching.z80asm.Assembler import Z80Assembler, Z80Block, GameboyAddress
 from tkinter.filedialog import askopenfilename
 
@@ -19,10 +20,8 @@ class OoAPatchExtensions(APPatchExtension):
 
     @staticmethod
     def apply_patches(caller: APProcedurePatch, rom: bytes, patch_file: str) -> bytes:
-        # file_name = Utils.user_path(get_settings().tloz_ooa_options["rom_file"])
-        # if get_settings().tloz_ooa_options["use_vwf"]:
-            # rom = apply_xdelta_patch(file_name, apworld_path("patching/xdelta/vwf.xdelta"))
-            # os.remove(Utils.user_path("ages.gbc"))
+        if get_settings().tloz_ooa_options["qol_waves_removal"]:
+            rom = apply_patch(rom, apworld_path("patching/ips/no_waves.ips"))
         rom_data = RomData(rom)
         patch_data = yaml.safe_load(caller.get_file(patch_file).decode("utf-8"))
         from .. import OracleOfAgesWorld

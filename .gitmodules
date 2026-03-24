@@ -4,3 +4,6 @@
 [submodule "worlds/tloz_ooa/common"]
 	path = worlds/tloz_ooa/common
 	url = https://github.com/Ishigh1/Tloz_oo-common
+[submodule "worlds/tloz_ooa/patching/PyPatcherGBA"]
+	path = worlds/tloz_ooa/patching/PyPatcherGBA
+	url = https://github.com/jarrowsmith123/PyPatcherGBA.git

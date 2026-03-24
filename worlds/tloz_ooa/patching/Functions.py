@@ -81,6 +81,8 @@ def get_asm_files(patch_data):
         asm_files.append("asm/conditional/quick_flute.yaml")
     if get_settings()["tloz_ooa_options"]["skip_tokkey_dance"]:
         asm_files.append("asm/conditional/skip_dance.yaml")
+    if get_settings()["tloz_ooa_options"]["remove_music"]:
+        asm_files.append("asm/conditional/mute_music.yaml")
     if get_settings()["tloz_ooa_options"]["skip_boi_joke"]:
         asm_files.append("asm/conditional/skip_joke.yaml")
     if get_settings()["tloz_ooa_options"]["qol_mermaid_suit"]:
