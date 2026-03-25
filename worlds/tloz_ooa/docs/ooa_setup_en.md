@@ -3,8 +3,7 @@
 ## Required Software
 
 - [Oracle of Ages .apworld](https://github.com/SenPierre/ArchipelagoOoA/releases/latest)
-- [Bizhawk 2.11 (x64)](https://tasvideos.org/BizHawk/ReleaseHistory)
-- [Tracker](https://josephanimate2021.github.io/oracle-of-ages-web-tracker)
+- [Bizhawk 2.9.1 (x64)](https://tasvideos.org/BizHawk/ReleaseHistory)
 - Your legally obtained Oracle of Agess US ROM file
 
 ## Installation Instructions

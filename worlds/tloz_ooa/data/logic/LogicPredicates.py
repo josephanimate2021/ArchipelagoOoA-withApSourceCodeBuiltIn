@@ -1,7 +1,6 @@
 from BaseClasses import CollectionState
 from Options import Accessibility
-from ..Constants import *
-from ...Options import *
+from ..Constants import DUNGEON_NAMES, ESSENCES
 
 
 # Items predicates ############################################################
@@ -119,12 +118,6 @@ def ooa_has_boss_key(state: CollectionState, player: int, dungeon_id: int):
 def ooa_option_medium_logic(state: CollectionState, player: int):
     return state.multiworld.worlds[player].options.logic_difficulty in ["medium", "hard"]
 
-def ooa_option_lynna_gardner(state: CollectionState, player: int):
-    return any([
-        state.multiworld.worlds[player].options.lynna_gardener,
-        state.multiworld.worlds[player].options.warp_to_start_location == OracleOfAgesWarpToStartLocation.option_near_timeportal
-    ])
-
 
 def ooa_option_hard_logic(state: CollectionState, player: int):
     return state.multiworld.worlds[player].options.logic_difficulty == "hard"
@@ -143,7 +136,7 @@ def ooa_is_companion_dimitri(state: CollectionState, player: int):
 
 
 def ooa_has_essences(state: CollectionState, player: int, target_count: int):
-    essence_count = [state.has(essence, player) for essence in ITEM_GROUPS["Essences"]].count(True)
+    essence_count = [state.has(essence, player) for essence in ESSENCES].count(True)
     return essence_count >= target_count
 
 
@@ -788,17 +781,6 @@ def ooa_self_locking_item(state: CollectionState, player: int, region_name: str,
         if item.name == item_name and item.player == player:
             return True
     return False
-
-def ooa_can_harvest_gasha(state: CollectionState, player: int, count: int):
-    reachable_soils = [state.has(f"_reached_{region_name}", player) for region_name in GASHA_SPOT_REGIONS]
-    return all([
-        reachable_soils.count(True) >= count,  # Enough soils are reachable
-        state.has("Gasha Seed", player, count),  # Enough seeds to plant
-        any([
-            # Can actually harvest the nut, and get kills
-            ooa_has_sword(state, player),
-        ])
-    ])
 
 
 def ooa_self_locking_small_key(state: CollectionState, player: int, region_name: str, dungeon: int):

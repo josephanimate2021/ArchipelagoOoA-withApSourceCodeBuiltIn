@@ -10,19 +10,15 @@ REGIONS = [
     "lynna city chest",
     "lynna shop",
     "hidden shop",
-    "mayor plen's secret",
     "mayor plen's house",
     "vasu's gift",
     #######
     "lynna village",
     "gasha farmer",
     "black tower worker",
-    "princess zelda rescue",
     "advance shop",
     "lynna shooting gallery",
     "ambi's palace tree",
-    "ambi's palace entrance",
-    "enter ambi's palace",
     "ambi's palace chest",
     "rescue nayru",
     "rafton's raft",
@@ -48,7 +44,6 @@ REGIONS = [
 
     #######
     "fairies' woods",
-    "fairies' woods secret",
     "fairies' woods chest",
     "d2 present entrance",
     #######
@@ -64,7 +59,6 @@ REGIONS = [
     "tokay crystal cave",
     "crescent past east",
     "tokay bomb cave",
-    "tokay chicken hut",
     "wild tokay game",
     "hidden tokay cave",
     "tokay pot cave",
@@ -123,8 +117,7 @@ REGIONS = [
     "d5 entrance",
     #######
     "ridge base past east",
-    "rolling ridge past old man",
-    "rolling ridge present old man",
+    #"rolling ridge past old man",
     "first goron dance",
     "goron dance, with letter",
     "trade goron vase",
@@ -173,7 +166,7 @@ REGIONS = [
     #######
     "piratian captain",
     "sea of storms past",
-    "sea of storms present",
+    #"sea of storms present",
     "d8 entrance",
     "sea of no return",
 
@@ -196,7 +189,6 @@ REGIONS = [
     "d1 ghini drop",
     "d1 U-room",
     "d1 basement",
-    "d1 miniboss",
     "d1 boss",
     #######
     "enter d2",
@@ -213,7 +205,6 @@ REGIONS = [
     "d2 basement",
     "d2 basement chest",
     "d2 basement drop",
-    "d2 miniboss",
     "d2 boss",
     #######
     "enter d3",
@@ -239,7 +230,7 @@ REGIONS = [
     "d3 crossing bridge room 1",
     "d3 between two bridge room",
     "d3 crossing bridge room 2",
-    "d3 miniboss",
+    #"d3 scent seed bush",
     "d3 post-subterror",
     "d3 boss",
     #######
@@ -257,7 +248,6 @@ REGIONS = [
     'd4 first crystal switch',
     'd4 color tile drop',
     'd4 large floor puzzle',
-    "d4 miniboss",
     'd4 boss',
     #######
     "enter d5",
@@ -273,7 +263,6 @@ REGIONS = [
     "d5 two-statue puzzle",
     "d5 dark room",
     "d5 six-statue puzzle",
-    "d5 miniboss",
     "d5 boss",
     #######
     "enter d6 present",
@@ -287,7 +276,6 @@ REGIONS = [
     "d6 present beamos chest",
     "d6 present cube chest",
     "d6 present channel chest",
-    "d6 miniboss",
     #######
     "enter d6 past",
     "d6 wall A bombed",
@@ -320,7 +308,6 @@ REGIONS = [
     "d7 hallway chest",
     "d7 post-hallway chest",
     "d7 terrace",
-    "d7 miniboss",
     "d7 boss",
     #######
     "enter d8",
@@ -339,7 +326,6 @@ REGIONS = [
     'd8 tile room',
     'd8 stalfos',
     'd8 b3f single chest',
-    "d8 miniboss",
     'd8 boss',
     #######
     "veran beaten",
@@ -369,42 +355,4 @@ REGIONS = [
     "symmetry city heartpiece",
     "ridge west heartpiece",
     "ridge upper heartpiece",
-]
-
-GASHA_REGIONS = [
-    "gasha tree 1",
-    "gasha tree 2",
-    "gasha tree 3",
-    "gasha tree 4",
-    "gasha tree 5",
-    "gasha tree 6",
-    "gasha tree 7",
-    "gasha tree 8",
-    "gasha tree 9",
-    "gasha tree 10",
-    "gasha tree 11",
-    "gasha tree 12",
-    "gasha tree 13",
-    "gasha tree 14",
-    "gasha tree 15",
-    "gasha tree 16",
-]
-
-D11_REGIONS = [
-    "d11 entrance",
-    "enter d11",
-    "d11 pots puzzle 1",
-    "d11 statue 1 puzzle",
-    "d11 bridge puzzle 1",
-    "d11 shoot eyes",
-    "d11 statue 2 puzzle",
-    "d11 pots puzzle 2",
-    "d11 statue 3 puzzle",
-    "d11 bridge puzzle 2",
-    "d11 color room",
-    "d11 water puzzle 1f",
-    "d11 water puzzle b1f",
-    "d11 basement",
-    "d11 final puzzle",
-    "d11 reward"
 ]

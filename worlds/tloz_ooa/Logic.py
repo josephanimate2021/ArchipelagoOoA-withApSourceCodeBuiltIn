@@ -1,16 +1,16 @@
 from BaseClasses import MultiWorld
-from ..data import LOCATIONS_DATA
-from ..data.logic.DungeonsLogic import *
-from ..data.logic.OverworldLogic import make_overworld_logic
-from ..data.Regions import REGIONS
+from . import LOCATIONS_DATA
+from .data.logic.DungeonsLogic import *
+from .data.logic.OverworldLogic import make_overworld_logic
+from .data.Regions import REGIONS
 
-def create_connections(multiworld: MultiWorld, player: int, options):
+def create_connections(multiworld: MultiWorld, player: int):
     dungeon_entrances = []
     for reg1, reg2 in multiworld.worlds[player].dungeon_entrances.items():
         dungeon_entrances.append([reg1, reg2, True, None])
 
     all_logic = [
-        make_overworld_logic(player, options),
+        make_overworld_logic(player),
         make_d0_logic(player),
         make_d1_logic(player),
         make_d2_logic(player),
@@ -21,12 +21,8 @@ def create_connections(multiworld: MultiWorld, player: int, options):
         make_d6present_logic(player),
         make_d7_logic(player),
         make_d8_logic(player),
+        dungeon_entrances,
     ]
-
-    if options.linked_heros_cave.value > 0:
-        all_logic.append(make_d11_logic(player))
-
-    all_logic.append(dungeon_entrances)
 
     # Check unreachable regions
     unused_region = REGIONS.copy()

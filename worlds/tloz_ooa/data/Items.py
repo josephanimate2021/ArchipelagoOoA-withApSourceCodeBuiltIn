@@ -1,9 +1,9 @@
 from BaseClasses import ItemClassification
 from ..patching.Constants import DEFINES
 
-from typing import Any
+BASE_ITEM_ID = 27022002000
 
-ITEMS_DATA: dict[str, dict[str, Any]] = {
+ITEMS_DATA = {
     #   "No Item": {
     #   'classification': ItemClassification.filler,
     #   "",
@@ -43,10 +43,10 @@ ITEMS_DATA: dict[str, dict[str, Any]] = {
         'classification': ItemClassification.progression,
         'id': 0x0c
     },
-    "Bombchus (10)": {
-        'classification': ItemClassification.useful,
-        'id': 0x0d
-    },
+    #   "Bombchus (10)": {
+    #       'classification': ItemClassification.progression,
+    #       'id': 0x0d
+    #   },
     "Ricky's Flute": {
         'classification': ItemClassification.progression,
         'id': 0x0e,
@@ -95,7 +95,7 @@ ITEMS_DATA: dict[str, dict[str, Any]] = {
         'id': 0x22
     },
     "Gale Seeds": {
-        'classification': ItemClassification.progression,
+        'classification': ItemClassification.useful,
         'id': 0x23
     },
     "Mystery Seeds": {
@@ -214,11 +214,6 @@ ITEMS_DATA: dict[str, dict[str, Any]] = {
         'id': 0x30,
         'subid': 0x08
     },
-    "Small Key (Hero's Cave)": {
-        'classification': ItemClassification.progression,
-        'id': 0x30,
-        'subid': 0x0b
-    },
     "Master Key (Maku Path)": {
         'classification': ItemClassification.progression,
         'id': 0x30,
@@ -268,11 +263,6 @@ ITEMS_DATA: dict[str, dict[str, Any]] = {
         'classification': ItemClassification.progression,
         'id': 0x30,
         'subid': 0x08
-    },
-    "Master Key (Hero's Cave)": {
-        'classification': ItemClassification.progression,
-        'id': 0x30,
-        'subid': 0x0b
     },
     "Boss Key (Spirit's Grave)": {
         'classification': ItemClassification.progression,
@@ -420,7 +410,7 @@ ITEMS_DATA: dict[str, dict[str, Any]] = {
         'classification': ItemClassification.progression,
         'id': 0x3d
     },
-    "Stationary": {
+    "Stationery": {
         'classification': ItemClassification.progression,
         'id': 0x3e
     },

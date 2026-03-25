@@ -10,8 +10,8 @@
     db $00,$08,$89,option.smallKeySprite    ; D8
     db $00,$00,$00,$00
     db $00,$00,$00,$00
-    db $00,$0b,$8a,option.smallKeySprite    ; Hero's Cave
-    db $00,$0c,$8b,option.smallKeySprite    ; D6 Past
+    db $00,$00,$00,$00
+    db $00,$0c,$8a,option.smallKeySprite    ; D6 Past
 16/53f3/: dw smallKeyObjectsTable
 
 16//bossKeyObjectsTable: |

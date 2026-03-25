@@ -9,10 +9,12 @@ from worlds.Files import APProcedurePatch, APTokenMixin, APPatchExtension
 
 from .Functions import *
 from .Constants import *
-from ..common.patching.RomData import RomData
-from ..common.patching.z80asm.Assembler import Z80Assembler, Z80Block, GameboyAddress
+from .RomData import RomData
+from .z80asm.Assembler import Z80Assembler, Z80Block
 
 from tkinter.filedialog import askopenfilename
+
+ROM_HASH = "c4639cc61c049e5a085526bb6cac03bb"
 
 
 class OoAPatchExtensions(APPatchExtension):
@@ -20,55 +22,23 @@ class OoAPatchExtensions(APPatchExtension):
 
     @staticmethod
     def apply_patches(caller: APProcedurePatch, rom: bytes, patch_file: str) -> bytes:
-        from .. import OracleOfAgesWorld
         rom_data = RomData(rom)
         patch_data = yaml.safe_load(caller.get_file(patch_file).decode("utf-8"))
 
-        version = patch_data["version"].split(".")
-        world_version = OracleOfAgesWorld.world_version
-        if int(version[0]) != world_version.major or int(version[1]) > world_version.minor:
-            raise Exception(f"Invalid version: this patch was generated on v{patch_data['version']}, "
-                            f"you are currently using v{world_version.as_simple_string()}")
+        if not (patch_data["version"] in RETRO_COMPAT_VERSION):
+            raise Exception(f"Invalid version: this seed was generated on v{patch_data['version']}, "
+                            f"and is not compatible with current : v{VERSION}")
 
         #if patch_data["options"]["enforce_potion_in_shop"]:
-        #    patch_data["locations"]["Lynna City: Shop #3"] = "Potion"
+        #    patch_data["locations"]["Horon Village: Shop #3"] = "Potion"
 
-        # if patch_data["options"]["cross_items"]:
-            # file_name = get_settings().tloz_ooa_options.seasons_rom_file
-            # file_path = Utils.user_path(file_name)
-            # rom_file = open(file_path, "rb")
-            # seasons_rom = bytes(rom_file.read())
-            # rom_file.close()
-
-            # for bank in range(0x40, 0x80):``
-                # bank = 0xdd  # TODO: this is an invalid instruction that hangs the game, it's easier to debug but looks worse, remove/comment out once stable
-                # rom_data.add_bank(bank)
-            # rom_data.update_rom_size()
-        # else:
-        seasons_rom = bytes()
-
-        assembler = Z80Assembler(EOB_ADDR, DEFINES, rom, seasons_rom)
-
-        # Generate dungeon entrance/exit data
-        dungeon_entrances = dict(DUNGEON_ENTRANCES)
-        dungeon_exits = dict(DUNGEON_EXITS)
-        if patch_data["options"]["linked_heros_cave"] != OracleOfAgesLinkedHerosCave.option_disabled:
-            dungeon_exits["d11"] = GameboyAddress(0x04, 0x7ae2).address_in_rom()
-            dungeon_entrances["d11"] = {
-                "group": 0x00,
-                "shifted": False,
-                "default": "d11"
-            }
-            if patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_maku_tree_entrance_right_side:
-                dungeon_entrances["d11"]["addr"] = GameboyAddress(0x04, 0x770c).address_in_rom()
-                dungeon_entrances["d11"]["room"] = 0x48
-                dungeon_entrances["d11"]["map_tile"] = 0x048
-                dungeon_entrances["d11"]["position"] = 0x28
-            elif patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_d2_present:
-                dungeon_entrances["d11"] = dungeon_entrances["d2 present"]
-                dungeon_entrances["d11"]["default"] = "d11"
+        assembler = Z80Assembler()
 
         # Define static values & data blocks
+        for i, offset in enumerate(EOB_ADDR):
+            assembler.end_of_banks[i] = offset
+        for key, value in DEFINES.items():
+            assembler.define(key, value)
         for symbolic_name, price in patch_data["shop_prices"].items():
             assembler.define_byte(f"shopPrices.{symbolic_name}", RUPEE_VALUES[price])
         define_location_constants(assembler, patch_data)
@@ -82,20 +52,19 @@ class OoAPatchExtensions(APPatchExtension):
         set_file_select_text(assembler, caller.player_name)
 
         # Parse assembler files, compile them and write the result in the ROM
-        print("Compiling ASM files...")
-        # write_text_data(rom_data, dictionary, texts, True)
+        print(f"Compiling ASM files...")
         for file_path in get_asm_files(patch_data):
             data_loaded = yaml.safe_load(pkgutil.get_data(__name__, file_path))
             for metalabel, contents in data_loaded.items():
                 assembler.add_block(Z80Block(metalabel, contents))
         assembler.compile_all()
         for block in assembler.blocks:
-            rom_data.write_bytes(block.addr.address_in_rom(), block.byte_array)
+            rom_data.write_bytes(block.addr.full_address(), block.byte_array)
 
         alter_treasures(rom_data)
         write_chest_contents(rom_data, patch_data)
         write_seed_tree_content(rom_data, patch_data)
-        # set_dungeon_warps(rom_data, patch_data, dungeon_entrances, dungeon_exits)
+        set_dungeon_warps(rom_data, patch_data)
         #apply_miscellaneous_options(rom_data, patch_data)
 
         set_heart_beep_interval_from_settings(rom_data)
@@ -107,7 +76,7 @@ class OoAPatchExtensions(APPatchExtension):
         return rom_data.output()
 
 class OoAProcedurePatch(APProcedurePatch, APTokenMixin):
-    hash = [AGES_ROM_HASH]
+    hash = [ROM_HASH]
     patch_file_ending: str = ".apooa"
     result_file_ending: str = ".gbc"
 
@@ -129,8 +98,8 @@ class OoAProcedurePatch(APProcedurePatch, APTokenMixin):
 
             basemd5 = hashlib.md5()
             basemd5.update(base_rom_bytes)
-            if AGES_ROM_HASH != basemd5.hexdigest():
-                raise Exception("Supplied ROM does not match known MD5 for Oracle of Ages US version."
+            if ROM_HASH != basemd5.hexdigest():
+                raise Exception("Supplied ROM does not match known MD5 for Oracle of Seasons US version."
                                 "Get the correct game and version, then dump it.")
             setattr(cls, "base_rom_bytes", base_rom_bytes)
         return base_rom_bytes

@@ -2,7 +2,6 @@
 0a//staticItemsReplacementsTable: |
   # ------- Freestanding items -------
   dwbe $0186, locations.blackTowerHP
-  dwbe $02e3, locations.tokayChickenHut
   dwbe $0406, locations.makuPathHP
   dwbe $008b, locations.yollGraveyardHP
   dwbe $05b1, locations.dekuForestHP
@@ -28,11 +27,6 @@
   dwbe $0553, locations.d7CaneDiamondPuzzle
   dwbe $054b, locations.d7FlowerRoom
   dwbe $0555, locations.d7DiamondPuzzle
-
-  # ------- Hero's Cave items -------
-  /ifdef option.enabledLinkedHerosCave
-  dwbe $04cd, locations.herosCaveStatue3Puzzle
-  /endif
 
 
 0a//staticItemsReplacementsLookup_body: |

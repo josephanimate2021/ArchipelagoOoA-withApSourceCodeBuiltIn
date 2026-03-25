@@ -1,37 +1,25 @@
-from ..common.data.Constants import *
+VERSION = "0.4.3"
+RETRO_COMPAT_VERSION = ["0.4.3", "0.4.2", "0.4.1", "0.4.0"]
 
-OLD_MAN_RUPEE_VALUES = {
-    "rolling ridge past old man": 200,
-    "rolling ridge present old man": -200,
-}
-
-VALID_SEED_PRICE_VALUES = [
-    1, 2, 5, 10, 20, 25, 30, 40, 50, 60, 70, 80, 99
+COMPANIONS = [
+    "Ricky",
+    "Dimitri",
+    "Moosh"
 ]
 
-RUPEE_OLD_MAN_LOCATIONS = [
-    "Rolling Ridge (Present): Old Man",
-    "Rolling Ridge (Past): Old Man"
+DIRECTIONS = [
+    "up",
+    "right",
+    "down",
+    "left"
 ]
 
-SCRUB_LOCATIONS = [
-    # "Spool Swamp: Business Scrub",
-    # "Snake's Remains: Business Scrub",
-    # "Dancing Dragon Dungeon (1F): Business Scrub",
-    # "Samasa Desert: Business Scrub"
-]
-
-SECRETS = [
-    # "Horon Village: Clock Shop Secret",
-    # "Western Coast: Graveyard Secret",
-    # "Subrosia: Subrosian Secret",
-    # "Sunken City: Diver Secret",
-    # "Subrosia: Smith Secret",
-    # "Subrosia: Piratian Secret",
-    # "Subrosia: Temple Secret",
-    # "Natzu Region: Deku Secret",
-    # "Goron Mountain: Biggoron Secret",
-    "Lynna City: Mayor Secret"
+SEED_ITEMS = [
+    "Ember Seeds",
+    "Scent Seeds",
+    "Pegasus Seeds",
+    "Gale Seeds",
+    "Mystery Seeds"
 ]
 
 TREES_TABLE = {
@@ -39,7 +27,7 @@ TREES_TABLE = {
     "Ambi's Palace": "Ambi's Palace: Seed Tree",
     "Deku Forest": "Deku Forest: Seed Tree",
     "Crescent Island": "Crescent Island: Seed Tree",
-    "Symmetry city": "Symmetry city: Seed Tree",
+    "Symmetry City": "Symmetry City: Seed Tree",
     "Rolling Ridge West": "Rolling Ridge West: Seed Tree",
     "Rolling Ridge East": "Rolling Ridge East: Seed Tree",
     "Zora Village": "Zora Village: Seed Tree",
@@ -57,15 +45,41 @@ DUNGEON_NAMES = [
     "Jabu-Jabu's Belly",
     "Ancient Tomb",
     "Mermaid's Cave Past",
-    "",
-    "Hero's Cave"
 ]
+
+REGIONS_CONVERSION_TABLE = {
+    # TODO OTHERS
+    "LYNNA_VILLAGE": "Lynna village",
+}
+
+ESSENCES = [
+    "Eternal Spirit",
+    "Ancient Wood",
+    "Echoing Howl",
+    "Burning Flame",
+    "Sacred Soil",
+    "Lonely Peak",
+    "Rolling Sea",
+    "Falling Star",
+]
+
+VALID_RUPEE_VALUES = [
+    0, 1, 2, 5, 10, 20, 25, 30, 40, 50, 60, 70, 80, 100, 200, 300, 400, 500, 900, 999
+]
+
+DAMAGE_MODIFIER_VALUES = {
+    "peaceful": -4,
+    "easier": -2,
+    "vanilla": 0,
+    "harder": 2,
+    "insane": 4,
+}
 
 DUNGEON_ENTRANCES = {
     "d0 entrance": "enter d0",
     "d1 entrance": "enter d1",
     "d2 past entrance": "enter d2",
-    "ambi's palace entrance": "enter ambi's palace",
+#    "d2 present entrance": "enter d2",
     "d3 entrance": "enter d3",
     "d4 entrance": "enter d4",
     "d5 entrance": "enter d5",
@@ -75,25 +89,21 @@ DUNGEON_ENTRANCES = {
     "d8 entrance": "enter d8",
 }
 
-VANILLA_SHOP_PRICES = {
-    "lynnaShop1": 20,
-    "lynnaShop2": 30,
-    "lynnaShop3": 150,
-    "hiddenShop1": 300,
-    "hiddenShop2": 300,
-    "hiddenShop3": 200,
-    "advanceShop1": 100,
-    "advanceShop2": 100,
-    "advanceShop3": 100,
-    "syrupShop1": 100,
-    "syrupShop2": 300,
-    "syrupShop3": 300,
-    "tokayMarket1": 10,
-    "tokayMarket2": 10,
-    # "spoolSwampScrub": 100,
-    # "samasaCaveScrub": 100,
-    # "d2Scrub": 30,
-    # "d4Scrub": 20,
+SHOP_PRICES_DIVIDERS = {
+    "lynnaShop1": 1,
+    "lynnaShop2": 1,
+    "lynnaShop3": 1,
+    "hiddenShop1": 1,
+    "hiddenShop2": 1,
+    "hiddenShop3": 1,
+    "advanceShop1": 1,
+    "advanceShop2": 1,
+    "advanceShop3": 1,
+    "syrupShop1": 1,
+    "syrupShop2": 1,
+    "syrupShop3": 1,
+    "tokeyMarket1": 2,
+    "tokeyMarket2": 2,
 }
 
 ITEM_GROUPS = {
@@ -108,7 +118,6 @@ ITEM_GROUPS = {
         "Small Key (Jabu-Jabu's Belly)",
         "Small Key (Ancient Tomb)",
         "Small Key (Mermaid's Cave Past)",
-        "Small Key (Hero's Cave)"
     ],
     "Boss Keys": [
         "Boss Key (Spirit's Grave)",
@@ -153,18 +162,7 @@ ITEM_GROUPS = {
         "Master Key (Jabu-Jabu's Belly)",
         "Master Key (Ancient Tomb)",
         "Master Key (Mermaid's Cave Past)",
-        "Master Key (Hero's Cave)"
     ],
-    "Essences": [
-        "Eternal Spirit",
-        "Ancient Wood",
-        "Echoing Howl",
-        "Burning Flame",
-        "Sacred Soil",
-        "Lonely Peak",
-        "Rolling Sea",
-        "Falling Star",
-    ]
 }
 
 LOCATION_GROUPS = {
@@ -308,44 +306,34 @@ LOCATION_GROUPS = {
         'Lynna Village Coast: Rafton',
         'Shore of No Return: Old Zora',
         'Restoration Wall: Patch',
-    ],
-    'D11': [
-        "Hero's Cave (1F): Pots Puzzle",
-        "Hero's Cave (1F): Statue Puzzle #1",
-        "Hero's Cave (1F): Bridge Puzzle #1",
-        "Hero's Cave (1F): Shoot Eyes",
-        "Hero's Cave (1F): Statue Puzzle #2",
-        "Hero's Cave (1F): Pots Puzzle #2",
-        "Hero's Cave (1F): Statue Puzzle #3",
-        "Hero's Cave (1F): Bridge Puzzle #2",
-        "Hero's Cave (1F): Color Room",
-        "Hero's Cave (1F): Water Puzzle",
-        "Hero's Cave (B1F): Water Puzzle",
-        "Hero's Cave (B1F): Basement",
-        "Hero's Cave (1F): Final Puzzle",
-        "Hero's Cave (1F): Completion Reward"
     ]
 }
 
-GASHA_SPOT_REGIONS = [
-    "crescent past spot",
-    "talus lake past spot",
-    "talus peak past spot",
-    "zora village past spot",
-    "lynna village toilet spot",
-    "south shore past spot",
-    "ridge west base spot",
-    "ridge upper past spot",
-    "yoll graveyard spot",
-    "talus peak present spot",
-    "fairies woods spot",
-    "nuun highlands spot",
-    "ridge mid present spot",
-    "crescent present islet spot",
-    "crescent present vine spot",
-    "sea of storms spot",
-]
+TREASURE_SPAWN_INSTANT = 0x00
+TREASURE_SPAWN_POOF = 0x10
+TREASURE_SPAWN_DROP = 0x20
+TREASURE_SPAWN_CHEST = 0x30
+TREASURE_SPAWN_DIVE = 0x40
+TREASURE_SPAWN_DIG = 0x50
+TREASURE_SPAWN_DELAYED_CHEST = 0x60
 
+TREASURE_GRAB_INSTANT = 0x00
+TREASURE_GRAB_ONE_HAND = 0x01
+TREASURE_GRAB_TWO_HANDS = 0x02
+TREASURE_GRAB_SPIN_SLASH = 0x03
+
+TREASURE_SET_ITEM_ROOM_FLAG = 0x08
+
+COLLECT_TOUCH = TREASURE_SPAWN_INSTANT | TREASURE_GRAB_TWO_HANDS | TREASURE_SET_ITEM_ROOM_FLAG
+COLLECT_POOF = TREASURE_SPAWN_POOF | TREASURE_GRAB_TWO_HANDS | TREASURE_SET_ITEM_ROOM_FLAG
+COLLECT_DROP = TREASURE_SPAWN_DROP | TREASURE_GRAB_ONE_HAND | TREASURE_SET_ITEM_ROOM_FLAG
+COLLECT_CHEST = TREASURE_SPAWN_CHEST | TREASURE_SET_ITEM_ROOM_FLAG
+COLLECT_DIVE = TREASURE_SPAWN_DIVE | TREASURE_GRAB_ONE_HAND | TREASURE_SET_ITEM_ROOM_FLAG
+COLLECT_DIG = TREASURE_SPAWN_DIG | TREASURE_GRAB_TWO_HANDS | TREASURE_SET_ITEM_ROOM_FLAG
+COLLECT_DELAYED_CHEST = TREASURE_SPAWN_DELAYED_CHEST | TREASURE_GRAB_INSTANT | TREASURE_SET_ITEM_ROOM_FLAG
+COLLECT_SPINSLASH = TREASURE_SPAWN_INSTANT | TREASURE_GRAB_SPIN_SLASH
+COLLECT_FAKE_POOF = TREASURE_SPAWN_POOF | TREASURE_GRAB_INSTANT | TREASURE_SET_ITEM_ROOM_FLAG
+COLLECT_KEYDROP = TREASURE_SPAWN_DROP | TREASURE_GRAB_INSTANT | TREASURE_SET_ITEM_ROOM_FLAG
 COLLECT_MAKU_TREE = 0x80
 COLLECT_TARGET_CART = 0x81
 COLLECT_BIGBANG = 0x82

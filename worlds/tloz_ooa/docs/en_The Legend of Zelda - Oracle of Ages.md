@@ -31,7 +31,7 @@ Items belonging to other worlds use an easily recognizable Archipelago sprite, w
 
 **Is there a tracker for this game?**
 
-> Yes, you can find it [here](https://josephanimate2021.github.io/oracle-of-ages-web-tracker).
+> Yes, you can find it [here](https://github.com/Br00ty/ooa_brooty/releases/latest).
 
 **How can I warp to start?**
 
@@ -44,4 +44,7 @@ Items belonging to other worlds use an easily recognizable Archipelago sprite, w
 **What feature can we expect in a near future ?**
 
 > - Various QOL
+> - Secrets (?)
+> - Deku scrub selling checks
+> - The same Gasha tree madness that got implemented in season x)
 > - And more.

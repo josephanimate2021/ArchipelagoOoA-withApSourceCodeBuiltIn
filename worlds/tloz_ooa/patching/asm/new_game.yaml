@@ -2,9 +2,9 @@
 # at actual file creation.
 
 03//initialGlobalFlags: |
-    db $0a,$0c,$1d,$20,$23,$2b,$33,$3d,$40,$41,$43,$45,$ff
+    db 0a,0c,1d,20,23,2b,33,3d,40,41,43,45,ff
 
-07/4195/startingBomb: db $00
+07/4195/startingBomb: db 00
 
 # set flags to skip opening and a bunch of other things. see doc/technical.md
 # for a dictionary of the flags.
@@ -45,14 +45,6 @@
     ld (wDimitriState),a
     ld a,$ff
     ld (wAnimalTutorialFlags),a
-
-    ; Mark intro as seen
-    ld a,$0a
-    call setGlobalFlag
-    ld a,$3d
-    call setGlobalFlag
-    ld a,$21
-    call setGlobalFlag
     
     ; Change seeds selected by default inside shooter and satchel
     ld a,option.defaultSeedType - $20
@@ -63,7 +55,6 @@
     # maku tree state (vanished)
     ld a,$01
     ld (wMakuTreeState),a
-
 
     # room flags 3 | 6 | 7
     ld a,$c8
@@ -105,17 +96,6 @@
 
     # room flag 0
     ld a,$01
-    /ifdef option.secretLocationsEnabled
-    ld a,$02
-    call setGlobalFlag
-    ld a,$13
-    call setGlobalFlag
-    ld a,$14
-    call setGlobalFlag
-    ld a,$3a
-    call setGlobalFlag
-    ld a,$01
-    /endif
     ld ($c738),a # maku tree (present)
     ld ($c876),a # black tower entrance
 
@@ -130,6 +110,4 @@
 
     pop hl
     ret
-03/6e97/: jp setInitialFlags 
-# Set default text speed to 5
-07/418b/: db $04
+03/6e97/: jp setInitialFlags
