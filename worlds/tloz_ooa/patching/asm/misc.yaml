@@ -48,6 +48,15 @@
     ld a,TREASURE_SHOOTER
     jp checkTreasureObtained
 11/4aba/: call checkCanHarvestSeeds
+
+# allow skipping the capcom screen after one second by pressing start
+03//checkSkipCapcom: |
+    ld hl,$cbb3
+    ld a,$94
+    cp (hl)
+    ret c
+    jp forceEnableIntroInputs
+03/4d68/: call checkSkipCapcom
   
 # remove the usual deku soldier event (taken to palace etc).
 12/58f5/: ret
