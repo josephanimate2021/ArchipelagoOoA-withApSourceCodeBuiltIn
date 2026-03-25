@@ -234,6 +234,7 @@ DEFINES = {
     "spawnitem":"$dd",
     "jumpifglobalflagset":"$b5",
     "setglobalflag":"$b6",
+    "script_nop": "$b7",
     "giveitem":"$de",
     "jumpifitemobtained":"$df",
     "asm15":"$e0",

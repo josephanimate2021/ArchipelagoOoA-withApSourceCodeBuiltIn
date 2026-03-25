@@ -340,7 +340,7 @@ def write_chest_contents(rom: RomData, patch_data):
             "collect", COLLECT_TOUCH
         ) != COLLECT_CHEST and not location_data.get(
             "is_chest", False
-        ) and location_name != "Bush Cave Chest") or (
+        ) and location_name != "Ridge Bush Cave") or (
             patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_disabled and (
                 "dungeon" in location_data and location_data["dungeon"] == 11
             )
