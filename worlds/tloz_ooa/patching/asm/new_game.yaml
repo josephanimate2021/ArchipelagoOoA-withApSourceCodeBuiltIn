@@ -94,17 +94,6 @@
 
     # room flag 0
     ld a,$01
-    /ifdef option.secretLocationsEnabled
-    ld a,$02
-    call setGlobalFlag
-    ld a,$13
-    call setGlobalFlag
-    ld a,$14
-    call setGlobalFlag
-    ld a,$3a
-    call setGlobalFlag
-    ld a,$01
-    /endif
     ld ($c738),a # maku tree (present)
     ld ($c876),a # black tower entrance
 
