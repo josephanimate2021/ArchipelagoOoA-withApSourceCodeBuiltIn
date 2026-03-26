@@ -111,7 +111,7 @@ def define_option_constants(assembler: Z80Assembler, patch_data):
     master_keys_as_boss_keys = patch_data["options"]["master_keys"] == OracleOfAgesMasterKeys.option_all_dungeon_keys
     assembler.define_byte("option.smallKeySprite", 0x43 if master_keys_as_boss_keys else 0x42)
 
-def process_item_name_for_shop_text(item_name: str) -> List[int]:
+def text_to_binary(item_name: str) -> List[int]:
     words = item_name.split(" ")
     current_line = 0
     lines = [""]
@@ -148,7 +148,7 @@ def define_text_constants(assembler: Z80Assembler, patch_data):
             symbolic_name = LOCATIONS_DATA[location_name]["symbolic_name"]
             text_bytes = []
             if location_name in patch_data["locations"]:
-                item_name_bytes = process_item_name_for_shop_text(patch_data["locations"][location_name])
+                item_name_bytes = text_to_binary(patch_data["locations"][location_name])
                 text_bytes = [0x09, 0x01] + item_name_bytes + [0x09, 0x00, 0x0c, 0x18, 0x01]  # Item name
                 if shop_name != "Crescent Island (Past): Market":
                     text_bytes.extend([0x20, 0x0c, 0x08, 0x20, 0x03, 0x7b, 0x01])  # Price
@@ -162,7 +162,7 @@ def define_text_constants(assembler: Z80Assembler, patch_data):
         symbolic_name = LOCATIONS_DATA[location_name]["symbolic_name"]
         text_bytes = []
         if location_name in patch_data["locations"]:
-            item_name_bytes = process_item_name_for_shop_text(patch_data["locations"][location_name])
+            item_name_bytes = text_to_binary(patch_data["locations"][location_name])
             text_bytes = [0x09, 0x01] + item_name_bytes + [0x09, 0x00, 0x0c, 0x18, 0x00]  # Item name
             assembler.add_floating_chunk(f"text.{symbolic_name}", text_bytes)
     text_bytes = [0x31, 0x30, 0x20, 0x02, 0x12, 0x01, 0x02, 0x00, 0x00]
@@ -205,7 +205,6 @@ def define_compass_rooms_table(assembler: Z80Assembler, patch_data):
 
         if dungeon != 0xff:
             location_data = LOCATIONS_DATA[location_name]
-            print(location_name)
             rooms = location_data["room"]
             if not isinstance(rooms, list):
                 rooms = [rooms]
@@ -313,16 +312,15 @@ def set_dungeon_warps(rom: RomData, patch_data):
 
 def define_dungeon_items_text_constants(assembler: Z80Assembler, patch_data):
 
-    for i in range(0, 11): # D0 has no map, no compass, no boss key, and the unique small key use the default text. 
+    for i in range(0, 11): # Maku Path and Hero's Cave has no map, no compass, no boss key, and the unique small key use the default text. 
         # " for\nDungeon X"
         trueI = i if i != 9 else 6
-        dungeon_precision = [0x03, 0x39, 0x44, 0x05, 0xe6, 0x20, (0x30 + trueI)] # For Dungeon X
+        if trueI == 10:
+            trueI = 11
+        dungeon_precision = [0x03, 0x39]
+        dungeon_precision.extend(text_to_binary(DUNGEON_NAMES[trueI]))
         dungeon_tag = f"D{trueI}"
         dungeon_precisionForBossKey = dungeon_precision.copy()
-
-        if i == 10:
-            dungeon_precision = [0x03, 0x39, 0x48, 0x65, 0x72, 0x6f, 0x27, 0x73, 0x20, 0x43, 0x61, 0x76, 0x65] # For Hero's Cave
-            dungeon_tag = f"HeroCave"
 
         if i == 6:
             #\n(present)
@@ -366,11 +364,10 @@ def define_dungeon_items_text_constants(assembler: Z80Assembler, patch_data):
         # ###### Dungeon maps ##############################################
         # "You found the\n\color(RED)"
         dungeon_map_text = [0x02, 0x7c, 0x20, 0x05, 0xb4, 0x09, 0x01]
+        dungeon_map_text.extend(text_to_binary("Dungeon Map"))
         if patch_data["options"]["keysanity_maps_compasses"]:
-            dungeon_map_text.extend([0x4d, 0x61, 0x70])  # "Map"
+            dungeon_map_text.append(0x01)
             dungeon_map_text.extend(dungeon_precision)
-        else:
-            dungeon_map_text.extend([0x44, 0x05, 0x8a, 0x20, 0x4d, 0x61, 0x70])  # "Dungeon Map"
         dungeon_map_text.extend([0x09, 0x00, 0x21, 0x00])  # "\color(WHITE)!(end)"
         assembler.add_floating_chunk(f"text.dungeonMap{dungeon_tag}", dungeon_map_text)
 
