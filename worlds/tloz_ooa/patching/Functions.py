@@ -315,12 +315,14 @@ def define_dungeon_items_text_constants(assembler: Z80Assembler, patch_data):
 
     for i in range(0, 11): # D0 has no map, no compass, no boss key, and the unique small key use the default text. 
         # " for\nDungeon X"
-        if i == 10:
-            i = 11
         trueI = i if i != 9 else 6
-        dungeon_precision = [0x03, 0x39, 0x44, 0x05, 0xe6, 0x20, (0x30 + trueI)]
+        dungeon_precision = [0x03, 0x39, 0x44, 0x05, 0xe6, 0x20, (0x30 + trueI)] # For Dungeon X
         dungeon_tag = f"D{trueI}"
         dungeon_precisionForBossKey = dungeon_precision.copy()
+
+        if i == 10:
+            dungeon_precision = [0x03, 0x39, 0x48, 0x65, 0x72, 0x6f, 0x27, 0x73, 0x20, 0x43, 0x61, 0x76, 0x65] # For Hero's Cave
+            dungeon_tag = f"HeroCave"
 
         if i == 6:
             #\n(present)
@@ -345,8 +347,8 @@ def define_dungeon_items_text_constants(assembler: Z80Assembler, patch_data):
         small_key_text.extend([0x09, 0x00, 0x21, 0x00])  # "\color(WHITE)!(end)"
         assembler.add_floating_chunk(f"text.smallKey{dungeon_tag}", small_key_text)
 
-        # Hero's Cave only has Small Keys, so skip other texts
-        if i == 0:
+        # Maku Path & Hero Cave only has Small Keys, so skip other texts
+        if i == 0 or i == 10:
             continue
 
         # ###### Boss keys ##############################################
