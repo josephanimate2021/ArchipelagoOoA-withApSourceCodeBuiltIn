@@ -318,8 +318,8 @@ def define_dungeon_items_text_constants(assembler: Z80Assembler, patch_data):
         if trueI == 10:
             trueI = 11
         dungeon_precision = [0x03, 0x39]
-        dungeon_precision.extend(text_to_binary(DUNGEON_NAMES[trueI]))
         dungeon_tag = f"D{trueI}"
+        dungeon_precision.extend(text_to_binary(f"{DUNGEON_NAMES[trueI]} ({dungeon_tag})"))
         dungeon_precisionForBossKey = dungeon_precision.copy()
 
         if i == 6:
