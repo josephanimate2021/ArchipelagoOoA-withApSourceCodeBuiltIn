@@ -1,8 +1,8 @@
 from .LogicPredicates import *
 
 
-def make_overworld_logic(player: int):
-    return [
+def make_overworld_logic(player: int, options: OracleOfAgesOptions):
+    labrynna_logic = [
         
         # FOREST OF TIME
         #######################################
@@ -603,3 +603,10 @@ def make_overworld_logic(player: int):
         ["d8 entrance", "sea of no return", False, lambda state: ooa_has_glove(state, player)],
 
     ]
+
+    if options.linked_heros_cave.value > 0:
+        labrynna_logic.extend([
+            ["lynna city", "d11 entrance", False, None]
+        ])
+
+    return labrynna_logic

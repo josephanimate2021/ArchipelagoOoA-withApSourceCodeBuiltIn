@@ -24,6 +24,7 @@
   dwbe $0464, locations.d3SixBlocDrop
   dwbe $044b, locations.d3MoldormDrop
   dwbe $047b, locations.d4ColorDrop
+  dwbe $04cd, locations.d11Statue2Puzzle
   dwbe $0553, locations.d7CaneDiamondPuzzle
   dwbe $054b, locations.d7FlowerRoom
   dwbe $0555, locations.d7DiamondPuzzle

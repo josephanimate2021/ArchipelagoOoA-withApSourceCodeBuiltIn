@@ -4,14 +4,15 @@ import os
 import random
 import Utils
 from settings import get_settings
-from . import RomData
+from .RomData import *
 from .Util import *
 from .z80asm.Assembler import Z80Assembler
 from ..data.Constants import *
 from .Constants import *
 from pathlib import Path
 
-from .. import LOCATIONS_DATA, OracleOfAgesMasterKeys, OracleOfAgesGoal
+from .. import LOCATIONS_DATA
+from ..Options import *
 
 
 def get_treasure_addr(rom: RomData, item_name: str):
@@ -60,6 +61,10 @@ def get_asm_files(patch_data):
         asm_files.append("asm/conditional/qol_mermaid_suit.yaml")
     if patch_data["options"]["goal"] == OracleOfAgesGoal.option_beat_ganon:
         asm_files.append("asm/conditional/ganon_goal.yaml")
+    if patch_data["options"]["linked_heros_cave"]:
+        asm_files.append("asm/conditional/d11.yaml")
+        if patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_maku_tree_entrance_right_side:
+            asm_files.append("asm/conditional/d11_in_maku_tree_entrance_right_side.yaml")
     return asm_files
 
 def define_location_constants(assembler: Z80Assembler, patch_data):
@@ -169,14 +174,20 @@ def write_chest_contents(rom: RomData, patch_data):
     Chest locations are packed inside several big tables in the ROM, unlike other more specific locations.
     This puts the item described in the patch data inside each chest in the game.
     """
+    locations_data = patch_data["locations"]
     for location_name, location_data in LOCATIONS_DATA.items():
-        if ('collect' not in location_data or 'room' not in location_data or location_data['collect'] != COLLECT_CHEST) and location_name != "Rolling Ridge (Present): Bush Cave Chest":
+        if (
+            'collect' not in location_data 
+            or 'room' not in location_data 
+            or location_data['collect'] != COLLECT_CHEST
+            or location_name not in locations_data
+        ) and location_name != "Rolling Ridge (Present): Bush Cave Chest":
             continue
         if location_name == "Nuun Highlands: Southern Cave":
             chest_addr = rom.get_chest_addr(location_data['room'][patch_data["options"]["animal_companion"]])
         else:
             chest_addr = rom.get_chest_addr(location_data['room'])
-        item_name = patch_data["locations"][location_name]
+        item_name = locations_data[location_name]
         item_id, item_subid = get_item_id_and_subid(item_name)
         rom.write_byte(chest_addr, item_id)
         rom.write_byte(chest_addr + 1, item_subid)
@@ -267,17 +278,31 @@ def set_dungeon_warps(rom: RomData, patch_data):
     entrance_map = dict((v, k) for k, v in warp_matchings.items())
 
     # D1-D8 Essence Warps (hardcoded in one array using a unified format)
-    for i in range(8):
+    for i in range(0, 9):
+        if i == 8:
+            if patch_data["options"]["linked_heros_cave"] > 0:
+                i = 10
+            else:
+                continue
         entrance_name = f"d{i + 1}"
         if i == 5:
             entrance_name += " past"
         entrance = DUNGEON_ENTRANCES[entrance_map[entrance_name]]
-        rom.write_bytes(0x2874f + (i * 4), [
-            entrance["group"] | 0x80,
-            entrance["room"],
-            entrance["position"],
-            0x0e if entrance["shifted"] else 0x01
-        ])
+        if i == 10:
+            rom.write_bytes(0X2F204, [
+                entrance["group"] | 0x80,
+                entrance["room"], 
+                0x0e if entrance["shifted"] else 0x01, 
+                entrance["position"], 
+                (entrance["group"] * 10) + 0x03
+            ])
+        else:
+            rom.write_bytes(0x2874f + (i * 4), [
+                entrance["group"] | 0x80,
+                entrance["room"],
+                entrance["position"],
+                0x0e if entrance["shifted"] else 0x01
+            ])
 
 #    # Change Minimap popups to indicate the randomized dungeon's name
 #    for i in range(8):
@@ -288,8 +313,10 @@ def set_dungeon_warps(rom: RomData, patch_data):
 
 def define_dungeon_items_text_constants(assembler: Z80Assembler, patch_data):
 
-    for i in range(0, 10): # D0 has no map, no compass, no boss key, and the unique small key use the default text. 
+    for i in range(0, 11): # D0 has no map, no compass, no boss key, and the unique small key use the default text. 
         # " for\nDungeon X"
+        if i == 10:
+            i = 11
         trueI = i if i != 9 else 6
         dungeon_precision = [0x03, 0x39, 0x44, 0x05, 0xe6, 0x20, (0x30 + trueI)]
         dungeon_tag = f"D{trueI}"

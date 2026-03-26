@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 
-from Options import Choice, DeathLink, DefaultOnToggle, PerGameCommonOptions, Range, Toggle, StartInventoryPool, ItemSet, OptionSet
+from Options import Choice, DeathLink, DefaultOnToggle, PerGameCommonOptions, Range, Toggle, StartInventoryPool, ItemSet, OptionSet, Accessibility
 
-from worlds.tloz_ooa.data.Items import ITEMS_DATA
-from worlds.tloz_ooa.data.Constants import TREES_TABLE
+from .data.Items import ITEMS_DATA
+from .data.Constants import TREES_TABLE
 
 
 class OracleOfAgesGoal(Choice):
@@ -109,6 +109,18 @@ class OracleOfAgesDuplicateSeedTrees(OptionSet):
     default = {"Crescent Island", "Zora Village", "Rolling Ridge East"}
     valid_keys = {key for key in TREES_TABLE.keys()}
 
+class OracleOfAgesLinkedHerosCave(Choice):
+    """
+    Adds linked hero's cave to a list of locations for you to complete. This option also allows you to mark which location the linked hero's cave will be in.
+    - Maku Tree Entrance Right Side: A cave will be placed to the right side of the maku tree entrance, allowing access despite the finished game flag not being set.
+    """
+    display_name = "Linked Hero's Cave"
+
+    option_disabled = 0
+    option_maku_tree_entrance_right_side = 1
+
+    default = 0
+
 
 
 class OracleOfAgesDungeonShuffle(Choice):
@@ -169,7 +181,7 @@ class OracleOfAgesSlateShuffle(Toggle):
     display_name = "Slates Outside Dungeon 8"
 
 
-class OracleOfSeasonsRequiredRings(ItemSet):
+class OracleOfAgesRequiredRings(ItemSet):
     """
     Forces a specified set of rings to appear somewhere in the seed.
     Adding too many rings to this list can cause generation failures.
@@ -179,7 +191,7 @@ class OracleOfSeasonsRequiredRings(ItemSet):
     valid_keys = {name for name, idata in ITEMS_DATA.items() if "ring" in idata}
 
 
-class OracleOfSeasonsExcludedRings(ItemSet):
+class OracleOfAgesExcludedRings(ItemSet):
     """
     Forces a specified set of rings to not appear in the seed.
     List of ring names can be found here: https://zeldawiki.wiki/wiki/Magic_Ring
@@ -247,6 +259,7 @@ class OracleOfAgesOptions(PerGameCommonOptions):
     required_slates: OracleOfAgesRequiredSlates
     animal_companion: OracleOfAgesAnimalCompanion
     default_seed: OracleOfAgesDefaultSeedType
+    linked_heros_cave: OracleOfAgesLinkedHerosCave
     duplicate_seed_trees: OracleOfAgesDuplicateSeedTrees
     shuffle_dungeons: OracleOfAgesDungeonShuffle
     master_keys: OracleOfAgesMasterKeys
@@ -254,8 +267,8 @@ class OracleOfAgesOptions(PerGameCommonOptions):
     keysanity_boss_keys: OracleOfAgesBossKeyShuffle
     keysanity_maps_compasses: OracleOfAgesMapCompassShuffle
     keysanity_slates: OracleOfAgesSlateShuffle
-    required_rings: OracleOfSeasonsRequiredRings
-    excluded_rings: OracleOfSeasonsExcludedRings
+    required_rings: OracleOfAgesRequiredRings
+    excluded_rings: OracleOfAgesExcludedRings
     shop_prices_factor: OracleOfAgesPricesFactor
     advance_shop: OracleOfAgesAdvanceShop
     combat_difficulty: OracleOfAgesCombatDifficulty

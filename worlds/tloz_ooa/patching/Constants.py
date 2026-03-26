@@ -553,6 +553,15 @@ DUNGEON_ENTRANCES = {
         "shifted": True,
         "default":"d8"
     },
+    "d11": {
+        "addr": 0x1770C,
+        "map_tile": 0x048,
+        "room": 0x48,
+        "group": 0x01,
+        "position": 0x28,
+        "shifted": False,
+        "default":"d11"
+    },
     "d6 past": {
         "addr": 0x139b4,
         "map_tile": 0x13c,
@@ -575,6 +584,7 @@ DUNGEON_EXITS = {
     "d6 present": 0x13c48,
     "d7": 0x13c60,
     "d8": 0x13c74,
+    "d11": 0x13ae4,
     "d6 past": 0x13c54,
 }
 

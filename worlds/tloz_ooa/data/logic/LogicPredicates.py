@@ -1,5 +1,5 @@
 from BaseClasses import CollectionState
-from Options import Accessibility
+from ...Options import *
 from ..Constants import DUNGEON_NAMES, ESSENCES
 
 

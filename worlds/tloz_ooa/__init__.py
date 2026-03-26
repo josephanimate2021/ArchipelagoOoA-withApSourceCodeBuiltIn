@@ -15,7 +15,7 @@ from .Options import *
 from .PatchWriter import ooa_create_appp_patch
 from .data import LOCATIONS_DATA
 from .data.Constants import *
-from .data.Regions import REGIONS
+from .data.Regions import *
 from .Client import OracleOfAgesClient  # Unused, but required to register with BizHawkClient
 from .patching.ProcedurePatch import ROM_HASH
 
@@ -126,6 +126,7 @@ class OracleOfAgesWorld(World):
                    "default_seed",
                    # Locations
                    "advance_shop",
+                   "linked_heros_cave",
                    # Requirements
                    "required_essences", "required_slates",
                    # keysanity
@@ -144,6 +145,9 @@ class OracleOfAgesWorld(World):
         conflicting_rings = self.options.required_rings.value & self.options.excluded_rings.value
         if len(conflicting_rings) > 0:
             raise OptionError("Required Rings and Excluded Rings contain the same element(s)", conflicting_rings)
+        
+        if self.options.linked_heros_cave.value > 0:
+            self.dungeon_entrances["d11 entrance"] = "enter d11"
         
         self.restrict_non_local_items()
 
@@ -193,6 +197,10 @@ class OracleOfAgesWorld(World):
         region_id = location_data["region_id"]
         if region_id == "advance shop":
             return self.options.advance_shop.value
+        
+        if "dungeon" in location_data:
+            if location_data["dungeon"] == 11:
+                return self.options.linked_heros_cave.value > 0
 
         # TODO FUNNY LOCATION ?
 
@@ -207,7 +215,13 @@ class OracleOfAgesWorld(World):
 
     def create_regions(self):
         # Create regions
-        for region_name in REGIONS:
+        regions = REGIONS.copy()
+
+        if self.options.linked_heros_cave.value > 0:
+            for region_name in D11_REGIONS:
+                regions.append(region_name)
+
+        for region_name in regions:
             region = Region(region_name, self.player, self.multiworld)
             self.multiworld.regions.append(region)
 
@@ -266,7 +280,7 @@ class OracleOfAgesWorld(World):
             self.multiworld.get_location(name, self.player).progress_type = LocationProgressType.EXCLUDED
 
     def set_rules(self):
-        create_connections(self.multiworld, self.player)
+        create_connections(self)
         apply_self_locking_rules(self.multiworld, self.player)
         self.multiworld.completion_condition[self.player] = lambda state: state.has("_beaten_game", self.player)
 
@@ -339,8 +353,9 @@ class OracleOfAgesWorld(World):
         # If Master Keys are enabled, put one for every dungeon
         if self.options.master_keys != OracleOfAgesMasterKeys.option_disabled:
             for small_key_name in ITEM_GROUPS["Master Keys"]:
-                item_pool_dict[small_key_name] = 1
-                filler_item_count -= 1
+                if self.options.linked_heros_cave.value > 0 or small_key_name != "Master Key (Linked Hero's Cave)":
+                    item_pool_dict[small_key_name] = 1
+                    filler_item_count -= 1
 
         # Add the required rings
         ring_copy = sorted(self.options.required_rings.value.copy())
@@ -440,7 +455,12 @@ class OracleOfAgesWorld(World):
         collection_state = self.multiworld.get_all_state(False)
         D6_remaining_location = []
 
-        for i in range(0, 10):
+        for i in range(11):
+            if i == 10:
+                if self.options.linked_heros_cave.value > 0:
+                    i = 11
+                else:
+                    continue
             # Build a list of locations in this dungeon
             dungeon_location_names = [name for name, loc in LOCATIONS_DATA.items()
                                       if "dungeon" in loc and loc["dungeon"] == i]

@@ -45,6 +45,8 @@ DUNGEON_NAMES = [
     "Jabu-Jabu's Belly",
     "Ancient Tomb",
     "Mermaid's Cave Past",
+    "",
+    "Linked Hero's Cave"
 ]
 
 REGIONS_CONVERSION_TABLE = {
@@ -117,6 +119,7 @@ ITEM_GROUPS = {
         "Small Key (Mermaid's Cave Present)",
         "Small Key (Jabu-Jabu's Belly)",
         "Small Key (Ancient Tomb)",
+        "Small Key (Linked Hero's Cave)",
         "Small Key (Mermaid's Cave Past)",
     ],
     "Boss Keys": [
@@ -161,6 +164,7 @@ ITEM_GROUPS = {
         "Master Key (Mermaid's Cave Present)",
         "Master Key (Jabu-Jabu's Belly)",
         "Master Key (Ancient Tomb)",
+        "Master Key (Linked Hero's Cave)",
         "Master Key (Mermaid's Cave Past)",
     ],
 }
@@ -291,6 +295,23 @@ LOCATION_GROUPS = {
         'Ancient Tomb (1F): Stalfos',
         'Ancient Tomb (B3F): Single Chest',
         'Ancient Tomb (B3F): Boss',
+    ],
+    'D11': [
+        "Linked Hero's Cave (1F): Pots Puzzle",
+        "Linked Hero's Cave (1F): Statue Puzzle #1",
+        "Linked Hero's Cave (1F): Bridge Puzzle #1",
+        "Linked Hero's Cave (1F): Shoot Eyes",
+        "Linked Hero's Cave (1F): Statue Puzzle #2",
+        "Linked Hero's Cave (1F): Pots Puzzle #2",
+        "Linked Hero's Cave (1F): Statue Puzzle #3",
+        "Linked Hero's Cave (1F): Bridge Puzzle #2",
+        "Linked Hero's Cave (1F): Color Room",
+        "Linked Hero's Cave (1F): Water Puzzle",
+        "Linked Hero's Cave (B1F): Water Puzzle",
+        "Linked Hero's Cave (B1F): Basement",
+        "Linked Hero's Cave (1F): Minecart Room",
+        "Linked Hero's Cave (1F): Completion Reward"
+
     ],
     'Trade Sequence': [
         'Yoll Graveyard: Graveyard Poe',
