@@ -59,7 +59,7 @@ def get_asm_files(patch_data):
         asm_files.append("asm/conditional/skip_joke.yaml")
     if get_settings()["tloz_ooa_options"]["qol_mermaid_suit"]:
         asm_files.append("asm/conditional/qol_mermaid_suit.yaml")
-    if patch_data["options"]["goal"] == OracleOfAgesGoal.option_beat_ganon:
+    if patch_data["options"]["goal"] == OraclesGoal.option_beat_ganon:
         asm_files.append("asm/conditional/ganon_goal.yaml")
     if patch_data["options"]["linked_heros_cave"]:
         asm_files.append("asm/conditional/d11.yaml")
@@ -90,11 +90,18 @@ def define_location_constants(assembler: Z80Assembler, patch_data):
 def define_option_constants(assembler: Z80Assembler, patch_data):
     options = patch_data["options"]
 
-    assembler.define_byte("option.startingGroup", 0x00)
-    assembler.define_byte("option.startingRoom", 0x39)
-    assembler.define_byte("option.startingPosY", 0x28)
-    assembler.define_byte("option.startingPosX", 0x18)
-    assembler.define_byte("option.startingPos", 0x21)
+    if not hasattr(get_settings().tloz_ooa_options, "beat_tutorial"):
+        assembler.define_byte("option.startingGroup", 0x03)
+        assembler.define_byte("option.startingRoom", 0xbf)
+    else: # Redirect user to the first item check, saving them some time.
+        assembler.define_byte("option.startingGroup", 0x00)
+        assembler.define_byte("option.startingRoom", 0x39)
+
+    assembler.define_byte("option.warpingGroup", patch_data["warp_to_start_variables"]["group"] if "group" in patch_data["warp_to_start_variables"] else 0x00)
+    assembler.define_byte("option.warpingRoom", patch_data["warp_to_start_variables"]["room"] if "room" in patch_data["warp_to_start_variables"] else 0x59)
+    assembler.define_byte("option.warpingPos", patch_data["warp_to_start_variables"]["pos"] if "pos" in patch_data["warp_to_start_variables"] else 0x55)
+    assembler.define_byte("option.warpingDestTransittion", patch_data["warp_to_start_variables"]["dest_transittion"] if "dest_transittion" in patch_data["warp_to_start_variables"] else 0x05)
+    assembler.define_byte("option.warpingSrcTransittion", patch_data["warp_to_start_variables"]["src_transittion"] if "src_transittion" in patch_data["warp_to_start_variables"] else 0x03)
 
     assembler.define_byte("option.animalCompanion", 0x0b + patch_data["options"]["animal_companion"])
     assembler.define_byte("option.defaultSeedType", 0x20 + patch_data["options"]["default_seed"])
@@ -108,7 +115,7 @@ def define_option_constants(assembler: Z80Assembler, patch_data):
     keysanity = patch_data["options"]["keysanity_small_keys"] or patch_data["options"]["keysanity_boss_keys"]
     assembler.define_byte("option.customCompassChimes", 1 if keysanity else 0)
 
-    master_keys_as_boss_keys = patch_data["options"]["master_keys"] == OracleOfAgesMasterKeys.option_all_dungeon_keys
+    master_keys_as_boss_keys = patch_data["options"]["master_keys"] == OraclesMasterKeys.option_all_dungeon_keys
     assembler.define_byte("option.smallKeySprite", 0x43 if master_keys_as_boss_keys else 0x42)
 
 def text_to_binary(item_name: str) -> List[int]:
@@ -310,6 +317,44 @@ def set_dungeon_warps(rom: RomData, patch_data):
 #        map_tile = DUNGEON_ENTRANCES[entrance_name]["map_tile"]
 #        rom.write_byte(0x???? + map_tile, 0x81 | (dungeon_index << 3))
 
+def define_tile_replacements_table(assembler: Z80Assembler, patch_data):
+    new_tiles_table = [
+        0x00, 0x20, 0x00, 0x61, 0xd7, # portal in talus peaks
+        0x01, 0x48, 0x00, 0x45, 0xd7, # portal south of past maku tree
+        0x00, 0x37, 0x02, 0x43, 0xd7, # portal in southeast ricky/moosh nuun
+        0x00, 0x6b, 0x00, 0x42, 0x3a, # removed tree in yoll graveyard
+        0x00, 0x6b, 0x02, 0x42, 0xce, # not removed tree in yoll graveyard
+        0x00, 0x83, 0x00, 0x43, 0xa4, # rock outside D2
+        0x03, 0x0f, 0x00, 0x66, 0xf9, # water in d6 past entrance
+        0x01, 0x13, 0x00, 0x61, 0xd7, # portal in symmetry city past
+        0x01, 0x13, 0x00, 0x68, 0xd7, # portal in symmetry city past
+        0x00, 0x25, 0x00, 0x37, 0xd7, # portal in nuun highlands
+        0x05, 0xda, 0x01, 0xa4, 0xb2, # tunnel to moblin keep
+        0x05, 0xda, 0x01, 0xa5, 0xb2, # cont.
+        0x05, 0xda, 0x01, 0xa6, 0xb2, # cont.
+        0x00, 0x24, 0x02, 0x49, 0x63, # other side of symmetry city bridge
+        0x00, 0x24, 0x02, 0x59, 0x63, # cont.
+        0x00, 0x24, 0x02, 0x69, 0x63, # cont.
+        0x00, 0x24, 0x02, 0x79, 0x73, # cont.
+        0x01, 0x2c, 0x00, 0x70, 0x69, # ledge in rolling ridge east past
+        0x01, 0x2c, 0x00, 0x71, 0x06, # cont.
+        0x01, 0x2c, 0x00, 0x72, 0x67, # cont.
+        0x00, 0xa9, 0x00, 0x67, 0xf2, # portal sign on crescent island
+        0x01, 0xa5, 0x00, 0x35, 0x48, # ledge by library past
+        0x01, 0xa5, 0x00, 0x45, 0x0b, # cont.
+        0x01, 0xa5, 0x00, 0x55, 0x6c, # cont.
+        0x00, 0x83, 0x00, 0x44, 0xd7, # portal outside D2 present
+        0x01, 0x48, 0x02, 0x31, 0xcd # past maku road: remove dirt when exiting
+    ]
+
+    if not hasattr(get_settings().tloz_ooa_options, "beat_tutorial"):
+        new_tiles_table.extend([
+            0x03, 0xbf, 0x00, 0x74, 0xb2, # block off exit for faq room
+            0x03, 0xbf, 0x00, 0x75, 0xb2, # block off exit for faq room
+        ])
+
+    assembler.add_floating_chunk("tileReplacementsTable", new_tiles_table)
+
 def define_dungeon_items_text_constants(assembler: Z80Assembler, patch_data):
 
     for i in range(0, 11): # Maku Path and Hero's Cave has no map, no compass, no boss key, and the unique small key use the default text. 
@@ -368,7 +413,6 @@ def define_dungeon_items_text_constants(assembler: Z80Assembler, patch_data):
         dungeon_map_text = [0x02, 0x7c, 0x20, 0x05, 0xb4, 0x09, 0x01]
         dungeon_map_text.extend(text_to_binary("Dungeon Map"))
         if patch_data["options"]["keysanity_maps_compasses"]:
-            dungeon_map_text.append(0x01)
             dungeon_map_text.extend(dungeon_precision)
         dungeon_map_text.extend([0x09, 0x00, 0x21, 0x00])  # "\color(WHITE)!(end)"
         assembler.add_floating_chunk(f"text.dungeonMap{dungeon_tag}", dungeon_map_text)
@@ -470,11 +514,11 @@ def set_character_sprite_from_settings(rom: RomData):
     rom.write_byte(0x8d9c, 0x20 | palette_byte)
 
 def apply_misc_option(rom: RomData, patch_data):
-    if patch_data["options"]["master_keys"] != OracleOfAgesMasterKeys.option_disabled:
+    if patch_data["options"]["master_keys"] != OraclesMasterKeys.option_disabled:
         # Remove small key consumption on keydoor opened
         rom.write_byte(0x18366, 0x00)
         # Change obtention text
         rom.write_bytes(0x78247, [0x4d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x20, 0x4b, 0x65, 0x79, 0x09, 0x01, 0x21, 0x00]) # I really wish that the dictionnay of ages would be more useful...
-    if patch_data["options"]["master_keys"] == OracleOfAgesMasterKeys.option_all_dungeon_keys:
+    if patch_data["options"]["master_keys"] == OraclesMasterKeys.option_all_dungeon_keys:
         # Remove boss key consumption on boss keydoor opened (boss door behave like normal locked door)
         rom.write_word(0x1835e, 0x0000)

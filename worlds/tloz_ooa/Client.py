@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING, Set, Dict
 from NetUtils import ClientStatus
 import worlds._bizhawk as bizhawk
 from worlds._bizhawk.client import BizHawkClient
-from . import LOCATIONS_DATA, ITEMS_DATA, OracleOfAgesGoal
-from .Data import build_item_id_to_name_dict, build_location_name_to_id_dict
+from . import LOCATIONS_DATA, ITEMS_DATA, OraclesGoal
+from .generation.Data import build_item_id_to_name_dict, build_location_name_to_id_dict
 
 if TYPE_CHECKING:
     from worlds._bizhawk.context import BizHawkClientContext
@@ -198,11 +198,11 @@ class OracleOfAgesClient(BizHawkClient):
     async def process_game_completion(self, ctx: "BizHawkClientContext", flag_bytes, current_room: int):
         game_clear = False
         if ctx.slot_data is not None:
-            if ctx.slot_data["goal"] == OracleOfAgesGoal.option_beat_veran:
+            if ctx.slot_data["goal"] == OraclesGoal.option_beat_vanila_boss:
                 veran_flag_offset = 0xC6D8 - RAM_ADDRS["location_flags"][0]
                 veran_was_beaten = (flag_bytes[veran_flag_offset] & 0x80 == 0x80)
                 game_clear = veran_was_beaten
-            elif ctx.slot_data["goal"] == OracleOfAgesGoal.option_beat_ganon:
+            elif ctx.slot_data["goal"] == OraclesGoal.option_beat_ganon:
                 # Room with Zelda lying down was reached, and Ganon was beaten
                 ganon_flag_offset = 0xCAF1 - RAM_ADDRS["location_flags"][0]
                 ganon_was_beaten = (flag_bytes[ganon_flag_offset] & 0x80 == 0x80)

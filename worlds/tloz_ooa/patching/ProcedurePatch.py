@@ -50,6 +50,7 @@ class OoAPatchExtensions(APPatchExtension):
         define_dungeon_items_text_constants(assembler, patch_data)
 
         # Define dynamic data blocks
+        define_tile_replacements_table(assembler, patch_data)
         define_compass_rooms_table(assembler, patch_data)
         define_collect_properties_table(assembler, patch_data)
         set_file_select_text(assembler, caller.player_name)

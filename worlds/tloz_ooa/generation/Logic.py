@@ -1,12 +1,12 @@
 from BaseClasses import MultiWorld
-from . import LOCATIONS_DATA
-from .data.logic.DungeonsLogic import *
-from .data.logic.OverworldLogic import *
-from .data.Regions import REGIONS
+from .. import LOCATIONS_DATA
+from ..data.logic.DungeonsLogic import *
+from ..data.logic.OverworldLogic import *
+from ..data.Regions import REGIONS
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from . import OracleOfAgesWorld
+    from .. import OracleOfAgesWorld
 
 def create_connections(world: "OracleOfAgesWorld"):
     multiworld = world.multiworld
