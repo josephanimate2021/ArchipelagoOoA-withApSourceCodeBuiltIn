@@ -62,6 +62,11 @@ class OOASettings(settings.Group):
         """
         Defines if you want to skip the joke you tell to the sad boi
         """
+    
+    class OoADungeonPrecisionTextSimplification(str):
+        """
+        Defines if you want to simplify the text for a dungeon that appears when keysanity related settings are turned on.
+        """
 
     rom_file: OOARomFile = OOARomFile(OOARomFile.copy_to)
     heart_beep_interval: Union[OoAHeartBeepInterval, str] = "vanilla"
@@ -71,6 +76,7 @@ class OOASettings(settings.Group):
     qol_quick_flute: Union[OoAQuickFlute, bool] = True
     skip_tokkey_dance: Union[OoASkipTokkeyDance, bool] = False
     skip_boi_joke: Union[OoASkipSadBoiJoke, bool] = False
+    simplify_dungeon_precision_text: Union[OoADungeonPrecisionTextSimplification, bool] = True
 
 class OracleOfAgesWeb(WebWorld):
     theme = "grass"
@@ -108,6 +114,10 @@ class OracleOfAgesWorld(World):
 
     settings: ClassVar[OOASettings]
     settings_key = "tloz_ooa_options"
+
+    @classmethod
+    def version(cls) -> str:
+        return cls.world_version.as_simple_string()
 
     def __init__(self, multiworld, player):
         super().__init__(multiworld, player)
@@ -589,7 +599,7 @@ class OracleOfAgesWorld(World):
         return
 
     def write_spoiler(self, spoiler_handle):
-        spoiler_handle.write(f"Apworld version : {VERSION}")
+        spoiler_handle.write(f"Apworld version : {self.version()}")
         if self.options.shuffle_dungeons != "vanilla":
             spoiler_handle.write(f"\nDungeon Entrances ({self.multiworld.player_name[self.player]}):\n")
             for entrance, dungeon in self.dungeon_entrances.items():

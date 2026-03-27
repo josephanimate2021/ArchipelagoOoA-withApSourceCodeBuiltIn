@@ -319,7 +319,9 @@ def define_dungeon_items_text_constants(assembler: Z80Assembler, patch_data):
             trueI = 11
         dungeon_precision = [0x03, 0x39]
         dungeon_tag = f"D{trueI}"
-        dungeon_precision.extend(text_to_binary(f"{DUNGEON_NAMES[trueI]} ({dungeon_tag})"))
+        dungeon_precision.extend(text_to_binary((f"{DUNGEON_NAMES[trueI]} ({dungeon_tag})") if get_settings().tloz_ooa_options["simplify_dungeon_precision_text"] else (
+            f"Dungeon {dungeon_tag[1:]}"
+        )))
         dungeon_precisionForBossKey = dungeon_precision.copy()
 
         if i == 6:
@@ -396,8 +398,8 @@ def set_file_select_text(assembler: Z80Assembler, slot_name: str):
             return 0xff
         else:
             return 0xfc  # All other chars are blank spaces
-
-    row_1 = [char_to_tile(c) for c in f"ARCHIP. {VERSION}"]
+    from .. import OracleOfAgesWorld
+    row_1 = [char_to_tile(c) for c in f"ARCHIP. {OracleOfAgesWorld.version()}"]
     row_1_left_padding = int((16 - len(row_1)) / 2)
     row_1_right_padding = int(16 - row_1_left_padding - len(row_1))
     row_1 = ([0x00] * row_1_left_padding) + row_1 + ([0x00] * row_1_right_padding)

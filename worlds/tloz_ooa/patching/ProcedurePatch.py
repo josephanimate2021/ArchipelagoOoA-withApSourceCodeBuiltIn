@@ -25,9 +25,12 @@ class OoAPatchExtensions(APPatchExtension):
         rom_data = RomData(rom)
         patch_data = yaml.safe_load(caller.get_file(patch_file).decode("utf-8"))
 
-        if not (patch_data["version"] in RETRO_COMPAT_VERSION):
-            raise Exception(f"Invalid version: this seed was generated on v{patch_data['version']}, "
-                            f"and is not compatible with current : v{VERSION}")
+        from .. import OracleOfAgesWorld
+        version = patch_data["version"].split(".")
+        world_version = OracleOfAgesWorld.world_version
+        if int(version[0]) != world_version.major or int(version[1]) > world_version.minor:
+            raise Exception(f"Invalid version: this patch was generated on v{patch_data['version']}, "
+                            f"you are currently using v{world_version.as_simple_string()}")
 
         #if patch_data["options"]["enforce_potion_in_shop"]:
         #    patch_data["locations"]["Horon Village: Shop #3"] = "Potion"
