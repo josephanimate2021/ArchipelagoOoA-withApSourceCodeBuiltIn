@@ -101,7 +101,7 @@ class OracleOfAgesWorld(World):
         
         self.restrict_non_local_items()
 
-        if self.options.shuffle_dungeons == "shuffle":
+        if self.options.shuffle_dungeons:
             self.shuffle_dungeons()
 
         self.randomize_shop_prices()
