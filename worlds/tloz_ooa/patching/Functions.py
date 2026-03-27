@@ -4,9 +4,9 @@ import os
 import random
 import Utils
 from settings import get_settings
-from .RomData import *
+from ..common.patching.RomData import *
 from .Util import *
-from .z80asm.Assembler import Z80Assembler
+from ..common.patching.z80asm.Assembler import Z80Assembler
 from ..data.Constants import *
 from .Constants import *
 from pathlib import Path
@@ -191,9 +191,9 @@ def write_chest_contents(rom: RomData, patch_data):
         ) and location_name != "Rolling Ridge (Present): Bush Cave Chest":
             continue
         if location_name == "Nuun Highlands: Southern Cave":
-            chest_addr = rom.get_chest_addr(location_data['room'][patch_data["options"]["animal_companion"]])
+            chest_addr = rom.get_chest_addr(location_data['room'][patch_data["options"]["animal_companion"]], 0x16, 0x5108)
         else:
-            chest_addr = rom.get_chest_addr(location_data['room'])
+            chest_addr = rom.get_chest_addr(location_data['room'], 0x16, 0x5108)
         item_name = locations_data[location_name]
         item_id, item_subid = get_item_id_and_subid(item_name)
         rom.write_byte(chest_addr, item_id)

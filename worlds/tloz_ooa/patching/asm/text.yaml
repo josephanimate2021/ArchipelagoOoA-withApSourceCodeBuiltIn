@@ -215,8 +215,8 @@
 
 # Insert a redirection table inside showText
 38//customTextJumpTable: |
-    dwbe 2e0d, 0564 ; maku path sign into maku tree introduction
-    db ff
+    dwbe $2e0d, $0564 ; maku path sign into maku tree introduction
+    db $ff
 
 38//showCustomText_body: |
     ld a,b

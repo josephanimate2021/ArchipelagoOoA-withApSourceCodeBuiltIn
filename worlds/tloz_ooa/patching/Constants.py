@@ -1,68 +1,70 @@
+from ..common.patching.z80asm.Assembler import GameboyAddress
+
 EOB_ADDR = [
   0x3ef8, # 00
-  0x7f23, # 01 - garbage data here
-  0x7de7, # 02 - garbage data here
-  0x7e54, # 03 - garbage data here
-  0x7ee2, # 04
-  0x7d9d, # 05
-  0x7a73, # 06 - garbage data here - 128 bytes reserved for sprite expansion w/ web patcher
-  0x7caa, # 07 - garbage data here
-  0x7f5c, # 08
-  0x7def, # 09
-  0x7e08, # 0a
-  0x7fa8, # 0b
-  0x7f94, # 0c
-  0x7eaa, # 0d
-  0x7f88, # 0e
-  0x7f90, # 0f
-  0x7ef4, # 10
-  0x7f73, # 11
-  0x7e8f, # 12
-  0x7ef0, # 13
-  0x7acd, # 14
-  0x7bfb, # 15
-  0x7e03, # 16
-  0x6ee3, # 17 - garbage data here (lots of space here)
-  0x799e, # 18 - garbage data here
-  0x7fdf, # 19
-  0x7ed0, # 1a
-  0x7ee0, # 1b
-  0x7dc0, # 1c - garbage data here
-  0x8000, # 1d
-  0x8000, # 1e
-  0x8000, # 1f
-  0x8000, # 20
-  0x8000, # 21
-  0x8000, # 22
-  0x8000, # 23
-  0x8000, # 24
-  0x8000, # 25
-  0x8000, # 26
-  0x8000, # 27
-  0x8000, # 28
-  0x8000, # 29
-  0x8000, # 2a
-  0x8000, # 2b
-  0x8000, # 2c
-  0x8000, # 2d
-  0x8000, # 2e
-  0x8000, # 2f
-  0x8000, # 30
-  0x8000, # 31
-  0x8000, # 32
-  0x8000, # 33
-  0x8000, # 34
-  0x8000, # 35
-  0x8000, # 36
-  0x8000, # 37
-  0x6afb, # 38 - lots of space here
-  0x8000, # 39
-  0x8000, # 3a
-  0x8000, # 3b
-  0x8000, # 3c
-  0x8000, # 3d
-  0x8000, # 3e
-  0x7d0a  # 3f 
+  0x3f23, # 01 - garbage data here
+  0x3de7, # 02 - garbage data here
+  0x3e54, # 03 - garbage data here
+  0x3ee2, # 04
+  0x3d9d, # 05
+  0x3a73, # 06 - garbage data here - 128 bytes reserved for sprite expansion w/ web patcher
+  0x3caa, # 07 - garbage data here
+  0x3f5c, # 08
+  0x3def, # 09
+  0x3e08, # 0a
+  0x3fa8, # 0b
+  0x3f94, # 0c
+  0x3eaa, # 0d
+  0x3f88, # 0e
+  0x3f90, # 0f
+  0x3ef4, # 10
+  0x3f73, # 11
+  0x3e8f, # 12
+  0x3ef0, # 13
+  0x3acd, # 14
+  0x3bfb, # 15
+  0x3e03, # 16
+  0x2ee3, # 17 - garbage data here (lots of space here)
+  0x399e, # 18 - garbage data here
+  0x3fdf, # 19
+  0x3ed0, # 1a
+  0x3ee0, # 1b
+  0x3dc0, # 1c - garbage data here
+  0x4000, # 1d
+  0x4000, # 1e
+  0x4000, # 1f
+  0x4000, # 20
+  0x4000, # 21
+  0x4000, # 22
+  0x4000, # 23
+  0x4000, # 24
+  0x4000, # 25
+  0x4000, # 26
+  0x4000, # 27
+  0x4000, # 28
+  0x4000, # 29
+  0x4000, # 2a
+  0x4000, # 2b
+  0x4000, # 2c
+  0x4000, # 2d
+  0x4000, # 2e
+  0x4000, # 2f
+  0x4000, # 30
+  0x4000, # 31
+  0x4000, # 32
+  0x4000, # 33
+  0x4000, # 34
+  0x4000, # 35
+  0x4000, # 36
+  0x4000, # 37
+  0x2afb, # 38 - lots of space here
+  0x4000, # 39
+  0x4000, # 3a
+  0x4000, # 3b
+  0x4000, # 3c
+  0x4000, # 3d
+  0x4000, # 3e
+  0x3d0a  # 3f 
 ]
 
 DEFINES = {
@@ -554,7 +556,7 @@ DUNGEON_ENTRANCES = {
         "default":"d8"
     },
     "d11": {
-        "addr": 0x1770C,
+        "addr": GameboyAddress(0x04, 0x770c).address_in_rom(),
         "map_tile": 0x048,
         "room": 0x48,
         "group": 0x01,

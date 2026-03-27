@@ -2,9 +2,9 @@
 # at actual file creation.
 
 07//initialGlobalFlags: |
-    db 0a,0c,1d,20,21,23,2b,33,3d,40,41,43,45,ff
+    db $0a,$0c,$1d,$20,$21,$23,$2b,$33,$3d,$40,$41,$43,$45,$ff
 
-07/4195/startingBomb: db 00
+07/4195/startingBomb: db $00
 
 # set flags to skip opening and a bunch of other things. see doc/technical.md
 # for a dictionary of the flags.
