@@ -56,7 +56,7 @@ class OoAPatchExtensions(APPatchExtension):
         for file_path in get_asm_files(patch_data):
             data_loaded = yaml.safe_load(pkgutil.get_data(__name__, file_path))
             for metalabel, contents in data_loaded.items():
-                assembler.add_block(Z80Block(metalabel, contents, file_path))
+                assembler.add_block(Z80Block(metalabel, contents))
         assembler.compile_all()
         for block in assembler.blocks:
             rom_data.write_bytes(block.addr.address_in_rom(), block.byte_array)
