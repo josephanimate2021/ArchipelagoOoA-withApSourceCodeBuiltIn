@@ -1,4 +1,5 @@
-ASM_FILES = [
+ASM_FILES = [ 
+    # Sadly, the order of these files matters, so be careful when changing it
     "asm/util.yaml",
     "asm/new_game.yaml",
     "asm/triggers.yaml",
