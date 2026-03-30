@@ -9,12 +9,12 @@ from worlds.Files import APProcedurePatch, APTokenMixin, APPatchExtension
 
 from .Functions import *
 from .Constants import *
-from .RomData import RomData
-from .z80asm.Assembler import Z80Assembler, Z80Block
+from ..common.patching.RomData import RomData
+from ..common.patching.z80asm.Assembler import Z80Assembler, Z80Block
 
 from tkinter.filedialog import askopenfilename
 
-ROM_HASH = "c4639cc61c049e5a085526bb6cac03bb"
+from ..common.data.Constants import AGES_ROM_HASH
 
 
 class OoAPatchExtensions(APPatchExtension):
@@ -35,13 +35,9 @@ class OoAPatchExtensions(APPatchExtension):
         #if patch_data["options"]["enforce_potion_in_shop"]:
         #    patch_data["locations"]["Horon Village: Shop #3"] = "Potion"
 
-        assembler = Z80Assembler()
+        assembler = Z80Assembler(EOB_ADDR, DEFINES, rom)
 
         # Define static values & data blocks
-        for i, offset in enumerate(EOB_ADDR):
-            assembler.end_of_banks[i] = offset
-        for key, value in DEFINES.items():
-            assembler.define(key, value)
         for symbolic_name, price in patch_data["shop_prices"].items():
             assembler.define_byte(f"shopPrices.{symbolic_name}", RUPEE_VALUES[price])
         define_location_constants(assembler, patch_data)
@@ -63,7 +59,7 @@ class OoAPatchExtensions(APPatchExtension):
                 assembler.add_block(Z80Block(metalabel, contents))
         assembler.compile_all()
         for block in assembler.blocks:
-            rom_data.write_bytes(block.addr.full_address(), block.byte_array)
+            rom_data.write_bytes(block.addr.address_in_rom(), block.byte_array)
 
         alter_treasures(rom_data)
         write_chest_contents(rom_data, patch_data)
@@ -80,7 +76,7 @@ class OoAPatchExtensions(APPatchExtension):
         return rom_data.output()
 
 class OoAProcedurePatch(APProcedurePatch, APTokenMixin):
-    hash = [ROM_HASH]
+    hash = [AGES_ROM_HASH]
     patch_file_ending: str = ".apooa"
     result_file_ending: str = ".gbc"
 
@@ -102,8 +98,8 @@ class OoAProcedurePatch(APProcedurePatch, APTokenMixin):
 
             basemd5 = hashlib.md5()
             basemd5.update(base_rom_bytes)
-            if ROM_HASH != basemd5.hexdigest():
-                raise Exception("Supplied ROM does not match known MD5 for Oracle of Seasons US version."
+            if AGES_ROM_HASH != basemd5.hexdigest():
+                raise Exception("Supplied ROM does not match known MD5 for Oracle of Ages US version."
                                 "Get the correct game and version, then dump it.")
             setattr(cls, "base_rom_bytes", base_rom_bytes)
         return base_rom_bytes

@@ -29,7 +29,7 @@
     call checkTreasureObtained
     jp c,interactionDelete
 # and center him on a tile so you can't get stuck in a currents loop.
-12/611c/: db 48
+12/611c/: db $48
 
 # stop d6 boss key chest from setting past boss key flag.
 10/793c/: | 
@@ -61,20 +61,20 @@
 # remove the usual deku soldier event (taken to palace etc).
 12/58f5/: ret
 # cut off end of soldier's text so it makes sense when giving item.
-23/6656/: db 00
+23/6656/: db $00
 # position the "you may go now" text correctly on screen.
-23/65d8/: db 00
+23/65d8/: db $00
 
 
 # prevent bridge-building foreman from setting flag 22 so that animal/flute
 # event doesn't happen in fairies' woods.
-15/75bf/: db setglobalflag,a2 # bit 7 = unset flag
+15/75bf/: db setglobalflag,$a2 # bit 7 = unset flag
 
 
 # use different seed capacity table, so that level zero satchel can still
 # hold 20 seeds.
 3f//seedCapacityTable: |
-    db 20,20,50,99
+    db $20,$20,$50,$99
 3f/4607/: ld hl,seedCapacityTable
 
 # don't equip sword in shooting gallery if link doesn't have it. it wouldn't
@@ -195,22 +195,22 @@
 # vanilla game assumes you have flippers by the time you have currents, and
 # only checks against deep water tiles.
 01//noFlippersTable: |
-    db f3,00
-    db fe,00
-    db ff,00
-    db e4,00
-    db e5,00
-    db e6,00
-    db e7,00
-    db e8,00
-    db e9,00
-    db fc,01
-    db fa,00
-    db e0,00
-    db e1,00
-    db e2,00
-    db e3,00
-    db 00
+    db $f3,$00
+    db $fe,$00
+    db $ff,$00
+    db $e4,$00
+    db $e5,$00
+    db $e6,$00
+    db $e7,$00
+    db $e8,$00
+    db $e9,$00
+    db $fc,$01
+    db $fa,$00
+    db $e0,$00
+    db $e1,$00
+    db $e2,$00
+    db $e3,$00
+    db $00
 
 # check against a different set of invalid time warp destination tiles if the
 # player doesn't have flippers.

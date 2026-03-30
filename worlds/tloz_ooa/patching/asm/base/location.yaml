@@ -49,16 +49,16 @@
 
 ################################
 # Seed tree types (different than in seasons)
-12/59a1/symmetryCityTreeSubId: db 35
-12/59b8/crescentIslandTreeSubId: db 17
-12/59bf/zoraVillagePresentTreeSubId: db 38
-12/5ca4/southLynnaPresentTreeSubId: db 06
-12/5e4d/rollingRidgeWestTreeSubId: db 29
-12/5e5b/ambisPalaceTreeSubId: db 1a
-12/5e62/southLynnaPastTreeSubId: db 0c
-12/5e6f/zoraVillagePastTreeSubId: db 3e
-12/5f46/rollingRidgeEastTreeSubId: db 5b
-12/6101/dekuForestTreeSubId: db 4d
+12/59a1/symmetryCityTreeSubId: db $35
+12/59b8/crescentIslandTreeSubId: db $17
+12/59bf/zoraVillagePresentTreeSubId: db $38
+12/5ca4/southLynnaPresentTreeSubId: db $06
+12/5e4d/rollingRidgeWestTreeSubId: db $29
+12/5e5b/ambisPalaceTreeSubId: db $1a
+12/5e62/southLynnaPastTreeSubId: db $0c
+12/5e6f/zoraVillagePastTreeSubId: db $3e
+12/5f46/rollingRidgeEastTreeSubId: db $5b
+12/6101/dekuForestTreeSubId: db $4d
 
 ################################
 # Maku Tree Gift

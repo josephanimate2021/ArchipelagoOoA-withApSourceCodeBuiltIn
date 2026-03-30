@@ -1,0 +1,108 @@
+# This patch injects "consumption" of some items when they are used in-game, removing them from inventory.
+# This makes sense in correlation with subscreen_1_improvement, where all owned items are displayed
+# and having a reduced set of owned items make the screen more manageable.
+# This is especially useful for items the vanilla game considered as one with different subids
+# (trade items, rusty/pirate's bell...).
+
+# Add a "remove item" script command attached to unused script byte 0xdc
+0c//scriptCmd_removeItem: |
+  pop hl
+  inc hl
+  ldi a,(hl)
+  call loseTreasure
+  ret
+0c/40c1/: dw scriptCmd_removeItem
+
+
+# Add a "returnToScriptHelper" script command attached to unused script byte 0xc5
+0c//scriptCmd_returnToBigBuffer: |
+  pop hl
+  inc hl
+  ldi a,(hl)
+  ld l,a
+  ld h,$c3
+  ret
+0c/4093/: dw scriptCmd_returnToBigBuffer
+
+# TODO IMPLEMENT :
+
+# Magic Oar
+# Sea Ukulele
+
+# Graveyard Key
+# Crown Key
+# Mermaid Key
+# Old Mermaid Key
+# Library Key
+# Island Chart
+# Goron Letter
+
+# / TODO
+
+# Inject removal subscripts in some unused space (impa cinematic at 0c/51bb)
+# NOTE : All trade items (except toilet hand and maple) have their script in the 15 bank, and are loaded with load script function
+0c/51bb/removePoeClock: |
+  db loseitem,TREASURE_POE_CLOCK
+  db $be,$00 # removed line (ending interaction)
+15/5f13/: dwbe removePoeClock # jump to removePoeClock, removing the last bit of the script, so no need to jump back, yay.
+
+0c/51bf/removeStationery: |
+  db $98,$09 # removed line (Show Txt)
+  db loseitem,TREASURE_STATIONERY
+  db $66,$9f  # jump back to 506b
+0c/669d/: dwbe removeStationery # jump to removeStationery, it's the easy one.
+
+0c/51c5/removeStinkBag: |
+  db $98,$06 # removed line (Show Txt)
+  db loseitem,TREASURE_STINK_BAG
+  db $c5,$36  # jump back to 5c9c using returnToBigBuffer 
+15/5c9a/: dwbe removeStinkBag  # jump to removeStinkBag
+
+0c/51cb/removeTastyMeat: |
+  db $8f,$00 # removed line (change anim)
+  db loseitem,TREASURE_TASTY_MEAT
+  db $c5,$3b  # jump back to 6236 using returnToBigBuffer 
+15/6234/: dwbe removeTastyMeat  # jump to removeTastyMeat
+
+0c/51d1/removeDoggieMask: |
+  db $98,$19 # removed line (Show Txt)
+  db loseitem,TREASURE_DOGGIE_MASK
+  db $c5,$2b  # jump back to 5e1f using returnToBigBuffer 
+15/5e1d/: dwbe removeDoggieMask  # jump to removeDoggieMask
+
+0c/51d7/removeDumbbell: |
+  db $98,$22 # removed line (Show Txt)
+  db loseitem,TREASURE_DUMBBELL
+  db $c5,$3b  # jump back to 5d03 using returnToBigBuffer 
+15/5d01/: dwbe removeDumbbell  # jump to removeDumbbell
+
+0c/51dd/removeCheesyMustache: |
+  db $98,$30 # removed line (Show Txt)
+  db loseitem,TREASURE_CHEESY_MUSTACHE
+  db $c5,$43  # jump back to 62e3 using returnToBigBuffer
+15/62e1/: dwbe removeCheesyMustache  # jump to removeCheesyMustache
+
+0c/51e3/removeFunnyJoke: |
+  db $e4,$ff # removed line (resetmusic)
+  db loseitem,TREASURE_FUNNY_JOKE
+  db $c5,$5f  # jump back to 5932 using returnToBigBuffer
+15/5930/: dwbe removeFunnyJoke  # jump to removeFunnyJoke
+
+05//loseTouchingBook: |
+    ld a,TREASURE_TOUCHING_BOOK
+    jp loseTreasure
+05/699a/: |
+    nop
+    call loseTouchingBook
+
+0c/51e9/removeMagicOar: |
+  db $98,$12 # removed line (Show Txt)
+  db loseitem,TREASURE_MAGIC_OAR
+  db $c5,$37  # jump back to 6c07 using returnToBigBuffer
+15/6b72/: dwbe removeMagicOar # jump to removeWoodenMagicOar
+
+0c/51ef/removeSeaUkulele: |
+  db $98,$36 # removed line (Show Txt)
+  db loseitem,TREASURE_SEA_UKULELE
+  db $c5,$1f  # jump back to 61ab using returnToBigBuffer
+15/61a9/: dwbe removeSeaUkulele  # jump to removeSeaUkulele

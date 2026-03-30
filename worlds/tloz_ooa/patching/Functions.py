@@ -1,12 +1,12 @@
-from typing import List
+from typing import List, Any
 
 import os
 import random
 import Utils
 from settings import get_settings
-from .RomData import *
+from ..common.patching.RomData import *
 from .Util import *
-from .z80asm.Assembler import Z80Assembler
+from ..common.patching.z80asm.Assembler import Z80Assembler
 from ..data.Constants import *
 from .Constants import *
 from pathlib import Path
@@ -21,6 +21,31 @@ def get_treasure_addr(rom: RomData, item_name: str):
     if rom.read_byte(addr) & 0x80 != 0:
         addr = 0x54000 + rom.read_word(addr + 1)
     return addr + (item_subid * 4)
+
+def apworld_path(file_path) -> str:
+    path = Utils.user_path("lib/" if os.path.exists(Utils.user_path("lib")) else "")
+    path += "custom_" if os.path.exists(os.path.join(path, Utils.user_path("custom_worlds"))) else ""
+    world_path = "worlds/tloz_ooa"
+    world_path_from_source = Utils.user_path(world_path)
+    path += world_path
+    
+    def path_exists(p):
+        if not os.path.exists(p):
+            raise FileNotFoundError(f"Your apworld could not be found inside {p} for some reason.")
+        path = os.path.join(p, file_path)
+        if os.path.exists(path):
+            return path
+        raise FileNotFoundError(f"Your file could not be found inside {path}") 
+    
+    return path_exists(world_path_from_source if os.path.exists(world_path_from_source) else path)
+
+def list_files(dir_name) -> dict[str, Any]:
+    dir_name = apworld_path(dir_name)
+    files = {}
+    for filename in os.listdir(dir_name):
+        fullpath = os.path.join(dir_name, filename)
+        files[fullpath] = list_files(fullpath) if os.path.isdir(fullpath) else None
+    return files
 
 
 def set_treasure_data(rom: RomData,
@@ -50,7 +75,8 @@ def alter_treasures(rom: RomData):
 
 
 def get_asm_files(patch_data):
-    asm_files = ASM_FILES.copy()
+    asm_files = []
+    asm_files.extend(list_files("patching/asm/base").keys())
     if get_settings()["tloz_ooa_options"]["qol_quick_flute"]:
         asm_files.append("asm/conditional/quick_flute.yaml")
     if get_settings()["tloz_ooa_options"]["skip_tokkey_dance"]:
@@ -191,9 +217,9 @@ def write_chest_contents(rom: RomData, patch_data):
         ) and location_name != "Rolling Ridge (Present): Bush Cave Chest":
             continue
         if location_name == "Nuun Highlands: Southern Cave":
-            chest_addr = rom.get_chest_addr(location_data['room'][patch_data["options"]["animal_companion"]])
+            chest_addr = rom.get_chest_addr(location_data['room'][patch_data["options"]["animal_companion"]], 0x16, 0x5108)
         else:
-            chest_addr = rom.get_chest_addr(location_data['room'])
+            chest_addr = rom.get_chest_addr(location_data['room'], 0x16, 0x5108)
         item_name = locations_data[location_name]
         item_id, item_subid = get_item_id_and_subid(item_name)
         rom.write_byte(chest_addr, item_id)
