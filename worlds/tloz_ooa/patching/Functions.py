@@ -84,6 +84,8 @@ def get_asm_files(patch_data):
         asm_files.append("asm/conditional/skip_joke.yaml")
     if get_settings()["tloz_ooa_options"]["qol_mermaid_suit"]:
         asm_files.append("asm/conditional/qol_mermaid_suit.yaml")
+    if patch_data["options"]["lynna_gardener"]:
+        asm_files.append("asm/conditional/lynna_gardener.yaml")
     if patch_data["options"]["goal"] == OraclesGoal.option_beat_ganon:
         asm_files.append("asm/conditional/ganon_goal.yaml")
     if patch_data["options"]["linked_heros_cave"]:

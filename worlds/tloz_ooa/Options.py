@@ -2,7 +2,6 @@ from dataclasses import dataclass
 
 from Options import Choice, DeathLink, DefaultOnToggle, PerGameCommonOptions, Range, Toggle, StartInventoryPool, ItemSet, OptionSet, Accessibility
 
-from .data.Items import ITEMS_DATA
 from .data.Constants import TREES_TABLE
 
 from .common.Options import *
@@ -100,6 +99,14 @@ class OracleOfAgesPricesFactor(Range):
     include_in_slot_data = True
     include_in_patch = True
 
+class OracleOfAgesLynnaGardener(Toggle):
+    """
+    When enabled, a friendly gardener will have trimmed the bushes outside of Lynna City and cleared the path
+    so you don't have to! This will expand the sphere 0 checks to include everything past the bushes that you
+    normally would need nothing for.
+    """
+    display_name = "Lynna Gardener"
+
 @dataclass
 class OracleOfAgesOptions(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
@@ -114,6 +121,7 @@ class OracleOfAgesOptions(PerGameCommonOptions):
     duplicate_seed_trees: OracleOfAgesDuplicateSeedTrees
     shuffle_dungeons: OraclesDungeonShuffle
     master_keys: OraclesMasterKeys
+    lynna_gardener: OracleOfAgesLynnaGardener
     keysanity_small_keys: OraclesSmallKeyShuffle
     keysanity_boss_keys: OraclesBossKeyShuffle
     keysanity_maps_compasses: OraclesMapCompassShuffle
