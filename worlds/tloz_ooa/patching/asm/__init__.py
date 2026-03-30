@@ -1,5 +1,5 @@
 ASM_FILES = [ 
-    # Sadly, the order of these files matters, so be careful when changing it
+    # Sadly, the order of these files matter, so be careful when changing it
     "asm/util.yaml",
     "asm/new_game.yaml",
     "asm/triggers.yaml",
