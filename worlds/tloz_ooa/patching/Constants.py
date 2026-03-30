@@ -1,3 +1,4 @@
+from .asm import ASM_FILES
 from ..common.patching.z80asm.Assembler import GameboyAddress
 
 EOB_ADDR = [

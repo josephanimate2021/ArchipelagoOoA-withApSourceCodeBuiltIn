@@ -1,10 +1,35 @@
-import json
-import os
-
-def fetch_asm_files():
-    dir_name = os.path.dirname(patching.__file__) + "/asm/base" # if not dir_name else dir_name
-    asm_files = []
-    for filename in os.listdir(dir_name):
-        if filename.endswith(".yaml"):
-            asm_files.append(os.path.join(dir_name, filename))
-    return asm_files
+ASM_FILES = [ 
+    # Sadly, the order of these files matters, so be careful when changing it
+    "asm/util.yaml",
+    "asm/new_game.yaml",
+    "asm/triggers.yaml",
+    "asm/cutscenes.yaml",
+    "asm/layouts.yaml",
+    "asm/collect.yaml",
+    "asm/location.yaml",
+    "asm/map_menu.yaml",
+    "asm/progressives.yaml",
+    "asm/animals.yaml",
+    "asm/static_items.yaml",
+    "asm/multi.yaml",
+    "asm/rings.yaml",
+    "asm/misc.yaml",
+    "asm/new_treasures.yaml",
+    "asm/item_events.yaml",
+    "asm/timeportals.yaml",
+    "asm/boss_items.yaml",
+    "asm/keysanity.yaml",
+    "asm/shops_handling.yaml",
+    "asm/gfx.yaml",
+    "asm/get_item_behavior.yaml",
+    "asm/vars.yaml",
+    "asm/text.yaml",
+    "asm/remove_item_on_use.yaml",
+    "asm/dungeon_shuffle.yaml",
+    "asm/file_select_custom_string.yaml",
+    "asm/impa_refill.yaml",
+    "asm/combat_difficulty.yaml",
+    "asm/tokay_market.yaml",
+    "asm/compass_chimes.yaml",
+    "asm/warp_to_start.yaml"
+]
