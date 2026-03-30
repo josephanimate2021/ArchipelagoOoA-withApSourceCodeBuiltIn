@@ -251,6 +251,7 @@ DEFINES = {
 
     # wram
     "wSubscreen1CurrentSlotIndex": "$c085",
+    "wBigBuffer": "$c300",
     "wKeysPressed":"$c481",
     "wKeysJustPressed":"$c482",
     "wAnimalRegion":"$c610",
