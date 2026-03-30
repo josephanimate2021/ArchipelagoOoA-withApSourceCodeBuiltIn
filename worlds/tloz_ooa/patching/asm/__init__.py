@@ -31,5 +31,6 @@ ASM_FILES = [
     "asm/combat_difficulty.yaml",
     "asm/tokay_market.yaml",
     "asm/compass_chimes.yaml",
-    "asm/warp_to_start.yaml"
+    "asm/warp_to_start.yaml",
+    "asm/subscreen_1_improvement.yaml"
 ]
