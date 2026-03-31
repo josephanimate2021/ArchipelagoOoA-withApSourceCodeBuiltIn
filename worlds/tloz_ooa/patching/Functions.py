@@ -322,7 +322,7 @@ def set_dungeon_warps(rom: RomData, patch_data):
             entrance_name += " past"
         entrance = DUNGEON_ENTRANCES[entrance_map[entrance_name]]
         if i == 10:
-            rom.write_bytes(0X2F204, [
+            rom.write_bytes(GameboyAddress(0x0a, 0x7204).address_in_rom(), [
                 entrance["group"] | 0x80,
                 entrance["room"], 
                 0x0e if entrance["shifted"] else 0x01, 

@@ -107,6 +107,9 @@ class OracleOfAgesLynnaGardener(Toggle):
     """
     display_name = "Lynna Gardener"
 
+    include_in_patch = True
+    include_in_slot_data = True
+
 @dataclass
 class OracleOfAgesOptions(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
