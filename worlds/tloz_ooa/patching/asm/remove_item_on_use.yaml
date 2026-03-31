@@ -24,20 +24,17 @@
   ret
 0c/4093/: dw scriptCmd_returnToBigBuffer
 
-# TODO IMPLEMENT :
-
-# Magic Oar
-# Sea Ukulele
-
-# Graveyard Key
-# Crown Key
-# Mermaid Key
-# Old Mermaid Key
-# Library Key
-# Island Chart
-# Goron Letter
-
-# / TODO
+# Lose dungeon keys when used in keyholes for inventory cleansing
+06//loseKeyInsideKeyhole: |
+    ld (wSubscreen1CurrentSlotIndex),a
+    call checkTreasureObtained
+    jr nc,@done
+    ld a,(wSubscreen1CurrentSlotIndex)
+    call loseTreasure
+    scf
+    @done:
+    ret
+06/423c/: call loseKeyInsideKeyhole
 
 # Inject removal subscripts in some unused space (impa cinematic at 0c/51bb)
 # NOTE : All trade items (except toilet hand and maple) have their script in the 15 bank, and are loaded with load script function
