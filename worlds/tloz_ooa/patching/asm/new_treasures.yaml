@@ -32,7 +32,7 @@
 3f/6fd2/: db $56,$c7,$03,$c8,$03,$ff,$0d  # Doggie Mask (#56)
 3f/6fd9/: db $57,$c9,$01,$ca,$01,$ff,$0e  # Dumbbell (#57)
 3f/7011/: db $5f,$cb,$03,$cb,$23,$ff,$0f  # Cheesy Mustache (#5f)
-3f/6fc1/: db $3c,$cc,$03,$cc,$23,$ff,$10  # Funny Joke (#3c)
+3f/6f1c/: db $3c,$cc,$03,$cc,$23,$ff,$10  # Funny Joke (#3c)
 3f/6eeb/: db $35,$cd,$01,$ce,$01,$ff,$11  # Touching Book (#35)
 3f/6f00/: db $38,$d0,$03,$d1,$03,$ff,$12  # Magic Oar (#38)
 3f/6f07/: db $39,$d2,$03,$d3,$03,$ff,$13  # Sea Ukulele (#39)
