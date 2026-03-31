@@ -116,7 +116,7 @@
     @endOfTable:
     pop hl
     pop de
-    jp $5b58    ; undrawRingBox
+    jp $5bcf    ; undrawRingBox
 # Replace "ldh (<hFF8B),a" by the call to our function
 02/5bb0/: call inventorySubscreen1_drawTreasures_computeAddr
 
