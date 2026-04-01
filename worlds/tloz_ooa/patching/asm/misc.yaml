@@ -36,6 +36,9 @@
   ret
   nop
   nop
+
+# Skip the screen to select link, secret or new game and skip to new game
+02/420f/: db $02
   
 # first and second time portals (near maku tree) are always active.
 10/7d4e/: jr nz,$00 # present -> past

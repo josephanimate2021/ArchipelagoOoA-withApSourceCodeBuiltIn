@@ -98,6 +98,9 @@ class OracleOfAgesWorld(World):
         
         if self.options.linked_heros_cave.value > 0:
             self.dungeon_entrances["d11 entrance"] = "enter d11"
+
+        if self.options.goal == OraclesGoal.option_retrieve_maku_seed and self.options.required_essences < 1:
+            self.options.required_essences.value = 1  # The game would be too easy if we only needed zero essences. So it's better we have at least one required essence in that case.
         
         self.restrict_non_local_items()
 
