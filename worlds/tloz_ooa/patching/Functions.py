@@ -88,6 +88,8 @@ def get_asm_files(patch_data):
         asm_files.append("asm/conditional/lynna_gardener.yaml")
     if patch_data["options"]["goal"] == OraclesGoal.option_beat_ganon:
         asm_files.append("asm/conditional/ganon_goal.yaml")
+    if get_settings()["tloz_ooa_options"]["skip_intro_cinematic"]:
+        asm_files.append("asm/conditional/intro_cinematic_skip.yaml")
     if patch_data["options"]["linked_heros_cave"]:
         asm_files.append("asm/conditional/d11.yaml")
         if patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_maku_tree_entrance_right_side:

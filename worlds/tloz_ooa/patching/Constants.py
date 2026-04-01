@@ -1,6 +1,10 @@
 from .asm import ASM_FILES
 from ..common.patching.z80asm.Assembler import GameboyAddress
 
+MUSIC = {
+
+}
+
 EOB_ADDR = [
   0x3ef8, # 00
   0x3f23, # 01 - garbage data here
@@ -263,6 +267,7 @@ DEFINES = {
     "wTextIndexH":"$cba3",
     "wTextNumberSubstitution":"$cba8",
     "wMapMenu_mode":"$cbb3",
+    "cinematicState":"$cbb5",
     "wMapMenu_cursorIndex":"$cbb6",
     "wInventorySubmenu1CursorPos":"$cbd1",
     "wRingMenu_mode":"$cbd3",
@@ -322,6 +327,7 @@ DEFINES = {
     # wram
     "wFeatherLevel":"$0 # not present in ages",
     "wRememberedCompanionId":"$cc24",
+    "wIntroVar": "$c2e7",
     "wRickyState":"$c646",
     "wDimitriState":"$c647",
     "wAnimalTutorialFlags":"$c649",

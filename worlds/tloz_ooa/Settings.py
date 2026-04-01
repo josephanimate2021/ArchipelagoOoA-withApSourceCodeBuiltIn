@@ -52,6 +52,11 @@ class OOASettings(settings.Group):
         Defines if you want to simplify the text for a dungeon that appears when keysanity related settings are turned on.
         """
 
+    class OoAIntroCinematicSkip(str):
+        """
+        Defines if you want to skip the intro cinematic scene that plays after the capcom screen is shown.
+        """
+
     rom_file: OOARomFile = OOARomFile(OOARomFile.copy_to)
     heart_beep_interval: Union[OoAHeartBeepInterval, str] = "vanilla"
     character_sprite: Union[OoACharacterSprite, str] = "link"
@@ -61,3 +66,4 @@ class OOASettings(settings.Group):
     skip_tokkey_dance: Union[OoASkipTokkeyDance, bool] = False
     skip_boi_joke: Union[OoASkipSadBoiJoke, bool] = False
     simplify_dungeon_precision_text: Union[OoADungeonPrecisionTextSimplification, bool] = True
+    skip_intro_cinematic: Union[OoAIntroCinematicSkip, bool] = False
