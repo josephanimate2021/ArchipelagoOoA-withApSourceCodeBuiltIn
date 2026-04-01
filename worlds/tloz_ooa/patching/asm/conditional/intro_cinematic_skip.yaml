@@ -1,3 +1,1 @@
-03/4e2c/: | # Skips the cinematic that plays after the capcom screen.
-  dw $5b29
-  db $ff
+03/4e2d/: nop
