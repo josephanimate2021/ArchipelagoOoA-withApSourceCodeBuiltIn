@@ -1,1 +1,3 @@
-03/4e2d/: nop
+# skip capcom screen and starting cinematic (putting the addresses for title screen and restart first)
+03/4cf9/: |
+  db $88,$4d,$1b,$4d
