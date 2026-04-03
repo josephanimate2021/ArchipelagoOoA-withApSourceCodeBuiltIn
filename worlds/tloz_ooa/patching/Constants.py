@@ -72,6 +72,7 @@ DEFINES = {
     "AREAFLAG_OUTDOORS":"$01",
     "BTN_A": "$01",
     "BTN_B": "$02",
+    "BTN_START": "$08",
     "COLLECT_PICKUP_NOFLAG":"$02",
     "COLLECT_PICKUP":"$0a",
     "COLLECT_POOF":"$1a",
@@ -265,8 +266,10 @@ DEFINES = {
     "wMapMenu_mode":"$cbb3",
     "cinematicState":"$cbb5",
     "wMapMenu_cursorIndex":"$cbb6",
+    "wInventorySubmenu0CursorPos": "$cbd0",
     "wInventorySubmenu1CursorPos":"$cbd1",
     "wRingMenu_mode":"$cbd3",
+    "wStatusBarNeedsRefresh": "$cbea",
     "wNetTreasureIn":"$cbfb",
     "wNetPlayerOut":"$cbfd",
     "wNetTreasureOut":"$cbfe",
@@ -339,6 +342,12 @@ DEFINES = {
     "wSatchelSelectedSeeds": "$c6c4",
     "wActiveRing":"$c6cb",
     "wRingBoxLevel":"$c6cc",
+    "wInventoryB": "$c6e8",  # Moved from c680
+    "wInventoryA": "$c6e9",  # Moved from c681
+    "wInventoryStorage": "$c6ea",  # Moved from c682-691
+    "<wInventoryB": "$e8",
+    "<wInventoryA": "$e9",
+    "<wInventoryStorage": "$ea",
     "wMakuMapTextPresent":"$c6e6",
     "wMakuMapTextPast":"$c6e7",
     "wMakuTreeState":"$c6e8",
