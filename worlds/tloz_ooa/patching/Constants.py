@@ -1,10 +1,6 @@
 from .asm import ASM_FILES
 from ..common.patching.z80asm.Assembler import GameboyAddress
 
-MUSIC = {
-
-}
-
 EOB_ADDR = [
   0x3ef8, # 00
   0x3f23, # 01 - garbage data here

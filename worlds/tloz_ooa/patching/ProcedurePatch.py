@@ -11,6 +11,7 @@ from .Functions import *
 from .Constants import *
 from ..common.patching.RomData import RomData
 from ..common.patching.z80asm.Assembler import Z80Assembler, Z80Block
+from ..common.patching.music import *
 
 from tkinter.filedialog import askopenfilename
 
@@ -22,6 +23,12 @@ class OoAPatchExtensions(APPatchExtension):
 
     @staticmethod
     def apply_patches(caller: APProcedurePatch, rom: bytes, patch_file: str) -> bytes:
+
+        if get_settings().tloz_ooa_options["shuffle_music"]:
+            rom = shuffle_music(bytearray(rom), Game.Ages)
+        if get_settings().tloz_ooa_options["shuffle_sfx"]:
+            rom = shuffle_sfx(bytearray(rom), Game.Ages)
+
         rom_data = RomData(rom)
         patch_data = yaml.safe_load(caller.get_file(patch_file).decode("utf-8"))
 
