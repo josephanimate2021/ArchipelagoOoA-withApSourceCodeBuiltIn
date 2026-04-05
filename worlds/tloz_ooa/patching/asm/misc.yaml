@@ -68,6 +68,10 @@
 # position the "you may go now" text correctly on screen.
 23/65d8/: db $00
 
+# Make fades faster
+01/5e0b/: jp $3263
+01/5c58/: call $335d
+
 
 # prevent bridge-building foreman from setting flag 22 so that animal/flute
 # event doesn't happen in fairies' woods.
