@@ -12,6 +12,7 @@ REGIONS = [
     "hidden shop",
     "mayor plen's house",
     "vasu's gift",
+    "princess zelda rescue",
     #######
     "lynna village",
     "gasha farmer",
@@ -166,7 +167,7 @@ REGIONS = [
     #######
     "piratian captain",
     "sea of storms past",
-    #"sea of storms present",
+    "sea of storms present",
     "d8 entrance",
     "sea of no return",
 

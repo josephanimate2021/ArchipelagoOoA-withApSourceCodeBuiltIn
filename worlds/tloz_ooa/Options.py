@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from Options import Choice, DeathLink, DefaultOnToggle, PerGameCommonOptions, Range, Toggle, StartInventoryPool, ItemSet, OptionSet, Accessibility
+from Options import Choice, DeathLink, DefaultOnToggle, PerGameCommonOptions, Range, Toggle, StartInventoryPool, OptionGroup, OptionSet, Accessibility
 
 from .data.Constants import TREES_TABLE
 
@@ -121,6 +121,7 @@ class OracleOfAgesOptions(PerGameCommonOptions):
     animal_companion: OraclesAnimalCompanion
     default_seed: OraclesDefaultSeedType
     linked_heros_cave: OracleOfAgesLinkedHerosCave
+    secret_locations: OraclesIncludeSecretLocations
     duplicate_seed_trees: OracleOfAgesDuplicateSeedTrees
     shuffle_dungeons: OraclesDungeonShuffle
     master_keys: OraclesMasterKeys

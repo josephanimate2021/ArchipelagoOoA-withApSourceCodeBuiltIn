@@ -23,16 +23,6 @@
     jr @loop
     @done:
 
-    # linked global flags
-    ld a,(wIsLinkedGame)
-    or a
-    jr z,@unlinked
-    ld a,$38
-    push hl
-    call setGlobalFlag
-    pop hl
-    @unlinked:
-
     # animal vars
     ld a,option.animalCompanion
     ld (wAnimalRegion),a

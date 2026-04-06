@@ -154,6 +154,9 @@ class OracleOfAgesWorld(World):
         if "dungeon" in location_data:
             if location_data["dungeon"] == 11:
                 return self.options.linked_heros_cave.value > 0
+            
+        if "secret_location" in location_data and not False:
+            return self.options.secret_locations
 
         # TODO FUNNY LOCATION ?
 

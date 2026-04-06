@@ -138,8 +138,7 @@
 15/6b45/: db $ff
 
 # Sea of storm specific chest. (change if in linked game)
-10/79ab/: dwbe locations.seaofstorm
-10/79ad/: dwbe locations.seaofstorm
+10/79ab/: dwbe locations.seaofstormpast
 
 # Veran is beaten
 10//thatallfolks: |

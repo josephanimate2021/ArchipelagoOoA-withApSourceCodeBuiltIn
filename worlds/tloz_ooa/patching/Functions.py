@@ -88,6 +88,8 @@ def get_asm_files(patch_data):
         asm_files.append("asm/conditional/mute_music.yaml")
     if patch_data["options"]["lynna_gardener"]:
         asm_files.append("asm/conditional/lynna_gardener.yaml")
+    if patch_data["options"]["secret_locations"]:
+        asm_files.append("asm/conditional/secret_locations.yaml")
     if patch_data["options"]["goal"] == OraclesGoal.option_beat_ganon:
         asm_files.append("asm/conditional/ganon_goal.yaml")
     if get_settings()["tloz_ooa_options"]["skip_intro_cinematic"]:
@@ -370,7 +372,6 @@ def define_tile_replacements_table(assembler: Z80Assembler, patch_data):
         0x01, 0x2c, 0x00, 0x70, 0x69, # ledge in rolling ridge east past
         0x01, 0x2c, 0x00, 0x71, 0x06, # cont.
         0x01, 0x2c, 0x00, 0x72, 0x67, # cont.
-        0x00, 0xa9, 0x00, 0x67, 0xf2, # portal sign on crescent island
         0x01, 0xa5, 0x00, 0x35, 0x48, # ledge by library past
         0x01, 0xa5, 0x00, 0x45, 0x0b, # cont.
         0x01, 0xa5, 0x00, 0x55, 0x6c, # cont.
@@ -381,7 +382,17 @@ def define_tile_replacements_table(assembler: Z80Assembler, patch_data):
     if not hasattr(get_settings().tloz_ooa_options, "beat_tutorial"):
         new_tiles_table.extend([
             0x03, 0xbf, 0x00, 0x74, 0xb2, # block off exit for faq room
-            0x03, 0xbf, 0x00, 0x75, 0xb2, # block off exit for faq room
+            0x03, 0xbf, 0x00, 0x75, 0xb2, # ^
+        ])
+
+    if patch_data["options"]["secret_locations"]:
+        new_tiles_table.extend([
+            0x01, 0xc7, 0x00, 0x48, 0xd0, # add stair tile in sea of storms past to allow players to time travel to the present sea of storms.
+            0x03, 0xc7, 0x00, 0x48, 0x2c, # add statue in sea of storms past underwater prevent players from resurfacing on that area.
+
+            # add walkable tiles to black tower present entrance
+            0x00, 0x76, 0x00, 0x55, 0xa7,
+            0x00, 0x76, 0x00, 0x54, 0xa7,
         ])
 
     assembler.add_floating_chunk("tileReplacementsTable", new_tiles_table)
