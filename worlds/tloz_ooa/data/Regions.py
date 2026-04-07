@@ -10,6 +10,8 @@ REGIONS = [
     "lynna city chest",
     "lynna shop",
     "hidden shop",
+    # "mayor plen's secret",
+    # "mamamu yan secret",
     "mayor plen's house",
     "vasu's gift",
     "princess zelda rescue",
@@ -45,6 +47,7 @@ REGIONS = [
 
     #######
     "fairies' woods",
+    "fairies' woods secret",
     "fairies' woods chest",
     "d2 present entrance",
     #######
@@ -61,6 +64,7 @@ REGIONS = [
     "crescent past east",
     "tokay bomb cave",
     "wild tokay game",
+    "wild tokay secret",
     "hidden tokay cave",
     "tokay pot cave",
     "tokay market 1",
@@ -85,6 +89,7 @@ REGIONS = [
     "symmetry city tree",
     #######
     "symmetry past",
+    "symmetry city secret",
     "symmetry city brother",
     "tokkey's composition",
     #######

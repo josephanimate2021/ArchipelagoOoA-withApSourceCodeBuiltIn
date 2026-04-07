@@ -622,6 +622,11 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
 
     if options.secret_locations:
         labrynna_logic.extend([
+            # ["lynna city", "mayor plen's secret", False, None],
+            # ["mamamu yan trade", "mamamu yan secret", False, lambda state: ooa_has_bracelet(state, player)],
+            ["fairies' woods", "fairies' woods secret", False, None],
+            ["crescent present east", "wild tokay secret", False, lambda state: ooa_has_bracelet(state, player)],
+            ["symmetry past", "symmetry city secret", False, None],
             ["lynna city", "princess zelda rescue", False, lambda state: ooa_has_feather(state, player)],
             ["piratian captain", "sea of storms present", False, lambda state: ooa_can_go_back_to_present(state, player)],
         ])

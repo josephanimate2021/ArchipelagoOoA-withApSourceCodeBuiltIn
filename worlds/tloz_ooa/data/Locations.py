@@ -125,6 +125,17 @@ LOCATIONS_DATA = {
         "map_tile": 0x57,
         "collect": COLLECT_CHEST,
     },
+    # "Lynna City: Mayor Plen's Secret": {
+        # "region_id": "mayor plen's secret",
+        # "vanilla_item": "Spin Ring",
+        # "flag_byte": 0xc8f8,
+        # "conditional": True,
+        # "secret_location": True,
+        # "room": 0x03f8,
+        # "map_tile": 0x57,
+        # "collect": COLLECT_TOUCH,
+        # "symbolic_name": "plenSecret",
+    # },
     "Lynna City: Vasu's Gift": {
         "region_id":"vasu's gift",
         "vanilla_item": "Friendship Ring",
@@ -148,9 +159,21 @@ LOCATIONS_DATA = {
         "vanilla_item": "Dumbbell",
         "flag_byte": 0xc7e7,
         "room": 0x02e7,
+        "bit_mask": 0x20,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "mamamuYan",
     },
+    # "Lynna City: Mamamu Yan Secret": {
+        # "region_id": "mamamu yan secret",
+        # "vanilla_item": "Snowshoe Ring",
+        # "flag_byte": 0xc7e7,
+        # "conditional": True,
+        # "secret_location": True,
+        # "room": 0x02e7,
+        # "bit_mask": 0x40,
+        # "collect": COLLECT_TOUCH,
+        # "symbolic_name": "mamamuSecret",
+    # },
     "Lynna City: Comedian Trade": {
         "region_id": "lynna city comedian trade",
         "vanilla_item": "Funny Joke",
@@ -397,6 +420,16 @@ LOCATIONS_DATA = {
         "room": 0x0084,
         "collect": COLLECT_CHEST,
     },
+    "Fairies' Woods: Fairy Secret": {
+        "region_id": "fairies' woods secret",
+        "vanilla_item": "Heart Container",
+        "flag_byte": 0xc770,
+        "conditional": True,
+        "secret_location": True,
+        "room": 0x0070,
+        "collect": COLLECT_TOUCH,
+        "symbolic_name": "fairySecret",
+    },
     ##########################################
     "Deku Forest: Chest in Central Cave": {
         "region_id": "deku forest cave east",
@@ -483,6 +516,17 @@ LOCATIONS_DATA = {
         "collect": COLLECT_TOUCH,
         "symbolic_name": "wildTokayGame",
     },
+    "Crescent Island (Present): Wild Tokay Secret": {
+        "region_id": "wild tokay secret",
+        "vanilla_item": "Bombs (10)", # A bomb upgrade was the vanila item, but I prefered to tell it that I got normal bombs instead.
+        "flag_byte": 0xc7e5,
+        "conditional": True,
+        "secret_location": True,
+        "room": 0x02e5,
+        "map_tile": 0xbd,
+        "collect": COLLECT_TOUCH,
+        "symbolic_name": "wildTokaySecret",
+    },
     "Crescent Island (Past): Market Item #1": {
         "region_id": "tokay market 1",
         "vanilla_item": "Progressive Shield",
@@ -531,6 +575,17 @@ LOCATIONS_DATA = {
         "symbolic_name": "maskSaleman",
     },
     ##########################################
+    "Symmetry Village: Sisters Secret": {
+        "region_id": "symmetry city secret",
+        "vanilla_item": "Bombchus (10)", # Ring box was a vanila item, but I am using bombchus as a placeholder.
+        "flag_byte": 0xcaf6,
+        "conditional": True,
+        "secret_location": True,
+        "room": 0x5f6,
+        "map_tile": 0x113,
+        "collect": COLLECT_TOUCH,
+        "symbolic_name": "symmetrySecret",
+    },
     "Symmetry Village: Brothers": {
         "region_id": "symmetry city brother",
         "vanilla_item": "Cracked Tuni Nut",
