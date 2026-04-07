@@ -6,6 +6,21 @@ from .data.Constants import TREES_TABLE
 
 from .common.Options import *
 
+class OracleOfAgesGoal(Choice):
+    """
+    The goal to accomplish in order to complete the seed.
+    - Beat Veran: beat the usual final boss
+    - Beat Ganon: teleport to the Room of Rites after beating Onox or Veran, then beat Ganon (same as linked game)
+    - Retrieve Maku Seed - You will have to retrieve the maku seed from the maku tree in order cut straight into the credits scene (similar to a triforce hunt in ALTTPR)
+    """
+    display_name = "Goal"
+
+    option_beat_veran = 0
+    option_beat_ganon = 1
+
+    default = 0
+    include_in_patch = True
+    include_in_slot_data = True
 
 class OracleOfAgesRequiredSlates(Range):
     """
@@ -113,7 +128,7 @@ class OracleOfAgesLynnaGardener(Toggle):
 @dataclass
 class OracleOfAgesOptions(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
-    goal: OraclesGoal
+    goal: OracleOfAgesGoal
     logic_difficulty: OraclesLogicDifficulty
     required_essences: OraclesRequiredEssences
     required_slates: OracleOfAgesRequiredSlates

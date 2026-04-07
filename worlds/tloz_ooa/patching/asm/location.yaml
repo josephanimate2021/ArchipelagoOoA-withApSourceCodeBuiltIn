@@ -4,6 +4,7 @@
 # Generic cases
 10/750c/: dw locations.graveUnderTree
 0c/723b/: dwbe locations.chevalTest
+0c/722d/: dwbe locations.tokayChickenHut # Tried that and it did not render the bomb graphic to a different item, but it gives the randomized item anyway.
 0c/7232/: dwbe locations.chevalInvention
 0c/7e20/: dwbe locations.tingleGift
 0c/7e7a/: dwbe locations.tingleUpgrade

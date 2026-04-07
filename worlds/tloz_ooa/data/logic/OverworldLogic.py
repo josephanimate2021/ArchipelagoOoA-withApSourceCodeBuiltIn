@@ -241,10 +241,8 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
         ["lynna village", "hidden tokay cave", True, lambda state: ooa_can_dive(state, player)],
         ["crescent past west", "crescent past east", False, lambda state: ooa_can_break_bush(state, player)],
         ["crescent present west", "crescent past east", False, lambda state: ooa_can_go_back_to_present(state, player)],
-        ["crescent past east", "tokay bomb cave", False, lambda state: all([
-            ooa_has_bracelet(state, player),
-            ooa_has_bombs(state, player),
-        ])],
+        ["crescent past east", "tokay chicken hut", False, lambda state: ooa_has_bracelet(state, player)],
+        ["tokay chicken hut", "tokay bomb cave", False, lambda state: ooa_has_bombs(state, player)],
         ["crescent past east", "wild tokay game", False, lambda state: all([
             ooa_has_bracelet(state, player),
             ooa_has_bombs(state, player),

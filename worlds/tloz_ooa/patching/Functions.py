@@ -88,7 +88,7 @@ def get_asm_files(patch_data):
         asm_files.append("asm/conditional/mute_music.yaml")
     if patch_data["options"]["lynna_gardener"]:
         asm_files.append("asm/conditional/lynna_gardener.yaml")
-    if patch_data["options"]["goal"] == OraclesGoal.option_beat_ganon:
+    if patch_data["options"]["goal"] == OracleOfAgesGoal.option_beat_ganon:
         asm_files.append("asm/conditional/ganon_goal.yaml")
     if get_settings()["tloz_ooa_options"]["skip_intro_cinematic"]:
         asm_files.append("asm/conditional/intro_cinematic_skip.yaml")
@@ -121,12 +121,8 @@ def define_location_constants(assembler: Z80Assembler, patch_data):
 def define_option_constants(assembler: Z80Assembler, patch_data):
     options = patch_data["options"]
 
-    if not hasattr(get_settings().tloz_ooa_options, "beat_tutorial"):
-        assembler.define_byte("option.startingGroup", 0x03)
-        assembler.define_byte("option.startingRoom", 0xbf)
-    else: # Redirect user to the first item check, saving them some time.
-        assembler.define_byte("option.startingGroup", 0x00)
-        assembler.define_byte("option.startingRoom", 0x39)
+    assembler.define_byte("option.startingGroup", 0x00)
+    assembler.define_byte("option.startingRoom", 0x39)
 
     assembler.define_byte("option.warpingGroup", patch_data["warp_to_start_variables"]["group"] if "group" in patch_data["warp_to_start_variables"] else 0x00)
     assembler.define_byte("option.warpingRoom", patch_data["warp_to_start_variables"]["room"] if "room" in patch_data["warp_to_start_variables"] else 0x59)
@@ -377,12 +373,6 @@ def define_tile_replacements_table(assembler: Z80Assembler, patch_data):
         0x00, 0x83, 0x00, 0x44, 0xd7, # portal outside D2 present
         0x01, 0x48, 0x02, 0x31, 0xcd # past maku road: remove dirt when exiting
     ]
-
-    if not hasattr(get_settings().tloz_ooa_options, "beat_tutorial"):
-        new_tiles_table.extend([
-            0x03, 0xbf, 0x00, 0x74, 0xb2, # block off exit for faq room
-            0x03, 0xbf, 0x00, 0x75, 0xb2, # block off exit for faq room
-        ])
 
     assembler.add_floating_chunk("tileReplacementsTable", new_tiles_table)
 

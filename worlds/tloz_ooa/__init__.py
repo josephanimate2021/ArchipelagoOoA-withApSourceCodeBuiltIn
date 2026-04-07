@@ -98,9 +98,6 @@ class OracleOfAgesWorld(World):
         
         if self.options.linked_heros_cave.value > 0:
             self.dungeon_entrances["d11 entrance"] = "enter d11"
-
-        if self.options.goal == OraclesGoal.option_retrieve_maku_seed and self.options.required_essences < 1:
-            self.options.required_essences.value = 1  # The game would be too easy if we only needed zero essences. So it's better we have at least one required essence in that case.
         
         self.restrict_non_local_items()
 
@@ -196,11 +193,11 @@ class OracleOfAgesWorld(World):
         location.place_locked_item(Item(event_item_name, ItemClassification.progression, None, self.player))
 
     def create_events(self):
-        self.create_event("maku seed", "_beaten_game" if OraclesGoal.option_retrieve_maku_seed else "Maku Seed")
+        self.create_event("maku seed", "Maku Seed")
 
-        if self.options.goal == OraclesGoal.option_beat_vanila_boss:
+        if self.options.goal == OracleOfAgesGoal.option_beat_veran:
             self.create_event("veran beaten", "_beaten_game")
-        elif self.options.goal == OraclesGoal.option_beat_ganon:
+        elif self.options.goal == OracleOfAgesGoal.option_beat_ganon:
             self.create_event("ganon beaten", "_beaten_game")
 
         self.create_event("ridge move vine seed", "_access_cart")
