@@ -504,8 +504,15 @@ LOCATIONS_DATA = {
         "vanilla_item": "Gasha Seed",
         "flag_byte": 0xc7ce,
         "room": 0x02ce,
-        "map_tile": 0x1cd,
         "collect": COLLECT_CHEST,
+    },
+    "Crescent Island (Past): Tokay Chicken Hut": {
+        "region_id": "tokay chicken hut",
+        "vanilla_item": "Bombs (10)",
+        "flag_byte": 0xc7e3,
+        "room": 0x02e3,
+        "collect": COLLECT_TOUCH,
+        "symbolic_name": "tokayChickenHut",
     },
     "Crescent Island (Past): Wild Tokay Prize": {
         "region_id": "wild tokay game",

@@ -63,6 +63,7 @@ REGIONS = [
     "tokay crystal cave",
     "crescent past east",
     "tokay bomb cave",
+    "tokay chicken hut",
     "wild tokay game",
     "wild tokay secret",
     "hidden tokay cave",
