@@ -25,8 +25,7 @@
     dwbe $4000,soldierSpriteData
     db $ff
 
-# format (ID, subID, jump address). these functions *must* pop af as the last
-# instruction before returning.
+# Format is dwbe $<interactionID><interactionSubID>, location. db $ff indicates the end of the table.
 3f//customSpriteJumpTable: |
     dwbe $4700, locations.hiddenShop1
     dwbe $4702, locations.hiddenShop2
@@ -44,6 +43,7 @@
     dwbe $6315, locations.hiddenTokayCave
     dwbe $633e, locations.wildTokayGame
     dwbe $6b0b, locations.chevalInvention
+    dwbe $6b0a, locations.tokayChickenHut
     dwbe $6b0c, locations.chevalTest
     dwbe $7731, locations.d8Stalfos
     dwbe $8007, locations.libraryPast
