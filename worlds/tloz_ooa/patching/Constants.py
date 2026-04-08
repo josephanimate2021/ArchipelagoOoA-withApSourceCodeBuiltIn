@@ -369,6 +369,7 @@ DEFINES = {
     "wLinkObjectIndex":"$cc2c",
     "wMenuLoadState":"$cbcc",
     "wLinkDeathTrigger": "$cdd5",
+    "getFreeInteractionSlot": "$3aef",
 
     # rom 00
     "checkFlag": "$0205",
@@ -396,6 +397,7 @@ DEFINES = {
     "objectDelete_useActiveObjectType":"$21e0",
     "objectCopyPosition":"$2242",
     "objectCopyPosition_rawAddress":"$2247",
+    "interactionIncState": "$23e0",
     "objectCreateInteraction":"$24c5",
     "createTreasure":"$27d4",
     "checkGlobalFlag":"$31f3",

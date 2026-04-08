@@ -125,5 +125,5 @@
   cp $01
 
 # Changes Link's starting point (Postion is unaffected because it doesen't interfere with anything else)
-07/419b/: db option.startingGroup       # Group Number
-07/419d/: db option.startingRoom        # Room Number
+#07/419b/: db option.startingGroup       # Group Number
+#07/419d/: db option.startingRoom        # Room Number

@@ -83,6 +83,14 @@ class OracleOfAgesSlateShuffle(Toggle):
     include_in_patch = True
 
 
+class OracleOfAgesEssenceSanity(Toggle):
+    """
+    If enabled, essences will be shuffled anywhere in the multiworld instead of being guaranteed to be found
+    at the end their respective dungeons.
+    """
+    display_name = "Shuffle Essences"
+    include_in_patch = True
+
 # Keeping this for now
 class OracleOfAgesPricesFactor(Range):
     """
@@ -129,6 +137,7 @@ class OracleOfAgesOptions(PerGameCommonOptions):
     keysanity_boss_keys: OraclesBossKeyShuffle
     keysanity_maps_compasses: OraclesMapCompassShuffle
     keysanity_slates: OracleOfAgesSlateShuffle
+    shuffle_essences: OracleOfAgesEssenceSanity
     required_rings: OraclesRequiredRings
     excluded_rings: OraclesExcludedRings
     shop_prices_factor: OracleOfAgesPricesFactor

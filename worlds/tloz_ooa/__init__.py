@@ -301,6 +301,14 @@ class OracleOfAgesWorld(World):
                     filler_item_count += 1
                     continue
 
+            if "essence" in loc_data and loc_data["essence"] is True:
+                # If essences are not shuffled, place and lock this item directly on the pedestal.
+                # Otherwise, the fill algorithm will take care of placing them anywhere in the multiworld.
+                if not self.options.shuffle_essences:
+                    essence_item = self.create_item(item_name)
+                    self.multiworld.get_location(loc_name, self.player).place_locked_item(essence_item)
+                    continue
+
             item_pool_dict[item_name] = item_pool_dict.get(item_name, 0) + 1
 
         # If Master Keys are enabled, put one for every dungeon
