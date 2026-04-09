@@ -151,6 +151,11 @@ def define_option_constants(assembler: Z80Assembler, patch_data):
     master_keys_as_boss_keys = patch_data["options"]["master_keys"] == OraclesMasterKeys.option_all_dungeon_keys
     assembler.define_byte("option.smallKeySprite", 0x43 if master_keys_as_boss_keys else 0x42)
 
+    if options["secret_locations"]:
+        assembler.add_floating_chunk("unsetglobalflag_librarySecret", [
+            0xb6, (0x4f | 0x80)
+        ])
+
 def text_to_binary(item_name: str) -> List[int]:
     words = item_name.split(" ")
     current_line = 0

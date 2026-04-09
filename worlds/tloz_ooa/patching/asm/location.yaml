@@ -26,7 +26,9 @@
 15/54f1/: dwbe locations.rescueNayru
 0c/7ae4/: dwbe locations.kingZora
 15/5db9/: dwbe locations.libraryPresent
-15/5dd8/: dwbe locations.libraryPast
+15/5dd8/: |
+    dwbe locations.libraryPast
+    db orroomflag,$01,setglobalflag,$4f,scriptend
 0c/7c48/: dwbe locations.zoraReward
 15/7969/: dwbe locations.piratianCaptain
 15/4fd3/: dwbe locations.gashaFarmer

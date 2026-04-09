@@ -10,8 +10,8 @@ REGIONS = [
     "lynna city chest",
     "lynna shop",
     "hidden shop",
-    # "mayor plen's secret",
-    # "mamamu yan secret",
+    "mayor plen's secret",
+    "mamamu yan secret",
     "mayor plen's house",
     "vasu's gift",
     "princess zelda rescue",
@@ -34,6 +34,7 @@ REGIONS = [
     "south shore dirt",
     "balloon guy's gift",
     "balloon guy's upgrade",
+    "balloon guy's secret",
 
     #######
     "yoll graveyard",
@@ -166,11 +167,13 @@ REGIONS = [
     "fairies' coast chest",
     "library present",
     "library past",
+    "library secret",
     "zora seas chest",
     "zora king gift",
     "d7 entrance",
     "fisher's island cave",
     "zora's reward",
+    "king zora's secret",
 
     #######
     "piratian captain",
