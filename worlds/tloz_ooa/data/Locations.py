@@ -108,7 +108,7 @@ LOCATIONS_DATA = {
     },
     "Lynna City: Hidden Shop Item #3": {
         "region_id": "hidden shop",
-        "vanilla_item": "Biggoron's Sword", # That's not the Ring box you're looking for.
+        "vanilla_item": "Bombchus (10)", # That's not the Ring box you're looking for.
         "flag_byte": 0xc642,
         "room": 0x027e,
         "bit_mask": 0x08,
@@ -867,9 +867,18 @@ LOCATIONS_DATA = {
         "vanilla_item": "Lava Juice",
         "flag_byte": 0xc8e7,
         "room": 0x03e7,
-        "map_tile": 0x11d,
+        "bit_mask": 0x02,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "goronShootingGallery",
+    },
+    "Rolling Ridge (Past): Elder's Secret": {
+        "region_id": "elder secret",
+        "vanilla_item": "Biggoron's Sword",
+        "flag_byte": 0xc8e7,
+        "room": 0x03e7,
+        "bit_mask": 0x04,
+        "collect": COLLECT_TOUCH,
+        "symbolic_name": "elderSecret",
     },
     "Rolling Ridge (Past): Trade With Graceful Goron's Friend": {
         "region_id": "trade lava juice",

@@ -142,6 +142,7 @@ REGIONS = [
     "ridge mid past",
     "ridge move vine seed",
     "goron shooting gallery",
+    "elder secret",
     "goron shooting gallery price",
     "trade lava juice",
     "ridge bush cave",

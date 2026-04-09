@@ -623,7 +623,7 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
             # ["lynna city", "mayor plen's secret", False, None],
             # ["mamamu yan trade", "mamamu yan secret", False, lambda state: ooa_has_bracelet(state, player)],
             # ["zora's reward", "king zora's secret", False, None],
-            # ["goron shooting gallery", "elder secret", False, None],
+            ["goron shooting gallery", "elder secret", False, None],
             # ["target carts", "troy secret", False, None],
             # ["library past", "library secret", False, None],
             # ["balloon guy's upgrade", "balloon guy's secret", False, None],
