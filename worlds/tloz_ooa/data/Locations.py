@@ -44,6 +44,8 @@ LOCATIONS_DATA = {
         "vanilla_item": "Seed Satchel",
         "flag_byte": 0xc779,
         "bit_mask": 0x60,
+        "secret_location": True,
+        "conditional": True,
         "room": 0x0079,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "tingleSecret",
