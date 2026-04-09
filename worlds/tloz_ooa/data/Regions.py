@@ -152,6 +152,7 @@ REGIONS = [
     "target carts",
     "target carts 1",
     "target carts 2",
+    "troy secret",
     "big bang game",
     "ridge NE cave present",
     "goron diamond cave",
