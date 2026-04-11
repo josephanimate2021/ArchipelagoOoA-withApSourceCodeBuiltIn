@@ -106,6 +106,7 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
                     ooa_has_seedshooter(state, player),
                     all([
                         ooa_option_hard_logic(state, player),
+                        ooa_has_feather(state, player),
                         ooa_can_use_seeds(state, player),
                         # satchel can't use pegasus to damage, but all others work
                         any([
