@@ -94,10 +94,12 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
                 ooa_has_noble_sword(state, player),
                 ooa_has_seedshooter(state, player),
                 ooa_can_use_ember_seeds(state, player, False),
-                ooa_can_use_mystery_seeds(state, player)
+                ooa_can_use_mystery_seeds(state, player),
+                ooa_has_feather(state, player)
             ]),
             all([
                 ooa_option_medium_logic(state, player),
+                ooa_has_feather(state, player),
                 ooa_has_sword(state, player, False),
                 any([
                     # all seeds damage Twinrova phase 2
