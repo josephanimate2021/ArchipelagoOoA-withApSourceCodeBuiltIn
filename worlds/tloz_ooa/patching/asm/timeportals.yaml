@@ -153,13 +153,13 @@
     db $f3
     dw symmetryPortalStaticObjects
 
- # Make current test for echoes if not in the past
+ # Make current test for current if not in the past
 06/4e39/: db $f1
-10//activatePortalOnEchoes: |
+10//activatePortalOnCurrent: |
   ld a,(wLinkPlayingInstrument)
   dec a
   cp $02
   ret nc
   call interactionIncState
   jp $7d90 # Go back to @markSpotDiscovered
-10/7d88/: jp activatePortalOnEchoes
+10/7d88/: jp activatePortalOnCurrent
