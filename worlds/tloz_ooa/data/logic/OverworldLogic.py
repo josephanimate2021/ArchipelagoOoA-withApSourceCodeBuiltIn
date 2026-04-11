@@ -230,7 +230,7 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
         #######################################
         ["lynna village", "crescent past west", True, lambda state: ooa_can_swim_deepwater(state, player, False)],
         ["rafton's raft", "crescent past west", False, None],
-        ["crescent present west", "crescent past west", False, lambda state: ooa_can_go_back_to_present(state, player)],
+        ["crescent present west", "crescent past west", False, lambda state: ooa_can_open_portal(state, player)],
         ["crescent past west", "tokay crystal cave", False, lambda state: all([
             any([
                 ooa_has_shovel(state, player),
@@ -616,6 +616,22 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
     if options.linked_heros_cave.value > 0:
         labrynna_logic.extend([
             ["lynna city", "d11 entrance", False, None]
+        ])
+
+    if options.secret_locations:
+        labrynna_logic.extend([
+            ["lynna city", "mayor plen's secret", False, None],
+            ["mamamu yan trade", "mamamu yan secret", False, lambda state: ooa_has_bracelet(state, player)],
+            ["zora's reward", "king zora's secret", False, None],
+            ["goron shooting gallery", "elder secret", False, None],
+            ["target carts", "troy secret", False, None],
+            ["library past", "library secret", False, None],
+            ["balloon guy's upgrade", "balloon guy's secret", False, None],
+            ["fairies' woods", "fairies' woods secret", False, None],
+            ["crescent present east", "wild tokay secret", False, lambda state: ooa_has_bracelet(state, player)],
+            ["symmetry past", "symmetry city secret", False, None],
+            ["lynna city", "princess zelda rescue", False, lambda state: ooa_has_feather(state, player)],
+            ["piratian captain", "sea of storms present", False, lambda state: ooa_can_go_back_to_present(state, player)],
         ])
 
     return labrynna_logic

@@ -78,18 +78,6 @@
     jp $4e37 # tune echoes in vain
 06/4e34/: jp handleSpecialCurrentsActions
 
-# don't let the tune of echoes activate the special crescent island portal.
-10//checkActivateEchoesPortal: |
-    push bc
-    ld bc,$a900
-    call compareRoom
-    pop bc
-    ld a,(wLinkPlayingInstrument)
-    ret nz
-    dec a
-    ret
-10/7d88/: call checkActivateEchoesPortal
-
 # add a second dormant portal to the first dormant portal screen in talus
 # peaks past, to prevent a softlock if the player doesn't have flippers or
 # ages.

@@ -136,6 +136,7 @@ class OracleOfAgesOptions(PerGameCommonOptions):
     animal_companion: OraclesAnimalCompanion
     default_seed: OraclesDefaultSeedType
     linked_heros_cave: OracleOfAgesLinkedHerosCave
+    secret_locations: OraclesIncludeSecretLocations
     duplicate_seed_trees: OracleOfAgesDuplicateSeedTrees
     shuffle_dungeons: OraclesDungeonShuffle
     master_keys: OraclesMasterKeys

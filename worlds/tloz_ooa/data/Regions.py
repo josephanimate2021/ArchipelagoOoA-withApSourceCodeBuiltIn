@@ -10,8 +10,11 @@ REGIONS = [
     "lynna city chest",
     "lynna shop",
     "hidden shop",
+    "mayor plen's secret",
+    "mamamu yan secret",
     "mayor plen's house",
     "vasu's gift",
+    "princess zelda rescue",
     #######
     "lynna village",
     "gasha farmer",
@@ -31,6 +34,7 @@ REGIONS = [
     "south shore dirt",
     "balloon guy's gift",
     "balloon guy's upgrade",
+    "balloon guy's secret",
 
     #######
     "yoll graveyard",
@@ -44,6 +48,7 @@ REGIONS = [
 
     #######
     "fairies' woods",
+    "fairies' woods secret",
     "fairies' woods chest",
     "d2 present entrance",
     #######
@@ -61,6 +66,7 @@ REGIONS = [
     "tokay bomb cave",
     "tokay chicken hut",
     "wild tokay game",
+    "wild tokay secret",
     "hidden tokay cave",
     "tokay pot cave",
     "tokay market 1",
@@ -85,6 +91,7 @@ REGIONS = [
     "symmetry city tree",
     #######
     "symmetry past",
+    "symmetry city secret",
     "symmetry city brother",
     "tokkey's composition",
     #######
@@ -136,6 +143,7 @@ REGIONS = [
     "ridge mid past",
     "ridge move vine seed",
     "goron shooting gallery",
+    "elder secret",
     "goron shooting gallery price",
     "trade lava juice",
     "ridge bush cave",
@@ -145,6 +153,7 @@ REGIONS = [
     "target carts",
     "target carts 1",
     "target carts 2",
+    "troy secret",
     "big bang game",
     "ridge NE cave present",
     "goron diamond cave",
@@ -158,16 +167,18 @@ REGIONS = [
     "fairies' coast chest",
     "library present",
     "library past",
+    "library secret",
     "zora seas chest",
     "zora king gift",
     "d7 entrance",
     "fisher's island cave",
     "zora's reward",
+    "king zora's secret",
 
     #######
     "piratian captain",
     "sea of storms past",
-    #"sea of storms present",
+    "sea of storms present",
     "d8 entrance",
     "sea of no return",
 

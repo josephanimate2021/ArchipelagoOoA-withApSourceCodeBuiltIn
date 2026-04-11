@@ -224,6 +224,7 @@ DEFINES = {
     "enableinput":"$be",
     "callscript":"$c0",
     "retscript":"$c1",
+    "jumpiftextoptioneq": "$c3",
     "jumpalways":"$c4",
     "jumpifmemoryset":"$c7",
     "jumpifmemoryeq":"$cb",
@@ -401,7 +402,7 @@ DEFINES = {
     "createTreasure":"$27d4",
     "checkGlobalFlag":"$31f3",
     "setGlobalFlag":"$31f9",
-    "fadeInFromWhite":"$3299",
+    "fadeInFromWhite":"$3290", # changed address for faster fades
     "incMakuTreeState":"$3e53",
     "interactionDelete":"$3b05",
     "clearStaticObjects":"$319f",

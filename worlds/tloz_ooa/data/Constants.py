@@ -1,3 +1,5 @@
+from .ascii_table import ascii_printable_chars_table
+
 COMPANIONS = [
     "Ricky",
     "Dimitri",
