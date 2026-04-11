@@ -153,7 +153,7 @@
     db $f3
     dw symmetryPortalStaticObjects
 
- # Make current test for current if not in the past
+ # Make echoes test for current if not in the past
 06/4e39/: db $f1
 10//activatePortalOnCurrent: |
   ld a,(wLinkPlayingInstrument)
