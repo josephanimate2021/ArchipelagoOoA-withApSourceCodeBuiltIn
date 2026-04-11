@@ -84,7 +84,7 @@
     ld bc,$a900
     call compareRoom
     pop bc
-    ld a,(wPlayingInstrument1)
+    ld a,(wLinkPlayingInstrument)
     ret nz
     dec a
     ret
@@ -152,3 +152,14 @@
 12/5e91/: |
     db $f3
     dw symmetryPortalStaticObjects
+
+ # Make current test for echoes if not in the past
+06/4e39/: db $f1
+10//activatePortalOnEchoes: |
+  ld a,(wLinkPlayingInstrument)
+  dec a
+  cp $02
+  ret nc
+  call interactionIncState
+  jp $7d90 # Go back to @markSpotDiscovered
+10/7d88/: jp activatePortalOnEchoes
