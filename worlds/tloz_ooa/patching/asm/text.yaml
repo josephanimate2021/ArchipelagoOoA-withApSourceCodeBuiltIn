@@ -136,6 +136,13 @@
 38//TX_5a22: /include text.compassD7
 38//TX_5a23: /include text.compassD8
 38//TX_5a24: /include text.compassD6Past
+# 38//TX_5a25: /include text.faqIntro
+#38//TX_5a26: /include text.faqReadImportance
+#38//TX_5a27: /include text.faqLoc
+#38//TX_5a28: /include text.faqQuestion
+#38//TX_5a29: /include text.faqQuestionWrong
+#38//TX_5a2a: /include text.faqQuestionRight
+#38//TX_5a2b: /include text.faqWarpToStartPointer
 
 38//customTextTable: |
     dw TX_5a00, TX_5a01, TX_5a02, TX_5a03
@@ -147,7 +154,8 @@
     dw TX_5a18, TX_5a19, TX_5a1a, TX_5a1b
     dw TX_5a1c, TX_5a1d, TX_5a1e, TX_5a1f
     dw TX_5a20, TX_5a21, TX_5a22, TX_5a23
-    dw TX_5a24
+    dw TX_5a24#, TX_5a25, TX_5a26, TX_5a27
+    #dw TX_5a28, TX_5a29, TX_5a2a, TX_5a2b
 
 38//setCustomBankForText: |
     ld hl,customTextTable

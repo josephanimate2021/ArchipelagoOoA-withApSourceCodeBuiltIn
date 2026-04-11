@@ -49,6 +49,7 @@ class OoAPatchExtensions(APPatchExtension):
             assembler.define_byte(f"shopPrices.{symbolic_name}", RUPEE_VALUES[price])
         define_location_constants(assembler, patch_data)
         define_option_constants(assembler, patch_data)
+        # set_faq_text(assembler)
         define_text_constants(assembler, patch_data)
         define_dungeon_items_text_constants(assembler, patch_data)
 

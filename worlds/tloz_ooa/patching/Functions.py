@@ -119,16 +119,28 @@ def define_location_constants(assembler: Z80Assembler, patch_data):
         assembler.define_byte(f"locations.{symbolic_name}.subid", item_subid)
         assembler.define_word(f"locations.{symbolic_name}", (item_id << 8) + item_subid)
 
+def set_faq_text(assembler: Z80Assembler):
+    faq_intro_text = text_to_binary(("Welcome to the "
+                        "OoA randomizer "
+                        "for Archipelago! "
+                        "Did you read "
+                        "the FAQ, because there are important randomizer mechanics in it."))
+    faq_intro_text.extend([0x00])
+    assembler.add_floating_chunk("text.faqIntro", faq_intro_text)
         
 def define_option_constants(assembler: Z80Assembler, patch_data):
     options = patch_data["options"]
 
-    if not hasattr(get_settings().tloz_ooa_options, "beat_tutorial"):
-        assembler.define_byte("option.startingGroup", 0x03)
-        assembler.define_byte("option.startingRoom", 0xbf)
-    else: # Redirect user to the first item check, saving them some time.
-        assembler.define_byte("option.startingGroup", 0x00)
-        assembler.define_byte("option.startingRoom", 0x39)
+    # if not hasattr(get_settings().tloz_ooa_options, "beat_tutorial"):
+        # assembler.define_byte("option.startingGroup", 0x03)
+        # assembler.define_byte("option.startingRoom", 0xbf)
+        # assembler.define_byte("option.startingXPos", 0x60)
+        # assembler.define_byte("option.startingYPos", 0x70)
+    # else: # Redirect user to the first item check, saving them some time.
+    assembler.define_byte("option.startingGroup", 0x00)
+    assembler.define_byte("option.startingRoom", 0x39)
+    assembler.define_byte("option.startingXPos", 0x58)
+    assembler.define_byte("option.startingYPos", 0x58)
 
     assembler.define_byte("option.warpingGroup", patch_data["warp_to_start_variables"]["group"] if "group" in patch_data["warp_to_start_variables"] else 0x00)
     assembler.define_byte("option.warpingRoom", patch_data["warp_to_start_variables"]["room"] if "room" in patch_data["warp_to_start_variables"] else 0x59)
@@ -156,8 +168,14 @@ def define_option_constants(assembler: Z80Assembler, patch_data):
             0xb6, (0x4f | 0x80)
         ])
 
-def text_to_binary(item_name: str) -> List[int]:
-    words = item_name.split(" ")
+def parse_int(s):
+    try:
+        return int(s)
+    except ValueError:
+        return None # Return None if parsing fails
+
+def text_to_binary(text: str) -> List[int]:
+    words = text.split(" ")
     current_line = 0
     lines = [""]
     while len(words) > 0:
@@ -176,7 +194,15 @@ def text_to_binary(item_name: str) -> List[int]:
     for line in lines:
         if len(result) > 0:
             result.append(0x01)  # Newline
-        result.extend(line.encode())
+        for i in range(len(line)):
+            char = line[i:i+1]
+            if parse_int(char) is not None:
+                result.append(0x30 + int(char))
+            else:
+                print(char)
+                info = next(stuff for stuff in ascii_printable_chars_table if stuff["Character"] == char)
+                result.append(info["Hexadecimal"])
+    print(result)
     return result
 
 def define_text_constants(assembler: Z80Assembler, patch_data):
@@ -381,14 +407,10 @@ def define_tile_replacements_table(assembler: Z80Assembler, patch_data):
         0x01, 0xa5, 0x00, 0x45, 0x0b, # cont.
         0x01, 0xa5, 0x00, 0x55, 0x6c, # cont.
         0x00, 0x83, 0x00, 0x44, 0xd7, # portal outside D2 present
-        0x01, 0x48, 0x02, 0x31, 0xcd # past maku road: remove dirt when exiting
+        0x01, 0x48, 0x02, 0x31, 0xcd, # past maku road: remove dirt when exiting
+        0x00, 0x5d, 0x00, 0x66, 0x0b, # ledge by the linked ghini ghost (traps link in ghini's interaction space until warp to start is initialized (used for faq room space))
+        0x00, 0x5d, 0x00, 0x57, 0xf4, # waterblock for preventing the trapped player from escaping into the graveyard
     ]
-
-    if not hasattr(get_settings().tloz_ooa_options, "beat_tutorial"):
-        new_tiles_table.extend([
-            0x03, 0xbf, 0x00, 0x74, 0xb2, # block off exit for faq room
-            0x03, 0xbf, 0x00, 0x75, 0xb2, # ^
-        ])
 
     if patch_data["options"]["secret_locations"]:
         new_tiles_table.extend([
