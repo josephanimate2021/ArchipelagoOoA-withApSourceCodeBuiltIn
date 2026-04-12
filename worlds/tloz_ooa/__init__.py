@@ -2,6 +2,8 @@ import logging
 import os
 import yaml
 
+from typing import ClassVar, Any, Optional, Type, TextIO
+from Options import Option
 from BaseClasses import Region, Location, LocationProgressType
 from Options import Accessibility, OptionError
 from typing import Any, Set, List, Dict, Optional, Tuple, ClassVar, TextIO, Union
@@ -62,14 +64,15 @@ class OracleOfAgesWorld(World):
         # Put options that are useful to the tracker inside slot data
         # TODO MOAR DATA ?
 
-        slot_data = self.options.as_dict(*[
-            option_name 
-            for option_name in OracleOfAgesOptions.type_hints 
-            if hasattr(OracleOfAgesOptions.type_hints[option_name], "include_in_slot_data")
-        ])
-        slot_data["animal_companion"] = COMPANIONS[self.options.animal_companion.value]
-        slot_data["default_seed"] = SEED_ITEMS[self.options.default_seed.value]
-        slot_data["dungeon_entrances"] = self.dungeon_entrances
+        slot_data = {
+            "version": f"{self.version()}",
+            "options": self.options.as_dict(
+                *[option_name for option_name in OracleOfAgesOptions.type_hints
+                  if hasattr(OracleOfAgesOptions.type_hints[option_name], "include_in_slot_data")]),
+            "dungeon_entrances": {a.replace(" entrance", ""): b.replace("enter ", "")
+                                  for a, b in self.dungeon_entrances.items()},
+            "shop_costs": self.shop_prices,
+        }
 
         return slot_data
     
@@ -92,6 +95,8 @@ class OracleOfAgesWorld(World):
             }
 
     def generate_early(self):
+        if self.interpret_slot_data(None):
+            return
         conflicting_rings = self.options.required_rings.value & self.options.excluded_rings.value
         if len(conflicting_rings) > 0:
             raise OptionError("Required Rings and Excluded Rings contain the same element(s)", conflicting_rings)
@@ -168,6 +173,8 @@ class OracleOfAgesWorld(World):
 
     def create_regions(self):
         # Create regions
+        
+
         regions = REGIONS.copy()
 
         if self.options.linked_heros_cave.value > 0:
@@ -412,3 +419,24 @@ class OracleOfAgesWorld(World):
             spoiler_handle.write(f"\nDungeon Entrances ({self.multiworld.player_name[self.player]}):\n")
             for entrance, dungeon in self.dungeon_entrances.items():
                 spoiler_handle.write(f"\t- {entrance} --> {dungeon.replace('enter ', '')}\n")
+
+    
+    def interpret_slot_data(self, slot_data: Optional[dict[str, Any]]) -> Any:
+        if slot_data is not None:
+            return slot_data
+
+        if not hasattr(self.multiworld, "re_gen_passthrough") or self.game not in self.multiworld.re_gen_passthrough:
+            return False
+
+        slot_data = self.multiworld.re_gen_passthrough[self.game]
+
+        for option in [option_name for option_name in OracleOfAgesOptions.type_hints
+                       if hasattr(OracleOfAgesOptions.type_hints[option_name], "include_in_slot_data")]:
+            option_class: Type[Option] = OracleOfAgesOptions.type_hints[option]
+            self.options.__setattr__(option, option_class.from_any(slot_data["options"][option]))
+
+        self.dungeon_entrances = {f"{a} entrance": f"enter {b}"
+                                  for a, b in slot_data["dungeon_entrances"].items()}
+        self.shop_prices = slot_data["shop_costs"]
+
+        return True
