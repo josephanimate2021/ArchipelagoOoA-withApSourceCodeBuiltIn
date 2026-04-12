@@ -125,13 +125,13 @@
 # 15/7a57/: nop
 
 # Turn the linked game ghini into a tutorial ghost
-0c/7ed9/: |
-    db initcollisions
-    @start:
-    db enableinput
-    db checkabutton
-    db disableinput
-    db showtext,$5a,$25
+# 0c/7ed9/: |
+    # db initcollisions
+    # @start:
+    # db enableinput
+    # db checkabutton
+    # db disableinput
+    # db showtext,$5a,$25
     #db jumpiftextoptioneq,$25
     #dw @startQuestions
     #db showtext,$5a,$26
@@ -150,4 +150,4 @@
     #db enableinput
     #db checkabutton
     #db showtext,$5a,$2b
-    dwbe @start
+    # dwbe @start
