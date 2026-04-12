@@ -204,6 +204,7 @@ DEFINES = {
     # script commands
     "scriptend":"$00",
     "loadscript":"$83",
+    "generatesecret":"$86", # Secret needs to be between ranges 10 and 19 in order for it to be properly generated.
     "jumptable_memoryaddress":"$87",
     "setcollisionradii":"$8d",
     "setanimation":"$8f",
