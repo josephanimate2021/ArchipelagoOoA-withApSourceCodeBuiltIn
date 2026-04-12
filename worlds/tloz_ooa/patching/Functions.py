@@ -194,13 +194,7 @@ def text_to_binary(text: str) -> List[int]:
     for line in lines:
         if len(result) > 0:
             result.append(0x01)  # Newline
-        for i in range(len(line)):
-            char = line[i:i+1]
-            if parse_int(char) is not None:
-                result.append(0x30 + int(char))
-            else:
-                info = next(stuff for stuff in ascii_printable_chars_table if stuff["Character"] == char)
-                result.append(info["Hexadecimal"])
+        result.extend(line.encode())
     return result
 
 def define_text_constants(assembler: Z80Assembler, patch_data):
@@ -214,6 +208,7 @@ def define_text_constants(assembler: Z80Assembler, patch_data):
     for shop_name in overworld_shops:
         for i in range(1, 4):
             location_name = f"{shop_name} Item #{i}"
+            # shop_text_id = f"TX_"
             symbolic_name = LOCATIONS_DATA[location_name]["symbolic_name"]
             text_bytes = []
             if location_name in patch_data["locations"]:

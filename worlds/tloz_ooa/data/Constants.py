@@ -13,6 +13,30 @@ DIRECTIONS = [
     "left"
 ]
 
+# The order of this list matters because we are trying to get a subid for an owl in order to change it's text.
+OWLS = [
+    "d5 color statue owl",
+    "d2 spiked enemy owl",
+    "d8 underwater owl",
+    "d2 basement owl",
+    "", # Unused (apears to do the same thing as the owl in talus peeks past)
+    "talus peeks past owl",
+    "deku forest owl",
+    "d2 boss room owl",
+    "d6 present enemy room owl",
+    "d6 past canal owl", # This ID is also used for the d6 present entrance owl in a japan ROM, but we shouldn't worry right now.
+    "d8 dark room owl",
+    "d6 present rng room owl",
+    "d3 statue hint owl",
+    "d3 crystal hint owl",
+    "", # Owl that belongs in black tower turret (Will not use that one)
+    "path to d5 entrance cave owl",
+    "d7 switch owl",
+    "d7 near boss room owl",
+    "d7 owl near one way door from water drainage switch",
+    "d6 present entrance owl",
+]
+
 SEED_ITEMS = [
     "Ember Seeds",
     "Scent Seeds",

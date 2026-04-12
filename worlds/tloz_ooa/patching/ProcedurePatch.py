@@ -12,6 +12,8 @@ from .Constants import *
 from ..common.patching.RomData import RomData
 from ..common.patching.z80asm.Assembler import Z80Assembler, Z80Block
 from ..common.patching.music import *
+from ..common.patching.text.encoding import write_text_data
+from ..common.patching.data_manager import text
 
 from tkinter.filedialog import askopenfilename
 
@@ -31,6 +33,7 @@ class OoAPatchExtensions(APPatchExtension):
 
         rom_data = RomData(rom)
         patch_data = yaml.safe_load(caller.get_file(patch_file).decode("utf-8"))
+        dictionary, texts = text.get_text_data(rom_data, True, False)
 
         from .. import OracleOfAgesWorld
         version = patch_data["version"].split(".")
@@ -61,6 +64,7 @@ class OoAPatchExtensions(APPatchExtension):
 
         # Parse assembler files, compile them and write the result in the ROM
         print(f"Compiling ASM files...")
+        write_text_data(rom_data, dictionary, texts, False)
         for file_path in get_asm_files(patch_data):
             data_loaded = yaml.safe_load(pkgutil.get_data(__name__, file_path))
             for metalabel, contents in data_loaded.items():
