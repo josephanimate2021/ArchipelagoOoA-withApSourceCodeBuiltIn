@@ -71,6 +71,8 @@ def make_text_edits(texts: Dict[str, str], patch_data: Dict[str, Any]):
     texts["TX_0045"] = "You got\n🟥King Zora's\nMagic Potion⬜!"
     # Change name to Linked Hero's Cave
     texts["TX_020b"] = "Linked\nHero's Cave"
+    # Change d0 name to Maku Path to prevent player confusion
+    texts["TX_020d"] = "Maku Path"
     # Impa monologue
     texts["TX_012c"] = ("Come see me if\n"
                         "you need a\n"
