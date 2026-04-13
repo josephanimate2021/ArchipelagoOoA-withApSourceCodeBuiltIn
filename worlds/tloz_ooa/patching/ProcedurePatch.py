@@ -53,8 +53,8 @@ class OoAPatchExtensions(APPatchExtension):
         define_location_constants(assembler, patch_data)
         define_option_constants(assembler, patch_data)
         # set_faq_text(assembler)
-        define_text_constants(assembler, patch_data)
-        define_dungeon_items_text_constants(assembler, patch_data)
+        define_text_constants(assembler, patch_data, texts)
+        define_dungeon_items_text_constants(assembler, patch_data, texts)
 
         # Define dynamic data blocks
         define_tile_replacements_table(assembler, patch_data)
@@ -64,11 +64,12 @@ class OoAPatchExtensions(APPatchExtension):
 
         # Parse assembler files, compile them and write the result in the ROM
         print(f"Compiling ASM files...")
+        make_text_edits(texts, patch_data)
         write_text_data(rom_data, dictionary, texts, False)
         for file_path in get_asm_files(patch_data):
             data_loaded = yaml.safe_load(pkgutil.get_data(__name__, file_path))
             for metalabel, contents in data_loaded.items():
-                assembler.add_block(Z80Block(metalabel, contents))
+                assembler.add_block(Z80Block(metalabel, contents, file_path))
         assembler.compile_all()
         for block in assembler.blocks:
             rom_data.write_bytes(block.addr.address_in_rom(), block.byte_array)

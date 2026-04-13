@@ -191,10 +191,5 @@
     ld a,e
     cp $ff
     ret z
-    ld b,$00
-    ld c,e
-    call checkCustomTreasureTextId
-    call showText
-    xor a
-    ret
-#0a/7b93/: call giveTreasureCustom
+    
+    ; TODO: Implement forign items

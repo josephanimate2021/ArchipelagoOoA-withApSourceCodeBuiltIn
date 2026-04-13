@@ -94,7 +94,8 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
                 ooa_has_noble_sword(state, player),
                 ooa_has_seedshooter(state, player),
                 ooa_can_use_ember_seeds(state, player, False),
-                ooa_can_use_mystery_seeds(state, player)
+                ooa_can_use_mystery_seeds(state, player),
+                ooa_has_feather(state, player) # Normally you don't need a feather to defeat ganon, even on casual rules, but it came up on mashy's recent stream that the feather should be marked as a requirement for beating ganon.
             ]),
             all([
                 ooa_option_medium_logic(state, player),

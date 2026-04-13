@@ -1,4 +1,4 @@
-from typing import List, Any
+from typing import List, Any, Dict
 
 import os
 import random
@@ -6,7 +6,9 @@ import Utils
 from settings import get_settings
 from ..common.patching.RomData import *
 from .Util import *
+from ..common.patching.Util import simple_hex
 from ..common.patching.z80asm.Assembler import Z80Assembler
+from ..common.patching.text import *
 from ..data.Constants import *
 from .Constants import *
 from pathlib import Path
@@ -59,6 +61,21 @@ def set_treasure_data(rom: RomData,
         rom.write_byte(addr + 0x03, sprite_id)
     if param_value is not None:
         rom.write_byte(addr + 0x01, param_value)
+
+def make_text_edits(texts: Dict[str, str], patch_data: Dict[str, Any]):
+    texts["TX_2e0d"] = (
+        f"Find {patch_data["options"]["required_essences"]} essences\nto get the Seed.\\stop"
+        f"\nFind {patch_data["options"]["required_slates"]} slates\nto beat D8 boss."
+    )
+    # Overwrite town shop card text
+    texts["TX_0045"] = "You got\n🟥King Zora's\nMagic Potion⬜!"
+    # Change name to Linked Hero's Cave
+    texts["TX_020b"] = "Linked\nHero's Cave"
+    # Impa monologue
+    texts["TX_0120"] = ("Come see me if\n"
+                        "you need a\n"
+                        "refill!")
+    # TODO: Forgin item implementation
 
 def alter_treasures(rom: RomData):
 
@@ -174,63 +191,63 @@ def parse_int(s):
     except ValueError:
         return None # Return None if parsing fails
 
-def text_to_binary(text: str) -> List[int]:
-    words = text.split(" ")
-    current_line = 0
-    lines = [""]
-    while len(words) > 0:
-        line_with_word = lines[current_line]
-        if len(line_with_word) > 0:
-            line_with_word += " "
-        line_with_word += words[0]
-        if len(line_with_word) <= 16:
-            lines[current_line] = line_with_word
-        else:
-            current_line += 1
-            lines.append(words[0])
-        words = words[1:]
+def process_item_name_for_shop_text(item: dict[str, str | bool]) -> str:
+    if "player" in item:
+        player_name = item["player"]
+        if len(player_name) > 14:
+            player_name = player_name[:13] + "."
+        item_name = f"🟦{player_name}⬜'s 🟥"
+    else:
+        item_name = "🟥"
+    item_name += item["item"]
+    item_name = normalize_text(item_name)
+    item_name += "⬜\\stop\n"
+    return item_name
 
-    result = []
-    for line in lines:
-        if len(result) > 0:
-            result.append(0x01)  # Newline
-        result.extend(line.encode())
-    return result
-
-def define_text_constants(assembler: Z80Assembler, patch_data):
+def define_text_constants(assembler: Z80Assembler, patch_data: Dict[str, Any], texts: Dict[str, str]):
     overworld_shops = [
         "Lynna City: Shop",
         "Lynna City: Hidden Shop",
-        "Yoll Graveyard: Syrup Shop",
+        # "Yoll Graveyard: Syrup Shop",
         "Lynna Village: Advance Shop",
+        "Crescent Island (Past): Market"
+    ]
+
+    tx_indices = {
+        "lynnaShop1": "TX_0e04",
+        "lynnaShop2": "TX_0e03",
+        "lynnaShop3": "TX_0e02",
+        "advanceShop1": "TX_0e1d",
+        "advanceShop2": "TX_0e23",
+        "advanceShop3": "TX_0e24",
+        "syrupShop1": "TX_0d0a",
+        "syrupShop2": "TX_0d01",
+        "syrupShop3": "TX_0d05",
+        "hiddenShop1": "TX_0e09",
+        "hiddenShop2": "TX_0e1c",
+        "hiddenShop3": "TX_0e25",
+        "tokayMarket1": "TX_0a2a",
+        "tokayMarket2": "TX_0a31",
+        # TODO: Fill out the rest of the shops once implemented.
+    }
+
+    tokay_market_curency_texts = [
+        "10 Mystery Seeds⬜",
+        "10 Scent Seeds⬜"
     ]
 
     for shop_name in overworld_shops:
-        for i in range(1, 4):
+        for i in range(1, 4 if shop_name != "Crescent Island (Past): Market" else 3):
             location_name = f"{shop_name} Item #{i}"
-            # shop_text_id = f"TX_"
             symbolic_name = LOCATIONS_DATA[location_name]["symbolic_name"]
-            text_bytes = []
-            if location_name in patch_data["locations"]:
-                item_name_bytes = text_to_binary(patch_data["locations"][location_name])
-                text_bytes = [0x09, 0x01] + item_name_bytes + [0x09, 0x00, 0x0c, 0x18, 0x01]  # Item name
-                if shop_name != "Crescent Island (Past): Market":
-                    text_bytes.extend([0x20, 0x0c, 0x08, 0x20, 0x03, 0x7b, 0x01])  # Price
-                    text_bytes.extend([0x02, 0x00, 0x00])  # OK / No thanks
-            assembler.add_floating_chunk(f"text.{symbolic_name}", text_bytes)
-
-    #Tokay Market
-    shop_name = "Crescent Island (Past): Market"
-    for i in range(1, 3):
-        location_name = f"{shop_name} Item #{i}"
-        symbolic_name = LOCATIONS_DATA[location_name]["symbolic_name"]
-        text_bytes = []
-        if location_name in patch_data["locations"]:
-            item_name_bytes = text_to_binary(patch_data["locations"][location_name])
-            text_bytes = [0x09, 0x01] + item_name_bytes + [0x09, 0x00, 0x0c, 0x18, 0x00]  # Item name
-            assembler.add_floating_chunk(f"text.{symbolic_name}", text_bytes)
-    text_bytes = [0x31, 0x30, 0x20, 0x02, 0x12, 0x01, 0x02, 0x00, 0x00]
-    assembler.add_floating_chunk(f"text.tokayMarket1Validation", text_bytes)
+            item_text = process_item_name_for_shop_text({"item": patch_data["locations"][location_name]})
+            if shop_name != "Crescent Island (Past): Market":
+                item_text += " \\num1 Rupees"
+            else:
+                item_text += tokay_market_curency_texts[i - 1]
+            item_text += '\n  \\optOK \\optNo thanks\\cmd(0f)'
+            # TX_0a3c and TX_0a2b are free now.
+            texts[tx_indices[symbolic_name]] = item_text
 
 
 def write_chest_contents(rom: RomData, patch_data):
@@ -415,42 +432,39 @@ def define_tile_replacements_table(assembler: Z80Assembler, patch_data):
 
     assembler.add_floating_chunk("tileReplacementsTable", new_tiles_table)
 
-def define_dungeon_items_text_constants(assembler: Z80Assembler, patch_data):
+def define_dungeon_items_text_constants(assembler: Z80Assembler, patch_data: Dict[str, Any], texts: Dict[str, str]):
 
     for i in range(0, 11): # Maku Path and Hero's Cave has no map, no compass, no boss key, and the unique small key use the default text. 
         # " for\nDungeon X"
         trueI = i if i != 9 else 6
         if trueI == 10:
             trueI = 11
-        dungeon_precision = [0x03, 0x39]
         dungeon_tag = f"D{trueI}"
-        dungeon_precision.extend(text_to_binary((f"{DUNGEON_NAMES[trueI]} ({dungeon_tag})") if get_settings().tloz_ooa_options["simplify_dungeon_precision_text"] else (
+        dungeon_precision = f"for {f"{DUNGEON_NAMES[trueI]} ({dungeon_tag})" if get_settings().tloz_ooa_options["simplify_dungeon_precision_text"] else (
             f"Dungeon {dungeon_tag[1:]}"
-        )))
-        dungeon_precisionForBossKey = dungeon_precision.copy()
+        )}"
+        dungeon_precisionForBossKey = dungeon_precision
 
         if i == 6:
             #\n(present)
-            dungeon_precision.extend([0x01, 0x28, 0x03, 0x2e, 0x29])
+            dungeon_precision += "\n(Present)"
             dungeon_tag += "Present"
         if i == 9:
             #\n(past)
-            dungeon_precision.extend([0x01, 0x28, 0x70, 0x61, 0x73, 0x74, 0x29])
+            dungeon_precision += "\n(Past)"
             dungeon_tag += "Past"
 
         # ###### Small keys ##############################################
         # "You found a\n\color(RED)"
-        small_key_text = [0x02, 0x7c, 0x20, 0x61, 0x01, 0x09, 0x01]
+        small_key_text = "You found a 🟥"
         if patch_data["options"]["master_keys"]:
-            # "Master Key"
-            small_key_text.extend([0x4d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x20, 0x03, 0x37])
+            small_key_text += "Master Key "
         else:
-            # "Small Key"
-            small_key_text.extend([0x53, 0x6d, 0x04, 0xd2, 0x4b, 0x65, 0x79])
+            small_key_text += "Small Key "
         if patch_data["options"]["keysanity_small_keys"]:
-            small_key_text.extend(dungeon_precision)
-        small_key_text.extend([0x09, 0x00, 0x21, 0x00])  # "\color(WHITE)!(end)"
-        assembler.add_floating_chunk(f"text.smallKey{dungeon_tag}", small_key_text)
+            small_key_text += dungeon_precision
+        small_key_text += "⬜!"
+        texts[f"TX_01{simple_hex(i)}"] = normalize_text(small_key_text)
 
         # Maku Path & Hero Cave only has Small Keys, so skip other texts
         if i == 0 or i == 10:
@@ -459,34 +473,31 @@ def define_dungeon_items_text_constants(assembler: Z80Assembler, patch_data):
         # ###### Boss keys ##############################################
         # "You found the\n\color(RED)Boss Key"
         if i < 9:
-            boss_key_text = [
-                0x02, 0x7c, 0x20, 0x05, 0xb4,
-                0x09, 0x01, 0x42, 0x6f, 0x73, 0x73, 0x20, 0x4b, 0x65, 0x79
-            ]
+            boss_key_text = "You found the 🟥Boss Key "
             if patch_data["options"]["keysanity_boss_keys"]:
-                boss_key_text.extend(dungeon_precisionForBossKey)
-            boss_key_text.extend([0x09, 0x00, 0x21, 0x00])  # "\color(WHITE)!(end)"
-            assembler.add_floating_chunk(f"text.bossKeyD{trueI}", boss_key_text)
+                boss_key_text += dungeon_precisionForBossKey
+            boss_key_text += "⬜!"  # "\color(WHITE)!(end)"
+            texts[f"TX_01{simple_hex(i + 10)}"] = normalize_text(boss_key_text)
+
 
         # ###### Dungeon maps ##############################################
         # "You found the\n\color(RED)"
-        dungeon_map_text = [0x02, 0x7c, 0x20, 0x05, 0xb4, 0x09, 0x01]
-        dungeon_map_text.extend(text_to_binary("Dungeon Map"))
+        dungeon_map_text = "You found the 🟥Dungeon Map "
         if patch_data["options"]["keysanity_maps_compasses"]:
-            dungeon_map_text.extend(dungeon_precision)
-        dungeon_map_text.extend([0x09, 0x00, 0x21, 0x00])  # "\color(WHITE)!(end)"
-        assembler.add_floating_chunk(f"text.dungeonMap{dungeon_tag}", dungeon_map_text)
+            dungeon_map_text += dungeon_precision
+        dungeon_map_text += "⬜!"  # "\color(WHITE)!(end)"
+        texts[f"TX_01{simple_hex(i + 18)}"] = normalize_text(dungeon_map_text)
 
         # ###### Compasses ##############################################
         # "You found the\n\color(RED)Compass"
-        compasses_text = [
-            0x02, 0x7c, 0x20, 0x05, 0xb4, 0x09, 0x01,
-            0x09, 0x01, 0x43, 0x6f, 0x6d, 0x05, 0xfe
-        ]
+        compasses_text = "You found the 🟥Compass "
         if patch_data["options"]["keysanity_maps_compasses"]:
-            compasses_text.extend(dungeon_precision)
-        compasses_text.extend([0x09, 0x00, 0x21, 0x00])  # "\color(WHITE)!(end)"
-        assembler.add_floating_chunk(f"text.compass{dungeon_tag}", compasses_text)
+            compasses_text += dungeon_precision
+        compasses_text += "⬜!" # "\color(WHITE)!(end)"
+        texts[f"TX_01{simple_hex(i + 27)}"] = normalize_text(compasses_text)
+
+        if patch_data["options"]["master_keys"]:
+            texts["TX_001a"] = texts["TX_001a"].replace("Small", "Master")
 
 def set_file_select_text(assembler: Z80Assembler, slot_name: str):
     def char_to_tile(c: str) -> int:
