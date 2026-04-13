@@ -208,7 +208,7 @@ def define_text_constants(assembler: Z80Assembler, patch_data: Dict[str, Any], t
     overworld_shops = [
         "Lynna City: Shop",
         "Lynna City: Hidden Shop",
-        # "Yoll Graveyard: Syrup Shop",
+        "Yoll Graveyard: Syrup Shop",
         "Lynna Village: Advance Shop",
         "Crescent Island (Past): Market"
     ]
