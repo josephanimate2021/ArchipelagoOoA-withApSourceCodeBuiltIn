@@ -25,7 +25,7 @@
     dwbe $4000,soldierSpriteData
     db $ff
 
-# Format is dwbe $<interactionID><interactionSubID>, location. db $ff indicates the end of the table.
+# Format (most of the time) is dwbe $<interactionID><interactionSubID>, location. db $ff indicates the end of the table.
 3f//customSpriteJumpTable: |
     dwbe $4700, locations.hiddenShop1
     dwbe $4702, locations.hiddenShop2

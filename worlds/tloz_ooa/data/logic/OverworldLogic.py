@@ -232,6 +232,7 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
         ["lynna village", "crescent past west", True, lambda state: ooa_can_swim_deepwater(state, player, False)],
         ["rafton's raft", "crescent past west", False, None],
         ["crescent present west", "crescent past west", False, lambda state: ooa_can_open_portal(state, player)],
+        ["crescent past west", "tokay stolen shovel", False, None],
         ["crescent past west", "tokay crystal cave", False, lambda state: all([
             any([
                 ooa_has_shovel(state, player),

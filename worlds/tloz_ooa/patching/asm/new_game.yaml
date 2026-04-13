@@ -50,14 +50,6 @@
     ld a,$c8
     ld ($c739),a # big intro cutscene
 
-    # room flag 7
-    ld a,$80
-    ld ($c8bb),a # linked crescent island rosa encounter (1)
-
-    # room flags 5 | 6
-    ld a,$60
-    ld ($c8cb),a # linked crescent island rosa encounter (2)
-
     # room flag 6
     ld a,$40
     ld ($c703),a # d4 entrance (present)

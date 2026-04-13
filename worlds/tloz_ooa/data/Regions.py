@@ -62,6 +62,7 @@ REGIONS = [
     #######
     "crescent past west",
     "tokay crystal cave",
+    "tokay stolen shovel",
     "crescent past east",
     "tokay bomb cave",
     "tokay chicken hut",

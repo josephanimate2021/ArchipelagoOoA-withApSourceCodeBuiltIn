@@ -509,6 +509,14 @@ LOCATIONS_DATA = {
         "map_tile": 0x1bb,
         "collect": COLLECT_CHEST,
     },
+    "Crescent Island (Past): Tokay's Stolen Shovel": {
+        "region_id": "tokay stolen shovel",
+        "vanilla_item": "Bombs (10)", # Originally you would get your shovel back, but that ain't progressive is it.
+        "flag_byte": 0xc8cb,
+        "room": 0x01cb,
+        "collect": COLLECT_TOUCH,
+        "symbolic_name": "tokayShovel",
+    },
     "Crescent Island (Past): Bomb Cave Chest": {
         "region_id": "tokay bomb cave",
         "vanilla_item": "Gasha Seed",
