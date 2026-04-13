@@ -72,7 +72,7 @@ def make_text_edits(texts: Dict[str, str], patch_data: Dict[str, Any]):
     # Change name to Linked Hero's Cave
     texts["TX_020b"] = "Linked\nHero's Cave"
     # Impa monologue
-    texts["TX_0120"] = ("Come see me if\n"
+    texts["TX_012c"] = ("Come see me if\n"
                         "you need a\n"
                         "refill!")
     # TODO: Forgin item implementation

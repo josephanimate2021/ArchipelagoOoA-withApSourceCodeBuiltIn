@@ -81,6 +81,6 @@
 # changin impa script def
 09/64e5/: dw impaScriptRewrite
 # Make Impa always stand at a specific spot in the house
-09/6484/: jp $64c1 # val00
+09/6484/: jp $64c8 # val00
 
-# TODO TEXT
+# TODO: Make bed in nayru's house do the same thing. Right now it fills up hearts.
