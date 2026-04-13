@@ -200,7 +200,7 @@ REGIONS = [
     "d1 pot chest",
     "d1 east terrace",
     "d1 ghini drop",
-    "d1 U-room",
+    "d1 miniboss",
     "d1 basement",
     "d1 boss",
     #######

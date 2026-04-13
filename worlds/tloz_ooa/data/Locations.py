@@ -1188,6 +1188,16 @@ LOCATIONS_DATA = {
         "collect": COLLECT_DROP,
         "symbolic_name": "d1GhiniDrop",
     },
+    "Spirit's Grave: Miniboss": {
+    	"region_id": "d1 miniboss",
+    	"vanilla_item": "Small Key (Spirit's Grave)", # Placed that because an interaction I placed drops a small key after it's defeat.
+    	"dungeon" : 1,
+        "flag_byte": 0xc918,
+        "conditional": True,
+        "room": 0x0418,
+        "collect": COLLECT_TOUCH,
+        "symbolic_name": "d1Miniboss",
+    },
     "Spirit's Grave: Basement": {
     	"region_id": "d1 basement",
     	"vanilla_item": "Progressive Bracelet",

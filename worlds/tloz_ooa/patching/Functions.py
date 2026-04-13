@@ -16,6 +16,8 @@ from pathlib import Path
 from .. import LOCATIONS_DATA
 from ..Options import *
 
+locations = {}
+
 
 def get_treasure_addr(rom: RomData, item_name: str):
     item_id, item_subid = get_item_id_and_subid(item_name)
@@ -130,6 +132,51 @@ def alter_treasures(rom: RomData):
     # not drops (see asm/seasons/bomb_bag_behavior)
     set_treasure_data(rom, "Bombs (10)", None, None, 0x90)
 
+def define_static_items_table(assembler: Z80Assembler, patch_data: Dict[str, Any]):
+    # Format is group,room,treasure_id,treasure_subid
+    static_item_replacements_table = [
+        # ------- Freestanding items -------
+        0x01, 0x86, locations["blackTowerHP"]["id"], locations["blackTowerHP"]["subid"],
+        0x04, 0x06, locations["makuPathHP"]["id"], locations["makuPathHP"]["subid"],
+        0x00, 0x8b, locations["yollGraveyardHP"]["id"], locations["yollGraveyardHP"]["subid"],
+        0x05, 0xb1, locations["dekuForestHP"]["id"], locations["dekuForestHP"]["subid"],
+        0x03, 0xaf, locations["restorationWallHP"]["id"], locations["restorationWallHP"]["subid"],
+        0x00, 0x11, locations["symmetryCityHP"]["id"], locations["symmetryCityHP"]["subid"],
+        0x05, 0xc1, locations["ridgeWestHP"]["id"], locations["ridgeWestHP"]["subid"],
+        0x00, 0x0d, locations["ridgeUpperHP"]["id"], locations["ridgeUpperHP"]["subid"],
+        0x06, 0x05, locations["d0Basement"]["id"], locations["d0Basement"]["subid"],
+        0x06, 0x10, locations["d1Basement"]["id"], locations["d1Basement"]["subid"],
+        0x06, 0x28, locations["d2ThwompTunnel"]["id"], locations["d2ThwompTunnel"]["subid"],
+        0x06, 0x27, locations["d2ThwompShelf"]["id"], locations["d2ThwompShelf"]["subid"],
+
+        # ------- Drops / spawned items -------
+        0x04, 0x1e, locations["d1GhiniDrop"]["id"], locations["d1GhiniDrop"]["subid"],
+        0x04, 0x39, locations["d2MoblinDrop"]["id"], locations["d2MoblinDrop"]["subid"],
+        0x04, 0x42, locations["d2StatuePuzzle"]["id"], locations["d2StatuePuzzle"]["subid"],
+        0x04, 0x2e, locations["d2BasementDrop"]["id"], locations["d2BasementDrop"]["subid"],
+        0x04, 0x5e, locations["d3ArmosDrop"]["id"], locations["d3ArmosDrop"]["subid"],
+        0x04, 0x61, locations["d3StatueDrop"]["id"], locations["d3StatueDrop"]["subid"],
+        0x04, 0x64, locations["d3SixBlocDrop"]["id"], locations["d3SixBlocDrop"]["subid"],
+        0x04, 0x4b, locations["d3MoldormDrop"]["id"], locations["d3MoldormDrop"]["subid"],
+        0x04, 0x7b, locations["d4ColorDrop"]["id"], locations["d4ColorDrop"]["subid"],
+        0x05, 0x53, locations["d7CaneDiamondPuzzle"]["id"], locations["d7CaneDiamondPuzzle"]["subid"],
+        0x05, 0x4b, locations["d7FlowerRoom"]["id"], locations["d7FlowerRoom"]["subid"],
+        0x05, 0x55, locations["d7DiamondPuzzle"]["id"], locations["d7DiamondPuzzle"]["subid"]
+    ]
+    
+    if patch_data["options"]["linked_heros_cave"] > 0:
+        static_item_replacements_table.extend([
+            0x04, 0xcd, locations["d11Statue3Puzzle"]["id"], locations["d11Statue3Puzzle"]["subid"]
+        ])
+
+
+    if patch_data["options"]["miniboss_locations"]:
+        static_item_replacements_table.extend([
+            0x04, 0x18, locations["d1Miniboss"]["id"], locations["d1Miniboss"]["subid"],
+            # TODO: Add other miniboss locations
+        ])
+
+    assembler.add_floating_chunk("staticItemsReplacementsTable", static_item_replacements_table)
 
 def get_asm_files(patch_data):
     asm_files = ASM_FILES.copy()
@@ -145,6 +192,8 @@ def get_asm_files(patch_data):
         asm_files.append("asm/conditional/mute_music.yaml")
     if patch_data["options"]["lynna_gardener"]:
         asm_files.append("asm/conditional/lynna_gardener.yaml")
+    if patch_data["options"]["miniboss_locations"]:
+        asm_files.append("asm/conditional/miniboss_locations.yaml")
     if patch_data["options"]["secret_locations"]:
         asm_files.append("asm/conditional/secret_locations.yaml")
     if patch_data["options"]["goal"] == OracleOfAgesGoal.option_beat_ganon:
@@ -172,6 +221,11 @@ def define_location_constants(assembler: Z80Assembler, patch_data):
             item_name = COMPANIONS[patch_data["options"]["animal_companion"]] + "'s Flute"
 
         item_id, item_subid = get_item_id_and_subid(item_name)
+        locations[symbolic_name] = {
+            "fullid": (item_id << 8) + item_subid,
+            "id": item_id,
+            "subid": item_subid
+        }
         assembler.define_byte(f"locations.{symbolic_name}.id", item_id)
         assembler.define_byte(f"locations.{symbolic_name}.subid", item_subid)
         assembler.define_word(f"locations.{symbolic_name}", (item_id << 8) + item_subid)
@@ -277,6 +331,8 @@ def define_text_constants(assembler: Z80Assembler, patch_data: Dict[str, Any], t
     ]
 
     for shop_name in overworld_shops:
+        if shop_name == "Lynna Village: Advance Shop" and not patch_data["options"]["advance_shop"]:
+                continue
         for i in range(1, 4 if shop_name != "Crescent Island (Past): Market" else 3):
             location_name = f"{shop_name} Item #{i}"
             symbolic_name = LOCATIONS_DATA[location_name]["symbolic_name"]

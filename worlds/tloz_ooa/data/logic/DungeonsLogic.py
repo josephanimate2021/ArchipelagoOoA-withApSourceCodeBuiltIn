@@ -34,13 +34,13 @@ def make_d1_logic(player: int):
         ])],
 
         # potentially 3 keys w/ vanilla route
-        ["d1 wide room", "d1 U-room", False, lambda state: all([
+        ["d1 wide room", "d1 miniboss", False, lambda state: all([
             ooa_can_break_bush(state, player),
             ooa_generic_boss_and_miniboss_kill(state, player),
             ooa_has_small_keys(state, player, 1, 3)
         ])],
-        ["d1 west terrace", "d1 U-room", False, None],
-        ["d1 U-room", "d1 basement", False, lambda state: ooa_can_use_ember_seeds(state, player, True)],
+        ["d1 west terrace", "d1 miniboss", False, lambda state: ooa_has_small_keys(state, player, 1, 1)],
+        ["d1 miniboss", "d1 basement", False, lambda state: ooa_can_use_ember_seeds(state, player, True)],
     ]
 
 

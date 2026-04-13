@@ -1,0 +1,17 @@
+# How object data works:
+# The first byte is a type of object. F2 is an interaction object (which is what we are focusing on). 
+  # F4 specifies that you want to spawn in an enemy object. (which means the second and third bytes call an address for the enemy object. Forth and fifth bytes must remain empty)
+# The second byte is the id of the object.
+# The third byte is the subid of the object.
+# The forth byte is the object's Y position
+# The fifth byte is the object's X position
+# Those bytes repeat (starting back at the second byte unless you want to create a new object) until you end the data with the FF byte.
+
+12/6703/: | # Modifies interactions for D1 to add an INTERAC_DUNGEON_STUFF interaction at subid 01 that drops a small key (it's actually a randomized item)
+    db $f2,$1e,$08,$07,$00 ; Adds a door controller interaction
+    db $1e,$0b,$50,$00 ; ^
+    db $20,$02,$58,$78 ; Adds a script interaction for the miniboss
+    db $7e,$00,$58,$78 ; Adds a portal for after the miniboss has been defeated
+    db $f4,$95,$47 ; group4Map18BeforeEventObjectData (which spawns in the enemy)
+    db $f2,INTERAC_DUNGEON_STUFF,$01,$58,$98 ; Adds in the item.
+    db $ff ; Ends the table
