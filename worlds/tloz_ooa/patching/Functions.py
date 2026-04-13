@@ -94,6 +94,24 @@ def make_text_edits(texts: Dict[str, str], patch_data: Dict[str, Any]):
         }⬜!"
     )
 
+    # TRADE ITEMS
+
+    # Poe Clock is fine.
+    # Stationery is fine.
+    texts["TX_005c"] = "You got a \\col(84)🎎\n🟥Stink Bag⬜!\nEww...\nIt stinks!"
+    # tasty meat is fine.
+    # doggie mask is fine.
+    # dumbbell is fine.
+    # cheesy mustache is fine.
+    texts["TX_0061"] = "You got the \\col(84)📢\n🟥Funny Joke⬜!\nWill you be a\nbig hit?"
+    # everything else is fine.
+
+    # TUNES
+    
+    texts["TX_0072"] = "You got the\n🟧Tune of Echoes🟩!\nUse it to\nawaken sleeping\n🟦Time Portals🟩!"
+    texts["TX_000a"] = "You got the\n🟥Tune of\nCurrents⬜!\nUse it to travel\nfrom Past to\nPresent!"
+    texts["TX_000b"] = "You got the\n🟥Tune of Ages⬜!\nUse it to travel\nfrom Present to\nPast!\n or vice-versa"
+
     # TODO: Forgin item implementation
 
 def capWord(wL: str):
