@@ -63,21 +63,41 @@ def set_treasure_data(rom: RomData,
         rom.write_byte(addr + 0x01, param_value)
 
 def make_text_edits(texts: Dict[str, str], patch_data: Dict[str, Any]):
+
+    # Modify sign outside Maku Path (Present) that says the requirement of essences and slates.
     texts["TX_2e0d"] = (
         f"Find {patch_data["options"]["required_essences"]} essences\nto get the Seed.\\stop"
         f"\nFind {patch_data["options"]["required_slates"]} slates\nto beat D8 boss."
     )
+
     # Overwrite town shop card text
     texts["TX_0045"] = "You got\n🟥King Zora's\nMagic Potion⬜!"
+
     # Change name to Linked Hero's Cave
     texts["TX_020b"] = "Linked\nHero's Cave"
+
     # Change d0 name to Maku Path to prevent player confusion
     texts["TX_020d"] = "Maku Path"
+
     # Impa monologue
     texts["TX_012c"] = ("Come see me if\n"
                         "you need a\n"
                         "refill!")
+    # Appraisal text
+    texts["TX_301c"] = ("You got the\n"
+                        "\\call(fd)!")
+    
+    # Replace Ember Seeds text with user's default seed type.
+    texts["TX_002d"] = normalize_text(
+        f"\\pos(02)You got a 🟥Seed Satchel⬜! And it has 20 🟥{
+            SEED_ITEMS[patch_data['options']["default_seed"]]
+        }⬜!"
+    )
+
     # TODO: Forgin item implementation
+
+def capWord(wL: str):
+    return wL[0:1].upper() + wL[1:]
 
 def alter_treasures(rom: RomData):
 
@@ -109,7 +129,7 @@ def get_asm_files(patch_data):
         asm_files.append("asm/conditional/lynna_gardener.yaml")
     if patch_data["options"]["secret_locations"]:
         asm_files.append("asm/conditional/secret_locations.yaml")
-    if patch_data["options"]["goal"] == OraclesGoal.option_beat_ganon:
+    if patch_data["options"]["goal"] == OracleOfAgesGoal.option_beat_ganon:
         asm_files.append("asm/conditional/ganon_goal.yaml")
     if get_settings()["tloz_ooa_options"]["skip_intro_cinematic"]:
         asm_files.append("asm/conditional/intro_cinematic_skip.yaml")
