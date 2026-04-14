@@ -414,15 +414,18 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
         ])],
         ["ridge west past base", "ridge west present", False, lambda state: ooa_can_go_back_to_present(state, player)],
         ["ridge west past base", "goron elder", False, lambda state: state.has("Bomb Flower", player)],
-        ["ridge west present", "ridge west past", False, lambda state: all([
+        ["ridge west present", "ridge west past", False, lambda state: any([
+            ooa_can_switch_past_and_present(state, player),
+            all([
             ooa_can_open_portal(state, player),
             ooa_has_bracelet(state, player)
+            ])
         ])],
         ["ridge west present", "ridge west heartpiece", False, lambda state: ooa_has_bombs(state, player)],
         ["goron elder", "ridge west past", False, None],
         ["ridge west past", "ridge west past base", False, None],
         ["ridge west past", "ridge west tree", False, lambda state: ooa_can_harvest_tree(state, player, False)],
-        ["ridge west present", "ridge west tree", False, lambda state: ooa_can_switch_past_and_present(state, player)],
+
         #########
         ["ridge west past", "ridge west present", False, lambda state: ooa_can_go_back_to_present(state, player)],
         ["ridge upper present", "ridge west present", False, None],
