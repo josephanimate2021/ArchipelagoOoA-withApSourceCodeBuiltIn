@@ -49,12 +49,33 @@ class OracleOfAgesWorld(World):
     seasons = False
     romhack = False
 
+    tracker_world: ClassVar = {
+        "external_pack_key": "ut_pack_path",
+        "map_page_maps": "maps/maps.json",
+        "map_page_locations": [
+            "locations/dungeons.json",
+            "locations/overworld_past.json",
+            "locations/overworld_present.json",
+        ],
+        "poptracker_name_mapping": dict[str, int]
+    }
+
+
     @classmethod
     def version(cls) -> str:
         return cls.world_version.as_simple_string()
 
     def __init__(self, multiworld, player):
+
+        self.tracker_world["poptracker_name_mapping"] = {}
+        for location_name, location_data in LOCATIONS_DATA.items():
+            split = location_name.split(": ")
+            poptrackerName = split[-1] + "/"
+            self.tracker_world["poptracker_name_mapping"][poptrackerName] = self.location_name_to_id[location_name]
+            print(f"{poptrackerName} ({location_name}) => {self.location_name_to_id[location_name]}")
+
         super().__init__(multiworld, player)
+
         self.pre_fill_items = []
         self.dungeon_items = []
         self.dungeon_entrances = DUNGEON_ENTRANCES.copy()
@@ -62,8 +83,6 @@ class OracleOfAgesWorld(World):
 
     def fill_slot_data(self) -> dict:
         # Put options that are useful to the tracker inside slot data
-        # TODO MOAR DATA ?
-
         slot_data = {
             "version": f"{self.version()}",
             "options": self.options.as_dict(
