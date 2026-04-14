@@ -453,8 +453,14 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
         ["ridge upper present", "treasure hunting goron", False, lambda state: all([
             ooa_has_bombs(state, player, 2),
             ooa_has_ember_seeds(state, player),
-            ooa_can_open_portal(state, player),
-            ooa_has_bracelet(state, player)
+            any([
+                all([
+                    ooa_can_open_portal(state, player),
+                    ooa_has_bracelet(state, player)
+                ]),
+                ooa_can_switch_past_and_present(state, player),
+            ])
+
         ])],
         ["ridge upper past", "bomb goron head", False, lambda state: ooa_has_bombs(state, player)],
         ["ridge upper past", "ridge upper heartpiece", False, lambda state: all([
