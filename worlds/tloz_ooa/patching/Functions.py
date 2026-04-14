@@ -171,10 +171,11 @@ def define_static_items_table(assembler: Z80Assembler, patch_data: Dict[str, Any
 
 
     if patch_data["options"]["miniboss_locations"]:
-        static_item_replacements_table.extend([
-            0x04, 0x18, locations["d1Miniboss"]["id"], locations["d1Miniboss"]["subid"],
-            # TODO: Add other miniboss locations
-        ])
+        miniboss_room_bytes = [0x18, 0x34, 0x4d, 0x80, 0xb4, 0x12, 0x4a, 0x82]
+        for i in range(len(miniboss_room_bytes)):
+            group = 0x04 if i <= 4 else 0x07 if i == 6 else 0x05
+            location = locations[f"d{i + 1}Miniboss"]
+            static_item_replacements_table.extend([group, miniboss_room_bytes[i], location["id"], location["subid"]])
 
     assembler.add_floating_chunk("staticItemsReplacementsTable", static_item_replacements_table)
 
@@ -518,7 +519,7 @@ def define_tile_replacements_table(assembler: Z80Assembler, patch_data):
         # 0x00, 0x5d, 0x00, 0x57, 0xf4, # waterblock for preventing the trapped player from escaping into the graveyard
     ]
 
-    if patch_data["options"]["secret_locations"]:
+    if patch_data["options"]["secret_locations"]: # Format is group, room, room flag, position in YX format, and replacement tile byte.
         new_tiles_table.extend([
             0x01, 0xc7, 0x00, 0x48, 0xd0, # add stair tile in sea of storms past to allow players to time travel to the present sea of storms.
             0x03, 0xc7, 0x00, 0x48, 0x2c, # add statue in sea of storms past underwater prevent players from resurfacing on that area.
