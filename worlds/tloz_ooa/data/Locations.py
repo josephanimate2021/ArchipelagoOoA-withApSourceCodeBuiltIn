@@ -1813,7 +1813,7 @@ LOCATIONS_DATA = {
     	"vanilla_item": "Small Key (Jabu Jabu's Belly)",
     	"dungeon" : 7,
         "flag_byte": 0xca4a,
-        "room": 0x074a,
+        "room": 0x054a,
         "collect": COLLECT_TOUCH,
         "conditional": True,
         "symbolic_name": "d7Miniboss"
