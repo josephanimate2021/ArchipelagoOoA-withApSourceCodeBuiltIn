@@ -1,4 +1,4 @@
-from typing import List, Any
+from typing import List, Any, Dict
 
 import os
 import random
@@ -13,6 +13,8 @@ from pathlib import Path
 
 from .. import LOCATIONS_DATA
 from ..Options import *
+
+locations = {}
 
 
 def get_treasure_addr(rom: RomData, item_name: str):
@@ -73,6 +75,52 @@ def alter_treasures(rom: RomData):
     # not drops (see asm/seasons/bomb_bag_behavior)
     set_treasure_data(rom, "Bombs (10)", None, None, 0x90)
 
+def define_static_items_table(assembler: Z80Assembler, patch_data: Dict[str, Any]):
+    # Format is group,room,treasure_id,treasure_subid
+    static_item_replacements_table = [
+        # ------- Freestanding items -------
+        0x01, 0x86, locations["blackTowerHP"]["id"], locations["blackTowerHP"]["subid"],
+        0x04, 0x06, locations["makuPathHP"]["id"], locations["makuPathHP"]["subid"],
+        0x00, 0x8b, locations["yollGraveyardHP"]["id"], locations["yollGraveyardHP"]["subid"],
+        0x05, 0xb1, locations["dekuForestHP"]["id"], locations["dekuForestHP"]["subid"],
+        0x03, 0xaf, locations["restorationWallHP"]["id"], locations["restorationWallHP"]["subid"],
+        0x00, 0x11, locations["symmetryCityHP"]["id"], locations["symmetryCityHP"]["subid"],
+        0x05, 0xc1, locations["ridgeWestHP"]["id"], locations["ridgeWestHP"]["subid"],
+        0x00, 0x0d, locations["ridgeUpperHP"]["id"], locations["ridgeUpperHP"]["subid"],
+        0x06, 0x05, locations["d0Basement"]["id"], locations["d0Basement"]["subid"],
+        0x06, 0x10, locations["d1Basement"]["id"], locations["d1Basement"]["subid"],
+        0x06, 0x28, locations["d2ThwompTunnel"]["id"], locations["d2ThwompTunnel"]["subid"],
+        0x06, 0x27, locations["d2ThwompShelf"]["id"], locations["d2ThwompShelf"]["subid"],
+
+        # ------- Drops / spawned items -------
+        0x04, 0x1e, locations["d1GhiniDrop"]["id"], locations["d1GhiniDrop"]["subid"],
+        0x04, 0x39, locations["d2MoblinDrop"]["id"], locations["d2MoblinDrop"]["subid"],
+        0x04, 0x42, locations["d2StatuePuzzle"]["id"], locations["d2StatuePuzzle"]["subid"],
+        0x04, 0x2e, locations["d2BasementDrop"]["id"], locations["d2BasementDrop"]["subid"],
+        0x04, 0x5e, locations["d3ArmosDrop"]["id"], locations["d3ArmosDrop"]["subid"],
+        0x04, 0x61, locations["d3StatueDrop"]["id"], locations["d3StatueDrop"]["subid"],
+        0x04, 0x64, locations["d3SixBlocDrop"]["id"], locations["d3SixBlocDrop"]["subid"],
+        0x04, 0x4b, locations["d3MoldormDrop"]["id"], locations["d3MoldormDrop"]["subid"],
+        0x04, 0x7b, locations["d4ColorDrop"]["id"], locations["d4ColorDrop"]["subid"],
+        0x05, 0x53, locations["d7CaneDiamondPuzzle"]["id"], locations["d7CaneDiamondPuzzle"]["subid"],
+        0x05, 0x4b, locations["d7FlowerRoom"]["id"], locations["d7FlowerRoom"]["subid"],
+        0x05, 0x55, locations["d7DiamondPuzzle"]["id"], locations["d7DiamondPuzzle"]["subid"]
+    ]
+    
+    if patch_data["options"]["linked_heros_cave"] > 0:
+        static_item_replacements_table.extend([
+            0x04, 0xcd, locations["d11Statue3Puzzle"]["id"], locations["d11Statue3Puzzle"]["subid"]
+        ])
+
+
+    if patch_data["options"]["miniboss_locations"]:
+        miniboss_room_bytes = [0x18, 0x34, 0x4d, 0x80, 0xb4, 0x12, 0x4a, 0x82]
+        for i in range(len(miniboss_room_bytes)):
+            group = 0x04 if i <= 4 else 0x07 if i == 6 else 0x05
+            location = locations[f"d{i + 1}Miniboss"]
+            static_item_replacements_table.extend([group, miniboss_room_bytes[i], location["id"], location["subid"]])
+
+    assembler.add_floating_chunk("staticItemsReplacementsTable", static_item_replacements_table)
 
 def get_asm_files(patch_data):
     asm_files = ASM_FILES.copy()
@@ -88,9 +136,11 @@ def get_asm_files(patch_data):
         asm_files.append("asm/conditional/mute_music.yaml")
     if patch_data["options"]["lynna_gardener"]:
         asm_files.append("asm/conditional/lynna_gardener.yaml")
+    if patch_data["options"]["miniboss_locations"]:
+        asm_files.append("asm/conditional/miniboss_locations.yaml")
     if patch_data["options"]["secret_locations"]:
         asm_files.append("asm/conditional/secret_locations.yaml")
-    if patch_data["options"]["goal"] == OraclesGoal.option_beat_ganon:
+    if patch_data["options"]["goal"] == OracleOfAgesGoal.option_beat_ganon:
         asm_files.append("asm/conditional/ganon_goal.yaml")
     if get_settings()["tloz_ooa_options"]["skip_intro_cinematic"]:
         asm_files.append("asm/conditional/intro_cinematic_skip.yaml")
@@ -115,6 +165,11 @@ def define_location_constants(assembler: Z80Assembler, patch_data):
             item_name = COMPANIONS[patch_data["options"]["animal_companion"]] + "'s Flute"
 
         item_id, item_subid = get_item_id_and_subid(item_name)
+        locations[symbolic_name] = {
+            "fullid": (item_id << 8) + item_subid,
+            "id": item_id,
+            "subid": item_subid
+        }
         assembler.define_byte(f"locations.{symbolic_name}.id", item_id)
         assembler.define_byte(f"locations.{symbolic_name}.subid", item_subid)
         assembler.define_word(f"locations.{symbolic_name}", (item_id << 8) + item_subid)
@@ -410,7 +465,7 @@ def define_tile_replacements_table(assembler: Z80Assembler, patch_data):
         # 0x00, 0x5d, 0x00, 0x57, 0xf4, # waterblock for preventing the trapped player from escaping into the graveyard
     ]
 
-    if patch_data["options"]["secret_locations"]:
+    if patch_data["options"]["secret_locations"]: # Format is group, room, room flag, position in YX format, and replacement tile byte.
         new_tiles_table.extend([
             0x01, 0xc7, 0x00, 0x48, 0xd0, # add stair tile in sea of storms past to allow players to time travel to the present sea of storms.
             0x03, 0xc7, 0x00, 0x48, 0x2c, # add statue in sea of storms past underwater prevent players from resurfacing on that area.
