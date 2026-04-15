@@ -270,7 +270,7 @@ LOCATIONS_DATA = {
         "flag_byte": 0xc6d1,
         "bit_mask": 0x20,
         "room": 0x0038,
-        "collect": COLLECT_TOUCH,
+        "collect": COLLECT_MAKU_TREE,
         "symbolic_name": "rescueNayru",
     },
     ##########################################
