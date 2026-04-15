@@ -74,7 +74,7 @@ def alter_treasures(rom: RomData):
     # not drops (see asm/seasons/bomb_bag_behavior)
     set_treasure_data(rom, "Bombs (10)", None, None, 0x90)
 
-def define_static_items_table(assembler: Z80Assembler, patch_data: Dict[str, Any]):
+def define_static_items_table(assembler: Z80Assembler, patch_data: dict[str, Any]):
     # Format is group,room,treasure_id,treasure_subid
     static_item_replacements_table = [
         # ------- Freestanding items -------
@@ -154,9 +154,12 @@ def define_location_constants(assembler: Z80Assembler, patch_data):
 
         item_id, item_subid = get_item_id_and_subid(item_name)
         locations[symbolic_name] = {}
-        assembler.define_byte(f"locations.{symbolic_name}.id", locations[symbolic_name]["id"] = item_id)
-        assembler.define_byte(f"locations.{symbolic_name}.subid", locations[symbolic_name]["subid"] = item_subid)
-        assembler.define_word(f"locations.{symbolic_name}", locations[symbolic_name]["fullid"] = (item_id << 8) + item_subid)
+        locations[symbolic_name]["id"] = item_id
+        locations[symbolic_name]["subid"] = item_subid
+        locations[symbolic_name]["fullid"] = (item_id << 8) + item_subid
+        assembler.define_byte(f"locations.{symbolic_name}.id", locations[symbolic_name]["id"])
+        assembler.define_byte(f"locations.{symbolic_name}.subid", locations[symbolic_name]["subid"])
+        assembler.define_word(f"locations.{symbolic_name}", locations[symbolic_name]["fullid"])
 
         
 def define_option_constants(assembler: Z80Assembler, patch_data):
