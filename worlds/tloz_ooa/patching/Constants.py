@@ -567,7 +567,7 @@ DUNGEON_ENTRANCES = {
         "addr": GameboyAddress(0x04, 0x770c).address_in_rom(),
         "map_tile": 0x048,
         "room": 0x48,
-        "group": 0x01,
+        "group": 0x00,
         "position": 0x28,
         "shifted": False,
         "default":"d11"
