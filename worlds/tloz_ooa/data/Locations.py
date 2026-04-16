@@ -313,7 +313,7 @@ LOCATIONS_DATA = {
         "flag_byte": 0xc6d1,
         "bit_mask": 0x20,
         "room": 0x0038,
-        "collect": COLLECT_TOUCH,
+        "collect": COLLECT_MAKU_TREE,
         "symbolic_name": "rescueNayru",
     },
     ##########################################
@@ -1810,7 +1810,7 @@ LOCATIONS_DATA = {
     },
     "Jabu-Jabu's Belly (1F): Miniboss": {
     	"region_id": "d7 miniboss",
-    	"vanilla_item": "Small Key (Jabu Jabu's Belly)",
+    	"vanilla_item": "Small Key (Jabu-Jabu's Belly)",
     	"dungeon" : 7,
         "flag_byte": 0xca4a,
         "room": 0x74a,

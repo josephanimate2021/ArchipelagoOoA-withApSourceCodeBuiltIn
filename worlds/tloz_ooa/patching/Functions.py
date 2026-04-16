@@ -16,7 +16,6 @@ from ..Options import *
 
 locations = {}
 
-
 def get_treasure_addr(rom: RomData, item_name: str):
     item_id, item_subid = get_item_id_and_subid(item_name)
     addr = 0x59332 + (item_id * 4)
@@ -75,7 +74,7 @@ def alter_treasures(rom: RomData):
     # not drops (see asm/seasons/bomb_bag_behavior)
     set_treasure_data(rom, "Bombs (10)", None, None, 0x90)
 
-def define_static_items_table(assembler: Z80Assembler, patch_data: Dict[str, Any]):
+def define_static_items_table(assembler: Z80Assembler, patch_data: dict[str, Any]):
     # Format is group,room,treasure_id,treasure_subid
     static_item_replacements_table = [
         # ------- Freestanding items -------
@@ -111,7 +110,6 @@ def define_static_items_table(assembler: Z80Assembler, patch_data: Dict[str, Any
         static_item_replacements_table.extend([
             0x04, 0xcd, locations["d11Statue3Puzzle"]["id"], locations["d11Statue3Puzzle"]["subid"]
         ])
-
 
     if patch_data["options"]["miniboss_locations"]:
         miniboss_room_bytes = [0x18, 0x34, 0x4d, 0x80, 0xb4, 0x12, 0x4a, 0x82]

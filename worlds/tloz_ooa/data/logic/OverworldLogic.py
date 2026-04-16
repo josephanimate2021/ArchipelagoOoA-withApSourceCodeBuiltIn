@@ -102,12 +102,14 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
             ]),
             all([
                 ooa_option_medium_logic(state, player),
+                ooa_has_feather(state, player),
                 ooa_has_sword(state, player, False),
                 any([
                     # all seeds damage Twinrova phase 2
                     ooa_has_seedshooter(state, player),
                     all([
                         ooa_option_hard_logic(state, player),
+                        ooa_has_feather(state, player),
                         ooa_can_use_seeds(state, player),
                         # satchel can't use pegasus to damage, but all others work
                         any([
@@ -425,9 +427,12 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
         ])],
         ["ridge west past base", "ridge west present", False, lambda state: ooa_can_go_back_to_present(state, player)],
         ["ridge west past base", "goron elder", False, lambda state: state.has("Bomb Flower", player)],
-        ["ridge west present", "ridge west past", False, lambda state: all([
+        ["ridge west present", "ridge west past", False, lambda state: any([
+            ooa_can_switch_past_and_present(state, player),
+            all([
             ooa_can_open_portal(state, player),
             ooa_has_bracelet(state, player)
+            ])
         ])],
         ["ridge west present", "ridge west heartpiece", False, lambda state: any([
             ooa_has_bombs(state, player),
@@ -436,7 +441,7 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
         ["goron elder", "ridge west past", False, None],
         ["ridge west past", "ridge west past base", False, None],
         ["ridge west past", "ridge west tree", False, lambda state: ooa_can_harvest_tree(state, player, False)],
-        ["ridge west present", "ridge west tree", False, lambda state: ooa_can_switch_past_and_present(state, player)],
+
         #########
         ["ridge west past", "ridge west present", False, lambda state: ooa_can_go_back_to_present(state, player)],
         ["ridge upper present", "ridge west present", False, None],
@@ -467,8 +472,14 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
         ["ridge upper present", "treasure hunting goron", False, lambda state: all([
             ooa_has_bombs(state, player, 2),
             ooa_has_ember_seeds(state, player),
-            ooa_can_open_portal(state, player),
-            ooa_has_bracelet(state, player)
+            any([
+                all([
+                    ooa_can_open_portal(state, player),
+                    ooa_has_bracelet(state, player)
+                ]),
+                ooa_can_switch_past_and_present(state, player),
+            ])
+
         ])],
         ["ridge upper past", "bomb goron head", False, lambda state: any([
             ooa_has_bombs(state, player),
