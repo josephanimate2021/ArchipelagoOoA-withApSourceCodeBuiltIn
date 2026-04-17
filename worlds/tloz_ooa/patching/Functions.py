@@ -423,7 +423,7 @@ def set_dungeon_warps(rom: RomData, patch_data):
                     intoout_warp_room,
                     intoout_warp_flag, 
                     intoout_warp_position, 
-                    (intoout_warp_group * 10) + 0x03
+                    (intoout_warp_group * 0x10) + 0x03
                 ])
             else:
                 rom.write_bytes(0x2874f + ((dungeon_number - 1) * 4), [

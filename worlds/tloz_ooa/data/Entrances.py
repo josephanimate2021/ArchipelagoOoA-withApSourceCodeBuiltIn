@@ -108,6 +108,7 @@ WARPS_DATA = {
         "present": True,
         "dungeon": 7,
         "is_deadend": True,
+        "underwater": True,
     },
     "d8": {
         "outside_warp": 0x7730,

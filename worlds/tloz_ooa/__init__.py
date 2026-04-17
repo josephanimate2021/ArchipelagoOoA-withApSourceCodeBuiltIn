@@ -100,9 +100,8 @@ class OracleOfAgesWorld(World):
             print(getattr(self.options, "linked_heros_cave"))
             self.shuffled_entrances = {}
             for warpName, warpData in WARPS_DATA.items():
-                #if "dungeon" not in warpData:
-                #    continue; 
-
+                if "dungeon" not in warpData: # Not a dungeon, skip it
+                    continue; 
                 if "require_option" not in warpData or hasattr(self.options, warpData["require_option"]) and getattr(self.options, warpData["require_option"]):
                     self.shuffled_entrances[warpName] = warpName
             self.shuffle_entrances()
