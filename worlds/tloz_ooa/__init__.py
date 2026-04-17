@@ -12,6 +12,7 @@ from .Options import *
 from .generation.PatchWriter import ooa_create_appp_patch
 from .data import LOCATIONS_DATA
 from .data.Constants import *
+from .data.Entrances import *
 from .data.Regions import *
 from .Client import OracleOfAgesClient  # Unused, but required to register with BizHawkClient
 from .Settings import OOASettings
@@ -37,7 +38,7 @@ class OracleOfAgesWorld(World):
 
     pre_fill_items: List[Item]
     dungeon_items: List[Item]
-    dungeon_entrances: Dict[str, str]
+    shuffled_entrances: Dict[str, str]
     shop_prices: Dict[str, int]
 
     settings: ClassVar[OOASettings]
@@ -55,7 +56,6 @@ class OracleOfAgesWorld(World):
         super().__init__(multiworld, player)
         self.pre_fill_items = []
         self.dungeon_items = []
-        self.dungeon_entrances = DUNGEON_ENTRANCES.copy()
         self.shop_prices = SHOP_PRICES_DIVIDERS.copy()
 
     def fill_slot_data(self) -> dict:
@@ -69,7 +69,7 @@ class OracleOfAgesWorld(World):
         ])
         slot_data["animal_companion"] = COMPANIONS[self.options.animal_companion.value]
         slot_data["default_seed"] = SEED_ITEMS[self.options.default_seed.value]
-        slot_data["dungeon_entrances"] = self.dungeon_entrances
+        slot_data["shuffled_entrances"] = self.shuffled_entrances
 
         return slot_data
     
@@ -96,13 +96,19 @@ class OracleOfAgesWorld(World):
         if len(conflicting_rings) > 0:
             raise OptionError("Required Rings and Excluded Rings contain the same element(s)", conflicting_rings)
         
-        if self.options.linked_heros_cave.value > 0:
-            self.dungeon_entrances["d11 entrance"] = "enter d11"
+        if self.options.shuffle_dungeons:
+            print(getattr(self.options, "linked_heros_cave"))
+            self.shuffled_entrances = {}
+            for warpName, warpData in WARPS_DATA.items():
+                #if "dungeon" not in warpData:
+                #    continue; 
+
+                if "require_option" not in warpData or hasattr(self.options, warpData["require_option"]) and getattr(self.options, warpData["require_option"]):
+                    self.shuffled_entrances[warpName] = warpName
+            self.shuffle_entrances()
         
         self.restrict_non_local_items()
 
-        if self.options.shuffle_dungeons:
-            self.shuffle_dungeons()
 
         self.randomize_shop_prices()
 
@@ -120,14 +126,18 @@ class OracleOfAgesWorld(World):
             self.options.non_local_items.value -= set(["Slate"])
 
     
-    def shuffle_dungeons(self):
-        shuffled_dungeons = list(self.dungeon_entrances.values())
-        while True:
-            self.random.shuffle(shuffled_dungeons)
-            if shuffled_dungeons[4] != "enter d0": # Ensure D4 entrance doesn't lead to d0
-                break
+    def shuffle_entrances(self):
+        shuffled = list(self.shuffled_entrances.values())
+        deadendCheckIndex = [shuffled.index(name) for name in shuffled if "must_lead_to_deadend" in WARPS_DATA[name] and WARPS_DATA[name]["must_lead_to_deadend"]]
+        mustShuffle = True
+        while mustShuffle:
+            mustShuffle = False
+            self.random.shuffle(shuffled)
+            for deadendIndex in deadendCheckIndex:
+                if "is_deadend" not in WARPS_DATA[shuffled[deadendIndex]] or WARPS_DATA[shuffled[deadendIndex]]["is_deadend"] is False: # Ensure D4 entrance doesn't lead to d0 for example
+                    mustShuffle = True
         
-        self.dungeon_entrances = dict(zip(self.dungeon_entrances, shuffled_dungeons))
+        self.shuffled_entrances = dict(zip(self.shuffled_entrances, shuffled))
 
     def randomize_shop_prices(self):
         prices_pool = get_prices_pool()
@@ -172,9 +182,9 @@ class OracleOfAgesWorld(World):
         # Create regions
         regions = REGIONS.copy()
 
-        if self.options.linked_heros_cave.value > 0:
-            for region_name in D11_REGIONS:
-                regions.append(region_name)
+        for warpName, warpData in WARPS_DATA.items():
+            regions.append(OUTSIDE_TAG + warpName)
+            regions.append(INSIDE_TAG + warpName)
 
         for region_name in regions:
             region = Region(region_name, self.player, self.multiworld)
@@ -388,7 +398,7 @@ class OracleOfAgesWorld(World):
     def pre_fill(self) -> None:
         from .generation.PreFill import pre_fill
         pre_fill(self)
-            
+                
 
     def get_filler_item_name(self) -> str:
         FILLER_ITEM_NAMES = [
@@ -409,8 +419,8 @@ class OracleOfAgesWorld(World):
         return
 
     def write_spoiler(self, spoiler_handle):
-        spoiler_handle.write(f"Apworld version : {self.version()}")
+        spoiler_handle.write(f"Apworld version : {self.version()}\n")
         if self.options.shuffle_dungeons != "vanilla":
-            spoiler_handle.write(f"\nDungeon Entrances ({self.multiworld.player_name[self.player]}):\n")
-            for entrance, dungeon in self.dungeon_entrances.items():
-                spoiler_handle.write(f"\t- {entrance} --> {dungeon.replace('enter ', '')}\n")
+            spoiler_handle.write(f"Shuffled Entrances ({self.multiworld.player_name[self.player]}):\n")
+            for entrance, dungeon in self.shuffled_entrances.items():
+                spoiler_handle.write(f"\t- outside {entrance} --> inside {dungeon}\n")

@@ -1,10 +1,10 @@
 from .LogicPredicates import *
-
+from ..Entrances import *
 
 def make_d0_logic(player: int):
     return [
-        ["enter d0", "d0 key chest", False, lambda state: ooa_can_kill_normal_enemy(state, player)],
-        ["enter d0", "d0 behind the door", True, lambda state: ooa_has_small_keys(state, player, 0, 1)],
+        [INSIDE_TAG + "d0", "d0 key chest", False, lambda state: ooa_can_kill_normal_enemy(state, player)],
+        [INSIDE_TAG + "d0", "d0 behind the door", True, lambda state: ooa_has_small_keys(state, player, 0, 1)],
         ["d0 behind the door", "d0 basement", False, None],
         ["d0 behind the door", "maku path heartpiece", False, lambda state: ooa_can_kill_normal_enemy(state, player)],
         ["d0 behind the door", "d0 exit", True, lambda state: ooa_can_kill_normal_enemy(state, player)],
@@ -13,15 +13,15 @@ def make_d0_logic(player: int):
 def make_d1_logic(player: int):
     return [
         # 0 keys
-        ["enter d1", "d1 east terrace", False, lambda state: ooa_can_kill_normal_enemy(state, player, True)],
+        [INSIDE_TAG + "d1", "d1 east terrace", False, lambda state: ooa_can_kill_normal_enemy(state, player, True)],
         ["d1 east terrace", "d1 ghini drop", False, None],
         ["d1 east terrace", "d1 crossroad", False, None],
         ["d1 east terrace", "d1 crystal room", False, lambda state: all([
             ooa_can_use_ember_seeds(state, player, False),
             ooa_can_break_crystal(state, player)
         ])],
-        ["enter d1", "d1 west terrace", False, lambda state: ooa_can_break_pot(state, player)],
-        ["enter d1", "d1 pot chest", False, lambda state: ooa_can_break_pot(state, player)],
+        [INSIDE_TAG + "d1", "d1 west terrace", False, lambda state: ooa_can_break_pot(state, player)],
+        [INSIDE_TAG + "d1", "d1 pot chest", False, lambda state: ooa_can_break_pot(state, player)],
 
         # 2 keys => Risk of softlock if we require only one key. 
         ["d1 ghini drop", "d1 wide room", False, lambda state: ooa_has_small_keys(state, player, 1, 2)],
@@ -47,20 +47,20 @@ def make_d1_logic(player: int):
 def make_d2_logic(player: int):
     return [
         # 0 keys
-        ["enter d2", "d2 bombed terrace", False, lambda state: all([
+        [INSIDE_TAG + "d2", "d2 bombed terrace", False, lambda state: all([
             ooa_can_kill_spiked_beetle(state, player),
             any([
                 ooa_has_bombs(state, player),
                 ooa_has_bombchus(state, player)
             ])
         ])],
-        ["enter d2", "d2 moblin drop", False, lambda state: all([
+        [INSIDE_TAG + "d2", "d2 moblin drop", False, lambda state: all([
             ooa_can_kill_spiked_beetle(state, player),
             ooa_can_kill_normal_enemy(state, player)
         ])],
 
         # potentially 2 keys w/ vanilla route 
-        ["enter d2", "d2 miniboss", False, lambda state: any([
+        [INSIDE_TAG + "d2", "d2 miniboss", False, lambda state: any([
                 all([
                     ooa_has_small_keys(state, player, 2, 2),
                     ooa_can_kill_normal_enemy(state, player, True, True)
@@ -129,11 +129,11 @@ def make_d2_logic(player: int):
         ])],
 
         # 4 keys
-        ["enter d2", "d2 rope room", False, lambda state: all([
+        [INSIDE_TAG + "d2", "d2 rope room", False, lambda state: all([
             ooa_can_kill_normal_enemy(state, player, True, True),
             ooa_has_small_keys(state, player, 2, 4),
         ])],
-        ["enter d2", "d2 ladder chest", False, lambda state: all([
+        [INSIDE_TAG + "d2", "d2 ladder chest", False, lambda state: all([
             ooa_can_kill_normal_enemy(state, player, True),
             ooa_has_small_keys(state, player, 2, 4),
             any([
@@ -158,7 +158,7 @@ def make_d3_logic(player: int):
     return [
         
         # 0 keys
-        ["enter d3", "d3 pols voice chest", False, lambda state: any([
+        [INSIDE_TAG + "d3", "d3 pols voice chest", False, lambda state: any([
             ooa_has_bombs(state, player),
             ooa_has_bombchus(state, player)
         ])],
@@ -167,7 +167,7 @@ def make_d3_logic(player: int):
             ooa_can_kill_pols_voice(state, player)
         ])],
 
-        ["enter d3", "d3 1F spinner", False, lambda state: any([
+        [INSIDE_TAG + "d3", "d3 1F spinner", False, lambda state: any([
             ooa_can_kill_moldorm(state, player, True),
             ooa_has_bracelet(state, player)
         ])],
@@ -182,7 +182,7 @@ def make_d3_logic(player: int):
         ])],
 
         # 1 key
-        ["enter d3", "d3 pitfall", False, lambda state: ooa_has_small_keys(state, player, 3, 1)],
+        [INSIDE_TAG + "d3", "d3 pitfall", False, lambda state: ooa_has_small_keys(state, player, 3, 1)],
         # TODO : d3 seeds from bridge room: [enter d3, d3 small key, seed item, or: [sword, fool's ore, bombs]]
         ["d3 pitfall", "d3 W crystal", False, lambda state: ooa_can_kill_pols_voice(state, player, True)],
         # you can clip into the blocks enough to hit this crystal with switch hook
@@ -318,7 +318,7 @@ def make_d3_logic(player: int):
         ])],
 
         # 3 keys
-        ["enter d3", "d3 bush beetle room", False, lambda state: all([
+        [INSIDE_TAG + "d3", "d3 bush beetle room", False, lambda state: all([
             ooa_can_kill_normal_enemy(state, player, True),
             ooa_has_small_keys(state, player, 3, 3),
         ])],
@@ -332,7 +332,7 @@ def make_d3_logic(player: int):
 
 def make_d4_logic(player: int):
     return [
-        ["enter d4", "d4 first chest", False, lambda state: all([
+        [INSIDE_TAG + "d4", "d4 first chest", False, lambda state: all([
             any([
                 ooa_can_kill_stalfos(state, player),
                 ooa_can_push_enemy(state, player)
@@ -348,7 +348,7 @@ def make_d4_logic(player: int):
         # before the others, effectively adding +1 key requirement to most checks)
 
         # 1 keys
-        ["enter d4", "d4 minecart A", False, lambda state: all([
+        [INSIDE_TAG + "d4", "d4 minecart A", False, lambda state: all([
             ooa_has_small_keys(state, player, 4, 1),
             ooa_can_jump_1_wide_liquid(state, player, False)
         ])],
@@ -435,7 +435,7 @@ def make_d5_logic(player: int):
 
 
         # 0 keys
-        ["enter d5", "d5 switch A", False, lambda state: all([
+        [INSIDE_TAG + "d5", "d5 switch A", False, lambda state: all([
             ooa_can_kill_normal_enemy(state, player),
             any([
                 ooa_can_trigger_switch(state, player),
@@ -563,7 +563,7 @@ def make_d5_logic(player: int):
 
 def make_d6past_logic(player: int):
     return [
-        ["enter d6 past", "d6 wall A bombed", False, lambda state: any([
+        [INSIDE_TAG + "d6 past", "d6 wall A bombed", False, lambda state: any([
             ooa_has_bombs(state, player),
             ooa_has_bombchus(state, player)
         ])],
@@ -580,7 +580,7 @@ def make_d6past_logic(player: int):
             ooa_can_dive(state, player),
             ooa_can_kill_underwater(state, player, True),
         ])],
-        ["enter d6 past", "d6 past color room", False, lambda state: all([
+        [INSIDE_TAG + "d6 past", "d6 past color room", False, lambda state: all([
             ooa_can_kill_normal_enemy(state, player, True),
             any([
                 ooa_has_feather(state, player),
@@ -590,7 +590,7 @@ def make_d6past_logic(player: int):
                 ])
             ])
         ])],
-        ["enter d6 past", "d6 past stalfos chest", False, lambda state: all([
+        [INSIDE_TAG + "d6 past", "d6 past stalfos chest", False, lambda state: all([
             ooa_can_use_ember_seeds(state, player, False),
             any([
                 ooa_option_hard_logic(state, player),
@@ -604,7 +604,7 @@ def make_d6past_logic(player: int):
         ])],
 
         # past, 1 key
-        ["enter d6 past", "d6 wall B bombed", False, lambda state: all([
+        [INSIDE_TAG + "d6 past", "d6 wall B bombed", False, lambda state: all([
             ooa_has_cane(state, player),
             ooa_has_bracelet(state, player),
             ooa_can_jump_1_wide_pit(state, player, False),
@@ -641,8 +641,8 @@ def make_d6past_logic(player: int):
 
 def make_d6present_logic(player: int):
     return [
-        ["enter d6 present", "d6 present diamond chest", False, lambda state: ooa_has_switch_hook(state, player)],
-        ["enter d6 present", "d6 present orb room", False, lambda state: any([
+        [INSIDE_TAG + "d6 present", "d6 present diamond chest", False, lambda state: ooa_has_switch_hook(state, player)],
+        [INSIDE_TAG + "d6 present", "d6 present orb room", False, lambda state: any([
             ooa_can_swim(state, player, False),
             ooa_can_jump_3_wide_liquid(state, player),
             ooa_has_switch_hook(state, player),
@@ -689,7 +689,7 @@ def make_d6present_logic(player: int):
             ])
         ])],
         
-        ["enter d6 present", "d6 present beamos chest", False, lambda state: all([
+        [INSIDE_TAG + "d6 present", "d6 present beamos chest", False, lambda state: all([
             state.has("_d6_canal_expanded", player),
             ooa_has_feather(state, player),
             any([
@@ -710,7 +710,7 @@ def make_d6present_logic(player: int):
             ooa_has_small_keys(state, player, 6, 3),
         ])],
 
-        ["enter d6 present", "d6 present channel chest", False, lambda state: all([
+        [INSIDE_TAG + "d6 present", "d6 present channel chest", False, lambda state: all([
             state.has("_d6_canal_expanded", player),
             ooa_has_switch_hook(state, player),
             ooa_has_small_keys(state, player, 6, 3),
@@ -740,9 +740,9 @@ def make_d7_logic(player: int):
         # suit but would prevent you from surfacing a level up, since you would
         # instantly drown then. This was changed in NG; now you're prevented from
         # entering the dungeon without the mermaid suit.
-        # Be careful never to use the "enter d7" node for the purpose of logic, always
-        # use "enter d7 with suit".
-        ["enter d7", "enter d7 with suit", False, lambda state: ooa_can_dive(state, player)],
+        # Be careful never to use the INSIDE_TAG + "d7" node for the purpose of logic, always
+        # use 'enter d7 with suit".
+        [INSIDE_TAG + "d7", "enter d7 with suit", False, lambda state: ooa_can_dive(state, player)],
 
         # 0 keys
         ["enter d7 with suit", "d7 spike chest", False, None],
@@ -817,7 +817,7 @@ def make_d7_logic(player: int):
 def make_d8_logic(player: int):
     return [
         
-        ["enter d8", "d8 1f single chest", False, lambda state: all([
+        [INSIDE_TAG + "d8", "d8 1f single chest", False, lambda state: all([
             any([
                 ooa_has_bombs(state, player),
                 ooa_has_bombchus(state, player)
@@ -879,7 +879,7 @@ def make_d8_logic(player: int):
 
 def make_d11_logic(player: int):
     return [
-        ["enter d11", "d11 pots puzzle 1", False, lambda state: all([
+        [INSIDE_TAG + "d11", "d11 pots puzzle 1", False, lambda state: all([
             # Entracne Stuff
             ooa_has_bracelet(state, player),
             ooa_can_use_ember_seeds(state, player, True),

@@ -1,3 +1,5 @@
+# NOTE ! this array is completed with the content of WARPS_DATA in Entrance.py (outside <WARPNAME> and inside <WARPNAME>)
+
 REGIONS = [
     "Menu",
     #######
@@ -376,9 +378,8 @@ REGIONS = [
     "symmetry city heartpiece",
     "ridge west heartpiece",
     "ridge upper heartpiece",
-]
-
-D11_REGIONS = [
+    
+    ## D11, never used if the option is not set, but we can keep the region in the same array as the others
     "d11 entrance",
     "enter d11",
     "d11 pots puzzle 1",

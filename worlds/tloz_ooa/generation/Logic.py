@@ -11,9 +11,11 @@ if TYPE_CHECKING:
 def create_connections(world: "OracleOfAgesWorld"):
     multiworld = world.multiworld
     player = world.player
-    dungeon_entrances = []
-    for reg1, reg2 in multiworld.worlds[player].dungeon_entrances.items():
-        dungeon_entrances.append([reg1, reg2, True, None])
+    shuffled_entrances = []
+    for reg1, reg2 in multiworld.worlds[player].shuffled_entrances.items():
+
+        shuffled_entrances.append([OUTSIDE_TAG + reg1, INSIDE_TAG + reg2, True, None])
+
 
     all_logic = [
         make_overworld_logic(player, world.options),
@@ -32,7 +34,7 @@ def create_connections(world: "OracleOfAgesWorld"):
     if world.options.linked_heros_cave.value > 0:
         all_logic.append(make_d11_logic(player))
 
-    all_logic.append(dungeon_entrances)
+    all_logic.append(shuffled_entrances)
 
     # Check unreachable regions
     unused_region = REGIONS.copy()
