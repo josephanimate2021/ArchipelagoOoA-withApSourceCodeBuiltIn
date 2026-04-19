@@ -371,7 +371,7 @@ def set_dungeon_warps(rom: RomData, patch_data):
                 entrance["room"], 
                 0x0e if entrance["shifted"] else 0x01, 
                 entrance["position"], 
-                (entrance["group"] * 10) + 0x03
+                (entrance["group"] * 0x10) + 0x03
             ])
         else:
             rom.write_bytes(0x2874f + (i * 4), [
