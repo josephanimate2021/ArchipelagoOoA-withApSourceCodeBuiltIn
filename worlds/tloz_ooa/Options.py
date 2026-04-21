@@ -160,4 +160,4 @@ class OracleOfAgesOptions(PerGameCommonOptions):
     shop_prices_factor: OracleOfAgesPricesFactor
     advance_shop: OraclesAdvanceShop
     combat_difficulty: OraclesCombatDifficulty
-    death_link: DeathLink
+    death_link: OraclesDeathLink
