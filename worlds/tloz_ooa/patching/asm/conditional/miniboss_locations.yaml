@@ -1,0 +1,23 @@
+# How object data works:
+# The first byte is a type of object. F2 is an interaction object (which is what we are focusing on). 
+  # F4 specifies that you want to spawn in an enemy object. (which means the second and third bytes call an address for the enemy object. Forth and fifth bytes must remain empty)
+  # F3 specifies that you want an object pointer (same byte case as F4)
+# The second byte is the id of the object.
+# The third byte is the subid of the object.
+# The forth byte is the object's Y position
+# The fifth byte is the object's X position
+# Those bytes repeat (starting back at the second byte unless you want to create a new object) until you end the data with the FF byte.
+
+12/6710/: db $12,$01,$58,$98 # Adds the item next to the miniboss portal
+12/683e/: db $12,$01,$58,$98 # ^
+12/6954/: db $12,$01,$58,$98 # ^
+12/6b79/: db $12,$01,$58,$98 # ^
+12/6d48/: db $12,$01,$58,$98 # ^
+12/6f19/: db $12,$01,$58,$98 # ^
+12/7246/: db $12,$01,$58,$98 # ^
+
+12/70cb/: | # special case for D7
+    db $f2,$90,$0b,$08,$d8 ; adds MISC_PUZZLES interaction
+    db $12,$01,$88,$78 ; adds the item
+    db $f4,$7a,$51 ; group5Map4aBeforeEventObjectData (which spawns the enemy)
+    db $ff ; Ends the table

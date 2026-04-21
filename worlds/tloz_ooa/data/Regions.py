@@ -61,6 +61,7 @@ REGIONS = [
 
     #######
     "crescent past west",
+    "tokay stolen shovel",
     "tokay crystal cave",
     "crescent past east",
     "tokay bomb cave",
@@ -201,6 +202,7 @@ REGIONS = [
     "d1 ghini drop",
     "d1 U-room",
     "d1 basement",
+    "d1 miniboss",
     "d1 boss",
     #######
     "enter d2",
@@ -217,6 +219,7 @@ REGIONS = [
     "d2 basement",
     "d2 basement chest",
     "d2 basement drop",
+    "d2 miniboss",
     "d2 boss",
     #######
     "enter d3",
@@ -244,6 +247,7 @@ REGIONS = [
     "d3 crossing bridge room 2",
     #"d3 scent seed bush",
     "d3 post-subterror",
+    "d3 miniboss",
     "d3 boss",
     #######
     "enter d4",
@@ -260,6 +264,7 @@ REGIONS = [
     'd4 first crystal switch',
     'd4 color tile drop',
     'd4 large floor puzzle',
+    "d4 miniboss",
     'd4 boss',
     #######
     "enter d5",
@@ -275,6 +280,7 @@ REGIONS = [
     "d5 two-statue puzzle",
     "d5 dark room",
     "d5 six-statue puzzle",
+    "d5 miniboss",
     "d5 boss",
     #######
     "enter d6 present",
@@ -288,6 +294,7 @@ REGIONS = [
     "d6 present beamos chest",
     "d6 present cube chest",
     "d6 present channel chest",
+    "d6 miniboss",
     #######
     "enter d6 past",
     "d6 wall A bombed",
@@ -320,6 +327,7 @@ REGIONS = [
     "d7 hallway chest",
     "d7 post-hallway chest",
     "d7 terrace",
+    "d7 miniboss",
     "d7 boss",
     #######
     "enter d8",
@@ -338,6 +346,7 @@ REGIONS = [
     'd8 tile room',
     'd8 stalfos',
     'd8 b3f single chest',
+    "d8 miniboss",
     'd8 boss',
     #######
     "veran beaten",

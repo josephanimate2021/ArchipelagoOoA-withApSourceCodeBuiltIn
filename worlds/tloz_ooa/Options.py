@@ -34,6 +34,15 @@ class OracleOfAgesRequiredSlates(Range):
     include_in_slot_data = True
     include_in_patch = True
 
+class OracleOfAgesMinibossLocations(Toggle):
+    """
+    When enabled, all minibosses will have a check that you will need to get each time they are defeated.
+    """
+    display_name = "Miniboss Locations"
+
+    include_in_patch = True
+    include_in_slot_data = True
+
 class OracleOfAgesWarpToStartLocation(Choice):
     """
     This option changes the spot you warp in when you press select or start, A, and B buttons to warp back to the forest of time.
@@ -135,6 +144,7 @@ class OracleOfAgesOptions(PerGameCommonOptions):
     required_essences: OraclesRequiredEssences
     required_slates: OracleOfAgesRequiredSlates
     warp_to_start_location: OracleOfAgesWarpToStartLocation
+    miniboss_locations: OracleOfAgesMinibossLocations
     animal_companion: OraclesAnimalCompanion
     default_seed: OraclesDefaultSeedType
     linked_heros_cave: OracleOfAgesLinkedHerosCave

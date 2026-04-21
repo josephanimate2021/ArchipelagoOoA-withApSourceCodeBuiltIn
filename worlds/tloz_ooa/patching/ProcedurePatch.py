@@ -48,6 +48,7 @@ class OoAPatchExtensions(APPatchExtension):
         for symbolic_name, price in patch_data["shop_prices"].items():
             assembler.define_byte(f"shopPrices.{symbolic_name}", RUPEE_VALUES[price])
         define_location_constants(assembler, patch_data)
+        define_static_items_table(assembler, patch_data)
         define_option_constants(assembler, patch_data)
         # set_faq_text(assembler)
         define_text_constants(assembler, patch_data)
@@ -64,7 +65,7 @@ class OoAPatchExtensions(APPatchExtension):
         for file_path in get_asm_files(patch_data):
             data_loaded = yaml.safe_load(pkgutil.get_data(__name__, file_path))
             for metalabel, contents in data_loaded.items():
-                assembler.add_block(Z80Block(metalabel, contents))
+                assembler.add_block(Z80Block(metalabel, contents, file_path))
         assembler.compile_all()
         for block in assembler.blocks:
             rom_data.write_bytes(block.addr.address_in_rom(), block.byte_array)

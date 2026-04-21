@@ -313,7 +313,7 @@ LOCATIONS_DATA = {
         "flag_byte": 0xc6d1,
         "bit_mask": 0x20,
         "room": 0x0038,
-        "collect": COLLECT_TOUCH,
+        "collect": COLLECT_MAKU_TREE,
         "symbolic_name": "rescueNayru",
     },
     ##########################################
@@ -508,6 +508,14 @@ LOCATIONS_DATA = {
         "room": 0x05ca,
         "map_tile": 0x1bb,
         "collect": COLLECT_CHEST,
+    },
+    "Crescent Island (Past): Tokay's Stolen Shovel": {
+        "region_id": "tokay stolen shovel",
+        "vanilla_item": "Bombs (10)", # Originally you would get your shovel back, but that ain't progressive is it.
+        "flag_byte": 0xc8cb,
+        "room": 0x01cb,
+        "collect": COLLECT_TOUCH,
+        "symbolic_name": "tokayShovel",
     },
     "Crescent Island (Past): Bomb Cave Chest": {
         "region_id": "tokay bomb cave",
@@ -1180,6 +1188,16 @@ LOCATIONS_DATA = {
         "collect": COLLECT_DROP,
         "symbolic_name": "d1GhiniDrop",
     },
+    "Spirit's Grave: Miniboss": {
+    	"region_id": "d1 miniboss",
+    	"vanilla_item": "Small Key (Spirit's Grave)", # Placed that because an interaction I placed drops a small key after it's defeat.
+    	"dungeon" : 1,
+        "flag_byte": 0xc918,
+        "conditional": True,
+        "room": 0x0418,
+        "collect": COLLECT_TOUCH,
+        "symbolic_name": "d1Miniboss",
+    },
     "Spirit's Grave: Basement": {
     	"region_id": "d1 basement",
     	"vanilla_item": "Progressive Bracelet",
@@ -1256,6 +1274,16 @@ LOCATIONS_DATA = {
         "room": 0x0442,
         "collect": COLLECT_DROP,
         "symbolic_name": "d2StatuePuzzle",
+    },
+    "Wing Dungeon (1F): Miniboss": {
+    	"region_id": "d2 miniboss",
+    	"vanilla_item": "Small Key (Wing Dungeon)", # Placing this here for the same reason as d1.
+    	"dungeon" : 2,
+        "flag_byte": 0xc934,
+        "room": 0x0434,
+        "conditional": True,
+        "collect": COLLECT_TOUCH,
+        "symbolic_name": "d2Miniboss",
     },
     "Wing Dungeon (B1F): Thwomp Shelf": {
     	"region_id": "d2 thwomp shelf",
@@ -1378,6 +1406,16 @@ LOCATIONS_DATA = {
         "collect": COLLECT_DROP,
         "symbolic_name": "d3MoldormDrop",
     },
+    "Moonlit Grotto (B1F): Miniboss": {
+    	"region_id": "d3 miniboss",
+    	"vanilla_item": "Small Key (Moonlit Grotto)", # Placing this here for the same reason as D2
+    	"dungeon" : 3,
+        "flag_byte": 0xc94d,
+        "room": 0x044d,
+        "conditional": True,
+        "collect": COLLECT_TOUCH,
+        "symbolic_name": "d3Miniboss",
+    },
     "Moonlit Grotto (B1F): East": {
     	"region_id": "d3 B1F east",
     	"vanilla_item": "Boss Key (Moonlit Grotto)",
@@ -1427,6 +1465,16 @@ LOCATIONS_DATA = {
         "flag_byte": 0xc97a,
         "room": 0x047a,
         "collect": COLLECT_CHEST,
+    },
+    'Skull Dungeon (1F): Miniboss': {
+    	"region_id": "d4 miniboss",
+    	"vanilla_item": "Small Key (Skull Dungeon)", # Placement is here for the same reason as D3
+    	"dungeon" : 4,
+        "flag_byte": 0xc980,
+        "room": 0x0480,
+        "conditional": True,
+        "collect": COLLECT_TOUCH,
+        "symbolic_name": "d4Miniboss"
     },
     'Skull Dungeon (1F): Small Floor Puzzle': {
     	"region_id": "d4 small floor puzzle",
@@ -1502,6 +1550,16 @@ LOCATIONS_DATA = {
         "flag_byte": 0xc9ad,
         "room": 0x04ad,
         "collect": COLLECT_CHEST,
+    },
+    "Crown Dungeon (1F): Miniboss": {
+    	"region_id": "d5 miniboss",
+    	"vanilla_item": "Small Key (Crown Dungeon)",
+    	"dungeon" : 5,
+        "flag_byte": 0xc9b4,
+        "room": 0x04b4,
+        "collect": COLLECT_TOUCH,
+        "conditional": True,
+        "symbolic_name": "d5Miniboss"
     },
     "Crown Dungeon (1F): Eyes Chest": {
     	"region_id": "d5 eyes chest",
@@ -1585,6 +1643,16 @@ LOCATIONS_DATA = {
         "symbolic_name": "d5Boss",
     },
     ##########################################
+    "Mermaid's Cave (Present): Miniboss": {
+    	"region_id": "d6 miniboss",
+    	"vanilla_item": "Small Key (Mermaid's Cave Present)",
+    	"dungeon" : 6,
+        "flag_byte": 0xca12,
+        "room": 0x0512,
+        "collect": COLLECT_TOUCH,
+        "conditional": True,
+        "symbolic_name": "d6Miniboss"
+    },
     "Mermaid's Cave (Present): Vire Chest": {
     	"region_id": "d6 present vire chest",
     	"vanilla_item": "Progressive Flippers",
@@ -1739,6 +1807,16 @@ LOCATIONS_DATA = {
         "flag_byte": 0xca4e,
         "room": 0x054e,
         "collect": COLLECT_CHEST,
+    },
+    "Jabu-Jabu's Belly (1F): Miniboss": {
+    	"region_id": "d7 miniboss",
+    	"vanilla_item": "Small Key (Jabu-Jabu's Belly)",
+    	"dungeon" : 7,
+        "flag_byte": 0xca4a,
+        "room": 0x74a,
+        "collect": COLLECT_TOUCH,
+        "conditional": True,
+        "symbolic_name": "d7Miniboss"
     },
     "Jabu-Jabu's Belly (1F): Jabu-Jabu's Belly (1F): Cane and Diamond Puzzle": {
     	"region_id": "d7 cane/diamond puzzle",
@@ -1928,6 +2006,16 @@ LOCATIONS_DATA = {
         "flag_byte": 0xcaa4,
         "room": 0x05a4,
         "collect": COLLECT_CHEST,
+    },
+    'Ancient Tomb (B2F): Miniboss': {
+    	"region_id": "d8 miniboss",
+    	"vanilla_item": "Small Key (Ancient Tomb)",
+    	"dungeon" : 8,
+        "flag_byte": 0xca82,
+        "room": 0x0582,
+        "collect": COLLECT_TOUCH,
+        "conditional": True,
+        "symbolic_name": "d8Miniboss"
     },
     'Ancient Tomb (B1F): Floor Puzzle': {
     	"region_id": "d8 floor puzzle",
