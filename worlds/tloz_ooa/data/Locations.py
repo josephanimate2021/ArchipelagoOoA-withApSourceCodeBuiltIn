@@ -1740,7 +1740,7 @@ LOCATIONS_DATA = {
         "room": 0x054e,
         "collect": COLLECT_CHEST,
     },
-    "Jabu-Jabu's Belly (1F): Cane/Diamond Puzzle": {
+    "Jabu-Jabu's Belly (1F): Jabu-Jabu's Belly (1F): Cane and Diamond Puzzle": {
     	"region_id": "d7 cane/diamond puzzle",
     	"vanilla_item": "Small Key (Jabu-Jabu's Belly)",
     	"dungeon" : 7,

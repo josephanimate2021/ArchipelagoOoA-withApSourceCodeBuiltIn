@@ -734,7 +734,7 @@ def make_d7_logic(player: int):
             ooa_has_small_keys(state, player, 7, 3),
         ])],
         ["d7 drain", "d7 boxed chest", False, None],
-        ["d7 drain", "d7 cane/diamond puzzle", False, lambda state: all([
+        ["d7 drain", "d7 cane and diamond puzzle", False, lambda state: all([
             ooa_has_long_hook(state, player),
             ooa_has_cane(state, player),
         ])],
