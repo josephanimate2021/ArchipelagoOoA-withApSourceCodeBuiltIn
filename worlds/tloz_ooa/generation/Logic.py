@@ -8,13 +8,29 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .. import OracleOfAgesWorld
 
+def warp_is_underwater(reg: str) -> bool:
+    return "is_underwater" in WARPS_DATA[reg] and WARPS_DATA[reg]["is_underwater"]
+
 def create_connections(world: "OracleOfAgesWorld"):
     multiworld = world.multiworld
     player = world.player
     shuffled_entrances = []
-    for reg1, reg2 in multiworld.worlds[player].shuffled_entrances.items():
 
-        shuffled_entrances.append([OUTSIDE_TAG + reg1, INSIDE_TAG + reg2, True, None])
+    # Shuffled warp
+    for reg1, reg2 in multiworld.worlds[player].shuffled_entrances.items():
+        shuffled_entrances.append([OUTSIDE_TAG + reg1, INSIDE_TAG + reg2, lambda state: 
+                                   any(
+                                       ooa_can_dive(state, player, True),
+                                       all(
+                                           not(warp_is_underwater(reg1)),
+                                           not(warp_is_underwater(reg2))
+                                       )
+                                    ), None])
+        
+    # Not shuffled warp
+    for warp_name, warp_data in WARPS_DATA.items():
+        if warp_name not in multiworld.worlds[player].shuffled_entrances:
+            shuffled_entrances.append([OUTSIDE_TAG + warp_name, INSIDE_TAG + warp_name, True, None])
 
 
     all_logic = [

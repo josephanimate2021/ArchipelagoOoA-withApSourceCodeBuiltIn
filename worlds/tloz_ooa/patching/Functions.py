@@ -382,6 +382,29 @@ def write_seed_tree_content(rom: RomData, patch_data):
         newdata = (original_data & 0x0f) | (item_id - 0x20) << 4
         rom.write_bytes(tree_data["codeAdress"], [newdata])
 
+def define_underwater_warp_arraywarps(assembler: Z80Assembler, rom: RomData, patch_data):
+    warp_matchings = patch_data["shuffled_entrances"]
+    # +2 because we only use the 2 last byte of the 4 warp bytes
+    outside_values = {name: rom.read_word(GameboyAddress(0x04, warp["outside_warp"]).address_in_rom()) for name, warp in WARPS_DATA.items()}
+    inside_values = {name: rom.read_word(GameboyAddress(0x04, warp["inside_warp"]).address_in_rom()) for name, warp in WARPS_DATA.items()}
+    
+    underwater_warp_table = []
+
+    for outside_name, inside_name in warp_matchings.items():
+        if "is_underwater" in WARPS_DATA[outside_name] and WARPS_DATA[outside_name]["is_underwater"]:
+            intoout_warp_group = (inside_values[outside_name] & 0xf000) >> 12
+            intoout_warp_index = inside_values[outside_name] & 0x00ff
+            underwater_warp_table.append(intoout_warp_group)
+            underwater_warp_table.append(intoout_warp_index)
+            
+            outtoin_warp_group = (outside_values[outside_name] & 0xf000) >> 12
+            outtoin_warp_index = outside_values[outside_name] & 0x00ff
+            underwater_warp_table.append(outtoin_warp_group)
+            underwater_warp_table.append(outtoin_warp_index)
+    underwater_warp_table.append(0xff)
+
+    assembler.add_floating_chunk("underwaterWarpTable", underwater_warp_table)
+
 def set_dungeon_warps(rom: RomData, patch_data):
     warp_matchings = patch_data["shuffled_entrances"]
     # +2 because we only use the 2 last byte of the 4 warp bytes
@@ -408,7 +431,7 @@ def set_dungeon_warps(rom: RomData, patch_data):
                 
             if dungeon_number == 9:
                 dungeon_number = 6
-
+            
             intoout_warp_group = (inside_values[outside_name] & 0xf000) >> 12
             intoout_warp_index = inside_values[outside_name] & 0x00ff
 

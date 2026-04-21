@@ -97,7 +97,6 @@ class OracleOfAgesWorld(World):
             raise OptionError("Required Rings and Excluded Rings contain the same element(s)", conflicting_rings)
         
         if self.options.shuffle_dungeons:
-            print(getattr(self.options, "linked_heros_cave"))
             self.shuffled_entrances = {}
             for warpName, warpData in WARPS_DATA.items():
                 if "dungeon" not in warpData: # Not a dungeon, skip it
@@ -124,18 +123,9 @@ class OracleOfAgesWorld(World):
         if not self.options.keysanity_slates:
             self.options.non_local_items.value -= set(["Slate"])
 
-    
     def shuffle_entrances(self):
         shuffled = list(self.shuffled_entrances.values())
-        deadendCheckIndex = [shuffled.index(name) for name in shuffled if "must_lead_to_deadend" in WARPS_DATA[name] and WARPS_DATA[name]["must_lead_to_deadend"]]
-        mustShuffle = True
-        while mustShuffle:
-            mustShuffle = False
-            self.random.shuffle(shuffled)
-            for deadendIndex in deadendCheckIndex:
-                if "is_deadend" not in WARPS_DATA[shuffled[deadendIndex]] or WARPS_DATA[shuffled[deadendIndex]]["is_deadend"] is False: # Ensure D4 entrance doesn't lead to d0 for example
-                    mustShuffle = True
-        
+        self.random.shuffle(shuffled)
         self.shuffled_entrances = dict(zip(self.shuffled_entrances, shuffled))
 
     def randomize_shop_prices(self):

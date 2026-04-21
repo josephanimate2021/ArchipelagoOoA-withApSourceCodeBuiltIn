@@ -46,7 +46,6 @@ WARPS_DATA = {
         "outside_warp": 0x7628,
         "inside_warp": 0x7948,
         "present": True,
-        "is_deadend": True,
     },
 
     #DUNGEONS
@@ -55,43 +54,36 @@ WARPS_DATA = {
         "inside_warp": 0x7aec,
         "present": False,
         "dungeon": 0,
-        #"is_deadend": False,
     },
     "d1": {
         "outside_warp": 0x7718,
         "inside_warp": 0x7ad0,
         "present": True,
         "dungeon": 1,
-        "is_deadend": True,
     },
     "d2": {
         "outside_warp": 0x772c,
         "inside_warp": 0x7ad4,
         "present": False,
         "dungeon": 2,
-        "is_deadend": True,
     },
     "d3": {
         "outside_warp": 0x75c8,
         "inside_warp": 0x7ad8,
         "present": True,
         "dungeon": 3,
-        "is_deadend": True,
     },
     "d4": {
         "outside_warp": 0x75cc,
         "inside_warp": 0x7adc,
         "present": True,
         "dungeon": 4,
-        "is_deadend": True,
-        "must_lead_to_deadend": True,
     },
     "d5": {
         "outside_warp": 0x76b0,
         "inside_warp": 0x7ae0,
         "present": True,
         "dungeon": 5,
-        "is_deadend": True,
     },
     "d6 present": {
         "outside_warp": 0x7748,
@@ -99,7 +91,6 @@ WARPS_DATA = {
         "custom_map_tile": 0x03c,
         "present": True,
         "dungeon": 6,
-        "is_deadend": True,
     },
     "d7": {
         "outside_warp": 0x7874,
@@ -107,22 +98,19 @@ WARPS_DATA = {
         "custom_map_tile": 0x090,
         "present": True,
         "dungeon": 7,
-        "is_deadend": True,
-        "underwater": True,
+        "is_underwater": True,
     },
     "d8": {
         "outside_warp": 0x7730,
         "inside_warp": 0x7c74,
         "present": False,
         "dungeon": 8,
-        "is_deadend": True,
     },
     "d11": {
         "outside_warp": 0x770c,
         "inside_warp": 0x7ae4,
         "present": True,
         "dungeon": 11,
-        "is_deadend": True,
         "require_option": "linked_heros_cave"
     },
     "d6 past": {
@@ -131,6 +119,5 @@ WARPS_DATA = {
         "custom_map_tile": 0x13c,
         "present": False,
         "dungeon": 9,
-        "is_deadend": True,
     }
 }

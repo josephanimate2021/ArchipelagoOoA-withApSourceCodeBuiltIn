@@ -254,6 +254,7 @@ DEFINES = {
 
     # wram
     "wSubscreen1CurrentSlotIndex": "$c085",
+    "wWarpCheck": "$c086",
     "wBigBuffer": "$c300",
     "wKeysPressed":"$c481",
     "wKeysJustPressed":"$c482",
@@ -282,7 +283,11 @@ DEFINES = {
     "wLinkMaxHealth": "$c6ab",
     "wNumEmberSeeds": "$c6b9",
     "wCutsceneTrigger":"$cc04",
+    "wScrollMode":"$cd00",
     "wScreenTransitionDirection":"$cd02",
+    "wScreenTransitionState":"$cd04",
+    "wScreenTransitionState2":"$cd05",
+    "wScreenTransitionState3":"$cd06",
     "wScreenOffsetY":"$cd08",
     "wScreenShakeCounterY":"$cd18",
     "w1Link.state":"$d004",
@@ -364,7 +369,7 @@ DEFINES = {
     "wWarpTransition":"$cc49",
     "wWarpTransition2":"$cc4b",
     "wLinkGrabState":"$cc5a",
-    "wDisableTransitions":"$cc91",
+    "wDisableScreenTransitions":"$cc91",
     "wDisabledObjects":"$cc8a",
     "wLinkPlayingInstrument":"$cc8d",
     "wRoomLayout":"$cf00",
