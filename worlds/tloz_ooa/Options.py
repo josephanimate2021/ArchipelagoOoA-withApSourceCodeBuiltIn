@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from Options import Choice, DeathLink, DefaultOnToggle, PerGameCommonOptions, Range, Toggle, StartInventoryPool, ItemSet, OptionSet, Accessibility
+from Options import Choice, OptionDict, DeathLink, DefaultOnToggle, PerGameCommonOptions, Range, Toggle, StartInventoryPool, ItemSet, OptionSet, Accessibility
 
 from .data.Constants import TREES_TABLE
 
@@ -30,6 +30,25 @@ class OracleOfAgesRequiredSlates(Range):
     range_start = 0
     range_end = 4
     default = 4
+
+    include_in_slot_data = True
+    include_in_patch = True
+
+class OracleOfAgesVasuRingChecksRequirement(OptionDict):
+    """
+    When enabled, vasu will congradulate you based off of the number of rupees (for Rupee Ring check), and number of enemies defeated (for Slayer's Ring check). 
+
+    NOTE: Both of those moments are seperate, so don't worry if you were thinking that two things were going to be checked just for a singular check.
+
+    Rupee Requirement for Rupee Ring Check: Determines the amount of rupees that you need to collect in order for vasu to congradulate you on the achievement, resulting in the check being initiated.
+    Amount of Enemies Defeated for Slayer Ring Check: Determines the amount of enemies that you need to defeat in order for vasu to congradulate you on the achievement, resulting in the check being initiated.
+    """
+    display_name = "Vasu Ring Checks Requirement"
+
+    default = {
+        "rupee_requirement_for_rupee_ring_check": 100,
+        "amount_of_enemies_defeated_for_slayer_ring_check": 100
+    }
 
     include_in_slot_data = True
     include_in_patch = True
@@ -142,6 +161,7 @@ class OracleOfAgesOptions(PerGameCommonOptions):
     required_essences: OraclesRequiredEssences
     required_slates: OracleOfAgesRequiredSlates
     warp_to_start_location: OracleOfAgesWarpToStartLocation
+    vasu_ring_checks_requirement: OracleOfAgesVasuRingChecksRequirement
     miniboss_locations: OracleOfAgesMinibossLocations
     animal_companion: OraclesAnimalCompanion
     default_seed: OraclesDefaultSeedType
