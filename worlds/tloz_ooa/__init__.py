@@ -2,6 +2,8 @@ import logging
 import os
 import yaml
 
+from typing import ClassVar, Any, Optional, Type, TextIO
+from Options import Option
 from BaseClasses import Region, Location, LocationProgressType
 from Options import Accessibility, OptionError
 from typing import Any, Set, List, Dict, Optional, Tuple, ClassVar, TextIO, Union
@@ -12,6 +14,7 @@ from .Options import *
 from .generation.PatchWriter import ooa_create_appp_patch
 from .data import LOCATIONS_DATA
 from .data.Constants import *
+from .data.Entrances import *
 from .data.Regions import *
 from .Client import OracleOfAgesClient  # Unused, but required to register with BizHawkClient
 from .Settings import OOASettings
@@ -37,7 +40,7 @@ class OracleOfAgesWorld(World):
 
     pre_fill_items: List[Item]
     dungeon_items: List[Item]
-    dungeon_entrances: Dict[str, str]
+    shuffled_entrances: Dict[str, str]
     shop_prices: Dict[str, int]
 
     settings: ClassVar[OOASettings]
@@ -47,29 +50,47 @@ class OracleOfAgesWorld(World):
     seasons = False
     romhack = False
 
+    tracker_world: ClassVar = {
+        "external_pack_key": "ut_pack_path",
+        "map_page_maps": "maps/maps.json",
+        "map_page_locations": [
+            "locations/dungeons.json",
+            "locations/overworld_past.json",
+            "locations/overworld_present.json",
+        ],
+        "poptracker_name_mapping": dict[str, int]
+    }
+
+
     @classmethod
     def version(cls) -> str:
         return cls.world_version.as_simple_string()
 
     def __init__(self, multiworld, player):
+
+        self.tracker_world["poptracker_name_mapping"] = {}
+        for location_name, location_data in LOCATIONS_DATA.items():
+            split = location_name.split(": ")
+            poptrackerName = split[-1] + "/"
+            self.tracker_world["poptracker_name_mapping"][poptrackerName] = self.location_name_to_id[location_name]
+            print(f"{poptrackerName} ({location_name}) => {self.location_name_to_id[location_name]}")
+
         super().__init__(multiworld, player)
+
         self.pre_fill_items = []
         self.dungeon_items = []
-        self.dungeon_entrances = DUNGEON_ENTRANCES.copy()
         self.shop_prices = SHOP_PRICES_DIVIDERS.copy()
 
     def fill_slot_data(self) -> dict:
         # Put options that are useful to the tracker inside slot data
-        # TODO MOAR DATA ?
-
-        slot_data = self.options.as_dict(*[
-            option_name 
-            for option_name in OracleOfAgesOptions.type_hints 
-            if hasattr(OracleOfAgesOptions.type_hints[option_name], "include_in_slot_data")
-        ])
-        slot_data["animal_companion"] = COMPANIONS[self.options.animal_companion.value]
-        slot_data["default_seed"] = SEED_ITEMS[self.options.default_seed.value]
-        slot_data["dungeon_entrances"] = self.dungeon_entrances
+        slot_data = {
+            "version": f"{self.version()}",
+            "options": self.options.as_dict(
+                *[option_name for option_name in OracleOfAgesOptions.type_hints
+                  if hasattr(OracleOfAgesOptions.type_hints[option_name], "include_in_slot_data")]),
+            "shuffled_entrances": self.shuffled_entrances,
+            "shop_costs": self.shop_prices,
+        }
 
         return slot_data
     
@@ -92,20 +113,23 @@ class OracleOfAgesWorld(World):
             }
 
     def generate_early(self):
+        if self.interpret_slot_data(None):
+            return
         conflicting_rings = self.options.required_rings.value & self.options.excluded_rings.value
         if len(conflicting_rings) > 0:
             raise OptionError("Required Rings and Excluded Rings contain the same element(s)", conflicting_rings)
         
-        if self.options.linked_heros_cave.value > 0:
-            self.dungeon_entrances["d11 entrance"] = "enter d11"
-
-        if self.options.goal == OraclesGoal.option_retrieve_maku_seed and self.options.required_essences < 1:
-            self.options.required_essences.value = 1  # The game would be too easy if we only needed zero essences. So it's better we have at least one required essence in that case.
+        if self.options.shuffle_dungeons:
+            self.shuffled_entrances = {}
+            for warpName, warpData in WARPS_DATA.items():
+                if "dungeon" not in warpData: # Not a dungeon, skip it
+                    continue; 
+                if "require_option" not in warpData or hasattr(self.options, warpData["require_option"]) and getattr(self.options, warpData["require_option"]):
+                    self.shuffled_entrances[warpName] = warpName
+            self.shuffle_entrances()
         
         self.restrict_non_local_items()
 
-        if self.options.shuffle_dungeons:
-            self.shuffle_dungeons()
 
         self.randomize_shop_prices()
 
@@ -122,15 +146,10 @@ class OracleOfAgesWorld(World):
         if not self.options.keysanity_slates:
             self.options.non_local_items.value -= set(["Slate"])
 
-    
-    def shuffle_dungeons(self):
-        shuffled_dungeons = list(self.dungeon_entrances.values())
-        while True:
-            self.random.shuffle(shuffled_dungeons)
-            if shuffled_dungeons[4] != "enter d0": # Ensure D4 entrance doesn't lead to d0
-                break
-        
-        self.dungeon_entrances = dict(zip(self.dungeon_entrances, shuffled_dungeons))
+    def shuffle_entrances(self):
+        shuffled = list(self.shuffled_entrances.values())
+        self.random.shuffle(shuffled)
+        self.shuffled_entrances = dict(zip(self.shuffled_entrances, shuffled))
 
     def randomize_shop_prices(self):
         prices_pool = get_prices_pool()
@@ -154,6 +173,11 @@ class OracleOfAgesWorld(World):
         if "dungeon" in location_data:
             if location_data["dungeon"] == 11:
                 return self.options.linked_heros_cave.value > 0
+            if location_data["symbolic_name"] == f"d{location_data["dungeon"]}Miniboss":
+                return self.options.miniboss_locations
+            
+        if "secret_location" in location_data and not False:
+            return self.options.secret_locations
 
         # TODO FUNNY LOCATION ?
 
@@ -168,11 +192,13 @@ class OracleOfAgesWorld(World):
 
     def create_regions(self):
         # Create regions
+        
+
         regions = REGIONS.copy()
 
-        if self.options.linked_heros_cave.value > 0:
-            for region_name in D11_REGIONS:
-                regions.append(region_name)
+        for warpName, warpData in WARPS_DATA.items():
+            regions.append(OUTSIDE_TAG + warpName)
+            regions.append(INSIDE_TAG + warpName)
 
         for region_name in regions:
             region = Region(region_name, self.player, self.multiworld)
@@ -196,11 +222,11 @@ class OracleOfAgesWorld(World):
         location.place_locked_item(Item(event_item_name, ItemClassification.progression, None, self.player))
 
     def create_events(self):
-        self.create_event("maku seed", "_beaten_game" if OraclesGoal.option_retrieve_maku_seed else "Maku Seed")
+        self.create_event("maku seed", "Maku Seed")
 
-        if self.options.goal == OraclesGoal.option_beat_vanila_boss:
+        if self.options.goal == OracleOfAgesGoal.option_beat_veran:
             self.create_event("veran beaten", "_beaten_game")
-        elif self.options.goal == OraclesGoal.option_beat_ganon:
+        elif self.options.goal == OracleOfAgesGoal.option_beat_ganon:
             self.create_event("ganon beaten", "_beaten_game")
 
         self.create_event("ridge move vine seed", "_access_cart")
@@ -394,7 +420,7 @@ class OracleOfAgesWorld(World):
     def pre_fill(self) -> None:
         from .generation.PreFill import pre_fill
         pre_fill(self)
-            
+                
 
     def get_filler_item_name(self) -> str:
         FILLER_ITEM_NAMES = [
@@ -415,8 +441,28 @@ class OracleOfAgesWorld(World):
         return
 
     def write_spoiler(self, spoiler_handle):
-        spoiler_handle.write(f"Apworld version : {self.version()}")
+        spoiler_handle.write(f"Apworld version : {self.version()}\n")
         if self.options.shuffle_dungeons != "vanilla":
-            spoiler_handle.write(f"\nDungeon Entrances ({self.multiworld.player_name[self.player]}):\n")
-            for entrance, dungeon in self.dungeon_entrances.items():
-                spoiler_handle.write(f"\t- {entrance} --> {dungeon.replace('enter ', '')}\n")
+            spoiler_handle.write(f"Shuffled Entrances ({self.multiworld.player_name[self.player]}):\n")
+            for entrance, dungeon in self.shuffled_entrances.items():
+                spoiler_handle.write(f"\t- outside {entrance} --> inside {dungeon}\n")
+
+    
+    def interpret_slot_data(self, slot_data: Optional[dict[str, Any]]) -> Any:
+        if slot_data is not None:
+            return slot_data
+
+        if not hasattr(self.multiworld, "re_gen_passthrough") or self.game not in self.multiworld.re_gen_passthrough:
+            return False
+
+        slot_data = self.multiworld.re_gen_passthrough[self.game]
+
+        for option in [option_name for option_name in OracleOfAgesOptions.type_hints
+                       if hasattr(OracleOfAgesOptions.type_hints[option_name], "include_in_slot_data")]:
+            option_class: Type[Option] = OracleOfAgesOptions.type_hints[option]
+            self.options.__setattr__(option, option_class.from_any(slot_data["options"][option]))
+
+        self.shuffled_entrances = slot_data["shuffled_entrances"]
+        self.shop_prices = slot_data["shop_costs"]
+
+        return True

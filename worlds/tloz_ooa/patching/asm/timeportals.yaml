@@ -78,18 +78,6 @@
     jp $4e37 # tune echoes in vain
 06/4e34/: jp handleSpecialCurrentsActions
 
-# don't let the tune of echoes activate the special crescent island portal.
-10//checkActivateEchoesPortal: |
-    push bc
-    ld bc,$a900
-    call compareRoom
-    pop bc
-    ld a,(wPlayingInstrument1)
-    ret nz
-    dec a
-    ret
-10/7d88/: call checkActivateEchoesPortal
-
 # add a second dormant portal to the first dormant portal screen in talus
 # peaks past, to prevent a softlock if the player doesn't have flippers or
 # ages.
@@ -152,3 +140,14 @@
 12/5e91/: |
     db $f3
     dw symmetryPortalStaticObjects
+
+ # Make echoes test for current if not in the past
+06/4e39/: db $f1
+10//activatePortalOnCurrent: |
+  ld a,(wLinkPlayingInstrument)
+  dec a
+  cp $02
+  ret nc
+  call interactionIncState
+  jp $7d90 # Go back to @markSpotDiscovered
+10/7d88/: jp activatePortalOnCurrent

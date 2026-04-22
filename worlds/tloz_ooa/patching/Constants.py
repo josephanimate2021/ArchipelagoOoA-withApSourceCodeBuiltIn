@@ -204,6 +204,7 @@ DEFINES = {
     # script commands
     "scriptend":"$00",
     "loadscript":"$83",
+    "generatesecret":"$86", # Secret needs to be between ranges 10 and 19 in order for it to be properly generated.
     "jumptable_memoryaddress":"$87",
     "setcollisionradii":"$8d",
     "setanimation":"$8f",
@@ -224,6 +225,7 @@ DEFINES = {
     "enableinput":"$be",
     "callscript":"$c0",
     "retscript":"$c1",
+    "jumpiftextoptioneq": "$c3",
     "jumpalways":"$c4",
     "jumpifmemoryset":"$c7",
     "jumpifmemoryeq":"$cb",
@@ -252,6 +254,7 @@ DEFINES = {
 
     # wram
     "wSubscreen1CurrentSlotIndex": "$c085",
+    "wWarpCheck": "$c086",
     "wBigBuffer": "$c300",
     "wKeysPressed":"$c481",
     "wKeysJustPressed":"$c482",
@@ -280,7 +283,11 @@ DEFINES = {
     "wLinkMaxHealth": "$c6ab",
     "wNumEmberSeeds": "$c6b9",
     "wCutsceneTrigger":"$cc04",
+    "wScrollMode":"$cd00",
     "wScreenTransitionDirection":"$cd02",
+    "wScreenTransitionState":"$cd04",
+    "wScreenTransitionState2":"$cd05",
+    "wScreenTransitionState3":"$cd06",
     "wScreenOffsetY":"$cd08",
     "wScreenShakeCounterY":"$cd18",
     "w1Link.state":"$d004",
@@ -362,9 +369,9 @@ DEFINES = {
     "wWarpTransition":"$cc49",
     "wWarpTransition2":"$cc4b",
     "wLinkGrabState":"$cc5a",
-    "wDisableTransitions":"$cc91",
+    "wDisableScreenTransitions":"$cc91",
     "wDisabledObjects":"$cc8a",
-    "wPlayingInstrument1":"$cc8d",
+    "wLinkPlayingInstrument":"$cc8d",
     "wRoomLayout":"$cf00",
     "wLinkObjectIndex":"$cc2c",
     "wMenuLoadState":"$cbcc",
@@ -402,7 +409,7 @@ DEFINES = {
     "createTreasure":"$27d4",
     "checkGlobalFlag":"$31f3",
     "setGlobalFlag":"$31f9",
-    "fadeInFromWhite":"$3299",
+    "fadeInFromWhite":"$3290", # changed address for faster fades
     "incMakuTreeState":"$3e53",
     "interactionDelete":"$3b05",
     "clearStaticObjects":"$319f",
@@ -470,134 +477,6 @@ RUPEE_VALUES = {
     900: 0x12,
     80: 0x13,
     999: 0x14,
-}
-
-
-DUNGEON_ENTRANCES = {
-    "d0": {
-        "addr": 0x13728,
-        "map_tile": 0x148,
-        "room": 0x48,
-        "group": 0x01,
-        "position": 0x21,
-        "shifted": False,
-        "default":"d0"
-    },
-    "d1": {
-        "addr": 0x13718,
-        "map_tile": 0x08d,
-        "room": 0x8d,
-        "group": 0x00,
-        "position": 0x26,
-        "essence_exit": 0x2874f,
-        "shifted": False,
-        "default":"d1"
-    },
-    "d2 past": {
-        "addr": 0x1372c,
-        "map_tile": 0x183,
-        "room": 0x83,
-        "group": 0x01,
-        "position": 0x25,
-        "shifted": False,
-        "default":"d2"
-    },
-    "d2 present": {
-        "addr": 0x13000,
-        "map_tile": 0x083,
-        "room": 0x83,
-        "group": 0x00,
-        "position": 0x25,
-        "shifted": False,
-        "default":"N/A"
-    },
-    "d3": {
-        "addr": 0x135c8,
-        "map_tile": 0x0ba,
-        "room": 0xba,
-        "group": 0x00,
-        "position": 0x55,
-        "shifted": False,
-        "default":"d3"
-    },
-    "d4": {
-        "addr": 0x135cc,
-        "map_tile": 0x003,
-        "room": 0x03,
-        "group": 0x00,
-        "position": 0x35,
-        "shifted": True,
-        "default":"d4"
-    },
-    "d5": {
-        "addr": 0x136b0,
-        "map_tile": 0x00a,
-        "room": 0x0a,
-        "group": 0x00,
-        "position": 0x17,
-        "shifted": False,
-        "default":"d5"
-    },
-    "d6 present": {
-        "addr": 0x13748,
-        "map_tile": 0x03c,
-        "room": 0x0e,
-        "group": 0x01,
-        "position": 0x16,
-        "shifted": False,
-        "default":"d6 present"
-    },
-    "d7": {
-        "addr": 0x13874,
-        "map_tile": 0x090,
-        "room": 0x90,
-        "group": 0x02,
-        "position": 0x45,
-        "shifted": True,
-        "default":"d7"
-    },
-    "d8": {
-        "addr": 0x13730,
-        "map_tile": 0x15c,
-        "room": 0x5c,
-        "group": 0x01,
-        "position": 0x15,
-        "shifted": True,
-        "default":"d8"
-    },
-    "d11": {
-        "addr": GameboyAddress(0x04, 0x770c).address_in_rom(),
-        "map_tile": 0x048,
-        "room": 0x48,
-        "group": 0x01,
-        "position": 0x28,
-        "shifted": False,
-        "default":"d11"
-    },
-    "d6 past": {
-        "addr": 0x139b4,
-        "map_tile": 0x13c,
-        "room": 0x0f,
-        "group": 0x03,
-        "position": 0x16,
-        "shifted": False,
-        "default":"d6 past"
-    },
-}
-
-DUNGEON_EXITS = {
-    # TODO
-    "d0": 0x13aec,
-    "d1": 0x13ad0,
-    "d2": 0x13ad4,
-    "d3": 0x13ad8,
-    "d4": 0x13adc,
-    "d5": 0x13ae0,
-    "d6 present": 0x13c48,
-    "d7": 0x13c60,
-    "d8": 0x13c74,
-    "d11": 0x13ae4,
-    "d6 past": 0x13c54,
 }
 
 PALETTE_BYTES = {

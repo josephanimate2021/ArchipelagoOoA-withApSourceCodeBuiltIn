@@ -26,8 +26,7 @@ def ooa_create_appp_patch(world: "OracleOfAgesWorld") -> OoAProcedurePatch:
               if hasattr(OracleOfAgesOptions.type_hints[option_name], "include_in_patch")]),
         "warp_to_start_variables": world.determine_warp_to_start_variables(),
 
-        "dungeon_entrances": {a.replace(" entrance", ""): b.replace("enter ", "")
-                              for a, b in world.dungeon_entrances.items()},
+        "shuffled_entrances": world.shuffled_entrances,
         "locations": {},
         "shop_prices": world.shop_prices,
         "music_order": {}

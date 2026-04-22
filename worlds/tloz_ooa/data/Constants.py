@@ -1,3 +1,5 @@
+from .ascii_table import ascii_printable_chars_table
+
 COMPANIONS = [
     "Ricky",
     "Dimitri",
@@ -72,20 +74,6 @@ DAMAGE_MODIFIER_VALUES = {
     "vanilla": 0,
     "harder": 2,
     "insane": 4,
-}
-
-DUNGEON_ENTRANCES = {
-    "d0 entrance": "enter d0",
-    "d1 entrance": "enter d1",
-    "d2 past entrance": "enter d2",
-#    "d2 present entrance": "enter d2",
-    "d3 entrance": "enter d3",
-    "d4 entrance": "enter d4",
-    "d5 entrance": "enter d5",
-    "d6 past entrance": "enter d6 past",
-    "d6 present entrance": "enter d6 present",
-    "d7 entrance": "enter d7",
-    "d8 entrance": "enter d8",
 }
 
 SHOP_PRICES_DIVIDERS = {
@@ -262,7 +250,7 @@ LOCATION_GROUPS = {
         "Jabu-Jabu's Belly (1F): Island Chest",
         "Jabu-Jabu's Belly (1F): Stairway Chest",
         "Jabu-Jabu's Belly (1F): Miniboss Chest",
-        "Jabu-Jabu's Belly (1F): Cane/Diamond Puzzle",
+        "Jabu-Jabu's Belly (1F): Cane and Diamond Puzzle",
         "Jabu-Jabu's Belly (1F): Boxed Chest",
         "Jabu-Jabu's Belly (1F): Flower Room",
         "Jabu-Jabu's Belly (1F): Diamond Puzzle",

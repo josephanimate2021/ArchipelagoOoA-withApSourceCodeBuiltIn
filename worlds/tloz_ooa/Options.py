@@ -6,6 +6,21 @@ from .data.Constants import TREES_TABLE
 
 from .common.Options import *
 
+class OracleOfAgesGoal(Choice):
+    """
+    The goal to accomplish in order to complete the seed.
+    - Beat Veran: beat the usual final boss
+    - Beat Ganon: teleport to the Room of Rites after beating Onox or Veran, then beat Ganon (same as linked game)
+    - Retrieve Maku Seed - You will have to retrieve the maku seed from the maku tree in order cut straight into the credits scene (similar to a triforce hunt in ALTTPR)
+    """
+    display_name = "Goal"
+
+    option_beat_veran = 0
+    option_beat_ganon = 1
+
+    default = 0
+    include_in_patch = True
+    include_in_slot_data = True
 
 class OracleOfAgesRequiredSlates(Range):
     """
@@ -18,6 +33,15 @@ class OracleOfAgesRequiredSlates(Range):
 
     include_in_slot_data = True
     include_in_patch = True
+
+class OracleOfAgesMinibossLocations(Toggle):
+    """
+    When enabled, all minibosses will have a check that you will need to get each time they are defeated.
+    """
+    display_name = "Miniboss Locations"
+
+    include_in_patch = True
+    include_in_slot_data = True
 
 class OracleOfAgesWarpToStartLocation(Choice):
     """
@@ -56,6 +80,7 @@ class OracleOfAgesDuplicateSeedTrees(OptionSet):
     valid_keys = {key for key in TREES_TABLE.keys()}
 
     include_in_patch = True
+    include_in_slot_data = True
 
 
 class OracleOfAgesLinkedHerosCave(Choice):
@@ -80,6 +105,7 @@ class OracleOfAgesSlateShuffle(Toggle):
     """
     display_name = "Slates Outside Dungeon 8"
 
+    include_in_slot_data = True
     include_in_patch = True
 
 
@@ -121,14 +147,16 @@ class OracleOfAgesLynnaGardener(Toggle):
 @dataclass
 class OracleOfAgesOptions(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
-    goal: OraclesGoal
+    goal: OracleOfAgesGoal
     logic_difficulty: OraclesLogicDifficulty
     required_essences: OraclesRequiredEssences
     required_slates: OracleOfAgesRequiredSlates
     warp_to_start_location: OracleOfAgesWarpToStartLocation
+    miniboss_locations: OracleOfAgesMinibossLocations
     animal_companion: OraclesAnimalCompanion
     default_seed: OraclesDefaultSeedType
     linked_heros_cave: OracleOfAgesLinkedHerosCave
+    secret_locations: OraclesIncludeSecretLocations
     duplicate_seed_trees: OracleOfAgesDuplicateSeedTrees
     shuffle_dungeons: OraclesDungeonShuffle
     master_keys: OraclesMasterKeys
@@ -143,4 +171,4 @@ class OracleOfAgesOptions(PerGameCommonOptions):
     shop_prices_factor: OracleOfAgesPricesFactor
     advance_shop: OraclesAdvanceShop
     combat_difficulty: OraclesCombatDifficulty
-    death_link: DeathLink
+    death_link: OraclesDeathLink

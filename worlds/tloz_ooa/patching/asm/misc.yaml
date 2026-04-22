@@ -8,7 +8,8 @@
 0a/4fe1/: jp interactionDelete # ^
 
 0b/52e3/: jp interactionDelete # storm
-12/638f/: db $f3,$57,$41,$ff   # item in chicken hut
+
+15/6be1/: ret # prevent bomb refill in tokay chicken hut
 
 15//bombFairyCall: |
   ld a,$1c # GLOBALFLAG_GOT_BOMB_UPGRADE_FROM_FAIRY
@@ -137,9 +138,8 @@
 15/6b43/: dw $c71f
 15/6b45/: db $ff
 
-# Sea of storm specific chest. (change if in linked game)
-10/79ab/: dwbe locations.seaofstorm
-10/79ad/: dwbe locations.seaofstorm
+# Sea of storm past chest
+10/79ab/: dwbe locations.seaofstormpast
 
 # Veran is beaten
 10//thatallfolks: |

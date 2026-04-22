@@ -1,4 +1,4 @@
-from typing import List, Any
+from typing import List, Any, Dict
 
 import os
 import random
@@ -12,8 +12,10 @@ from .Constants import *
 from pathlib import Path
 
 from .. import LOCATIONS_DATA
+from ..data.Entrances import WARPS_DATA, WARP_SOURCE_TABLE, WARP_DEST_TABLE
 from ..Options import *
 
+locations = {}
 
 def get_treasure_addr(rom: RomData, item_name: str):
     item_id, item_subid = get_item_id_and_subid(item_name)
@@ -73,6 +75,51 @@ def alter_treasures(rom: RomData):
     # not drops (see asm/seasons/bomb_bag_behavior)
     set_treasure_data(rom, "Bombs (10)", None, None, 0x90)
 
+def define_static_items_table(assembler: Z80Assembler, patch_data: dict[str, Any]):
+    # Format is group,room,treasure_id,treasure_subid
+    static_item_replacements_table = [
+        # ------- Freestanding items -------
+        0x01, 0x86, locations["blackTowerHP"]["id"], locations["blackTowerHP"]["subid"],
+        0x04, 0x06, locations["makuPathHP"]["id"], locations["makuPathHP"]["subid"],
+        0x00, 0x8b, locations["yollGraveyardHP"]["id"], locations["yollGraveyardHP"]["subid"],
+        0x05, 0xb1, locations["dekuForestHP"]["id"], locations["dekuForestHP"]["subid"],
+        0x03, 0xaf, locations["restorationWallHP"]["id"], locations["restorationWallHP"]["subid"],
+        0x00, 0x11, locations["symmetryCityHP"]["id"], locations["symmetryCityHP"]["subid"],
+        0x05, 0xc1, locations["ridgeWestHP"]["id"], locations["ridgeWestHP"]["subid"],
+        0x00, 0x0d, locations["ridgeUpperHP"]["id"], locations["ridgeUpperHP"]["subid"],
+        0x06, 0x05, locations["d0Basement"]["id"], locations["d0Basement"]["subid"],
+        0x06, 0x10, locations["d1Basement"]["id"], locations["d1Basement"]["subid"],
+        0x06, 0x28, locations["d2ThwompTunnel"]["id"], locations["d2ThwompTunnel"]["subid"],
+        0x06, 0x27, locations["d2ThwompShelf"]["id"], locations["d2ThwompShelf"]["subid"],
+
+        # ------- Drops / spawned items -------
+        0x04, 0x1e, locations["d1GhiniDrop"]["id"], locations["d1GhiniDrop"]["subid"],
+        0x04, 0x39, locations["d2MoblinDrop"]["id"], locations["d2MoblinDrop"]["subid"],
+        0x04, 0x42, locations["d2StatuePuzzle"]["id"], locations["d2StatuePuzzle"]["subid"],
+        0x04, 0x2e, locations["d2BasementDrop"]["id"], locations["d2BasementDrop"]["subid"],
+        0x04, 0x5e, locations["d3ArmosDrop"]["id"], locations["d3ArmosDrop"]["subid"],
+        0x04, 0x61, locations["d3StatueDrop"]["id"], locations["d3StatueDrop"]["subid"],
+        0x04, 0x64, locations["d3SixBlocDrop"]["id"], locations["d3SixBlocDrop"]["subid"],
+        0x04, 0x4b, locations["d3MoldormDrop"]["id"], locations["d3MoldormDrop"]["subid"],
+        0x04, 0x7b, locations["d4ColorDrop"]["id"], locations["d4ColorDrop"]["subid"],
+        0x05, 0x53, locations["d7CaneDiamondPuzzle"]["id"], locations["d7CaneDiamondPuzzle"]["subid"],
+        0x05, 0x4b, locations["d7FlowerRoom"]["id"], locations["d7FlowerRoom"]["subid"],
+        0x05, 0x55, locations["d7DiamondPuzzle"]["id"], locations["d7DiamondPuzzle"]["subid"]
+    ]
+    
+    if patch_data["options"]["linked_heros_cave"] > 0:
+        static_item_replacements_table.extend([
+            0x04, 0xcd, locations["d11Statue3Puzzle"]["id"], locations["d11Statue3Puzzle"]["subid"]
+        ])
+
+    if patch_data["options"]["miniboss_locations"]:
+        miniboss_room_bytes = [0x18, 0x34, 0x4d, 0x80, 0xb4, 0x12, 0x4a, 0x82]
+        for i in range(len(miniboss_room_bytes)):
+            group = 0x04 if i <= 4 else 0x07 if i == 6 else 0x05
+            location = locations[f"d{i + 1}Miniboss"]
+            static_item_replacements_table.extend([group, miniboss_room_bytes[i], location["id"], location["subid"]])
+
+    assembler.add_floating_chunk("staticItemsReplacementsTable", static_item_replacements_table)
 
 def get_asm_files(patch_data):
     asm_files = ASM_FILES.copy()
@@ -88,7 +135,11 @@ def get_asm_files(patch_data):
         asm_files.append("asm/conditional/mute_music.yaml")
     if patch_data["options"]["lynna_gardener"]:
         asm_files.append("asm/conditional/lynna_gardener.yaml")
-    if patch_data["options"]["goal"] == OraclesGoal.option_beat_ganon:
+    if patch_data["options"]["miniboss_locations"]:
+        asm_files.append("asm/conditional/miniboss_locations.yaml")
+    if patch_data["options"]["secret_locations"]:
+        asm_files.append("asm/conditional/secret_locations.yaml")
+    if patch_data["options"]["goal"] == OracleOfAgesGoal.option_beat_ganon:
         asm_files.append("asm/conditional/ganon_goal.yaml")
     if get_settings()["tloz_ooa_options"]["skip_intro_cinematic"]:
         asm_files.append("asm/conditional/intro_cinematic_skip.yaml")
@@ -113,20 +164,37 @@ def define_location_constants(assembler: Z80Assembler, patch_data):
             item_name = COMPANIONS[patch_data["options"]["animal_companion"]] + "'s Flute"
 
         item_id, item_subid = get_item_id_and_subid(item_name)
+        locations[symbolic_name] = {
+            "fullid": (item_id << 8) + item_subid,
+            "id": item_id,
+            "subid": item_subid
+        }
         assembler.define_byte(f"locations.{symbolic_name}.id", item_id)
         assembler.define_byte(f"locations.{symbolic_name}.subid", item_subid)
         assembler.define_word(f"locations.{symbolic_name}", (item_id << 8) + item_subid)
 
+def set_faq_text(assembler: Z80Assembler):
+    faq_intro_text = text_to_binary(("Welcome to the "
+                        "OoA randomizer "
+                        "for Archipelago! "
+                        "Did you read "
+                        "the FAQ, because there are important randomizer mechanics in it."))
+    faq_intro_text.extend([0x00])
+    assembler.add_floating_chunk("text.faqIntro", faq_intro_text)
         
 def define_option_constants(assembler: Z80Assembler, patch_data):
     options = patch_data["options"]
 
-    if not hasattr(get_settings().tloz_ooa_options, "beat_tutorial"):
-        assembler.define_byte("option.startingGroup", 0x03)
-        assembler.define_byte("option.startingRoom", 0xbf)
-    else: # Redirect user to the first item check, saving them some time.
-        assembler.define_byte("option.startingGroup", 0x00)
-        assembler.define_byte("option.startingRoom", 0x39)
+    # if not hasattr(get_settings().tloz_ooa_options, "beat_tutorial"):
+        # assembler.define_byte("option.startingGroup", 0x03)
+        # assembler.define_byte("option.startingRoom", 0xbf)
+        # assembler.define_byte("option.startingXPos", 0x60)
+        # assembler.define_byte("option.startingYPos", 0x70)
+    # else: # Redirect user to the first item check, saving them some time.
+    assembler.define_byte("option.startingGroup", 0x00)
+    assembler.define_byte("option.startingRoom", 0x39)
+    assembler.define_byte("option.startingXPos", 0x58)
+    assembler.define_byte("option.startingYPos", 0x58)
 
     assembler.define_byte("option.warpingGroup", patch_data["warp_to_start_variables"]["group"] if "group" in patch_data["warp_to_start_variables"] else 0x00)
     assembler.define_byte("option.warpingRoom", patch_data["warp_to_start_variables"]["room"] if "room" in patch_data["warp_to_start_variables"] else 0x59)
@@ -149,8 +217,19 @@ def define_option_constants(assembler: Z80Assembler, patch_data):
     master_keys_as_boss_keys = patch_data["options"]["master_keys"] == OraclesMasterKeys.option_all_dungeon_keys
     assembler.define_byte("option.smallKeySprite", 0x43 if master_keys_as_boss_keys else 0x42)
 
-def text_to_binary(item_name: str) -> List[int]:
-    words = item_name.split(" ")
+    if options["secret_locations"]:
+        assembler.add_floating_chunk("unsetglobalflag_librarySecret", [
+            0xb6, (0x4f | 0x80)
+        ])
+
+def parse_int(s):
+    try:
+        return int(s)
+    except ValueError:
+        return None # Return None if parsing fails
+
+def text_to_binary(text: str) -> List[int]:
+    words = text.split(" ")
     current_line = 0
     lines = [""]
     while len(words) > 0:
@@ -169,7 +248,13 @@ def text_to_binary(item_name: str) -> List[int]:
     for line in lines:
         if len(result) > 0:
             result.append(0x01)  # Newline
-        result.extend(line.encode())
+        for i in range(len(line)):
+            char = line[i:i+1]
+            if parse_int(char) is not None:
+                result.append(0x30 + int(char))
+            else:
+                info = next(stuff for stuff in ascii_printable_chars_table if stuff["Character"] == char)
+                result.append(info["Hexadecimal"])
     return result
 
 def define_text_constants(assembler: Z80Assembler, patch_data):
@@ -297,56 +382,85 @@ def write_seed_tree_content(rom: RomData, patch_data):
         newdata = (original_data & 0x0f) | (item_id - 0x20) << 4
         rom.write_bytes(tree_data["codeAdress"], [newdata])
 
+def define_underwater_warp_arraywarps(assembler: Z80Assembler, rom: RomData, patch_data):
+    warp_matchings = patch_data["shuffled_entrances"]
+    # +2 because we only use the 2 last byte of the 4 warp bytes
+    outside_values = {name: rom.read_word(GameboyAddress(0x04, warp["outside_warp"]).address_in_rom()) for name, warp in WARPS_DATA.items()}
+    inside_values = {name: rom.read_word(GameboyAddress(0x04, warp["inside_warp"]).address_in_rom()) for name, warp in WARPS_DATA.items()}
+    
+    underwater_warp_table = []
+
+    for outside_name, inside_name in warp_matchings.items():
+        if "is_underwater" in WARPS_DATA[outside_name] and WARPS_DATA[outside_name]["is_underwater"]:
+            intoout_warp_group = (inside_values[outside_name] & 0xf000) >> 12
+            intoout_warp_index = inside_values[outside_name] & 0x00ff
+            underwater_warp_table.append(intoout_warp_group)
+            underwater_warp_table.append(intoout_warp_index)
+            
+            outtoin_warp_group = (outside_values[outside_name] & 0xf000) >> 12
+            outtoin_warp_index = outside_values[outside_name] & 0x00ff
+            underwater_warp_table.append(outtoin_warp_group)
+            underwater_warp_table.append(outtoin_warp_index)
+    underwater_warp_table.append(0xff)
+
+    assembler.add_floating_chunk("underwaterWarpTable", underwater_warp_table)
+
 def set_dungeon_warps(rom: RomData, patch_data):
-    warp_matchings = patch_data["dungeon_entrances"]
-    enter_values = {name: rom.read_word(dungeon["addr"]) for name, dungeon in DUNGEON_ENTRANCES.items()}
-    exit_values = {name: rom.read_word(addr) for name, addr in DUNGEON_EXITS.items()}
+    warp_matchings = patch_data["shuffled_entrances"]
+    # +2 because we only use the 2 last byte of the 4 warp bytes
+    outside_values = {name: rom.read_word(GameboyAddress(0x04, warp["outside_warp"]).address_in_rom()) for name, warp in WARPS_DATA.items()}
+    inside_values = {name: rom.read_word(GameboyAddress(0x04, warp["inside_warp"]).address_in_rom()) for name, warp in WARPS_DATA.items()}
 
-    # Apply warp matchings expressed in the patch
-    for from_name, to_name in warp_matchings.items():
-        default_entrance_of_to_name = [name for name, dungeon in DUNGEON_ENTRANCES.items() if dungeon["default"] == to_name][0]
-        default_exit_of_from_name = DUNGEON_ENTRANCES[from_name]["default"]
-        entrance_addr = DUNGEON_ENTRANCES[from_name]["addr"]
-        exit_addr = DUNGEON_EXITS[to_name]
-        rom.write_word(entrance_addr, enter_values[default_entrance_of_to_name])
-        rom.write_word(exit_addr, exit_values[default_exit_of_from_name])
-
-    # Build a map dungeon => entrance (useful for essence warps)
-    entrance_map = dict((v, k) for k, v in warp_matchings.items())
-
-    # D1-D8 Essence Warps (hardcoded in one array using a unified format)
-    for i in range(0, 9):
-        if i == 8:
-            if patch_data["options"]["linked_heros_cave"] > 0:
-                i = 10
-            else:
+    # Reading the warp desting table group addresses. Useful for essence warp back.
+    warp_dest_table = []
+    for i in range(0, 8):
+        warp_dest_table.append(rom.read_word(WARP_DEST_TABLE + 2 * i))
+    
+    # Apply warp matchings expressed in the patch 
+    for outside_name, inside_name in warp_matchings.items():
+        outside_warp_addr: int = WARPS_DATA[outside_name]["outside_warp"]
+        inside_warp_addr: int = WARPS_DATA[inside_name]["inside_warp"]
+        rom.write_word(GameboyAddress(0x04, outside_warp_addr).address_in_rom(), outside_values[inside_name])
+        rom.write_word(GameboyAddress(0x04, inside_warp_addr).address_in_rom(), inside_values[outside_name])
+        
+        if ("dungeon" in WARPS_DATA[inside_name]):
+            dungeon_number = WARPS_DATA[inside_name]["dungeon"]
+            
+            if dungeon_number == 6 or dungeon_number == 0: # D6 present or maku path
                 continue
-        entrance_name = f"d{i + 1}"
-        if i == 5:
-            entrance_name += " past"
-        entrance = DUNGEON_ENTRANCES[entrance_map[entrance_name]]
-        if i == 10:
-            rom.write_bytes(GameboyAddress(0x0a, 0x7204).address_in_rom(), [
-                entrance["group"] | 0x80,
-                entrance["room"], 
-                0x0e if entrance["shifted"] else 0x01, 
-                entrance["position"], 
-                (entrance["group"] * 10) + 0x03
-            ])
-        else:
-            rom.write_bytes(0x2874f + (i * 4), [
-                entrance["group"] | 0x80,
-                entrance["room"],
-                entrance["position"],
-                0x0e if entrance["shifted"] else 0x01
-            ])
+                
+            if dungeon_number == 9:
+                dungeon_number = 6
+            
+            intoout_warp_group = (inside_values[outside_name] & 0xf000) >> 12
+            intoout_warp_index = inside_values[outside_name] & 0x00ff
 
-#    # Change Minimap popups to indicate the randomized dungeon's name
-#    for i in range(8):
-#        entrance_name = f"d{i}"
-#        dungeon_index = int(warp_matchings[entrance_name][1:])
-#        map_tile = DUNGEON_ENTRANCES[entrance_name]["map_tile"]
-#        rom.write_byte(0x???? + map_tile, 0x81 | (dungeon_index << 3))
+            intoout_warp_dest_address = warp_dest_table[intoout_warp_group] + intoout_warp_index * 3
+            intoout_warp_room = rom.read_byte(GameboyAddress(0x04, intoout_warp_dest_address).address_in_rom())
+            intoout_warp_position = rom.read_byte(GameboyAddress(0x04, intoout_warp_dest_address + 1).address_in_rom())
+            intoout_warp_flag = rom.read_byte(GameboyAddress(0x04, intoout_warp_dest_address + 2).address_in_rom())
+
+            if dungeon_number == 11: # NOTE : No need to check for the option. If it's not set, it shouldn't be in the array in the first place
+                rom.write_bytes(GameboyAddress(0x0a, 0x7204).address_in_rom(), [
+                    intoout_warp_group | 0x80,
+                    intoout_warp_room,
+                    intoout_warp_flag, 
+                    intoout_warp_position, 
+                    (intoout_warp_group * 0x10) + 0x03
+                ])
+            else:
+                rom.write_bytes(0x2874f + ((dungeon_number - 1) * 4), [
+                    intoout_warp_group | 0x80,
+                    intoout_warp_room,
+                    intoout_warp_position,
+                    intoout_warp_flag
+                ])
+
+            ## Change Minimap popups to indicate the randomized dungeon's name
+            #map_tile = intoout_warp_group << 8 | intoout_warp_room
+            #if "custom_map_tile" in WARPS_DATA[outside_name]:
+            #    map_tile = WARPS_DATA[outside_name]["custom_map_tile"]
+            #rom.write_byte(0x???? + map_tile, 0x81 | (dungeon_index << 3))
 
 def define_tile_replacements_table(assembler: Z80Assembler, patch_data):
     new_tiles_table = [
@@ -370,18 +484,21 @@ def define_tile_replacements_table(assembler: Z80Assembler, patch_data):
         0x01, 0x2c, 0x00, 0x70, 0x69, # ledge in rolling ridge east past
         0x01, 0x2c, 0x00, 0x71, 0x06, # cont.
         0x01, 0x2c, 0x00, 0x72, 0x67, # cont.
-        0x00, 0xa9, 0x00, 0x67, 0xf2, # portal sign on crescent island
         0x01, 0xa5, 0x00, 0x35, 0x48, # ledge by library past
         0x01, 0xa5, 0x00, 0x45, 0x0b, # cont.
         0x01, 0xa5, 0x00, 0x55, 0x6c, # cont.
         0x00, 0x83, 0x00, 0x44, 0xd7, # portal outside D2 present
-        0x01, 0x48, 0x02, 0x31, 0xcd # past maku road: remove dirt when exiting
+        0x01, 0x48, 0x02, 0x31, 0xcd, # past maku road: remove dirt when exiting
+        # 0x00, 0x5d, 0x00, 0x66, 0x0b, # ledge by the linked ghini ghost (traps link in ghini's interaction space until warp to start is initialized (used for faq room space))
+        # 0x00, 0x5d, 0x00, 0x57, 0xf4, # waterblock for preventing the trapped player from escaping into the graveyard
     ]
 
-    if not hasattr(get_settings().tloz_ooa_options, "beat_tutorial"):
+    if patch_data["options"]["secret_locations"]: # Format is group, room, room flag, position in YX format, and replacement tile byte.
         new_tiles_table.extend([
-            0x03, 0xbf, 0x00, 0x74, 0xb2, # block off exit for faq room
-            0x03, 0xbf, 0x00, 0x75, 0xb2, # block off exit for faq room
+            0x01, 0xc7, 0x00, 0x48, 0xd0, # add stair tile in sea of storms past to allow players to time travel to the present sea of storms.
+            0x03, 0xc7, 0x00, 0x48, 0x2c, # add statue in sea of storms past underwater prevent players from resurfacing on that area.
+            0x00, 0x76, 0x00, 0x55, 0xa7, # add walkable tiles to black tower present entrance
+            0x00, 0x76, 0x00, 0x54, 0xa7, # ^
         ])
 
     assembler.add_floating_chunk("tileReplacementsTable", new_tiles_table)

@@ -1,3 +1,5 @@
+# NOTE ! this array is completed with the content of WARPS_DATA in Entrance.py (outside <WARPNAME> and inside <WARPNAME>)
+
 REGIONS = [
     "Menu",
     #######
@@ -10,8 +12,11 @@ REGIONS = [
     "lynna city chest",
     "lynna shop",
     "hidden shop",
+    "mayor plen's secret",
+    "mamamu yan secret",
     "mayor plen's house",
     "vasu's gift",
+    "princess zelda rescue",
     #######
     "lynna village",
     "gasha farmer",
@@ -31,6 +36,7 @@ REGIONS = [
     "south shore dirt",
     "balloon guy's gift",
     "balloon guy's upgrade",
+    "balloon guy's secret",
 
     #######
     "yoll graveyard",
@@ -44,6 +50,7 @@ REGIONS = [
 
     #######
     "fairies' woods",
+    "fairies' woods secret",
     "fairies' woods chest",
     "d2 present entrance",
     #######
@@ -56,10 +63,13 @@ REGIONS = [
 
     #######
     "crescent past west",
+    "tokay stolen shovel",
     "tokay crystal cave",
     "crescent past east",
     "tokay bomb cave",
+    "tokay chicken hut",
     "wild tokay game",
+    "wild tokay secret",
     "hidden tokay cave",
     "tokay pot cave",
     "tokay market 1",
@@ -84,6 +94,7 @@ REGIONS = [
     "symmetry city tree",
     #######
     "symmetry past",
+    "symmetry city secret",
     "symmetry city brother",
     "tokkey's composition",
     #######
@@ -135,6 +146,7 @@ REGIONS = [
     "ridge mid past",
     "ridge move vine seed",
     "goron shooting gallery",
+    "elder secret",
     "goron shooting gallery price",
     "trade lava juice",
     "ridge bush cave",
@@ -144,6 +156,7 @@ REGIONS = [
     "target carts",
     "target carts 1",
     "target carts 2",
+    "troy secret",
     "big bang game",
     "ridge NE cave present",
     "goron diamond cave",
@@ -157,16 +170,18 @@ REGIONS = [
     "fairies' coast chest",
     "library present",
     "library past",
+    "library secret",
     "zora seas chest",
     "zora king gift",
     "d7 entrance",
     "fisher's island cave",
     "zora's reward",
+    "king zora's secret",
 
     #######
     "piratian captain",
     "sea of storms past",
-    #"sea of storms present",
+    "sea of storms present",
     "d8 entrance",
     "sea of no return",
 
@@ -189,6 +204,7 @@ REGIONS = [
     "d1 ghini drop",
     "d1 U-room",
     "d1 basement",
+    "d1 miniboss",
     "d1 boss",
     #######
     "enter d2",
@@ -205,6 +221,7 @@ REGIONS = [
     "d2 basement",
     "d2 basement chest",
     "d2 basement drop",
+    "d2 miniboss",
     "d2 boss",
     #######
     "enter d3",
@@ -232,6 +249,7 @@ REGIONS = [
     "d3 crossing bridge room 2",
     #"d3 scent seed bush",
     "d3 post-subterror",
+    "d3 miniboss",
     "d3 boss",
     #######
     "enter d4",
@@ -248,6 +266,7 @@ REGIONS = [
     'd4 first crystal switch',
     'd4 color tile drop',
     'd4 large floor puzzle',
+    "d4 miniboss",
     'd4 boss',
     #######
     "enter d5",
@@ -263,6 +282,7 @@ REGIONS = [
     "d5 two-statue puzzle",
     "d5 dark room",
     "d5 six-statue puzzle",
+    "d5 miniboss",
     "d5 boss",
     #######
     "enter d6 present",
@@ -276,6 +296,7 @@ REGIONS = [
     "d6 present beamos chest",
     "d6 present cube chest",
     "d6 present channel chest",
+    "d6 miniboss",
     #######
     "enter d6 past",
     "d6 wall A bombed",
@@ -297,7 +318,7 @@ REGIONS = [
     "d7 island chest",
     "d7 stairway chest",
     "d7 miniboss chest",
-    "d7 cane/diamond puzzle",
+    "d7 cane and diamond puzzle",
     "d7 boxed chest",
     "d7 flower room",
     "d7 diamond puzzle",
@@ -308,6 +329,7 @@ REGIONS = [
     "d7 hallway chest",
     "d7 post-hallway chest",
     "d7 terrace",
+    "d7 miniboss",
     "d7 boss",
     #######
     "enter d8",
@@ -326,6 +348,7 @@ REGIONS = [
     'd8 tile room',
     'd8 stalfos',
     'd8 b3f single chest',
+    "d8 miniboss",
     'd8 boss',
     #######
     "veran beaten",
@@ -355,9 +378,8 @@ REGIONS = [
     "symmetry city heartpiece",
     "ridge west heartpiece",
     "ridge upper heartpiece",
-]
-
-D11_REGIONS = [
+    
+    ## D11, never used if the option is not set, but we can keep the region in the same array as the others
     "d11 entrance",
     "enter d11",
     "d11 pots puzzle 1",
