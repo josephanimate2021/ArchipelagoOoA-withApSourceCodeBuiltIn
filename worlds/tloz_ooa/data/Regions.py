@@ -318,7 +318,7 @@ REGIONS = [
     "d7 island chest",
     "d7 stairway chest",
     "d7 miniboss chest",
-    "d7 cane/diamond puzzle",
+    "d7 cane and diamond puzzle",
     "d7 boxed chest",
     "d7 flower room",
     "d7 diamond puzzle",

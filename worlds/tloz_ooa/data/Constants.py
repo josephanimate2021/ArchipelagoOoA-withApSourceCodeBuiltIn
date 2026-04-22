@@ -250,7 +250,7 @@ LOCATION_GROUPS = {
         "Jabu-Jabu's Belly (1F): Island Chest",
         "Jabu-Jabu's Belly (1F): Stairway Chest",
         "Jabu-Jabu's Belly (1F): Miniboss Chest",
-        "Jabu-Jabu's Belly (1F): Cane/Diamond Puzzle",
+        "Jabu-Jabu's Belly (1F): Cane and Diamond Puzzle",
         "Jabu-Jabu's Belly (1F): Boxed Chest",
         "Jabu-Jabu's Belly (1F): Flower Room",
         "Jabu-Jabu's Belly (1F): Diamond Puzzle",

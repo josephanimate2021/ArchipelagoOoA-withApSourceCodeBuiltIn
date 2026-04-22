@@ -1818,8 +1818,8 @@ LOCATIONS_DATA = {
         "conditional": True,
         "symbolic_name": "d7Miniboss"
     },
-    "Jabu-Jabu's Belly (1F): Cane/Diamond Puzzle": {
-    	"region_id": "d7 cane/diamond puzzle",
+    "Jabu-Jabu's Belly (1F): Cane and Diamond Puzzle": {
+    	"region_id": "d7 cane and diamond puzzle",
     	"vanilla_item": "Small Key (Jabu-Jabu's Belly)",
     	"dungeon" : 7,
         "flag_byte": 0xca53,
