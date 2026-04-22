@@ -80,6 +80,7 @@ class OracleOfAgesDuplicateSeedTrees(OptionSet):
     valid_keys = {key for key in TREES_TABLE.keys()}
 
     include_in_patch = True
+    include_in_slot_data = True
 
 
 class OracleOfAgesLinkedHerosCave(Choice):
@@ -104,6 +105,7 @@ class OracleOfAgesSlateShuffle(Toggle):
     """
     display_name = "Slates Outside Dungeon 8"
 
+    include_in_slot_data = True
     include_in_patch = True
 
 
