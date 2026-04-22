@@ -99,6 +99,7 @@ class OracleOfAgesDuplicateSeedTrees(OptionSet):
     valid_keys = {key for key in TREES_TABLE.keys()}
 
     include_in_patch = True
+    include_in_slot_data = True
 
 
 class OracleOfAgesLinkedHerosCave(Choice):
@@ -123,8 +124,17 @@ class OracleOfAgesSlateShuffle(Toggle):
     """
     display_name = "Slates Outside Dungeon 8"
 
+    include_in_slot_data = True
     include_in_patch = True
 
+
+class OracleOfAgesEssenceSanity(Toggle):
+    """
+    If enabled, essences will be shuffled anywhere in the multiworld instead of being guaranteed to be found
+    at the end their respective dungeons.
+    """
+    display_name = "Shuffle Essences"
+    include_in_patch = True
 
 # Keeping this for now
 class OracleOfAgesPricesFactor(Range):
@@ -175,9 +185,10 @@ class OracleOfAgesOptions(PerGameCommonOptions):
     keysanity_boss_keys: OraclesBossKeyShuffle
     keysanity_maps_compasses: OraclesMapCompassShuffle
     keysanity_slates: OracleOfAgesSlateShuffle
+    shuffle_essences: OracleOfAgesEssenceSanity
     required_rings: OraclesRequiredRings
     excluded_rings: OraclesExcludedRings
     shop_prices_factor: OracleOfAgesPricesFactor
     advance_shop: OraclesAdvanceShop
     combat_difficulty: OraclesCombatDifficulty
-    death_link: DeathLink
+    death_link: OraclesDeathLink

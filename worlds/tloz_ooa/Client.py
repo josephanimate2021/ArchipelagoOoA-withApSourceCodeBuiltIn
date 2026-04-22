@@ -95,7 +95,7 @@ class OracleOfAgesClient(BizHawkClient):
 
     def on_package(self, ctx, cmd, args):
         if cmd == 'Connected':
-            if 'death_link' in args['slot_data'] and args['slot_data']['death_link']:
+            if 'death_link' in args['slot_data']['options'] and args['slot_data']['options']['death_link']:
                 self.set_deathlink = True
                 self.last_deathlink = time.time()
         super().on_package(ctx, cmd, args)
@@ -218,11 +218,11 @@ class OracleOfAgesClient(BizHawkClient):
     async def process_game_completion(self, ctx: "BizHawkClientContext", flag_bytes, current_room: int):
         game_clear = False
         if ctx.slot_data is not None:
-            if ctx.slot_data["goal"] == OracleOfAgesGoal.option_beat_veran:
+            if ctx.slot_data['options']["goal"] == OracleOfAgesGoal.option_beat_veran:
                 veran_flag_offset = 0xC6D8 - RAM_ADDRS["location_flags"][0]
                 veran_was_beaten = (flag_bytes[veran_flag_offset] & 0x80 == 0x80)
                 game_clear = veran_was_beaten
-            elif ctx.slot_data["goal"] == OracleOfAgesGoal.option_beat_ganon:
+            elif ctx.slot_data['options']["goal"] == OracleOfAgesGoal.option_beat_ganon:
                 # Room with Zelda lying down was reached, and Ganon was beaten
                 ganon_flag_offset = 0xCAF1 - RAM_ADDRS["location_flags"][0]
                 ganon_was_beaten = (flag_bytes[ganon_flag_offset] & 0x80 == 0x80)

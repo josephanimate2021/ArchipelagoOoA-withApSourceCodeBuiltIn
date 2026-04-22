@@ -12,10 +12,10 @@ from .Constants import *
 from pathlib import Path
 
 from .. import LOCATIONS_DATA
+from ..data.Entrances import WARPS_DATA, WARP_SOURCE_TABLE, WARP_DEST_TABLE
 from ..Options import *
 
 locations = {}
-
 
 def get_treasure_addr(rom: RomData, item_name: str):
     item_id, item_subid = get_item_id_and_subid(item_name)
@@ -75,7 +75,7 @@ def alter_treasures(rom: RomData):
     # not drops (see asm/seasons/bomb_bag_behavior)
     set_treasure_data(rom, "Bombs (10)", None, None, 0x90)
 
-def define_static_items_table(assembler: Z80Assembler, patch_data: Dict[str, Any]):
+def define_static_items_table(assembler: Z80Assembler, patch_data: dict[str, Any]):
     # Format is group,room,treasure_id,treasure_subid
     static_item_replacements_table = [
         # ------- Freestanding items -------
@@ -111,7 +111,6 @@ def define_static_items_table(assembler: Z80Assembler, patch_data: Dict[str, Any
         static_item_replacements_table.extend([
             0x04, 0xcd, locations["d11Statue3Puzzle"]["id"], locations["d11Statue3Puzzle"]["subid"]
         ])
-
 
     if patch_data["options"]["miniboss_locations"]:
         miniboss_room_bytes = [0x18, 0x34, 0x4d, 0x80, 0xb4, 0x12, 0x4a, 0x82]
@@ -383,56 +382,85 @@ def write_seed_tree_content(rom: RomData, patch_data):
         newdata = (original_data & 0x0f) | (item_id - 0x20) << 4
         rom.write_bytes(tree_data["codeAdress"], [newdata])
 
+def define_underwater_warp_arraywarps(assembler: Z80Assembler, rom: RomData, patch_data):
+    warp_matchings = patch_data["shuffled_entrances"]
+    # +2 because we only use the 2 last byte of the 4 warp bytes
+    outside_values = {name: rom.read_word(GameboyAddress(0x04, warp["outside_warp"]).address_in_rom()) for name, warp in WARPS_DATA.items()}
+    inside_values = {name: rom.read_word(GameboyAddress(0x04, warp["inside_warp"]).address_in_rom()) for name, warp in WARPS_DATA.items()}
+    
+    underwater_warp_table = []
+
+    for outside_name, inside_name in warp_matchings.items():
+        if "is_underwater" in WARPS_DATA[outside_name] and WARPS_DATA[outside_name]["is_underwater"]:
+            intoout_warp_group = (inside_values[outside_name] & 0xf000) >> 12
+            intoout_warp_index = inside_values[outside_name] & 0x00ff
+            underwater_warp_table.append(intoout_warp_group)
+            underwater_warp_table.append(intoout_warp_index)
+            
+            outtoin_warp_group = (outside_values[outside_name] & 0xf000) >> 12
+            outtoin_warp_index = outside_values[outside_name] & 0x00ff
+            underwater_warp_table.append(outtoin_warp_group)
+            underwater_warp_table.append(outtoin_warp_index)
+    underwater_warp_table.append(0xff)
+
+    assembler.add_floating_chunk("underwaterWarpTable", underwater_warp_table)
+
 def set_dungeon_warps(rom: RomData, patch_data):
-    warp_matchings = patch_data["dungeon_entrances"]
-    enter_values = {name: rom.read_word(dungeon["addr"]) for name, dungeon in DUNGEON_ENTRANCES.items()}
-    exit_values = {name: rom.read_word(addr) for name, addr in DUNGEON_EXITS.items()}
+    warp_matchings = patch_data["shuffled_entrances"]
+    # +2 because we only use the 2 last byte of the 4 warp bytes
+    outside_values = {name: rom.read_word(GameboyAddress(0x04, warp["outside_warp"]).address_in_rom()) for name, warp in WARPS_DATA.items()}
+    inside_values = {name: rom.read_word(GameboyAddress(0x04, warp["inside_warp"]).address_in_rom()) for name, warp in WARPS_DATA.items()}
 
-    # Apply warp matchings expressed in the patch
-    for from_name, to_name in warp_matchings.items():
-        default_entrance_of_to_name = [name for name, dungeon in DUNGEON_ENTRANCES.items() if dungeon["default"] == to_name][0]
-        default_exit_of_from_name = DUNGEON_ENTRANCES[from_name]["default"]
-        entrance_addr = DUNGEON_ENTRANCES[from_name]["addr"]
-        exit_addr = DUNGEON_EXITS[to_name]
-        rom.write_word(entrance_addr, enter_values[default_entrance_of_to_name])
-        rom.write_word(exit_addr, exit_values[default_exit_of_from_name])
-
-    # Build a map dungeon => entrance (useful for essence warps)
-    entrance_map = dict((v, k) for k, v in warp_matchings.items())
-
-    # D1-D8 Essence Warps (hardcoded in one array using a unified format)
-    for i in range(0, 9):
-        if i == 8:
-            if patch_data["options"]["linked_heros_cave"] > 0:
-                i = 10
-            else:
+    # Reading the warp desting table group addresses. Useful for essence warp back.
+    warp_dest_table = []
+    for i in range(0, 8):
+        warp_dest_table.append(rom.read_word(WARP_DEST_TABLE + 2 * i))
+    
+    # Apply warp matchings expressed in the patch 
+    for outside_name, inside_name in warp_matchings.items():
+        outside_warp_addr: int = WARPS_DATA[outside_name]["outside_warp"]
+        inside_warp_addr: int = WARPS_DATA[inside_name]["inside_warp"]
+        rom.write_word(GameboyAddress(0x04, outside_warp_addr).address_in_rom(), outside_values[inside_name])
+        rom.write_word(GameboyAddress(0x04, inside_warp_addr).address_in_rom(), inside_values[outside_name])
+        
+        if ("dungeon" in WARPS_DATA[inside_name]):
+            dungeon_number = WARPS_DATA[inside_name]["dungeon"]
+            
+            if dungeon_number == 6 or dungeon_number == 0: # D6 present or maku path
                 continue
-        entrance_name = f"d{i + 1}"
-        if i == 5:
-            entrance_name += " past"
-        entrance = DUNGEON_ENTRANCES[entrance_map[entrance_name]]
-        if i == 10:
-            rom.write_bytes(GameboyAddress(0x0a, 0x7204).address_in_rom(), [
-                entrance["group"] | 0x80,
-                entrance["room"], 
-                0x0e if entrance["shifted"] else 0x01, 
-                entrance["position"], 
-                (entrance["group"] * 10) + 0x03
-            ])
-        else:
-            rom.write_bytes(0x2874f + (i * 4), [
-                entrance["group"] | 0x80,
-                entrance["room"],
-                entrance["position"],
-                0x0e if entrance["shifted"] else 0x01
-            ])
+                
+            if dungeon_number == 9:
+                dungeon_number = 6
+            
+            intoout_warp_group = (inside_values[outside_name] & 0xf000) >> 12
+            intoout_warp_index = inside_values[outside_name] & 0x00ff
 
-#    # Change Minimap popups to indicate the randomized dungeon's name
-#    for i in range(8):
-#        entrance_name = f"d{i}"
-#        dungeon_index = int(warp_matchings[entrance_name][1:])
-#        map_tile = DUNGEON_ENTRANCES[entrance_name]["map_tile"]
-#        rom.write_byte(0x???? + map_tile, 0x81 | (dungeon_index << 3))
+            intoout_warp_dest_address = warp_dest_table[intoout_warp_group] + intoout_warp_index * 3
+            intoout_warp_room = rom.read_byte(GameboyAddress(0x04, intoout_warp_dest_address).address_in_rom())
+            intoout_warp_position = rom.read_byte(GameboyAddress(0x04, intoout_warp_dest_address + 1).address_in_rom())
+            intoout_warp_flag = rom.read_byte(GameboyAddress(0x04, intoout_warp_dest_address + 2).address_in_rom())
+
+            if dungeon_number == 11: # NOTE : No need to check for the option. If it's not set, it shouldn't be in the array in the first place
+                rom.write_bytes(GameboyAddress(0x0a, 0x7204).address_in_rom(), [
+                    intoout_warp_group | 0x80,
+                    intoout_warp_room,
+                    intoout_warp_flag, 
+                    intoout_warp_position, 
+                    (intoout_warp_group * 0x10) + 0x03
+                ])
+            else:
+                rom.write_bytes(0x2874f + ((dungeon_number - 1) * 4), [
+                    intoout_warp_group | 0x80,
+                    intoout_warp_room,
+                    intoout_warp_position,
+                    intoout_warp_flag
+                ])
+
+            ## Change Minimap popups to indicate the randomized dungeon's name
+            #map_tile = intoout_warp_group << 8 | intoout_warp_room
+            #if "custom_map_tile" in WARPS_DATA[outside_name]:
+            #    map_tile = WARPS_DATA[outside_name]["custom_map_tile"]
+            #rom.write_byte(0x???? + map_tile, 0x81 | (dungeon_index << 3))
 
 def define_tile_replacements_table(assembler: Z80Assembler, patch_data):
     new_tiles_table = [
