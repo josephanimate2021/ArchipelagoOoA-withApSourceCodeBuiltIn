@@ -428,13 +428,11 @@ def set_dungeon_warps(rom: RomData, patch_data):
             
             if dungeon_number == 6 or dungeon_number == 0: # D6 present or maku path
                 continue
-                
             if dungeon_number == 9:
                 dungeon_number = 6
             
             intoout_warp_group = (inside_values[outside_name] & 0xf000) >> 12
             intoout_warp_index = inside_values[outside_name] & 0x00ff
-
             intoout_warp_dest_address = warp_dest_table[intoout_warp_group] + intoout_warp_index * 3
             intoout_warp_room = rom.read_byte(GameboyAddress(0x04, intoout_warp_dest_address).address_in_rom())
             intoout_warp_position = rom.read_byte(GameboyAddress(0x04, intoout_warp_dest_address + 1).address_in_rom())
