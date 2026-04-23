@@ -262,6 +262,14 @@ class OracleOfAgesWorld(World):
         create_connections(self)
         apply_self_locking_rules(self.multiworld, self.player)
         self.multiworld.completion_condition[self.player] = lambda state: state.has("_beaten_game", self.player)
+        
+        #multiworld = self.multiworld
+        #allstate = multiworld.get_all_state(False)
+        #locations = multiworld.get_locations()
+        #reachable = multiworld.get_reachable_locations(allstate)
+        #unreachable = [location for location in locations if location not in reachable]
+        #print(unreachable)
+        #print(allstate.prog_items)
 
     def create_item(self, name: str) -> Item:
         if name.endswith("!PROG"):
@@ -391,16 +399,20 @@ class OracleOfAgesWorld(World):
 
         for item_name, quantity in item_pool_dict.items():
             for i in range(quantity):
+                prefill_item = None
                 if ("Small Key" in item_name or "Master Key" in item_name) and not self.options.keysanity_small_keys:
-                    self.dungeon_items.append(self.create_item(item_name))
+                    prefill_item = self.create_item(item_name)
                 elif "Boss Key" in item_name and not self.options.keysanity_boss_keys:
-                    self.dungeon_items.append(self.create_item(item_name))
+                    prefill_item = self.create_item(item_name)
                 elif ("Compass" in item_name or "Dungeon Map" in item_name) and not self.options.keysanity_maps_compasses:
-                    self.dungeon_items.append(self.create_item(item_name))
+                    prefill_item = self.create_item(item_name)
                 elif "Slate" in item_name and not self.options.keysanity_slates:
-                    self.dungeon_items.append(self.create_item(item_name))
+                    prefill_item = self.create_item(item_name)
                 else:
                     self.multiworld.itempool.append(self.create_item(item_name))        
+                if (prefill_item is not None):
+                    self.dungeon_items.append(prefill_item)
+                    self.pre_fill_items.append(prefill_item)
 
     def create_rings(self, amount):
         # Get a subset of as many rings as needed

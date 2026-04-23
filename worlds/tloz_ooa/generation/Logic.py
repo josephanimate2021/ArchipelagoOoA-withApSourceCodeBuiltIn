@@ -13,23 +13,6 @@ def warp_is_underwater(reg: str) -> bool:
 def create_connections(world: OracleOfAgesWorld):
     multiworld = world.multiworld
     player = world.player
-    randomized_entrances_logic = []
-
-    # Shuffled warp
-    for reg1, reg2 in world.randomized_entrances.items():
-        randomized_entrances_logic.append([OUTSIDE_TAG + reg1, INSIDE_TAG + reg2, lambda state: 
-                                   any(
-                                       ooa_can_dive(state, player, True),
-                                       all(
-                                           not(warp_is_underwater(reg1)),
-                                           not(warp_is_underwater(reg2))
-                                       )
-                                    ), None])
-        
-    # Not shuffled warp
-    for warp_name, warp_data in WARPS_DATA.items():
-        if warp_name not in world.randomized_entrances:
-            randomized_entrances_logic.append([OUTSIDE_TAG + warp_name, INSIDE_TAG + warp_name, True, None])
 
 
     all_logic = [
@@ -48,6 +31,25 @@ def create_connections(world: OracleOfAgesWorld):
 
     if world.options.linked_heros_cave.value > 0:
         all_logic.append(make_d11_logic(player))
+
+    
+    randomized_entrances_logic = []
+
+    # Shuffled warp
+    for reg1, reg2 in world.randomized_entrances.items():
+        randomized_entrances_logic.append([OUTSIDE_TAG + reg1, INSIDE_TAG + reg2, lambda state: 
+                                   any(
+                                       ooa_can_dive(state, player, True),
+                                       all(
+                                           not(warp_is_underwater(reg1)),
+                                           not(warp_is_underwater(reg2))
+                                       )
+                                    ), None])
+        
+    # Not shuffled warp
+    for warp_name, warp_data in WARPS_DATA.items():
+        if warp_name not in world.randomized_entrances:
+            randomized_entrances_logic.append([OUTSIDE_TAG + warp_name, INSIDE_TAG + warp_name, True, None])
 
     all_logic.append(randomized_entrances_logic)
 

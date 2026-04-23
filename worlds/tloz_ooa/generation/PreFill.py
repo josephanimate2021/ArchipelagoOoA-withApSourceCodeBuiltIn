@@ -132,7 +132,6 @@ def pre_fill_dungeon_items(world: "OracleOfAgesWorld"):
                 f"Failed to shuffle dungeon items for player {world.player}. Retrying..."
             )
 
-
 def pre_fill_seeds(world: "OracleOfAgesWorld") -> None:
     # Grab/validate the duplicate trees setting
     duplicate_trees = world.options.duplicate_seed_trees.value
