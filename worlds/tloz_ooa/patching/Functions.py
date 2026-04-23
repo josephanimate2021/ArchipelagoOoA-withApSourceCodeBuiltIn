@@ -383,7 +383,7 @@ def write_seed_tree_content(rom: RomData, patch_data):
         rom.write_bytes(tree_data["codeAdress"], [newdata])
 
 def define_underwater_warp_arraywarps(assembler: Z80Assembler, rom: RomData, patch_data):
-    warp_matchings = patch_data["shuffled_entrances"]
+    warp_matchings = patch_data["randomized_entrances"]
     # +2 because we only use the 2 last byte of the 4 warp bytes
     outside_values = {name: rom.read_word(GameboyAddress(0x04, warp["outside_warp"]).address_in_rom()) for name, warp in WARPS_DATA.items()}
     inside_values = {name: rom.read_word(GameboyAddress(0x04, warp["inside_warp"]).address_in_rom()) for name, warp in WARPS_DATA.items()}
@@ -406,7 +406,7 @@ def define_underwater_warp_arraywarps(assembler: Z80Assembler, rom: RomData, pat
     assembler.add_floating_chunk("underwaterWarpTable", underwater_warp_table)
 
 def set_dungeon_warps(rom: RomData, patch_data):
-    warp_matchings = patch_data["shuffled_entrances"]
+    warp_matchings = patch_data["randomized_entrances"]
     # +2 because we only use the 2 last byte of the 4 warp bytes
     outside_values = {name: rom.read_word(GameboyAddress(0x04, warp["outside_warp"]).address_in_rom()) for name, warp in WARPS_DATA.items()}
     inside_values = {name: rom.read_word(GameboyAddress(0x04, warp["inside_warp"]).address_in_rom()) for name, warp in WARPS_DATA.items()}

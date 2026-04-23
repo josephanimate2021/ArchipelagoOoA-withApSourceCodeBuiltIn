@@ -26,7 +26,7 @@ def ooa_create_appp_patch(world: "OracleOfAgesWorld") -> OoAProcedurePatch:
               if hasattr(OracleOfAgesOptions.type_hints[option_name], "include_in_patch")]),
         "warp_to_start_variables": world.determine_warp_to_start_variables(),
 
-        "shuffled_entrances": world.shuffled_entrances,
+        "randomized_entrances": world.randomized_entrances,
         "locations": {},
         "shop_prices": world.shop_prices,
         "music_order": {}

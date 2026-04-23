@@ -9,7 +9,6 @@ from Options import Accessibility, OptionError
 from typing import Any, Set, List, Dict, Optional, Tuple, ClassVar, TextIO, Union
 from .generation.Data import *
 from .data.Items import *
-from .generation.Logic import create_connections, apply_self_locking_rules
 from .Options import *
 from .generation.PatchWriter import ooa_create_appp_patch
 from .data import LOCATIONS_DATA
@@ -40,7 +39,7 @@ class OracleOfAgesWorld(World):
 
     pre_fill_items: List[Item]
     dungeon_items: List[Item]
-    shuffled_entrances: Dict[str, str]
+    randomized_entrances: Dict[str, str] = {}
     shop_prices: Dict[str, int]
 
     settings: ClassVar[OOASettings]
@@ -73,7 +72,7 @@ class OracleOfAgesWorld(World):
             split = location_name.split(": ")
             poptrackerName = split[-1] + "/"
             self.tracker_world["poptracker_name_mapping"][poptrackerName] = self.location_name_to_id[location_name]
-            print(f"{poptrackerName} ({location_name}) => {self.location_name_to_id[location_name]}")
+            #print(f"{poptrackerName} ({location_name}) => {self.location_name_to_id[location_name]}")
 
         super().__init__(multiworld, player)
 
@@ -88,7 +87,7 @@ class OracleOfAgesWorld(World):
             "options": self.options.as_dict(
                 *[option_name for option_name in OracleOfAgesOptions.type_hints
                   if hasattr(OracleOfAgesOptions.type_hints[option_name], "include_in_slot_data")]),
-            "shuffled_entrances": self.shuffled_entrances,
+            "randomized_entrances": self.randomized_entrances,
             "shop_costs": self.shop_prices,
         }
 
@@ -120,12 +119,12 @@ class OracleOfAgesWorld(World):
             raise OptionError("Required Rings and Excluded Rings contain the same element(s)", conflicting_rings)
         
         if self.options.shuffle_dungeons:
-            self.shuffled_entrances = {}
+            self.randomized_entrances = {}
             for warpName, warpData in WARPS_DATA.items():
                 if "dungeon" not in warpData: # Not a dungeon, skip it
                     continue; 
                 if "require_option" not in warpData or hasattr(self.options, warpData["require_option"]) and getattr(self.options, warpData["require_option"]):
-                    self.shuffled_entrances[warpName] = warpName
+                    self.randomized_entrances[warpName] = warpName
             self.shuffle_entrances()
         
         self.restrict_non_local_items()
@@ -147,9 +146,9 @@ class OracleOfAgesWorld(World):
             self.options.non_local_items.value -= set(["Slate"])
 
     def shuffle_entrances(self):
-        shuffled = list(self.shuffled_entrances.values())
+        shuffled = list(self.randomized_entrances.values())
         self.random.shuffle(shuffled)
-        self.shuffled_entrances = dict(zip(self.shuffled_entrances, shuffled))
+        self.randomized_entrances = dict(zip(self.randomized_entrances, shuffled))
 
     def randomize_shop_prices(self):
         prices_pool = get_prices_pool()
@@ -259,6 +258,7 @@ class OracleOfAgesWorld(World):
             self.multiworld.get_location(name, self.player).progress_type = LocationProgressType.EXCLUDED
 
     def set_rules(self):
+        from .generation.Logic import create_connections, apply_self_locking_rules
         create_connections(self)
         apply_self_locking_rules(self.multiworld, self.player)
         self.multiworld.completion_condition[self.player] = lambda state: state.has("_beaten_game", self.player)
@@ -444,7 +444,7 @@ class OracleOfAgesWorld(World):
         spoiler_handle.write(f"Apworld version : {self.version()}\n")
         if self.options.shuffle_dungeons != "vanilla":
             spoiler_handle.write(f"Shuffled Entrances ({self.multiworld.player_name[self.player]}):\n")
-            for entrance, dungeon in self.shuffled_entrances.items():
+            for entrance, dungeon in self.randomized_entrances.items():
                 spoiler_handle.write(f"\t- outside {entrance} --> inside {dungeon}\n")
 
     
@@ -462,7 +462,7 @@ class OracleOfAgesWorld(World):
             option_class: Type[Option] = OracleOfAgesOptions.type_hints[option]
             self.options.__setattr__(option, option_class.from_any(slot_data["options"][option]))
 
-        self.shuffled_entrances = slot_data["shuffled_entrances"]
+        self.randomized_entrances = slot_data["randomized_entrances"]
         self.shop_prices = slot_data["shop_costs"]
 
         return True
