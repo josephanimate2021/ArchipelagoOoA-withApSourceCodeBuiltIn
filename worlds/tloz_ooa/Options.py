@@ -173,7 +173,7 @@ class OracleOfAgesOptions(PerGameCommonOptions):
     required_essences: OraclesRequiredEssences
     required_slates: OracleOfAgesRequiredSlates
     warp_to_start_location: OracleOfAgesWarpToStartLocation
-    #vasu_ring_checks_requirement: OracleOfAgesVasuRingChecksRequirement
+    vasu_ring_checks_requirement: OracleOfAgesVasuRingChecksRequirement
     miniboss_locations: OracleOfAgesMinibossLocations
     animal_companion: OraclesAnimalCompanion
     default_seed: OraclesDefaultSeedType
