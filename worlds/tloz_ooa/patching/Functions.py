@@ -383,7 +383,7 @@ def write_seed_tree_content(rom: RomData, patch_data):
         rom.write_bytes(tree_data["codeAdress"], [newdata])
 
 def define_underwater_warp_arraywarps(assembler: Z80Assembler, rom: RomData, patch_data):
-    warp_matchings = patch_data["shuffled_entrances"]
+    warp_matchings = patch_data["randomized_entrances"]
     # +2 because we only use the 2 last byte of the 4 warp bytes
     outside_values = {name: rom.read_word(GameboyAddress(0x04, warp["outside_warp"]).address_in_rom()) for name, warp in WARPS_DATA.items()}
     inside_values = {name: rom.read_word(GameboyAddress(0x04, warp["inside_warp"]).address_in_rom()) for name, warp in WARPS_DATA.items()}
@@ -406,7 +406,7 @@ def define_underwater_warp_arraywarps(assembler: Z80Assembler, rom: RomData, pat
     assembler.add_floating_chunk("underwaterWarpTable", underwater_warp_table)
 
 def set_dungeon_warps(rom: RomData, patch_data):
-    warp_matchings = patch_data["shuffled_entrances"]
+    warp_matchings = patch_data["randomized_entrances"]
     # +2 because we only use the 2 last byte of the 4 warp bytes
     outside_values = {name: rom.read_word(GameboyAddress(0x04, warp["outside_warp"]).address_in_rom()) for name, warp in WARPS_DATA.items()}
     inside_values = {name: rom.read_word(GameboyAddress(0x04, warp["inside_warp"]).address_in_rom()) for name, warp in WARPS_DATA.items()}
@@ -428,13 +428,11 @@ def set_dungeon_warps(rom: RomData, patch_data):
             
             if dungeon_number == 6 or dungeon_number == 0: # D6 present or maku path
                 continue
-                
             if dungeon_number == 9:
                 dungeon_number = 6
             
             intoout_warp_group = (inside_values[outside_name] & 0xf000) >> 12
             intoout_warp_index = inside_values[outside_name] & 0x00ff
-
             intoout_warp_dest_address = warp_dest_table[intoout_warp_group] + intoout_warp_index * 3
             intoout_warp_room = rom.read_byte(GameboyAddress(0x04, intoout_warp_dest_address).address_in_rom())
             intoout_warp_position = rom.read_byte(GameboyAddress(0x04, intoout_warp_dest_address + 1).address_in_rom())

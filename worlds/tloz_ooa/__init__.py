@@ -37,7 +37,7 @@ class OracleOfAgesWorld(World):
 
     pre_fill_items: List[Item]
     dungeon_items: List[Item]
-    shuffled_entrances: Dict[str, str]
+    randomized_entrances: Dict[str, str] = {}
     shop_prices: Dict[str, int]
 
     settings: ClassVar[OOASettings]
@@ -70,7 +70,7 @@ class OracleOfAgesWorld(World):
             split = location_name.split(": ")
             poptrackerName = split[-1] + "/"
             self.tracker_world["poptracker_name_mapping"][poptrackerName] = self.location_name_to_id[location_name]
-            print(f"{poptrackerName} ({location_name}) => {self.location_name_to_id[location_name]}")
+            #print(f"{poptrackerName} ({location_name}) => {self.location_name_to_id[location_name]}")
 
         super().__init__(multiworld, player)
 
@@ -86,7 +86,7 @@ class OracleOfAgesWorld(World):
             "options": self.options.as_dict(
                 *[option_name for option_name in OracleOfAgesOptions.type_hints
                   if hasattr(OracleOfAgesOptions.type_hints[option_name], "include_in_slot_data")]),
-            "shuffled_entrances": self.shuffled_entrances,
+            "randomized_entrances": self.randomized_entrances,
             "shop_costs": self.shop_prices,
         }
 
@@ -144,7 +144,7 @@ class OracleOfAgesWorld(World):
         spoiler_handle.write(f"Apworld version : {self.version()}\n")
         if self.options.shuffle_dungeons != "vanilla":
             spoiler_handle.write(f"Shuffled Entrances ({self.multiworld.player_name[self.player]}):\n")
-            for entrance, dungeon in self.shuffled_entrances.items():
+            for entrance, dungeon in self.randomized_entrances.items():
                 spoiler_handle.write(f"\t- outside {entrance} --> inside {dungeon}\n")
 
     
@@ -162,7 +162,7 @@ class OracleOfAgesWorld(World):
             option_class: Type[Option] = OracleOfAgesOptions.type_hints[option]
             self.options.__setattr__(option, option_class.from_any(slot_data["options"][option]))
 
-        self.shuffled_entrances = slot_data["shuffled_entrances"]
+        self.randomized_entrances = slot_data["randomized_entrances"]
         self.shop_prices = slot_data["shop_costs"]
 
         return True
