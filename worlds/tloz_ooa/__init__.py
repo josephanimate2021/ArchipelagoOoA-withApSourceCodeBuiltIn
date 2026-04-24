@@ -9,13 +9,10 @@ from Options import Accessibility, OptionError
 from typing import Any, Set, List, Dict, Optional, Tuple, ClassVar, TextIO, Union
 from .generation.Data import *
 from .data.Items import *
-from .generation.Logic import create_connections, apply_self_locking_rules
 from .Options import *
 from .generation.PatchWriter import ooa_create_appp_patch
 from .data import LOCATIONS_DATA
 from .data.Constants import *
-from .data.Entrances import *
-from .data.Regions import *
 from .Client import OracleOfAgesClient  # Unused, but required to register with BizHawkClient
 from .Settings import OOASettings
 from .WebWorld import *
@@ -79,6 +76,7 @@ class OracleOfAgesWorld(World):
 
         self.pre_fill_items = []
         self.dungeon_items = []
+        self.random_rings_pool: list[str] = []
         self.shop_prices = SHOP_PRICES_DIVIDERS.copy()
 
     def fill_slot_data(self) -> dict:
@@ -113,306 +111,20 @@ class OracleOfAgesWorld(World):
             }
 
     def generate_early(self):
-        if self.interpret_slot_data(None):
-            return
-        conflicting_rings = self.options.required_rings.value & self.options.excluded_rings.value
-        if len(conflicting_rings) > 0:
-            raise OptionError("Required Rings and Excluded Rings contain the same element(s)", conflicting_rings)
-        
-        if self.options.shuffle_dungeons:
-            self.shuffled_entrances = {}
-            for warpName, warpData in WARPS_DATA.items():
-                if "dungeon" not in warpData: # Not a dungeon, skip it
-                    continue; 
-                if "require_option" not in warpData or hasattr(self.options, warpData["require_option"]) and getattr(self.options, warpData["require_option"]):
-                    self.shuffled_entrances[warpName] = warpName
-            self.shuffle_entrances()
-        
-        self.restrict_non_local_items()
-
-
-        self.randomize_shop_prices()
-
-    def restrict_non_local_items(self):
-        # Restrict non_local_items option in cases where it's incompatible with other options that enforce items
-        # to be placed locally (e.g. dungeon items with keysanity off)
-        if not self.options.keysanity_small_keys:
-            self.options.non_local_items.value -= self.item_name_groups["Small Keys"]
-        if not self.options.keysanity_boss_keys:
-            self.options.non_local_items.value -= self.item_name_groups["Boss Keys"]
-        if not self.options.keysanity_maps_compasses:
-            self.options.non_local_items.value -= self.item_name_groups["Dungeon Maps"]
-            self.options.non_local_items.value -= self.item_name_groups["Compasses"]
-        if not self.options.keysanity_slates:
-            self.options.non_local_items.value -= set(["Slate"])
-
-    def shuffle_entrances(self):
-        shuffled = list(self.shuffled_entrances.values())
-        self.random.shuffle(shuffled)
-        self.shuffled_entrances = dict(zip(self.shuffled_entrances, shuffled))
-
-    def randomize_shop_prices(self):
-        prices_pool = get_prices_pool()
-        self.random.shuffle(prices_pool)
-        global_prices_factor = self.options.shop_prices_factor.value / 100.0
-        for key, divider in self.shop_prices.items():
-            floating_price = prices_pool.pop() * global_prices_factor / divider
-            for i, value in enumerate(VALID_RUPEE_VALUES):
-                if value > floating_price:
-                    self.shop_prices[key] = VALID_RUPEE_VALUES[i-1]
-                    break
-
-    def location_is_active(self, location_name, location_data):
-        if "conditional" not in location_data or location_data["conditional"] is False:
-            return True
-
-        region_id = location_data["region_id"]
-        if region_id == "advance shop":
-            return self.options.advance_shop.value
-        
-        if "dungeon" in location_data:
-            if location_data["dungeon"] == 11:
-                return self.options.linked_heros_cave.value > 0
-            if location_data["symbolic_name"] == f"d{location_data["dungeon"]}Miniboss":
-                return self.options.miniboss_locations
-            
-        if "secret_location" in location_data and not False:
-            return self.options.secret_locations
-
-        # TODO FUNNY LOCATION ?
-
-        return False
-
-    def create_location(self, region_name: str, location_name: str, local: bool):
-        region = self.multiworld.get_region(region_name, self.player)
-        location = Location(self.player, location_name, self.location_name_to_id[location_name], region)
-        region.locations.append(location)
-        if local:
-            location.item_rule = lambda item: item.player == self.player
+        from .generation.GenerateEarly import generate_early
+        generate_early(self)
 
     def create_regions(self):
-        # Create regions
-        
-
-        regions = REGIONS.copy()
-
-        for warpName, warpData in WARPS_DATA.items():
-            regions.append(OUTSIDE_TAG + warpName)
-            regions.append(INSIDE_TAG + warpName)
-
-        for region_name in regions:
-            region = Region(region_name, self.player, self.multiworld)
-            self.multiworld.regions.append(region)
-
-        # Create locations
-        for location_name, location_data in LOCATIONS_DATA.items():
-            if not self.location_is_active(location_name, location_data):
-                continue
-
-            is_local = "local" in location_data and location_data["local"] is True
-            self.create_location(location_data['region_id'], location_name, is_local)
-
-        self.create_events()
-        self.exclude_problematic_locations()
-
-    def create_event(self, region_name, event_item_name):
-        region = self.multiworld.get_region(region_name, self.player)
-        location = Location(self.player, region_name + ".event", None, region)
-        region.locations.append(location)
-        location.place_locked_item(Item(event_item_name, ItemClassification.progression, None, self.player))
-
-    def create_events(self):
-        self.create_event("maku seed", "Maku Seed")
-
-        if self.options.goal == OracleOfAgesGoal.option_beat_veran:
-            self.create_event("veran beaten", "_beaten_game")
-        elif self.options.goal == OracleOfAgesGoal.option_beat_ganon:
-            self.create_event("ganon beaten", "_beaten_game")
-
-        self.create_event("ridge move vine seed", "_access_cart")
-
-        self.create_event("d3 S crystal", "_d3_S_crystal")
-        self.create_event("d3 E crystal", "_d3_E_crystal")
-        self.create_event("d3 W crystal", "_d3_W_crystal")
-        self.create_event("d3 N crystal", "_d3_N_crystal")
-        self.create_event("d3 B1F spinner", "_d3_B1F_spinner")
-
-        self.create_event("d6 wall B bombed", "_d6_wall_B_bombed")
-        self.create_event("d6 canal expanded", "_d6_canal_expanded")
-
-        self.create_event("d7 boss", "_finished_d7")
-
-    def exclude_problematic_locations(self):
-        locations_to_exclude = []
-        # If goal essence requirement is set to a specific value, prevent essence-bound checks which require more
-        # essences than this goal to hold anything of value
-        #if self.options.required_essences < 7:
-        #    locations_to_exclude.append("Horon Village: Item Inside Maku Tree (7+ Essences)")
-        #    if self.options.required_essences < 5:
-        #        locations_to_exclude.append("Horon Village: Item Inside Maku Tree (5+ Essences)")
-        #        if self.options.required_essences < 3:
-        #            locations_to_exclude.append("Horon Village: Item Inside Maku Tree (3+ Essences)")
-
-        # TODO PROBLEMATIC LOCATIONS
-
-        for name in locations_to_exclude:
-            self.multiworld.get_location(name, self.player).progress_type = LocationProgressType.EXCLUDED
-
-    def set_rules(self):
-        create_connections(self)
-        apply_self_locking_rules(self.multiworld, self.player)
-        self.multiworld.completion_condition[self.player] = lambda state: state.has("_beaten_game", self.player)
+        from .generation.CreateRegions import create_regions
+        create_regions(self)
 
     def create_item(self, name: str) -> Item:
-        if name.endswith("!PROG"):
-            # If item name has a "!PROG" suffix, force it to be progression. This is typically used to create the right
-            # amount of progression rupees while keeping them a filler item as default
-            name = name.removesuffix("!PROG")
-            classification = ItemClassification.progression_skip_balancing
-        elif name.endswith("!USEFUL"):
-            # Same for above but with useful. This is typically used for Required Rings,
-            # as we don't want those locked in a barren dungeon
-            name = name.removesuffix("!USEFUL")
-            classification = ITEMS_DATA[name]["classification"]
-            if classification == ItemClassification.filler:
-                classification = ItemClassification.useful
-        else:
-            classification = ITEMS_DATA[name]["classification"]
-        ap_code = self.item_name_to_id[name]
-
-        # A few items become progression only in hard logic
-        progression_items_in_medium_logic = ["Expert's Ring", "Fist Ring", "Toss Ring", "Energy Ring"]
-        if self.options.logic_difficulty == "medium" and name in progression_items_in_medium_logic:
-            classification = ItemClassification.progression
-
-        return Item(name, classification, ap_code, self.player)
-
-    def build_item_pool_dict(self):
-        item_pool_dict = {}
-        filler_item_count = 0
-        remaining_rings = len({name for name, idata in ITEMS_DATA.items() if "ring" in idata}) - len(self.options.excluded_rings.value)
-        for loc_name, loc_data in LOCATIONS_DATA.items():
-
-            if "vanilla_item" not in loc_data:
-                #print("Can't create item from location '",loc_name ,"' because it doesn't have one")
-                continue
-
-            item_name = loc_data['vanilla_item']
-            if "randomized" in loc_data and loc_data["randomized"] is False:
-                item = self.create_item(item_name)
-                location = self.multiworld.get_location(loc_name, self.player)
-                location.place_locked_item(item)
-                #print("placing locked item '",loc_data['vanilla_item'] ,"' in '",loc_name ,"'")
-                continue
-            if not self.location_is_active(loc_name, loc_data):
-                #print("Can't create item '",loc_data['vanilla_item'] ,"' because '",loc_name ,"' is not active")
-                continue
-
-
-            if self.options.master_keys != OraclesMasterKeys.option_disabled and "Small Key" in item_name:
-                # Small Keys don't exist if Master Keys are set to replace them
-                filler_item_count += 1
-                continue
-            if self.options.master_keys == OraclesMasterKeys.option_all_dungeon_keys and "Boss Key" in item_name:
-                # Boss keys don't exist if Master Keys are set to replace them
-                filler_item_count += 1
-                continue
-
-            item_name = loc_data['vanilla_item']
-            if "Ring" in item_name:
-                if remaining_rings > 0:
-                    item_name = "Random Ring"
-                    remaining_rings -= 1
-                else:
-                    filler_item_count += 1
-                    continue
-
-            if "essence" in loc_data and loc_data["essence"] is True:
-                # If essences are not shuffled, place and lock this item directly on the pedestal.
-                # Otherwise, the fill algorithm will take care of placing them anywhere in the multiworld.
-                if not self.options.shuffle_essences:
-                    essence_item = self.create_item(item_name)
-                    self.multiworld.get_location(loc_name, self.player).place_locked_item(essence_item)
-                    continue
-
-            item_pool_dict[item_name] = item_pool_dict.get(item_name, 0) + 1
-
-        # If Master Keys are enabled, put one for every dungeon
-        if self.options.master_keys != OraclesMasterKeys.option_disabled:
-            for small_key_name in ITEM_GROUPS["Master Keys"]:
-                if self.options.linked_heros_cave.value > 0 or small_key_name != "Master Key (Linked Hero's Cave)":
-                    item_pool_dict[small_key_name] = 1
-                    filler_item_count -= 1
-
-        # Add the required rings
-        ring_copy = sorted(self.options.required_rings.value.copy())
-        for _ in range(len(ring_copy)):
-            ring_name = f"{ring_copy.pop()}!USEFUL"
-            item_pool_dict[ring_name] = item_pool_dict.get(ring_name, 0) + 1
-
-            if item_pool_dict["Random Ring"] > 0:
-                # Take from set ring pool first
-                item_pool_dict["Random Ring"] -= 1
-            else:
-                # Take from filler after
-                filler_item_count -= 1
-
-        # Add as many filler items as required
-        for _ in range(filler_item_count):
-            random_filler_item = self.get_filler_item_name()
-            item_pool_dict[random_filler_item] = item_pool_dict.get(random_filler_item, 0) + 1
-        
-        # Perform adjustments on the item pool
-        item_pool_adjustements = [
-            ["Flute", self.options.animal_companion.current_key.title() + "'s Flute"],  # Put a specific flute
-            ["Gasha Seed", "Seed Satchel"],             # Add a 3rd satchel that is usually obtained in linked games (99 seeds)
-            ["Gasha Seed", "Bombs (10)"],               # Add one more bomb compared to vanilla to reach 99 max bombs
-            ["Gasha Seed", "Potion"],                   # Replace some Gasha Seed by 2 potions.
-            ["Gasha Seed", "Potion"],                   # ^
-            ["Gasha Seed", "Rupees (200)"],              # and one by rupees
-            ["Gasha Seed", "Progressive Sword"],        # Need an additionnal sword to go to L3
-        ]
-
-        for i, pair in enumerate(item_pool_adjustements):
-            original_name = pair[0]
-            replacement_name = pair[1]
-            item_pool_dict[original_name] -= 1
-            item_pool_dict[replacement_name] = item_pool_dict.get(replacement_name, 0) + 1
-
-        return item_pool_dict
-
+        from .generation.CreateItems import create_item
+        return create_item(self, name)
+    
     def create_items(self):
-        item_pool_dict = self.build_item_pool_dict()
-        
-        # Create items following the dictionary that was previously constructed
-        if (item_pool_dict.get("Random Ring")):
-            self.create_rings(item_pool_dict["Random Ring"])
-            del item_pool_dict["Random Ring"]
-
-        for item_name, quantity in item_pool_dict.items():
-            for i in range(quantity):
-                if ("Small Key" in item_name or "Master Key" in item_name) and not self.options.keysanity_small_keys:
-                    self.dungeon_items.append(self.create_item(item_name))
-                elif "Boss Key" in item_name and not self.options.keysanity_boss_keys:
-                    self.dungeon_items.append(self.create_item(item_name))
-                elif ("Compass" in item_name or "Dungeon Map" in item_name) and not self.options.keysanity_maps_compasses:
-                    self.dungeon_items.append(self.create_item(item_name))
-                elif "Slate" in item_name and not self.options.keysanity_slates:
-                    self.dungeon_items.append(self.create_item(item_name))
-                else:
-                    self.multiworld.itempool.append(self.create_item(item_name))        
-
-    def create_rings(self, amount):
-        # Get a subset of as many rings as needed
-        ring_names = [name for name, idata in ITEMS_DATA.items() if "ring" in idata]
-        # Remove excluded rings, and required rings because they'll be added later anyway
-        ring_names = [name for name in ring_names if name not in self.options.required_rings.value and name not in self.options.excluded_rings.value]
-
-        self.random.shuffle(ring_names)
-        del ring_names[amount:]
-        for ring_name in ring_names:
-            self.multiworld.itempool.append(self.create_item(ring_name))
-        self.random_rings_pool = ring_names
+        from .generation.CreateItems import create_items
+        return create_items(self)
 
     def get_pre_fill_items(self):
         return self.pre_fill_items
@@ -420,18 +132,6 @@ class OracleOfAgesWorld(World):
     def pre_fill(self) -> None:
         from .generation.PreFill import pre_fill
         pre_fill(self)
-                
-
-    def get_filler_item_name(self) -> str:
-        FILLER_ITEM_NAMES = [
-            "Rupees (1)", "Rupees (5)", "Rupees (5)", "Rupees (10)", "Rupees (10)",
-            "Rupees (20)", "Rupees (30)",
-            "Gasha Seed", "Gasha Seed",
-            "Potion"
-        ]
-
-        item_name = self.random.choice(FILLER_ITEM_NAMES)
-        return item_name
     
     def generate_output(self, output_directory: str):
         patch = ooa_create_appp_patch(self)

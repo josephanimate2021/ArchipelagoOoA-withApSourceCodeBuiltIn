@@ -18,14 +18,13 @@ def create_connections(world: "OracleOfAgesWorld"):
 
     # Shuffled warp
     for reg1, reg2 in multiworld.worlds[player].shuffled_entrances.items():
-        shuffled_entrances.append([OUTSIDE_TAG + reg1, INSIDE_TAG + reg2, lambda state: 
-                                   any(
-                                       ooa_can_dive(state, player, True),
-                                       all(
-                                           not(warp_is_underwater(reg1)),
-                                           not(warp_is_underwater(reg2))
-                                       )
-                                    ), None])
+        shuffled_entrances.append([OUTSIDE_TAG + reg1, INSIDE_TAG + reg2, lambda state: any([
+            ooa_can_dive(state, player),
+            all([
+                not(warp_is_underwater(reg1)),
+                not(warp_is_underwater(reg2))
+            ])
+        ]), None])
         
     # Not shuffled warp
     for warp_name, warp_data in WARPS_DATA.items():

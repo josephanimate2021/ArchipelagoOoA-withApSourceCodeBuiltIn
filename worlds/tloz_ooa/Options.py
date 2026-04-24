@@ -42,12 +42,14 @@ class OracleOfAgesVasuRingChecksRequirement(OptionDict):
 
     Rupee Requirement for Rupee Ring Check: Determines the amount of rupees that you need to collect in order for vasu to congradulate you on the achievement, resulting in the check being initiated.
     Amount of Enemies Defeated for Slayer Ring Check: Determines the amount of enemies that you need to defeat in order for vasu to congradulate you on the achievement, resulting in the check being initiated.
+    Disable Entirely: Determines whatever or not vasu will give you more checks after you get his friendship ring check from him. True if you don't want to do some grinding for his checks, False otherwise.
     """
     display_name = "Vasu Ring Checks Requirement"
 
     default = {
         "rupee_requirement_for_rupee_ring_check": 100,
-        "amount_of_enemies_defeated_for_slayer_ring_check": 100
+        "amount_of_enemies_defeated_for_slayer_ring_check": 100,
+        "disable_entirely": True
     }
 
     include_in_slot_data = True
