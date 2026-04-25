@@ -36,6 +36,7 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
 
         ["lynna city", OUTSIDE_TAG + "vasu's shop", True, None],
         [INSIDE_TAG + "vasu's shop", "vasu's gift", False, None],
+        [INSIDE_TAG + "vasu's shop", "vasu's victory ring gift", False, None],
 
         # LYNNA VILLAGE
         #######################################
@@ -675,6 +676,12 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
             ["symmetry past", "symmetry city secret", False, lambda state: state.has("Tuni Nut", player)],
             ["lynna city", "princess zelda rescue", False, lambda state: ooa_has_feather(state, player)],
             ["piratian captain", "sea of storms present", False, lambda state: ooa_can_go_back_to_present(state, player)],
+        ])
+
+    if not options.vasu_ring_checks_requirement["disable_entirely"]:
+        labrynna_logic.extend([
+            #[INSIDE_TAG + "vasu's shop", "vasu's rupee ring gift", False, None],
+            [INSIDE_TAG + "vasu's shop", "vasu's slayers ring gift", False, lambda state: ooa_can_kill_normal_enemy(state, player)],
         ])
 
     return labrynna_logic

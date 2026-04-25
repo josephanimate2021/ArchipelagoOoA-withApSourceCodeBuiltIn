@@ -111,14 +111,9 @@
     ld bc,locations.vasuGift
     jp spawnTreasureOnLink
 
-## This script on address 4a51 at bank 0c usually gives the user a wealth ring when they collect 10000 rupees. We need to modify this script to give link a modified item instead.
-#0c/4a51/: db showtext,$30,$37,orroomflag,$02,giveitem,locations.vasuRupeeRingGift.id,locations.vasuRupeeRingGift.subid,jumpalways,$e2,$49
-#
-## This script on address 4a4d at bank 0c usually gives the user a slayers ring when they kill 1000 enemies. We need to modify this script to give link a modified item instead.
-#0c/4a4d/: db showtext,$30,$36,orroomflag,$03,giveitem,locations.vasuSlayersGift.id,locations.vasuSlayersGift.subid,jumpalways,$e2,$49
-#
-## This script on address 4a55 at bank 0c usually gives the user a victory ring when they finish the game. We need to modify this script to give link a modified item instead.
-#0c/4a55/: db showtext,$30,$39,orroomflag,$04,giveitem,locations.vasuVictoryGift.id,locations.vasuVictoryGift.subid,jumpalways,$e2,$49
+# This script on address 4a55 at bank 0c usually gives the user a victory ring when they finish the game. We need to modify this script to give link a modified item instead.
+0c/4a55/: |
+  db orroomflag,$04,giveitem,locations.vasuVictoryRingGift.id,locations.vasuVictoryRingGift.subid,jumpalways,$e2,$49
 
 
 ##### HIDDEN TOKAY ###################################################

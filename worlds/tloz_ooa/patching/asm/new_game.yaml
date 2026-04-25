@@ -2,7 +2,7 @@
 # at actual file creation.
 
 07//initialGlobalFlags: |
-    db $0a,$0c,$1d,$20,$21,$23,$2b,$33,$3d,$40,$41,$43,$45,$ff
+    db $02,$0a,$0c,GLOBALFLAG_WON_FAIRY_HIDING_GAME,$1d,$20,$21,$23,$2b,$33,$3d,$40,$41,$43,$45,$ff
 
 07/4195/startingBomb: db $00
 
@@ -94,9 +94,6 @@
     ld ($c69f),a # treasure flag
     ld a,$03
     ld (wRingBoxLevel),a
-
-    ld a,GLOBALFLAG_WON_FAIRY_HIDING_GAME
-    call setGlobalFlag
 
     pop hl
     ld hl,$415c  ; initializeChildOnGameStart; this may look useless, but this prevents the game from locking up after file creation.

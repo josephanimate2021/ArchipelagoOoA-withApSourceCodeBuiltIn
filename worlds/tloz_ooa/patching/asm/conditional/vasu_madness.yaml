@@ -1,0 +1,10 @@
+# VASU MADNESS NOTE (Same applies for victory ring check): For some reason, showing the text freezes the game, so we cannot do that.
+
+# Updates enemy kill requirement for vasu slayers ring check.
+00/28a0/: ld bc,option.vasuSlayerRingCheckRequirement
+
+# This script on address 4a51 at bank 0c usually gives the user a wealth ring when they collect 10000 rupees. We need to modify this script to give link a modified item instead.
+# 0c/4a51/: db orroomflag,$02,giveitem,locations.vasuRupeeRingGift.id,locations.vasuRupeeRingGift.subid,jumpalways,$e2,$49
+
+# This script on address 4a4d at bank 0c usually gives the user a slayers ring when they kill 1000 enemies. We need to modify this script to give link a modified item instead.
+0c/4a4d/: db orroomflag,$03,giveitem,locations.vasuSlayersRingGift.id,locations.vasuSlayersRingGift.subid,jumpalways,$e2,$49

@@ -17,8 +17,8 @@ REGIONS = [
     "mayor plen's house",
     "vasu's gift",
     #"vasu's rupee ring gift",
-    #"vasu's slayers ring gift",
-    #"vasu's victory ring gift",
+    "vasu's slayers ring gift",
+    "vasu's victory ring gift",
     "princess zelda rescue",
     #######
     "lynna village",
@@ -381,9 +381,8 @@ REGIONS = [
     "symmetry city heartpiece",
     "ridge west heartpiece",
     "ridge upper heartpiece",
-]
-
-D11_REGIONS = [
+    
+    ## D11, never used if the option is not set, but we can keep the region in the same array as the others
     "d11 entrance",
     "enter d11",
     "d11 pots puzzle 1",

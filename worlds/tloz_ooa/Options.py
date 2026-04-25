@@ -40,20 +40,17 @@ class OracleOfAgesVasuRingChecksRequirement(OptionDict):
 
     NOTE: Both of those moments are seperate, so don't worry if you were thinking that two things were going to be checked just for a singular check.
 
-    Rupee Requirement for Rupee Ring Check: Determines the amount of rupees that you need to collect in order for vasu to congradulate you on the achievement, resulting in the check being initiated.
-    Amount of Enemies Defeated for Slayer Ring Check: Determines the amount of enemies that you need to defeat in order for vasu to congradulate you on the achievement, resulting in the check being initiated.
-    Disable Entirely: Determines whatever or not vasu will give you more checks after you get his friendship ring check from him. True if you don't want to do some grinding for his checks, False otherwise.
+    Rupee Requirement for Rupee Ring Check (COMING SOON): Determines the amount of rupees that you need to collect in order for vasu to congradulate you on the achievement, resulting in the check being initiated. (MIN: 1)
+    Amount of Enemies Defeated for Slayer Ring Check: Determines the amount of enemies that you need to defeat in order for vasu to congradulate you on the achievement, resulting in the check being initiated. (MIN: 1)
+    Disable Entirely: Determines whatever or not vasu will give out mutiple checks when the friendship ring check is finished.
     """
     display_name = "Vasu Ring Checks Requirement"
 
     default = {
-        "rupee_requirement_for_rupee_ring_check": 100,
-        "amount_of_enemies_defeated_for_slayer_ring_check": 100,
-        "disable_entirely": True
+        # "rupee_requirement_for_rupee_ring_check": 10000,
+        "disable_entirely": True,
+        "amount_of_enemies_defeated_for_slayer_ring_check": 1000
     }
-
-    include_in_slot_data = True
-    include_in_patch = True
 
 class OracleOfAgesMinibossLocations(Toggle):
     """
