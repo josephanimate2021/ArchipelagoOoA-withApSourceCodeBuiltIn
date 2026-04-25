@@ -31,7 +31,7 @@ Items belonging to other worlds use an easily recognizable Archipelago sprite, w
 
 **Is there a tracker for this game?**
 
-> Yes, you can find it [here](https://github.com/Br00ty/ooa_brooty/releases/latest).
+> Yes, you can find it [here](https://github.com/Dranzior/ooa_brooty/releases/latest).
 
 **How can I warp to start?**
 
