@@ -165,7 +165,8 @@ def ooa_option_lynna_gardener(state: CollectionState, player: int):
         state.multiworld.worlds[player].options.lynna_gardener == True,
         state.multiworld.worlds[player].options.warp_to_start_location == OracleOfAgesWarpToStartLocation.option_near_timeportal
     ])
-
+def ooa_option_suitless_underwater(state: CollectionState, player: int):
+    return state.multiworld.worlds[player].options.suitless_underwater == True
 
 # Various item predicates ###########################################
 
@@ -783,6 +784,9 @@ def ooa_can_swim(state: CollectionState, player: int, can_summon_companion: bool
 
 def ooa_can_swim_deepwater(state: CollectionState, player: int, can_summon_companion: bool):
     return ooa_has_siren_suit(state, player) or (can_summon_companion and ooa_can_summon_dimitri(state, player))
+
+def ooa_can_travel_underwater(state: CollectionState, player: int):
+    return ooa_has_siren_suit(state, player) or (ooa_option_suitless_underwater(state, player))
 
 def ooa_can_dive(state: CollectionState, player: int):
     return ooa_has_siren_suit(state, player)

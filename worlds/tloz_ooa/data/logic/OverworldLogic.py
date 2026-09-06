@@ -992,10 +992,18 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
         #######################################
         ["lynna city", Outside("present drifting island house"), True, lambda state: ooa_can_dive(state, player)],
 
-        ["lynna city", "zora village present", True, lambda state: all([
+        ["lynna city", "zora village present", True, lambda state: any([
+        #The Vanilla Route
+        all([
             ooa_can_dive(state, player),
             ooa_has_switch_hook(state, player),
             ooa_can_switch_past_and_present(state, player),
+            ]),
+        #If you manage to find and rescue fairy queen early in ER
+        all([
+            state.has("_sea_cleaned", player),
+            ooa_can_swim_deepwater(state, player, True),
+            ])
         ])],
         [Outside("present fairy queen cave"), "zora village present", False, lambda state: ooa_can_dive(state, player)],
         ["zora village past", "zora village present", False, lambda state: ooa_can_go_back_to_present(state, player)],
@@ -1016,8 +1024,8 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
         ["zora village present", Outside("d7"), True, lambda state: state.has("_got_permission_from_king_zora", player)],
         ["zora village present", "zora's reward", False, lambda state:  state.has("_finished_d7", player),],
 
-        [Inside("present zora palace"), "zora palace chest", False, None],     
-        [Inside("present zora palace"), "zora king gift", False, lambda state: state.has("_saved_king_zora", player)],
+        [Inside("present zora palace"), "zora palace chest", False, lambda state: ooa_can_travel_underwater(state, player)],
+        "zora palace chest", "zora king gift", False, lambda state: state.has("_saved_king_zora", player),
         ["zora king gift", "king zora's permission", False, lambda state: state.has("_sea_cleaned", player)],    
         ["king zora's permission", "king zora's secret", False, lambda state: options.secret_locations], 
 
@@ -1026,7 +1034,7 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
         [Outside("past fairy queen cave"), Outside("present fairy queen cave"), False, lambda state: ooa_can_go_back_to_present(state, player)],
         [Outside("present fairy queen cave"), Outside("past fairy queen cave"), False, lambda state: ooa_can_switch_past_and_present(state, player)],
 
-        [Inside("present underwater zora duplex left"), Inside("present underwater zora duplex right"), True, None],
+        [Inside("present underwater zora duplex left"), Inside("present underwater zora duplex right"), True, lambda state: ooa_can_travel_underwater(state, player)],
 
         ["library island present", "library island past", False, lambda state: ooa_can_switch_past_and_present(state, player)],
         ["library island past", "library island present", False, lambda state: ooa_can_go_back_to_present(state, player)],
@@ -1040,11 +1048,15 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
         ])],
         [Outside("past drifting island house"), Outside("present drifting island house"), False, lambda state: all([
             ooa_can_go_back_to_present(state, player),
-            ooa_can_dive(state, player, False)
+            ooa_can_dive(state, player)
         ])], # Might not be necessary
         [Outside("past drifting island house"), Outside("past underwater drifting island cave"), True, lambda state: ooa_can_dive(state, player)],
-        [Inside("past underwater drifting island cave"), "fisher's island cave", False, lambda state: ooa_has_long_hook(state, player)],
-
+        [Inside("past underwater drifting island cave"), "fisher's island cave", False, lambda state: all([
+            ooa_has_long_hook(state, player),
+            ooa_can_travel_underwater(state, player)
+        ])],
+        ["rafton's raft", "zora village tree", False, lambda state: state.has("_sea_cleaned", player)],
+        ["rafton's raft", "zora village past spot", False, lambda state: state.has("_sea_cleaned", player)],
         ["zora village present", "zora village past", False, lambda state: ooa_can_switch_past_and_present(state, player)],
 
         ["zora village past", Outside("past zora palace"), True, None],
@@ -1052,7 +1064,7 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
         ["zora village past", Outside("past underwater zora duplex right"), True, None],
         ["zora village past", Outside("past underwater zora house"), True, None],
         
-        [Inside("past underwater zora duplex left"), Inside("past underwater zora duplex right"), True, None],
+        [Inside("past underwater zora duplex left"), Inside("past underwater zora duplex right"), True, lambda state: ooa_can_travel_underwater(state, player)],
 
         ["zora village past", "zora seas chest", False, lambda state: all([
             state.has("_sea_cleaned", player),
@@ -1063,7 +1075,8 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
         ["zora village past", "library island past", True, lambda state: ooa_can_dive(state, player)],
            
         [Inside("past zora palace"), "king zora's saved", False, lambda state: all([
-            state.has("King Zora's Potion", player)
+            state.has("King Zora's Potion", player),
+            ooa_can_travel_underwater(state, player)
         ])],
 
         ["rafton's raft", "library island past", True, lambda state: state.has("_sea_cleaned", player)],
@@ -1083,7 +1096,7 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
             state.has("Zora Scale", player),
         ])],
         ["piratian captain", Outside("past underwater sea of storms cave"), True, lambda state: ooa_can_dive(state, player)],
-        [Inside("past underwater sea of storms cave"), "sea of storms past", False, None],
+        [Inside("past underwater sea of storms cave"), "sea of storms past", False, lambda state: ooa_can_travel_underwater(state, player)],
 
         ["piratian captain", Outside("present underwater sea of storms cave"), False, lambda state: all([
             ooa_can_go_back_to_present(state, player),
@@ -1097,7 +1110,7 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
         ])],
 
         [Outside("present underwater sea of storms cave"), "sea of storms spot", False, lambda state: ooa_has_shovel(state, player)],
-        [Inside("present underwater sea of storms cave"), "sea of storms present", True, None],
+        [Inside("present underwater sea of storms cave"), "sea of storms present", True, lambda state: ooa_can_travel_underwater(state, player)],
 
         ["crescent past waters", Outside("hero trials cave"), False, lambda state: state.has("Tokay Eyeball", player)],
         [Outside("hero trials cave"), "crescent past waters", False, lambda state: all([
