@@ -1025,7 +1025,7 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
         ["zora village present", "zora's reward", False, lambda state:  state.has("_finished_d7", player),],
 
         [Inside("present zora palace"), "zora palace chest", False, lambda state: ooa_can_travel_underwater(state, player)],
-        "zora palace chest", "zora king gift", False, lambda state: state.has("_saved_king_zora", player),
+        ["zora palace chest", "zora king gift", False, lambda state: state.has("_saved_king_zora", player)],
         ["zora king gift", "king zora's permission", False, lambda state: state.has("_sea_cleaned", player)],    
         ["king zora's permission", "king zora's secret", False, lambda state: options.secret_locations], 
 
