@@ -59,6 +59,7 @@ class OoAPatchExtensions(APPatchExtension):
         define_compass_rooms_table(assembler, patch_data)
         define_collect_properties_table(assembler, patch_data)
         set_file_select_text(assembler, caller.player_name)
+        define_closed_way_warp_arraywarps(assembler, rom_data, patch_data)
         define_underwater_warp_arraywarps(assembler, rom_data, patch_data)
 
         # Parse assembler files, compile them and write the result in the ROM

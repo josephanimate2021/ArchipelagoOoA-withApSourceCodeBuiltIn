@@ -251,6 +251,15 @@ def define_option_constants(assembler: Z80Assembler, patch_data):
             0xb6, (0x4f | 0x80)
         ])
 
+    
+    #assembler.define_word("option.closedEntranceForceOperation", 0x180f)
+    if options["entrance_randomizer_inside_lock"] == OracleOfAgesEntranceRandomizer_InsideLock.option_fully_open:
+        assembler.define_word("option.closedEntranceForceOperation", 0x180a)
+    elif options["entrance_randomizer_inside_lock"] == OracleOfAgesEntranceRandomizer_InsideLock.option_fully_blocked:
+        assembler.define_word("option.closedEntranceForceOperation", 0x180f)
+    else:
+        assembler.define_word("option.closedEntranceForceOperation", 0x0000)
+
 def parse_int(s):
     try:
         return int(s)
@@ -319,6 +328,69 @@ def define_text_constants(assembler: Z80Assembler, patch_data):
             assembler.add_floating_chunk(f"text.{symbolic_name}", text_bytes)
     text_bytes = [0x31, 0x30, 0x20, 0x02, 0x12, 0x01, 0x02, 0x00, 0x00]
     assembler.add_floating_chunk(f"text.tokayMarket1Validation", text_bytes)
+                                 ################
+    text_bytes = text_to_binary("Fallen rubbles "
+                                "block the way. "
+                                "Explosives might "
+                                "clear a way out.")
+    text_bytes.extend([0x00])
+    assembler.add_floating_chunk(f"text.blockedByRock", text_bytes)
+                                 ################
+    text_bytes = text_to_binary("A thorny bush "
+                                "block the way. "
+                                "A big fire might "
+                                "take care of it.")
+    text_bytes.extend([0x00])
+    assembler.add_floating_chunk(f"text.blockedByBush", text_bytes)
+                                 ################
+    text_bytes = text_to_binary("The exit is shut "
+                                "by a sturdy wall "
+                                "It might belong "
+                                "to a fortress.")
+    text_bytes.extend([0x00])
+    assembler.add_floating_chunk(f"text.blockedByBrickWall", text_bytes)
+                                 ################
+    text_bytes = text_to_binary("A closed door "
+                                "block the exit. "
+                                "It has a rusty "
+                                "unusable padlock")
+    text_bytes.extend([0x00])
+    assembler.add_floating_chunk(f"text.blockedByLibraryPresent", text_bytes)
+                                 ################
+    text_bytes = text_to_binary("A closed door "
+                                "block the exit. "
+                                "It has a book- "
+                                "like padlock")
+    text_bytes.extend([0x00])
+    assembler.add_floating_chunk(f"text.blockedByLibraryPast", text_bytes)
+                                 ################
+    text_bytes = text_to_binary("A closed door "
+                                "block the exit. "
+                                "Its lock looks "
+                                "like a crown.")
+    text_bytes.extend([0x00])
+    assembler.add_floating_chunk(f"text.blockedByCrown", text_bytes)
+                                 ################
+    text_bytes = text_to_binary("A closed door "
+                                "block the exit. "
+                                "It has a rusty "
+                                "fish engraving")
+    text_bytes.extend([0x00])
+    assembler.add_floating_chunk(f"text.blockedByMermaidPresent", text_bytes)
+                                 ################
+    text_bytes = text_to_binary("A closed door "
+                                "block the exit. "
+                                "It has a clean "
+                                "fish engraving")
+    text_bytes.extend([0x00])
+    assembler.add_floating_chunk(f"text.blockedByMermaidPast", text_bytes)
+                                 ################
+    text_bytes = text_to_binary("Huh... A bunch "
+                                "of teeth are "
+                                "blocking the "
+                                "way out... ")
+    text_bytes.extend([0x00])
+    assembler.add_floating_chunk(f"text.blockedByTeeth", text_bytes)
 
 
 def write_chest_contents(rom: RomData, patch_data):
@@ -446,6 +518,55 @@ def define_underwater_warp_arraywarps(assembler: Z80Assembler, rom: RomData, pat
 
     assembler.add_floating_chunk("underwaterWarpTable", underwater_warp_table)
 
+def define_closed_way_warp_arraywarps(assembler: Z80Assembler, rom: RomData, patch_data):
+    
+    warp_matchings = patch_data["randomized_entrances"]
+    # +2 because we only use the 2 last byte of the 4 warp bytes
+    outside_values = {}
+    inside_values = {}
+    for name, warp in WARPS_DATA.items():
+        if "outside_warp" in warp and "inside_warp" in warp:
+            
+            if type(warp["outside_warp"]) is int:
+                outside_values[name] = rom.read_word(GameboyAddress(0x04, warp["outside_warp"]).address_in_rom())
+            else:
+                outside_values[name] = rom.read_word(GameboyAddress(0x04, warp["outside_warp"][0]).address_in_rom())
+
+            if type(warp["inside_warp"]) is int:
+                inside_values[name] = rom.read_word(GameboyAddress(0x04, warp["inside_warp"]).address_in_rom())
+            else:
+                inside_values[name] = rom.read_word(GameboyAddress(0x04, warp["inside_warp"][0]).address_in_rom())
+    
+    closed_warp_table = []
+    
+    for outside_name, inside_name in warp_matchings.items():
+        # table is
+        # warp group
+        # warp index
+        # warp lock flag address (upper)
+        # warp lock flag address (lower)
+        # warp lock flag mask
+        # item id unlocking the warp
+        # item subid unlocking the warp
+        if "lock_flag" in WARPS_DATA[outside_name]:
+            intoout_warp_group = (inside_values[outside_name] & 0xf000) >> 12
+            intoout_warp_index = inside_values[outside_name] & 0x00ff
+            closed_warp_table.append(intoout_warp_group)
+            closed_warp_table.append(intoout_warp_index)
+            closed_warp_table.append(WARPS_DATA[outside_name]["lock_flag"] >> 8)
+            closed_warp_table.append(WARPS_DATA[outside_name]["lock_flag"] & 0x00FF)
+            closed_warp_table.append(WARPS_DATA[outside_name]["lock_mask"])
+            if "item_lock" in WARPS_DATA[outside_name]:
+                item = ITEMS_DATA[WARPS_DATA[outside_name]["item_lock"]]
+                closed_warp_table.append(item["id"])
+            else:
+                closed_warp_table.append(0x00)
+            closed_warp_table.append(WARPS_DATA[outside_name]["lock_text"] >> 8)
+            closed_warp_table.append(WARPS_DATA[outside_name]["lock_text"] & 0x00FF)
+
+    closed_warp_table.append(0xff)
+    assembler.add_floating_chunk("closedWarpTable", closed_warp_table)
+
 def set_dungeon_warps(rom: RomData, patch_data):
     warp_matchings = patch_data["randomized_entrances"]
     # +2 because we only use the 2 last byte of the 4 warp bytes
@@ -549,9 +670,6 @@ def define_tile_replacements_table(assembler: Z80Assembler, patch_data):
         0x01, 0x13, 0x00, 0x61, 0xd7, # portal in symmetry city past
         0x01, 0x13, 0x00, 0x68, 0xd7, # portal in symmetry city past
         0x00, 0x25, 0x00, 0x37, 0xd7, # portal in nuun highlands
-        0x05, 0xda, 0x11, 0xa4, 0xb2, # tunnel to moblin keep
-        0x05, 0xda, 0x11, 0xa5, 0xb2, # cont.
-        0x05, 0xda, 0x11, 0xa6, 0xb2, # cont.
         0x00, 0x24, 0x12, 0x49, 0x63, # other side of symmetry city bridge
         0x00, 0x24, 0x12, 0x59, 0x63, # cont.
         0x00, 0x24, 0x12, 0x69, 0x63, # cont.
@@ -567,6 +685,14 @@ def define_tile_replacements_table(assembler: Z80Assembler, patch_data):
         # 0x00, 0x5d, 0x00, 0x66, 0x0b, # ledge by the linked ghini ghost (traps link in ghini's interaction space until warp to start is initialized (used for faq room space))
         # 0x00, 0x5d, 0x00, 0x57, 0xf4, # waterblock for preventing the trapped player from escaping into the graveyard
     ]
+
+    if patch_data["options"]["entrance_randomizer"] != OracleOfAgesEntranceRandomizer.option_all_entrances:
+        new_tiles_table.extend([
+            0x05, 0xda, 0x11, 0xa4, 0xb2, # tunnel to moblin keep
+            0x05, 0xda, 0x11, 0xa5, 0xb2, # cont.
+            0x05, 0xda, 0x11, 0xa6, 0xb2, # cont.
+        ])
+
 
     if patch_data["options"]["secret_locations"]: # Format is group, room, room flag, position in YX format, and replacement tile byte.
         new_tiles_table.extend([

@@ -1,3 +1,5 @@
+from .Items import ITEMS_DATA
+
 # warps are in bank 04
 WARP_DEST_TABLE = 0x12f5b
 WARP_SOURCE_TABLE = 0x1359e
@@ -153,6 +155,10 @@ WARPS_DATA = {
         "outside_warp": 0x771C,   #room 0 8D, t56
         "inside_warp": 0x7d78,    #room 5 ED
         "present": True,
+        "item_lock": "Ember Seeds",
+        "lock_flag": 0xc78d,
+        "lock_mask": 0x80,
+        "lock_text": 0x5a26,
     },
     "poe grave": {
         "outside_warp": 0x7640,   #room 0 7c
@@ -236,6 +242,9 @@ WARPS_DATA = {
         "outside_warp": 0x76a4,   #room 0 09
         "inside_warp": 0x7d28,    #room 5 DA
         "present": True,
+        "lock_flag": 0xc709,
+        "lock_mask": 0x01,
+        "lock_text": 0x5a27
     },
     #the side of the moblin keep connector that takes you to crown dungeon ledge
     "cave behind moblin keep back": {
@@ -323,6 +332,10 @@ WARPS_DATA = {
         "outside_warp": 0x7614,   #room 0 4D
         "inside_warp": 0x7898,    #room 2 4E
         "present": True,
+        "item_lock": "Ember Seeds",
+        "lock_flag": 0xc74d,
+        "lock_mask": 0x80,
+        "lock_text": 0x5a26
     },
     "empty cave left of target carts": {
         "outside_warp": 0x76dc,   #room 0 1C
@@ -383,6 +396,10 @@ WARPS_DATA = {
         "outside_warp": 0x7690,   #room 0 A0
         "inside_warp": 0x7ce8,    #room 5 C7
         "present": True,
+        "item_lock": "Bombs (10)",
+        "lock_flag": 0xc7a0,
+        "lock_mask": 0x80,
+        "lock_text": 0x5a25
     },
     "present fairy queen cave": {
         "outside_warp": 0x7648,   #room 0 A3
@@ -393,6 +410,9 @@ WARPS_DATA = {
         "outside_warp": 0x7694,   #room 0 A5
         "inside_warp": 0x7d08,    #room 5 D0
         "present": True,
+        "lock_flag": 0xc8a5,
+        "lock_mask": 0x80,
+        "lock_text": 0x5a28
     },
 #PRESENT CRESCENT
     "southern fairy cave": {
@@ -496,6 +516,10 @@ WARPS_DATA = {
         "outside_warp": 0x77e4,   #room 1 91
         "inside_warp": 0x7ca0,    #room 5 B0
         "present": False,
+        "item_lock": "Ember Seeds",
+        "lock_flag": 0xc891,
+        "lock_mask": 0x80,
+        "lock_text": 0x5a26
     },
     #stairs that lead to the mystery seed tree
     "mystery seed cave front stairs": {
@@ -622,6 +646,10 @@ WARPS_DATA = {
         "outside_warp": 0x776C,   #room 1 0d
         "inside_warp": 0x7974,    #room 2 FC
         "present": False,
+        "item_lock": "Bombs (10)",
+        "lock_flag": 0xc80d,
+        "lock_mask": 0x80,
+        "lock_text": 0x5a25
     },
     #since you're intended to come from the
     #bottom to reach the top, that's how im labeling this cave
@@ -671,6 +699,10 @@ WARPS_DATA = {
         "outside_warp": 0x77B0,   #room 1 4D
         "inside_warp": 0x7A6C,    #room 3 E9
         "present": False,
+        "item_lock": "Ember Seeds",
+        "lock_flag": 0xc84d,
+        "lock_mask": 0x80,
+        "lock_text": 0x5a26
     },
 #PAST LYNNA SEAS
     "past underwater sea of storms cave": {
@@ -726,6 +758,10 @@ WARPS_DATA = {
         "outside_warp": 0x77EC,   #room 1 A5
         "inside_warp": 0x7D74,    #room 5 EC
         "present": False,
+        "item_lock": "Library Key",
+        "lock_flag": 0xc8a5,
+        "lock_mask": 0x80,
+        "lock_text": 0x5a29
     },
 #PAST CRESCENT
     "lost shield tokay cave": {
@@ -754,6 +790,10 @@ WARPS_DATA = {
         "outside_warp": 0x780C,   #room 1 CB
         "inside_warp": 0x7CEC,    #room 5 CC
         "present": False,
+        "item_lock": "Bombs (10)",
+        "lock_flag": 0xc8cb,
+        "lock_mask": 0x80,
+        "lock_text": 0x5a25
     },
 
     #$cd warpSource7df6 stairs, too lazy to do rn
@@ -790,6 +830,10 @@ WARPS_DATA = {
         "outside_warp": 0x7804,   #room 1 BD
         "inside_warp": 0x7914,    #room 2 DE
         "present": False,
+        "item_lock": "Ember Seeds",
+        "lock_flag": 0xc8bd,
+        "lock_mask": 0x80,
+        "lock_text": 0x5a25
     },
     "tokay shop": {
         "outside_warp": 0x77F4,   #room 1 AD
@@ -823,6 +867,10 @@ WARPS_DATA = {
         "inside_warp": 0x7ad4,
         "present": False,
         "dungeon": 2,
+        "item_lock": "Bombs (10)",
+        "lock_flag": 0xc883,
+        "lock_mask": 0x80,
+        "lock_text": 0x5a25
     },
     "d3": {
         "outside_warp": 0x75c8,
@@ -841,6 +889,10 @@ WARPS_DATA = {
         "inside_warp": 0x7ae0,
         "present": True,
         "dungeon": 5,
+        "item_lock": "Crown Key",
+        "lock_flag": 0xc70a,
+        "lock_mask": 0x80,
+        "lock_text": 0x5a2a
     },
     "d6 present": {
         "outside_warp": 0x7748,
@@ -848,6 +900,10 @@ WARPS_DATA = {
         "custom_map_tile": 0x03c,
         "present": True,
         "dungeon": 6,
+        "item_lock": "Old Mermaid Key",
+        "lock_flag": 0xc80e,
+        "lock_mask": 0x80,
+        "lock_text": 0x5a2b
     },
     "d7": {
         "outside_warp": 0x7874,
@@ -856,6 +912,9 @@ WARPS_DATA = {
         "present": True,
         "dungeon": 7,
         "is_underwater": True,
+        "lock_flag": 0xc6d6,
+        "lock_mask": 0x02,
+        "lock_text": 0x5a2d
     },
     "d8": {
         "outside_warp": 0x7730,
@@ -877,6 +936,10 @@ WARPS_DATA = {
         "custom_txt_id": 0xe1,
         "present": False,
         "dungeon": 9,
+        "item_lock": "Mermaid Key",
+        "lock_flag": 0xc80f,
+        "lock_mask": 0x80,
+        "lock_text": 0x5a2c
     }
 }
 

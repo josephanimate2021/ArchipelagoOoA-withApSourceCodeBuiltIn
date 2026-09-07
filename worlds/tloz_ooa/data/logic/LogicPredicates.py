@@ -166,7 +166,8 @@ def ooa_option_lynna_gardener(state: CollectionState, player: int):
         state.multiworld.worlds[player].options.warp_to_start_location == OracleOfAgesWarpToStartLocation.option_near_timeportal
     ])
 def ooa_option_suitless_underwater(state: CollectionState, player: int):
-    return state.multiworld.worlds[player].options.suitless_underwater == True
+    # Until the option is enabled
+    return False #state.multiworld.worlds[player].options.suitless_underwater == True
 
 # Various item predicates ###########################################
 
