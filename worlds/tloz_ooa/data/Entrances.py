@@ -113,7 +113,7 @@ WARPS_DATA = {
         "outside_warp": 0x7638,   #room 0 76
         "inside_warp": [0x7B54, 0x7B58],    #room 4 E6
         "present": True,
-        "require_option": "Secret Locations"
+        "require_option": "secret_locations"
     },
 
     "troy's house": {
@@ -358,7 +358,7 @@ WARPS_DATA = {
         "inside_warp": 0x7a68,    #room 3 E8
         "present": True,
         "is_underwater": True,
-        "require_option": "Secret Locations"
+        "require_option": "secret_locations"
     },
     "present drifting island house": {
         "outside_warp": 0x7650,   #room 0 C5
@@ -453,7 +453,7 @@ WARPS_DATA = {
         "outside_warp": 0x7858,   #room 1 58
         "inside_warp": 0x7aa4,    #room 3 FE
         "present": False,
-        "require_option": "Open Advance Shop"
+        "require_option": "advance_shop"
     },
     "postman house": {
         "outside_warp": 0x77c0,   #room 1 57
@@ -773,6 +773,9 @@ WARPS_DATA = {
         "outside_warp": 0x77F8,   #room 1 BA
         "inside_warp": 0x7DB0,    #room 5 F9
         "present": False,
+        "lock_flag": 0xc8cb,
+        "lock_mask": 0x80,
+        "lock_text": 0x5a25
     },
     "crystal tokay cave": {
         "outside_warp": 0x77FC,   #room 1 BB
@@ -790,8 +793,8 @@ WARPS_DATA = {
         "outside_warp": 0x780C,   #room 1 CB
         "inside_warp": 0x7CEC,    #room 5 CC
         "present": False,
-        "item_lock": "Bombs (10)",
-        "lock_flag": 0xc8cb,
+        "item_lock": "Tokay Eyeball",
+        "lock_flag": 0xc8ba,
         "lock_mask": 0x80,
         "lock_text": 0x5a25
     },

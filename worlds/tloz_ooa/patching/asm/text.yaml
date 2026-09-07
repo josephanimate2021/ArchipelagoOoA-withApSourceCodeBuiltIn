@@ -146,6 +146,7 @@
 38//TX_5a2b: /include text.blockedByMermaidPresent
 38//TX_5a2c: /include text.blockedByMermaidPast
 38//TX_5a2d: /include text.blockedByTeeth
+38//TX_5a2e: /include text.blockedByTokay
 
 # 38//TX_5a25: /include text.faqIntro
 #38//TX_5a26: /include text.faqReadImportance
@@ -167,7 +168,7 @@
     dw TX_5a20, TX_5a21, TX_5a22, TX_5a23
     dw TX_5a24, TX_5a25, TX_5a26, TX_5a27
     dw TX_5a28, TX_5a29, TX_5a2a, TX_5a2b
-    dw TX_5a2c, TX_5a2d
+    dw TX_5a2c, TX_5a2d, TX_5a2e
 
 38//setCustomBankForText: |
     ld hl,customTextTable

@@ -169,6 +169,12 @@ def ooa_option_suitless_underwater(state: CollectionState, player: int):
     # Until the option is enabled
     return False #state.multiworld.worlds[player].options.suitless_underwater == True
 
+def ooa_ER_inside_lock_fully_blocked(state: CollectionState, player: int):
+    return state.multiworld.worlds[player].options.entrance_randomizer_inside_lock == OracleOfAgesEntranceRandomizer_InsideLock.option_fully_blocked
+
+def ooa_ER_inside_lock_fully_open(state: CollectionState, player: int):
+    return state.multiworld.worlds[player].options.entrance_randomizer_inside_lock == OracleOfAgesEntranceRandomizer_InsideLock.option_fully_open
+
 # Various item predicates ###########################################
 
 def ooa_has_rupees(state: CollectionState, player: int, amount: int):

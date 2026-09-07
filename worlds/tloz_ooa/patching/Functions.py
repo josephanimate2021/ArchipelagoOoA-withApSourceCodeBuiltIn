@@ -360,7 +360,7 @@ def define_text_constants(assembler: Z80Assembler, patch_data):
     text_bytes = text_to_binary("A closed door "
                                 "block the exit. "
                                 "It has a book- "
-                                "like padlock")
+                                "like padlock.")
     text_bytes.extend([0x00])
     assembler.add_floating_chunk(f"text.blockedByLibraryPast", text_bytes)
                                  ################
@@ -374,14 +374,14 @@ def define_text_constants(assembler: Z80Assembler, patch_data):
     text_bytes = text_to_binary("A closed door "
                                 "block the exit. "
                                 "It has a rusty "
-                                "fish engraving")
+                                "fish engraving.")
     text_bytes.extend([0x00])
     assembler.add_floating_chunk(f"text.blockedByMermaidPresent", text_bytes)
                                  ################
     text_bytes = text_to_binary("A closed door "
                                 "block the exit. "
                                 "It has a clean "
-                                "fish engraving")
+                                "fish engraving.")
     text_bytes.extend([0x00])
     assembler.add_floating_chunk(f"text.blockedByMermaidPast", text_bytes)
                                  ################
@@ -391,6 +391,13 @@ def define_text_constants(assembler: Z80Assembler, patch_data):
                                 "way out... ")
     text_bytes.extend([0x00])
     assembler.add_floating_chunk(f"text.blockedByTeeth", text_bytes)
+                                 ################
+    text_bytes = text_to_binary("A closed door "
+                                "block the exit. "
+                                "It has a tokay "
+                                "missing an eye.")
+    text_bytes.extend([0x00])
+    assembler.add_floating_chunk(f"text.blockedByTokay", text_bytes)
 
 
 def write_chest_contents(rom: RomData, patch_data):
